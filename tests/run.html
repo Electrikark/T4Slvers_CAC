@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tech for Silvers engine tests</title>
+<style>
+  body { font: 15px/1.5 Arial, Helvetica, sans-serif; margin: 24px; color: #203d38; background: #f7f8f2; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  #overview { font-weight: 700; margin: 8px 0 16px; }
+  table { border-collapse: collapse; width: 100%; background: #fff; }
+  th, td { border: 1px solid #d4dcd1; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; }
+  .pass { color: #1d6b3a; font-weight: 700; }
+  .fail { color: #a3321f; font-weight: 700; }
+  code { font-size: 12px; }
+  h2 { font-size: 16px; margin-top: 24px; }
+</style>
+<!-- Add your engine files here as you write them. Missing files only log a 404 in the console. -->
+<script src="../js/engine/normalize.js"></script>
+<script src="../js/engine/extract.js"></script>
+<script src="../js/engine/domain.js"></script>
+<script src="../js/engine/risk.js"></script>
+<script src="../js/engine/aggregate.js"></script>
+<script src="../js/engine/copy.js"></script>
+<script src="cases.js"></script>
+<script src="../data/store.js"></script>
+<script src="real-store-cases.js"></script>
+</head>
+<body>
+<h1>Tech for Silvers engine tests</h1>
+<p>Open this file in a browser. It calls <code>window.TfsEngine.analyze(text, store)</code> for each case.</p>
+<div id="overview">Running...</div>
+<table>
+  <thead><tr><th>#</th><th>Result</th><th>Message</th><th>Details</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+<h2>Real reference list checks</h2>
+<table>
+  <thead><tr><th>#</th><th>Result</th><th>Message</th><th>Details</th></tr></thead>
+  <tbody id="real"></tbody>
+</table>
+<h2>Invariants</h2>
+<table>
+  <thead><tr><th>Check</th><th>Result</th><th>Details</th></tr></thead>
+  <tbody id="inv"></tbody>
+</table>
+<script>
+(function () {
+  var RANK = { none: 0, elevated: 1, high: 2 };
+  var store = window.TFS_FIXTURE_STORE;
+  var engine = window.TfsEngine;
+  var rowsEl = document.getElementById('rows');
+  var invEl = document.getElementById('inv');
+  var overview = document.getElementById('overview');
+
+  function addRow(tbody, cells, ok) {
+    var tr = document.createElement('tr');
+    cells.forEach(function (text, i) {
+      var td = document.createElement('td');
+      td.textContent = text;
+      if (i === 1) td.className = ok ? 'pass' : 'fail';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  }
+
+  function codesOf(result) {
+    return (result.checks || []).map(function (c) { return c.code; });
+  }
+
+  function judge(result, expect) {
+    var problems = [];
+    if (!result || typeof result !== 'object') return ['analyze did not return an object'];
+    if (result.state !== expect.state) problems.push('state is ' + result.state + ', expected ' + expect.state);
+    if (expect.strength && result.strength !== expect.strength) problems.push('strength is ' + result.strength + ', expected ' + expect.strength);
+    var codes = codesOf(result);
+    (expect.codes || []).forEach(function (c) { if (codes.indexOf(c) < 0) problems.push('missing code ' + c + ' (got ' + (codes.join(', ') || 'none') + ')'); });
+    (expect.notCodes || []).forEach(function (c) { if (codes.indexOf(c) >= 0) problems.push('forbidden code ' + c); });
+    var risk = result.requestRisk || { level: undefined, flags: [] };
+    if (expect.risk && risk.level !== expect.risk) problems.push('risk is ' + risk.level + ', expected ' + expect.risk);
+    if (expect.riskAtLeast && !(RANK[risk.level] >= RANK[expect.riskAtLeast])) problems.push('risk is ' + risk.level + ', expected at least ' + expect.riskAtLeast);
+    var flagIds = (risk.flags || []).map(function (f) { return f.id; });
+    (expect.flags || []).forEach(function (f) { if (flagIds.indexOf(f) < 0) problems.push('missing flag ' + f + ' (got ' + (flagIds.join(', ') || 'none') + ')'); });
+    return problems;
+  }
+
+  function run(text) {
+    return engine.analyze(text, store);
+  }
+
+  if (!engine || typeof engine.analyze !== 'function') {
+    overview.textContent = 'window.TfsEngine.analyze is not defined yet. Every case fails until it exists.';
+  }
+
+  var passed = 0;
+  var results = [];
+  window.TFS_CASES.forEach(function (c) {
+    var result, problems;
+    try {
+      result = run(c.text);
+      problems = judge(result, c.expect);
+    } catch (err) {
+      result = null;
+      problems = ['threw: ' + (err && err.message ? err.message : err)];
+    }
+    results.push(result);
+    var ok = problems.length === 0;
+    if (ok) passed += 1;
+    addRow(rowsEl, [c.id, ok ? 'PASS' : 'FAIL', c.text, ok ? c.guards : problems.join('; ')], ok);
+  });
+
+  var realPassed = 0, realTotal = 0;
+  if (window.TFS_REAL_CASES && window.TFS_STORE && engine) {
+    var realEl = document.getElementById('real');
+    window.TFS_REAL_CASES.forEach(function (c) {
+      realTotal += 1;
+      var problems;
+      try { problems = judge(engine.analyze(c.text, window.TFS_STORE), c.expect); }
+      catch (err) { problems = ['threw: ' + (err && err.message ? err.message : err)]; }
+      var ok = problems.length === 0;
+      if (ok) realPassed += 1;
+      addRow(realEl, [c.id, ok ? 'PASS' : 'FAIL', c.text, ok ? c.guards : problems.join('; ')], ok);
+    });
+  }
+
+  var invPassed = 0, invTotal = 0;
+  function invariant(name, fn) {
+    invTotal += 1;
+    var problems = [];
+    try { problems = fn(); } catch (err) { problems = ['threw: ' + (err && err.message ? err.message : err)]; }
+    var ok = problems.length === 0;
+    if (ok) invPassed += 1;
+    addRow(invEl, [name, ok ? 'PASS' : 'FAIL', ok ? '' : problems.join('; ')], ok);
+  }
+
+  invariant('1 Match is earned', function () {
+    if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
+    var bad = [];
+    results.forEach(function (r, i) {
+      if (r && r.state === 'match') {
+        var checks = r.checks || [];
+        var allSupport = checks.length > 0 && checks.every(function (k) { return k.status === 'SUPPORTS'; });
+        if (!allSupport || !r.claimedIdentity || r.claimedIdentity === 'Not stated') bad.push(window.TFS_CASES[i].id);
+      }
+    });
+    return bad.length ? ['match without full support in ' + bad.join(', ')] : [];
+  });
+  invariant('2 Contradiction wins', function () {
+    if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
+    var bad = [];
+    results.forEach(function (r, i) {
+      if (r && (r.checks || []).some(function (k) { return k.status === 'CONTRADICTS'; }) && r.state !== 'mismatch') bad.push(window.TFS_CASES[i].id);
+    });
+    return bad.length ? ['contradiction ignored in ' + bad.join(', ')] : [];
+  });
+  invariant('3 No targets, no verdict', function () {
+    if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
+    var bad = [];
+    results.forEach(function (r, i) {
+      var codes = r ? codesOf(r) : [];
+      if (r && codes.indexOf('nothing_to_check') >= 0 && r.state !== 'unknown') bad.push(window.TFS_CASES[i].id);
+    });
+    return bad.length ? ['verdict without targets in ' + bad.join(', ')] : [];
+  });
+  invariant('4 No reassurance words', function () {
+    if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
+    var bad = [];
+    results.forEach(function (r, i) {
+      if (r && /\b(safe|verified|legitimate)\b/i.test(JSON.stringify(r))) bad.push(window.TFS_CASES[i].id);
+    });
+    return bad.length ? ['reassurance word in ' + bad.join(', ')] : [];
+  });
+  invariant('5 Match never hides a request', function () {
+    if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
+    var bad = [];
+    results.forEach(function (r, i) {
+      if (r && r.state === 'match' && r.requestRisk && r.requestRisk.level !== 'none' && !(r.actionWarnings && r.actionWarnings.length)) bad.push(window.TFS_CASES[i].id);
+    });
+    return bad.length ? ['match with request signals but no warning in ' + bad.join(', ')] : [];
+  });
+  invariant('6 Never throws on odd input', function () {
+    var odd = ['', '   ', 'x'.repeat(100000), '\u{1F600}\u{1F600}\u{1F600}', 'שלום مرحبا', 'a\u0000b', 'lone \uD800 surrogate'];
+    var bad = [];
+    odd.forEach(function (t, i) {
+      var r = run(t);
+      if (!r || typeof r !== 'object' || !r.state) bad.push('input ' + i);
+    });
+    return bad.length ? ['no valid result for ' + bad.join(', ')] : [];
+  });
+  invariant('7 Deterministic', function () {
+    var t = window.TFS_CASES[1].text;
+    return JSON.stringify(run(t)) === JSON.stringify(run(t)) ? [] : ['two runs differ'];
+  });
+  invariant('8 Valid shape', function () {
+    if (typeof engine.validateResult !== 'function') return ['validateResult is not defined'];
+    var bad = [];
+    results.forEach(function (r, i) { if (!engine.validateResult(r)) bad.push(window.TFS_CASES[i].id); });
+    return bad.length ? ['invalid shape in ' + bad.join(', ')] : [];
+  });
+  invariant('9 Bounded time', function () {
+    var problems = [];
+    var base = window.TFS_CASES.map(function (c) { return c.text; }).join(' ');
+    var t5 = (base + ' ').repeat(Math.ceil(5000 / base.length)).slice(0, 5000);
+    var a = performance.now(); run(t5); var d1 = performance.now() - a;
+    if (d1 > 50) problems.push('5,000 characters took ' + Math.round(d1) + ' ms');
+    var hostile = '.a'.repeat(50000);
+    var b = performance.now(); run(hostile); var d2 = performance.now() - b;
+    if (d2 > 1000) problems.push('hostile 100,000 characters took ' + Math.round(d2) + ' ms');
+    return problems;
+  });
+
+  overview.textContent = passed + ' of ' + window.TFS_CASES.length + ' spec cases pass. ' + realPassed + ' of ' + realTotal + ' real-list checks pass. ' + invPassed + ' of ' + invTotal + ' invariants pass.';
+})();
+</script>
+</body>
+</html>
