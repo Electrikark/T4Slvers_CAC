@@ -1,8 +1,9 @@
-/* Tech for Silvers reference store.
-   Every official domain was checked on 2026-10-03 by loading it over HTTPS and confirming the page stays on that domain.
-   Entries marked 'needs review' refused the automated check and should be opened by hand.
-   officialPhones is empty on purpose: numbers must be copied from each organization's own contact page by a person.
-   Plain script that sets a window global, because browsers block fetch() on file:// pages. */
+/* Local prototype reference data, carried forward from the existing store.
+   Source notes record earlier automated reachability checks; these are not proof
+   of ownership, sender identity, or human review. Review is still pending.
+   Entries marked 'needs review' cannot produce a positive address match.
+   officialPhones stays empty until numbers have a reviewed primary source.
+   Plain script supports opening the app directly from disk. */
 window.TFS_STORE = {
   "version": "2026-10-03",
   "schemaVersion": 1,

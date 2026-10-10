@@ -232,6 +232,11 @@
     // 4 and 5. Official for the claimed organization, or for someone else.
     var owners = officialOrgsFor(store, host);
     if (owners.length) {
+      var listedOwner = owners.filter(function (o) { return claim && o.id === claim.id; })[0] || owners[0];
+      var pendingSource = (listedOwner.sources || []).some(function (source) {
+        return hostMatches(host, source.domain) && /^needs review/i.test(source.check || '');
+      });
+      if (pendingSource) return make('UNKNOWN', 'reference_needs_review', merge(base, { orgId: listedOwner.id }));
       if (!claim) return make('SUPPORTS', 'domain_official', merge(base, { orgId: owners[0].id, implicit: true }));
       if (owners.some(function (o) { return o.id === claim.id; })) return make('SUPPORTS', 'domain_official', merge(base, { orgId: claim.id }));
       return make('CONTRADICTS', 'domain_belongs_to_other_org', merge(base, { strength: 'moderate', orgId: owners[0].id }));
@@ -314,7 +319,8 @@
     if (claim && isIp(host)) return make('CONTRADICTS', 'ip_host', merge(base, { strength: 'moderate', orgId: claim.id }));
 
     // 11. A named organization, and an address that is not theirs.
-    if (claim) return make('CONTRADICTS', 'not_in_official_list', merge(base, { strength: 'moderate', orgId: claim.id }));
+    // A limited list cannot establish that an unfamiliar site conflicts with a sender.
+    if (claim) return make('UNKNOWN', 'not_in_official_list', merge(base, { orgId: claim.id }));
 
     // 12 and 13. Nothing to compare against.
     return make('UNKNOWN', 'no_claimed_identity', base);

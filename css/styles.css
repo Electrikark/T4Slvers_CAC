@@ -17,7 +17,7 @@ body {
   background:var(--paper);
   color:var(--ink);
   font-family:Arial,Helvetica,sans-serif;
-  font-size:18px;
+  font-size:1.125rem;
   line-height:1.6;
 }
 
@@ -51,7 +51,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,t
   outline-offset:4px;
 }
 
-h1:focus,main:focus {
+h1:focus,main:focus,#next-title:focus {
   outline:none;
 }
 
@@ -78,7 +78,7 @@ h1:focus,main:focus {
   align-items:center;
   gap:14px;
   text-decoration:none;
-  font-size:23px;
+  font-size:1.4375rem;
   font-weight:700;
   letter-spacing:-.6px;
 }
@@ -93,7 +93,7 @@ h1:focus,main:focus {
   border-radius:18px 18px 18px 4px;
   background:var(--teal);
   color:white;
-  font-size:25px;
+  font-size:1.5625rem;
   letter-spacing:-3px;
 }
 
@@ -103,14 +103,14 @@ h1:focus,main:focus {
 
 .brand-caption {
   display:block;
-  font-size:13px;
+  font-size:0.875rem;
   letter-spacing:.15px;
   font-weight:400;
   margin-top:1px;
 }
 
 .prototype-tag {
-  font-size:13px;
+  font-size:0.875rem;
   border:1px solid #bbc8b6;
   border-radius:30px;
   padding:7px 13px;
@@ -122,7 +122,7 @@ h1:focus,main:focus {
   gap:12px;
   align-items:center;
   margin:25px 0 48px;
-  font-size:14px;
+  font-size:0.875rem;
   color:#465a50;
 }
 
@@ -140,13 +140,13 @@ h1:focus,main:focus {
 
 .home-layout {
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
   gap:74px;
   align-items:start;
 }
 
 .eyebrow {
-  font-size:12px;
+  font-size:0.875rem;
   font-weight:700;
   letter-spacing:2px;
   margin:0 0 22px;
@@ -156,20 +156,20 @@ h1:focus,main:focus {
 h1 {
   font-family:Georgia,'Times New Roman',serif;
   font-weight:400;
-  font-size:54px;
+  font-size:3.375rem;
   line-height:1.12;
   letter-spacing:-1.9px;
   margin:0 0 24px;
 }
 
 h2 {
-  font-size:20px;
+  font-size:1.25rem;
   line-height:1.3;
   margin:0 0 12px;
 }
 
 .lead {
-  font-size:20px;
+  font-size:1.25rem;
   color:var(--muted);
   max-width:460px;
   margin:0;
@@ -181,7 +181,7 @@ h2 {
 }
 
 .how-it-works h2 {
-  font-size:16px;
+  font-size:1rem;
 }
 
 .how-it-works ol {
@@ -194,7 +194,7 @@ h2 {
   display:flex;
   align-items:center;
   gap:13px;
-  font-size:17px;
+  font-size:1.0625rem;
   margin:12px 0;
 }
 
@@ -205,11 +205,11 @@ h2 {
   height:29px;
   display:grid;
   place-items:center;
-  font-size:13px;
+  font-size:0.875rem;
 }
 
 .privacy {
-  font-size:14px;
+  font-size:0.875rem;
   color:var(--muted);
   border-top:1px solid var(--line);
   padding-top:23px;
@@ -218,7 +218,7 @@ h2 {
 
 .privacy span {
   float:left;
-  font-size:24px;
+  font-size:1.5rem;
   margin-right:12px;
 }
 
@@ -231,7 +231,7 @@ h2 {
 }
 
 .submission-card h2 {
-  font-size:25px;
+  font-size:1.5625rem;
   letter-spacing:-.6px;
   margin:0 0 3px;
 }
@@ -239,12 +239,12 @@ h2 {
 .muted {
   color:var(--muted);
   margin:0;
-  font-size:16px;
+  font-size:1rem;
 }
 
 .input-options {
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
   gap:12px;
   margin:24px 0;
 }
@@ -256,7 +256,7 @@ h2 {
   color:var(--ink);
   padding:16px 8px;
   text-align:left;
-  font-size:16px;
+  font-size:1rem;
   font-weight:700;
   display:block;
   padding-left:18px;
@@ -264,7 +264,7 @@ h2 {
 
 .option span {
   display:block;
-  font-size:23px;
+  font-size:1.4375rem;
   margin-bottom:10px;
   font-weight:400;
 }
@@ -280,7 +280,7 @@ h2 {
 }
 
 label {
-  font-size:16px;
+  font-size:1rem;
   font-weight:700;
   display:block;
   margin-bottom:9px;
@@ -295,7 +295,7 @@ textarea {
   background:#fcfdfb;
   padding:15px;
   color:var(--ink);
-  font-size:17px;
+  font-size:1.0625rem;
   line-height:1.5;
 }
 
@@ -304,7 +304,7 @@ textarea::placeholder {
 }
 
 .hint {
-  font-size:14px;
+  font-size:0.875rem;
   color:var(--muted);
   line-height:1.5;
   margin:9px 0 18px;
@@ -315,7 +315,7 @@ textarea::placeholder {
   border:1px solid var(--teal);
   border-radius:8px;
   padding:14px 22px;
-  font-size:17px;
+  font-size:1.0625rem;
   font-weight:700;
 }
 
@@ -346,7 +346,7 @@ textarea::placeholder {
 }
 
 .form-footnote {
-  font-size:12px;
+  font-size:0.875rem;
   text-align:center;
   color:var(--muted);
   margin:14px 0 0;
@@ -354,7 +354,7 @@ textarea::placeholder {
 
 .error {
   color:#923823;
-  font-size:16px;
+  font-size:1rem;
   margin:12px 0;
 }
 
@@ -363,12 +363,12 @@ textarea::placeholder {
 }
 
 .file-name {
-  font-size:16px;
+  font-size:1rem;
   overflow-wrap:anywhere;
 }
 
 input[type=file] {
-  font-size:15px;
+  font-size:0.9375rem;
   max-width:100%;
   border:1px dashed #9eafa0;
   border-radius:8px;
@@ -387,7 +387,7 @@ input::file-selector-button {
 }
 
 .example-loaded {
-  font-size:14px;
+  font-size:0.875rem;
   background:#f0f2e9;
   padding:10px;
   border-radius:5px;
@@ -397,7 +397,7 @@ input::file-selector-button {
   border-top:1px solid var(--line);
   margin-top:48px;
   padding-top:19px;
-  font-size:14px;
+  font-size:0.875rem;
 }
 
 summary {
@@ -411,7 +411,7 @@ summary span {
   font-weight:400;
   color:var(--muted);
   margin-left:14px;
-  font-size:12px;
+  font-size:0.875rem;
 }
 
 .demo-inner {
@@ -432,7 +432,7 @@ summary span {
   border-radius:7px;
   padding:12px 16px;
   min-height:44px;
-  font-size:14px;
+  font-size:0.875rem;
 }
 
 .scenario-buttons button:hover {
@@ -446,7 +446,7 @@ summary span {
   text-decoration:underline;
   text-underline-offset:5px;
   color:var(--teal);
-  font-size:16px;
+  font-size:1rem;
   padding:8px 0;
 }
 
@@ -455,7 +455,7 @@ summary span {
   justify-content:space-between;
   align-items:center;
   gap:20px;
-  font-size:11px;
+  font-size:0.875rem;
   color:var(--muted);
   padding:25px 0 28px;
 }
@@ -476,7 +476,7 @@ summary span {
 }
 
 .checking h1 {
-  font-size:40px;
+  font-size:2.5rem;
 }
 
 .loader {
@@ -533,7 +533,7 @@ summary span {
 
 .state-symbol {
   font-family:Georgia,serif;
-  font-size:28px;
+  font-size:1.75rem;
   width:46px;
   height:46px;
   flex-shrink:0;
@@ -544,26 +544,26 @@ summary span {
 }
 
 .state-label {
-  font-size:12px;
+  font-size:0.875rem;
   font-weight:700;
   letter-spacing:1.3px;
   margin:0 0 9px;
 }
 
 .result-banner h1 {
-  font-size:40px;
+  font-size:2.5rem;
   letter-spacing:-1px;
   margin:0 0 14px;
 }
 
 .result-banner p:last-child {
   margin:0;
-  font-size:18px;
+  font-size:1.125rem;
 }
 
 .result-layout {
   display:grid;
-  grid-template-columns:1.2fr 1fr;
+  grid-template-columns:minmax(0, 1.2fr) minmax(0, 1fr);
   gap:42px;
   margin-top:34px;
 }
@@ -575,7 +575,7 @@ summary span {
 }
 
 .evidence h2 {
-  font-size:13px;
+  font-size:0.875rem;
   text-transform:uppercase;
   letter-spacing:1.4px;
   color:var(--muted);
@@ -586,13 +586,13 @@ summary span {
 }
 
 .identity {
-  font-size:23px;
+  font-size:1.4375rem;
   font-weight:700;
 }
 
 .inspected {
   font-family:monospace;
-  font-size:16px;
+  font-size:1rem;
   background:#eaf0e5;
   display:inline-block;
   padding:7px 10px;
@@ -612,13 +612,13 @@ summary span {
 
 .check-label {
   display:block;
-  font-size:13px;
+  font-size:0.875rem;
   font-weight:700;
 }
 
 .source {
   display:block;
-  font-size:13px;
+  font-size:0.875rem;
   color:var(--muted);
   margin-top:8px;
 }
@@ -633,7 +633,7 @@ summary span {
 
 .next-steps h2 {
   font-family:Georgia,serif;
-  font-size:27px;
+  font-size:1.6875rem;
   font-weight:400;
 }
 
@@ -665,7 +665,7 @@ summary span {
 }
 
 .result-bottom p {
-  font-size:14px;
+  font-size:0.875rem;
   color:var(--muted);
   max-width:380px;
 }
@@ -690,7 +690,7 @@ summary span {
     gap:30px;
   }
   h1 {
-    font-size:43px;
+    font-size:2.6875rem;
   }
   .submission-card {
     padding:23px;
@@ -699,13 +699,13 @@ summary span {
     gap:25px;
   }
   .brand-caption {
-    font-size:12px;
+    font-size:0.875rem;
   }
 }
 
 @media(max-width:680px) {
   body {
-    font-size:18px;
+    font-size:1.125rem;
   }
   .wrap {
     width:calc(100% - 32px);
@@ -715,29 +715,29 @@ summary span {
     gap:12px;
   }
   .brand {
-    font-size:20px;
+    font-size:1.25rem;
     gap:10px;
   }
   .brand-mark {
     width:48px;
     height:48px;
-    font-size:23px;
+    font-size:1.4375rem;
     border-radius:13px 13px 13px 3px;
   }
   .brand-caption {
-    font-size:10px;
+    font-size:0.875rem;
   }
   .prototype-tag {
-    font-size:10px;
+    font-size:0.875rem;
     padding:5px 8px;
     white-space:normal;
-    max-width:90px;
+    max-width:120px;
     text-align:center;
   }
   .prototype-note {
     margin:20px 0 30px;
     align-items:start;
-    font-size:13px;
+    font-size:0.875rem;
   }
   .note-dot {
     margin-top:7px;
@@ -747,13 +747,13 @@ summary span {
     gap:22px;
   }
   h1 {
-    font-size:42px;
+    font-size:2.625rem;
   }
   .desktop-break {
     display:none;
   }
   .lead {
-    font-size:19px;
+    font-size:1.1875rem;
   }
   .how-it-works {
     display:none;
@@ -766,7 +766,7 @@ summary span {
     padding:22px;
   }
   .eyebrow {
-    font-size:11px;
+    font-size:0.875rem;
     margin-bottom:16px;
   }
   .demo-tools {
@@ -776,7 +776,7 @@ summary span {
     align-items:start;
     flex-wrap:wrap;
     gap:12px;
-    font-size:10px;
+    font-size:0.875rem;
   }
   .site-footer p {
     width:100%;
@@ -787,15 +787,15 @@ summary span {
     gap:13px;
   }
   .result-banner h1 {
-    font-size:31px;
+    font-size:1.9375rem;
   }
   .state-symbol {
     width:32px;
     height:32px;
-    font-size:22px;
+    font-size:1.375rem;
   }
   .result-banner p:last-child {
-    font-size:17px;
+    font-size:1.0625rem;
   }
   .result-bottom {
     align-items:stretch;
@@ -806,7 +806,7 @@ summary span {
     padding:22px;
   }
   .checking h1 {
-    font-size:34px;
+    font-size:2.125rem;
   }
   summary span {
     display:block;
@@ -849,4 +849,111 @@ summary span {
   background:#f8f0dd;
   border-color:#ad8a37;
   color:#674d12;
+}
+
+/* Result details can contain very long addresses; keep them within the grid. */
+.home-layout > *, .result-layout > *, .result-banner > div {
+  min-width:0;
+}
+.result, .prototype-note, .brand, .option {
+  overflow-wrap:anywhere;
+}
+.brand-mark {
+  flex-shrink:0;
+}
+.result-banner h1 {
+  text-wrap:balance;
+}
+.character-count {
+  color:var(--muted);
+  font-size:0.875rem;
+  margin:4px 0 0;
+  text-align:right;
+}
+.over-limit {
+  color:#923823;
+  font-weight:700;
+}
+.action-note {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  margin-top:18px;
+  padding:22px 26px;
+  background:#edf1e8;
+  border-left:4px solid var(--teal);
+  border-radius:0 8px 8px 0;
+}
+.action-note.high-risk {
+  background:#fbefdd;
+  border-color:#946024;
+  color:#654011;
+}
+.action-note h2 {
+  font-size:1rem;
+  margin-bottom:6px;
+}
+.action-note p {
+  margin:0;
+  max-width:65ch;
+}
+.action-link {
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:44px;
+  font-size:1rem;
+  text-underline-offset:4px;
+}
+.check-item {
+  padding-left:16px;
+  border-left:2px solid #b4c3af;
+}
+.check-item.contradicts {
+  border-left-color:#a76745;
+}
+.check-item.unknown {
+  border-left-color:#a68a47;
+}
+.check-source {
+  margin-top:8px;
+}
+.check-source summary {
+  color:var(--muted);
+  font-size:0.875rem;
+  font-weight:400;
+}
+.check-source .source {
+  margin:0 0 12px;
+}
+.evidence h2, .check-label {
+  font-size:1rem;
+}
+.evidence h2 {
+  text-transform:none;
+  letter-spacing:0;
+}
+#next-title {
+  scroll-margin-top:24px;
+}
+@media (max-width:680px) {
+  .site-header { flex-wrap:wrap; }
+  .brand-caption { max-width:220px; }
+  .prototype-tag { max-width:none; }
+  .prototype-note { margin-bottom:24px; }
+  .action-note { align-items:flex-start; flex-direction:column; gap:8px; padding:20px; }
+  .result-banner { flex-direction:column; }
+  .state-label { letter-spacing:0.5px; }
+  .checks { margin-bottom:0; }
+  .source, .hint, .privacy { font-size:1rem; }
+}
+@media (max-width:360px) {
+  .input-options { grid-template-columns:1fr; }
+  .submission-card { padding:18px; }
+}
+@media (forced-colors:active) {
+  .option.active { outline:3px solid Highlight; }
+  .action-note, .check-item { border-color:CanvasText; }
 }

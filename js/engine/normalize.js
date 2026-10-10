@@ -25,7 +25,8 @@
       // Control characters and null bytes.
       .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ' ')
       // Zero-width and invisible formatting characters used to hide words from filters.
-      .replace(/[­​-‏⁠-⁤﻿]/g, '')
+      .replace(/[­​-‏‪-‮⁠-⁯﻿]/g, '')
+      .replace(/[‘’]/g, "'")
       // Undo "defanged" links that people paste from warnings: hxxps://chase[.]com
       .replace(/\bhxxp(s?):\/\//gi, 'http$1://')
       .replace(/\[\.\]|\(\.\)|\{\.\}|\[dot\]|\(dot\)/gi, '.')
@@ -34,6 +35,8 @@
       .replace(/[ \t\f\v   -   　]+/g, ' ')
       .replace(/ *\r?\n[\s]*/g, '\n')
       .trim();
+    // Unicode expansion can make normalized text longer than the original input.
+    if (text.length > MAX_CHARS) { text = text.slice(0, MAX_CHARS); truncated = true; }
     return { text: text, truncated: truncated };
   }
 

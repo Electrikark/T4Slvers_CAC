@@ -11,7 +11,7 @@
     if (!target) return '';
     if (target.kind === 'phone') return target.display;
     if (target.kind === 'email') return target.raw;
-    return target.hostUnicode && target.hostUnicode !== target.host ? target.hostUnicode : target.host;
+    return target.hostUnicode && target.hostUnicode !== target.host ? target.hostUnicode + ' (' + target.host + ')' : target.host || target.raw;
   }
 
   // check -> one or two sentences for "What we found".
@@ -21,11 +21,11 @@
     var claim = ctx.claimOrg;
     switch (check.code) {
       case 'domain_official':
-        return t + ' is one of the official addresses we have on file for ' + orgName(org) + '.';
+        return targetDescription(check.target) + ' matches a website address on file for ' + orgName(org) + '. ' + (check.target.kind === 'email' ? 'This does not prove the email came from that sender.' : 'The page, redirects, and sender have not been checked.');
       case 'phone_official':
         return t + ' is on our list of official numbers for ' + orgName(org) + '.';
       case 'shortener_unresolvable':
-        return t + ' is a link shortener. It hides where the link really goes, and this app cannot follow it without opening it.';
+        return t + ' is a short link. This offline checker does not resolve its destination.';
       case 'user_content_platform':
         return t + ' belongs to ' + orgName(org) + ', but anyone can publish a page there, so it does not show who sent this.';
       case 'userinfo_trick':
@@ -37,7 +37,7 @@
       case 'homoglyph':
         return t + ' looks like ' + check.lookalikeOf + ', but some of its letters are different characters that only look the same.';
       case 'same_label_other_tld':
-        return t + ' uses the same name as ' + check.lookalikeOf + ' with a different ending. It is not an official address.';
+        return t + ' uses the same name as ' + check.lookalikeOf + ' with a different ending. That address is not on our list.';
       case 'typosquat':
         return t + ' is ' + (check.distance === 1 ? 'one letter' : 'two letters') + ' away from ' + check.lookalikeOf + '. Copycat sites use small spelling changes.';
       case 'brand_in_foreign_domain':
@@ -45,7 +45,11 @@
       case 'ip_host':
         return 'This link goes to a number address (' + t + ') instead of a named website. Large organizations do not ask you to sign in that way.';
       case 'not_in_official_list':
-        return t + ' is not one of the official addresses we have on file for ' + orgName(org) + ' (' + org.officialDomains.join(', ') + ').';
+        return t + ' is not on our list for ' + orgName(org) + '. Our list may be incomplete, so this alone does not establish a conflict.';
+      case 'reference_needs_review':
+        return t + ' is listed for ' + orgName(org) + ', but its source record still needs review. We cannot count it as a match.';
+      case 'input_incomplete':
+        return 'Part of this input exceeds the checker’s limits. A partial check cannot establish a full match. Paste a shorter message or one complete link.';
       case 'phone_not_on_file':
         return t + ' is not on our list' + (org ? ' for ' + orgName(org) : '') + '. That alone does not mean it is fake.';
       case 'free_email_address':
@@ -61,14 +65,20 @@
     }
   }
 
+  function targetDescription(target) {
+    return target.kind === 'email' ? 'The domain after @ in ' + shown(target) : shown(target);
+  }
+
   function checkSource(check, ctx) {
     var org = check.orgId ? T.orgById(ctx.store, check.orgId) : null;
-    var listed = org ? 'Reference list: ' + org.displayName + ' → ' + org.officialDomains.join(', ') : '';
+    var listed = org ? 'Local list: ' + org.displayName + ' → ' + org.officialDomains.join(', ') : '';
     var version = ' (list version ' + (ctx.store.version || 'unknown') + ')';
+    var review = org && org.verifiedBy ? '. Review status: ' + org.verifiedBy : '';
     switch (check.code) {
       case 'domain_official':
       case 'domain_belongs_to_other_org':
       case 'not_in_official_list':
+      case 'reference_needs_review':
       case 'user_content_platform':
       case 'brand_in_foreign_domain':
       case 'typosquat':
@@ -76,7 +86,7 @@
       case 'homoglyph':
       case 'official_domain_as_subdomain':
       case 'userinfo_trick':
-        return (listed || 'Reference list') + version;
+        return (listed || 'Reference list') + version + review;
       case 'phone_official':
       case 'phone_not_on_file':
         return 'Reference list of official phone numbers' + version;
@@ -90,17 +100,17 @@
   }
 
   var FLAG_WARNINGS = {
-    gift_card_payment: 'Real companies and government offices never ask for payment in gift cards.',
+    gift_card_payment: 'Do not send gift card numbers to someone demanding payment. Contact the organization independently.',
     crypto_or_wire: 'Requests to pay with cryptocurrency, a crypto ATM or a wire transfer are a frequent scam pattern.',
-    share_code: 'Never read or send a sign-in code to anyone. Your bank will not ask you for it.',
+    share_code: 'Keep sign-in codes private. Do not read or send them to a caller, even if they say they work for your bank.',
     remote_access: 'Do not let anyone you did not contact yourself control your computer or phone.',
-    arrest_threat: 'Government offices do not threaten arrest by text, email or phone call.',
+    arrest_threat: 'A threat of arrest or legal action is a reason to pause and contact the office independently.',
     secrecy: 'Being told to keep something secret from your family or your bank is a warning sign.',
     family_emergency: 'If someone says they are family and in trouble, hang up and call that person on the number you already know.',
     pay_fee: 'Be careful with surprise fees, fines or tolls that must be paid through a link.',
     urgency: 'Pressure to act fast is a warning sign. Take your time.',
     account_locked: 'Messages about a locked or suspended account are often used to rush people.',
-    device_alarm: 'Real warnings from your device do not give you a phone number to call.',
+    device_alarm: 'Do not call a number shown in an unexpected device-warning pop-up. Use a support contact you already trust.',
     credential_request: 'Do not enter passwords, card numbers or your Social Security number from a link in a message.',
     prize_refund: 'Prizes and refunds you did not expect are a frequent lure.',
     callback_now: 'Call back only on a number you already trust, not the one in the message.',
@@ -132,8 +142,8 @@
     if (result.state === 'mismatch') {
       if (result.strength === 'strong') {
         return {
-          description: 'A link or address in this message imitates ' + (name || 'a known organization') + '.',
-          meaning: 'Scammers copy familiar names and addresses. The real address is what counts, and this one does not match.'
+          description: 'An address resembles one on our list, but the details differ.',
+          meaning: 'Lookalike names can be misleading. This is a reason to pause and contact the organization independently.'
         };
       }
       return {
@@ -143,14 +153,15 @@
     }
     if (result.state === 'match') {
       return {
-        description: 'Every link and number in this message is on our list for ' + name + '.',
-        meaning: 'Matching details do not make every request OK. Scammers sometimes include real links or numbers to look believable.'
+        description: 'The address details we extracted match our stored list for ' + name + '.',
+        meaning: 'This checks written address details only. It does not confirm the sender or inspect pages, redirects, or hidden links. A real address can be copied into a deceptive message.'
       };
     }
     var meaning = 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
-    if (codes.indexOf('shortener_unresolvable') >= 0) meaning = 'A short link hides its destination. Checking it would mean opening it, which is the step to avoid.';
+    if (codes.indexOf('input_incomplete') >= 0) meaning = 'Some input was not inspected. Check a shorter message before drawing a conclusion.';
+    else if (codes.indexOf('shortener_unresolvable') >= 0) meaning = 'The destination remains unknown because this app does not follow links.';
     else if (codes.indexOf('nothing_to_check') >= 0) meaning = 'Without a link, email address or phone number, there is nothing to compare. Judge it by what it asks you to do.';
-    else if (codes.indexOf('phone_not_on_file') >= 0) meaning = 'Our list of phone numbers is small. A number missing from it proves nothing either way.';
+    else if (codes.indexOf('phone_not_on_file') >= 0) meaning = 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.';
     else if (codes.indexOf('user_content_platform') >= 0) meaning = 'A page on a site where anyone can publish does not show who made it.';
     return { description: 'We do not have enough information to check who sent this.', meaning: meaning };
   }
@@ -159,7 +170,7 @@
     var list = [];
     var flagWarnings = result.requestRisk.flags.map(function (f) { return FLAG_WARNINGS[f.id]; });
     if (result.state === 'match' && flagWarnings.length) {
-      list.push('Even though the details match, this message asks for something risky.');
+      list.push('The details match, but the wording includes a reason for caution. Read the action advice below.');
     }
     if (result.state === 'mismatch') list.push('Do not open the link, call the number, or reply to this message.');
     if (result.state === 'unknown') list.push('Pause before opening links or sharing personal details.');

@@ -197,8 +197,7 @@ window.TFS_CASES = [
     "id": "T07",
     "text": "UPS: Your package is arriving. Track it at https://www.groups.com/track",
     "expect": {
-      "state": "mismatch",
-      "strength": "moderate",
+      "state": "unknown",
       "codes": [
         "not_in_official_list"
       ],
@@ -213,13 +212,12 @@ window.TFS_CASES = [
     "id": "T08",
     "text": "Amazon: Your order cannot ship. Update payment at https://order-help.example/pay",
     "expect": {
-      "state": "mismatch",
-      "strength": "moderate",
+      "state": "unknown",
       "codes": [
         "not_in_official_list"
       ]
     },
-    "guards": "Unrelated site with an explicit claim: weaker wording"
+    "guards": "An unlisted site alone is not evidence of a conflict"
   },
   {
     "id": "T09",

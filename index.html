@@ -19,45 +19,145 @@
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header wrap">
-    <a class="brand" href="index.html" aria-label="Tech for Silvers home"><span class="brand-mark" aria-hidden="true">t<span>4</span>s</span><span>Tech for Silvers<span class="brand-caption">A little clarity, before you click.</span></span></a>
+    <a class="brand" href="index.html" aria-label="Tech for Silvers home">
+      <span class="brand-mark" aria-hidden="true">t<span>4</span>s</span>
+      <span>Tech for Silvers<span class="brand-caption">A little clarity, before you click.</span></span>
+    </a>
     <span class="prototype-tag">Workshop prototype</span>
   </header>
+
   <main id="main" class="wrap" tabindex="-1">
-    <div class="prototype-note"><span class="note-dot" aria-hidden="true"></span><p><strong>A second look, not a guarantee.</strong> This checks links, email addresses and phone numbers against official addresses for 46 organizations. It can never promise that a message is real.</p></div>
+    <noscript><p class="error">Turn on JavaScript to use this local prototype.</p></noscript>
+    <div class="prototype-note">
+      <span class="note-dot" aria-hidden="true"></span>
+      <p><strong>A second look, not a guarantee.</strong> This prototype compares written addresses with a limited local list. It does not establish who sent a message.</p>
+    </div>
+
     <section id="home" class="home-layout" aria-labelledby="home-title">
       <div class="intro">
         <p class="eyebrow">PAUSE. TAKE A CLOSER LOOK.</p>
         <h1 id="home-title" tabindex="-1">Not sure if a<br class="desktop-break"> message is real?</h1>
-        <p class="lead">Share a message, link, or screenshot. Explore what can be checked and what to do next.</p>
-        <div class="how-it-works"><h2>A calmer next step.</h2><ol><li><span>1</span>Share what you received.</li><li><span>2</span>Look at the evidence.</li><li><span>3</span>Choose a safer next step.</li></ol></div>
+        <p class="lead">Paste a message or link. We’ll help you look at the details and choose your next step.</p>
+        <div class="how-it-works">
+          <h2>A calmer next step.</h2>
+          <ol>
+            <li><span>1</span>Share what you received.</li>
+            <li><span>2</span>Look at the evidence.</li>
+            <li><span>3</span>Choose a safer next step.</li>
+          </ol>
+        </div>
         <p class="privacy"><span aria-hidden="true">↳</span> No account. No uploads to a server.<br>What you share stays in this browser tab.</p>
       </div>
+
       <div class="submission-card">
         <form id="submission-form" novalidate>
-          <h2>Let’s take a look</h2><p class="muted">How would you like to share it?</p>
+          <h2>Let’s take a look</h2>
+          <p class="muted">How would you like to share it?</p>
           <div class="input-options" role="group" aria-label="Choose input type">
-            <button type="button" id="paste-option" class="option active" aria-pressed="true"><span aria-hidden="true">Aa</span>Paste a message<br>or link</button>
-            <button type="button" id="upload-option" class="option" aria-pressed="false"><span aria-hidden="true">▧</span>Upload a<br>screenshot</button>
+            <button type="button" id="paste-option" class="option active" aria-pressed="true" aria-controls="paste-panel">
+              <span aria-hidden="true">Aa</span>Paste a message<br>or link
+            </button>
+            <button type="button" id="upload-option" class="option" aria-pressed="false" aria-controls="upload-panel">
+              <span aria-hidden="true">▧</span>Choose a<br>screenshot
+            </button>
           </div>
-          <div id="paste-panel"><label for="message">Your message or link</label><textarea id="message" rows="5" placeholder="Paste the message or link here…" aria-describedby="input-hint error"></textarea><p id="input-hint" class="hint">Leave out passwords, account details, and real verification codes.</p></div>
-          <div id="upload-panel" hidden><label for="screenshot">Choose a screenshot</label><input id="screenshot" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="file-hint file-name error"><p id="file-hint" class="hint">PNG, JPG, or WebP, up to 10 MB. Images are not read or analyzed.</p><p id="file-name" class="file-name">No screenshot selected.</p></div>
+          <div id="paste-panel">
+            <label for="message">Your message or link</label>
+            <textarea id="message" rows="5" placeholder="Paste the message or link here…" aria-describedby="input-hint character-count error" spellcheck="false" autocapitalize="off"></textarea>
+            <p id="character-count" class="character-count"></p>
+            <p id="input-hint" class="hint">Leave out passwords, account details, and real verification codes.</p>
+          </div>
+          <div id="upload-panel" hidden>
+            <label for="screenshot">Choose a screenshot</label>
+            <input id="screenshot" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="file-hint file-name error">
+            <p id="file-hint" class="hint">PNG, JPG, or WebP, up to 10 MB. Images are not read or analyzed.</p>
+            <p id="file-name" class="file-name" aria-live="polite">No screenshot selected.</p>
+            <button type="button" id="remove-file" class="text-button" hidden>Remove screenshot</button>
+          </div>
           <p id="example-loaded" class="example-loaded" hidden></p>
           <p id="error" class="error" role="alert"></p>
-          <button class="primary full" type="submit">Check this <span aria-hidden="true">→</span></button>
+          <button id="check-button" class="primary full" type="submit" aria-describedby="example-loaded">Check this <span aria-hidden="true">→</span></button>
           <p class="form-footnote">Runs on this device · Nothing is sent anywhere</p>
         </form>
       </div>
     </section>
-    <section id="checking" class="checking" aria-labelledby="checking-title" hidden><span class="loader" aria-hidden="true"></span><p class="eyebrow">ONE MOMENT</p><h1 id="checking-title" tabindex="-1">Checking the details…</h1><p>Comparing links and numbers with our list. Nothing leaves this device.</p></section>
+
+    <section id="checking" class="checking" aria-labelledby="checking-title" hidden>
+      <span class="loader" aria-hidden="true"></span>
+      <p class="eyebrow">ONE MOMENT</p>
+      <h1 id="checking-title" tabindex="-1">Checking the details…</h1>
+      <p id="checking-note">Using the local reference list. No links are opened.</p>
+    </section>
+
     <section id="result" class="result" aria-labelledby="result-title" hidden>
       <button id="back" type="button" class="text-button">← Back to your message</button>
-      <p class="eyebrow">YOUR RESULT</p>
-      <div id="result-banner" class="result-banner"><span id="state-symbol" class="state-symbol" aria-hidden="true"></span><div><p id="state-label" class="state-label"></p><h1 id="result-title" tabindex="-1"></h1><p id="result-description"></p></div></div>
-      <div class="result-layout"><div class="evidence"><section><h2>Claims to be</h2><p id="identity" class="identity"></p></section><section><h2>What we checked</h2><p id="channel"></p><p id="inspected" class="inspected"></p></section><section><h2>What we found</h2><ul id="checks" class="checks"></ul></section><section id="asks-section" hidden><h2>What this message asks for</h2><ul id="asks" class="checks asks"></ul></section><section><h2>What this means</h2><p id="meaning"></p></section></div><aside class="next-steps" aria-labelledby="next-title"><h2 id="next-title">What to do next</h2><div id="warnings"></div><ol id="next-list"></ol><button id="paste-link" type="button" class="secondary full" hidden>Paste the actual link</button><p class="hint">Use contact details you already trust, such as the number on your bank card.</p></aside></div>
-      <div class="result-bottom"><p>This compares contact details with our list. It is not a promise about who sent the message.</p><button id="start-again" class="primary" type="button">Check another message <span aria-hidden="true">→</span></button></div>
+      <p class="eyebrow" id="result-kind">YOUR LOCAL CHECK</p>
+      <div id="result-banner" class="result-banner">
+        <span id="state-symbol" class="state-symbol" aria-hidden="true"></span>
+        <div>
+          <p id="state-label" class="state-label"></p>
+          <h1 id="result-title" tabindex="-1"></h1>
+          <p id="result-description"></p>
+        </div>
+      </div>
+      <section id="action-note" class="action-note" aria-labelledby="action-title">
+        <div>
+          <h2 id="action-title">Before you act</h2>
+          <p id="action-lead"></p>
+        </div>
+        <a href="#next-title" class="action-link">See next steps <span aria-hidden="true">↓</span></a>
+      </section>
+      <div class="result-layout">
+        <div class="evidence">
+          <section>
+            <h2>Claims to be</h2>
+            <p id="identity" class="identity"></p>
+          </section>
+          <section>
+            <h2>What we checked</h2>
+            <p id="channel"></p>
+            <p id="inspected" class="inspected"></p>
+          </section>
+          <section>
+            <h2>What we found</h2>
+            <ul id="checks" class="checks"></ul>
+          </section>
+          <section id="asks-section" hidden>
+            <h2>Signals in the wording</h2>
+            <ul id="asks" class="checks asks"></ul>
+          </section>
+          <section>
+            <h2>What this means</h2>
+            <p id="meaning"></p>
+          </section>
+        </div>
+        <aside class="next-steps" aria-labelledby="next-title">
+          <h2 id="next-title" tabindex="-1">What to do next</h2>
+          <div id="warnings"></div>
+          <ol id="next-list"></ol>
+          <button id="paste-link" type="button" class="secondary full" hidden>Paste the actual link</button>
+          <p class="hint">Use contact details you already trust, such as the number on your bank card.</p>
+        </aside>
+      </div>
+      <div class="result-bottom">
+        <p id="result-scope">Local text comparison only. The sender was not checked.</p>
+        <button id="start-again" class="primary" type="button">Check another message <span aria-hidden="true">→</span></button>
+      </div>
     </section>
-    <details class="demo-tools" id="demo-tools"><summary>Demo examples <span>For workshop testing</span></summary><div class="demo-inner"><p>Load an example, then choose “Check this.” Every example runs through the real checker except the screenshot, which is scripted.</p><div id="scenario-buttons" class="scenario-buttons"></div><button type="button" id="reset" class="text-button">Reset for the next participant</button></div></details>
+
+    <details class="demo-tools" id="demo-tools">
+      <summary>Demo examples <span>For workshop testing</span></summary>
+      <div class="demo-inner">
+        <p>Load an example, then choose “Check this.” Text examples run through the local rules. The screenshot example is scripted; selected images are never read.</p>
+        <div id="scenario-buttons" class="scenario-buttons"></div>
+        <button type="button" id="reset" class="text-button">Reset for the next participant</button>
+      </div>
+    </details>
   </main>
-  <footer class="wrap site-footer"><span>TECH FOR SILVERS</span><p>Thoughtful technology. A little more peace of mind.</p><span>Checker 0.1 · 46 organizations</span></footer>
+  <footer class="wrap site-footer">
+    <span>TECH FOR SILVERS</span>
+    <p>Thoughtful technology. A little more peace of mind.</p>
+    <span id="list-count">Local reference list</span>
+  </footer>
 </body>
 </html>

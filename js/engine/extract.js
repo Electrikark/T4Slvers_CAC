@@ -6,18 +6,10 @@
   var T = root.TFS = root.TFS || {};
 
   var MAX_TOKEN = 2048;
-  // Endings accepted for bare domains typed without https:// (with a scheme, any ending counts).
-  // Two-letter country endings are accepted too. File types such as .pdf or .jpg are not on the list.
-  var BARE_TLDS = {
-    com: 1, org: 1, net: 1, edu: 1, gov: 1, mil: 1, info: 1, biz: 1, io: 1, app: 1, dev: 1, xyz: 1, top: 1,
-    online: 1, site: 1, shop: 1, store: 1, club: 1, live: 1, link: 1, click: 1, help: 1, support: 1,
-    services: 1, security: 1, page: 1, website: 1, tech: 1, cloud: 1, icu: 1, vip: 1, buzz: 1, life: 1,
-    world: 1, today: 1, news: 1, email: 1, center: 1, digital: 1, network: 1, solutions: 1, finance: 1,
-    bank: 1, money: 1, pay: 1, delivery: 1, express: 1, gle: 1, microsoft: 1, google: 1, amazon: 1
-  };
-
+  var MAX_TARGETS = 30;
   // Characters that end a token: whitespace, brackets and quotes around links.
-  var TOKEN_RE = /[^\s<>"'`()\[\]{}|\\^]+/g;
+  var TOKEN_RE = /[^\s<>"'`()\[\]{}]+/g;
+  var FILE_ENDINGS = /^(?:pdf|jpg|jpeg|png|gif|svg|webp|docx?|xlsx?|pptx?|txt|csv|zip|exe|js|css|html?|mp[34]|md)$/i;
   var LEAD_PUNCT = /^[*.,;:!?\-_~]+/;
   var TRAIL_PUNCT = /[.,;:!?*~]+$/;
   var BARE_HOST_RE = /^((?:[a-z0-9¡-￿](?:[a-z0-9¡-￿-]{0,62})?\.){1,10}([a-z¡-￿]{2,24}|xn--[a-z0-9-]{1,59}))(?::\d{1,5})?(?:[\/?#].*)?$/i;
@@ -33,6 +25,8 @@
       target.hostUnicode = T.toUnicodeHost(host);
       target.userinfo = url.username ? decodeSafe(url.username) + (url.password ? ':' + decodeSafe(url.password) : '') : '';
       target.scheme = url.protocol.replace(':', '');
+      // Do not silently turn malformed separators into a partial, trusted host.
+      if (/[|\\^]/.test(raw)) target.error = 'unreadable';
     } catch (err) {
       target.error = 'unreadable';
     }
@@ -47,11 +41,16 @@
     var targets = [];
     var spans = [];
     var seen = {};
+    var incomplete = false;
     var m;
     TOKEN_RE.lastIndex = 0;
     while ((m = TOKEN_RE.exec(text)) !== null) {
       var token = m[0];
-      if (token.length > MAX_TOKEN) continue;
+      if (token.length > MAX_TOKEN) {
+        incomplete = true;
+        spans.push([m.index, m.index + token.length]);
+        continue;
+      }
       var start = m.index;
       var lead = token.match(LEAD_PUNCT);
       if (lead) { token = token.slice(lead[0].length); start += lead[0].length; }
@@ -76,19 +75,22 @@
         var bm = token.match(BARE_HOST_RE);
         if (bm) {
           var tld = bm[2].toLowerCase();
-          // A capitalized ending after a word (locked.Sign, ready.Today) is a missing space, not a link.
-          var capitalEnding = /[A-Z]/.test(bm[2]) && !/^www\./i.test(token) && !/[\/?#]/.test(token);
-          if (!capitalEnding && (BARE_TLDS[tld] || /^[a-z]{2}$/.test(tld) || tld.indexOf('xn--') === 0 || /[^\x00-\x7F]/.test(tld))) {
+          // Host names ignore case. Unfamiliar endings must not vanish from a check.
+          if (!FILE_ENDINGS.test(tld)) {
             target = parseLink(token, 'http://' + token);
           }
         }
       }
+      if (!target && /[.|\\^@]/.test(token) && /(?:https?:|www\.)/i.test(token)) {
+        target = { kind: 'link', raw: token, error: 'unreadable' };
+      }
       if (target) {
         spans.push([start, start + token.length]);
-        var key = target.kind + ':' + (target.host || target.raw) + ':' + (target.userinfo || '');
+        var key = target.kind + ':' + (target.error ? target.raw : target.host || target.raw) + ':' + (target.userinfo || '');
         if (!seen[key]) {
           seen[key] = 1;
-          targets.push(target);
+          if (targets.length < MAX_TARGETS) targets.push(target);
+          else incomplete = true;
         }
       }
     }
@@ -107,10 +109,12 @@
       var e164 = '+1' + p[1] + p[2] + p[3];
       if (!seen['phone:' + e164]) {
         seen['phone:' + e164] = 1;
-        targets.push({ kind: 'phone', raw: p[0].trim(), e164: e164, display: '(' + p[1] + ') ' + p[2] + '-' + p[3] });
+        if (targets.length < MAX_TARGETS) {
+          targets.push({ kind: 'phone', raw: p[0].trim(), e164: e164, display: '(' + p[1] + ') ' + p[2] + '-' + p[3] });
+        } else incomplete = true;
       }
     }
-    return { targets: targets, masked: masked };
+    return { targets: targets, masked: masked, incomplete: incomplete };
   }
 
   /* ---------- Claim ---------- */
@@ -145,9 +149,12 @@
   var SENDER_BEFORE = /(?:\bfrom|\bthis is|\bwe are|\byour)\s+(?:the\s+)?$/i;
 
   function senderPosition(text, index, length) {
-    if (index < 60) return true;
+    var before = text.slice(Math.max(0, index - 35), index);
+    // A payment method or topic is not a sender, even near the start of a message.
+    if (/\b(?:by|via|using|through|about|with|for|to)\s+$/i.test(before)) return false;
+    if (index < 60 && /^\s*$/.test(text.slice(0, index))) return true;
     if (SENDER_AFTER.test(text.slice(index + length, index + length + 20))) return true;
-    return SENDER_BEFORE.test(text.slice(Math.max(0, index - 20), index));
+    return SENDER_BEFORE.test(before);
   }
 
   function findClaim(masked, store) {

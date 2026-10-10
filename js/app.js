@@ -1,19 +1,26 @@
-/* No input is persisted or sent anywhere. Classic scripts also run from file://.
-   Pasted text is checked by the engine in js/engine against the list in data/store.js. */
+/* The view owns input and focus. The engine owns evidence and action guidance.
+   No text or file is stored, read from disk, or sent to a server. */
 const byId = id => document.getElementById(id);
+const form = byId('submission-form');
+const submitButton = byId('check-button');
+const maxChars = window.TFS.MAX_CHARS;
 let inputType = 'paste';
 let selectedScenario = null;
 let revision = 0;
 
-// Pasted text runs through the real checker on this device. Screenshots stay scripted
-// until image reading exists; the app never reads the selected file.
+// Future API boundary: return the same validated result shape from this function.
+// Files need their own explicit handling if image analysis is added later.
 async function analyzeSubmission(input) {
-  // A short pause so the change of screen is noticeable for people who read slowly.
   await new Promise(resolve => setTimeout(resolve, 400));
-  const result = input.type === 'upload'
-    ? window.demoScenarios.screenshot.result
-    : window.TfsEngine.analyze(input.text, window.TFS_STORE);
-  if (!window.TfsEngine.validateResult(result)) throw new Error('Result failed the shape check');
+  let result;
+  if (input.type === 'upload') {
+    result = input.scenarioId === 'screenshot'
+      ? window.demoScenarios.screenshot.result
+      : window.screenshotResult;
+  } else {
+    result = window.TfsEngine.analyze(input.text, window.TFS_STORE);
+  }
+  if (!window.TfsEngine.validateResult(result)) throw new Error('Invalid result shape');
   return result;
 }
 
@@ -24,6 +31,32 @@ function showScreen(name) {
   byId(heading).focus();
 }
 
+function clearError() {
+  byId('error').textContent = '';
+  byId('message').removeAttribute('aria-invalid');
+  byId('screenshot').removeAttribute('aria-invalid');
+}
+
+function showError(text, field) {
+  byId('error').textContent = text;
+  if (field) {
+    field.setAttribute('aria-invalid', 'true');
+    field.focus();
+  }
+}
+
+function clearExample() {
+  selectedScenario = null;
+  byId('example-loaded').textContent = '';
+  byId('example-loaded').hidden = true;
+}
+
+function updateCount() {
+  const count = byId('message').value.length;
+  byId('character-count').textContent = `${count.toLocaleString()} / ${maxChars.toLocaleString()} characters`;
+  byId('character-count').classList.toggle('over-limit', count > maxChars);
+}
+
 function selectInput(type, clearScenario = true) {
   inputType = type;
   if (clearScenario) clearExample();
@@ -32,140 +65,176 @@ function selectInput(type, clearScenario = true) {
     byId(`${option}-option`).classList.toggle('active', option === type);
     byId(`${option}-panel`).hidden = option !== type;
   }
-  byId('error').textContent = '';
+  clearError();
 }
-function clearExample() {
-  selectedScenario = null;
-  byId('example-loaded').hidden = true;
+
+function clearResult() {
+  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead']) {
+    byId(id).replaceChildren();
+  }
 }
+
 function reset() {
   revision += 1;
-  byId('submission-form').reset();
-  byId('submission-form').querySelector('[type=submit]').disabled = false;
+  form.reset();
+  submitButton.disabled = false;
   byId('file-name').textContent = 'No screenshot selected.';
-  byId('message').removeAttribute('aria-invalid');
-  byId('screenshot').removeAttribute('aria-invalid');
+  byId('remove-file').hidden = true;
+  clearResult();
   selectInput('paste');
+  updateCount();
   byId('demo-tools').open = false;
   showScreen('home');
 }
+
 function loadScenario(id) {
   reset();
   selectedScenario = id;
   const scenario = window.demoScenarios[id];
   selectInput(scenario.type, false);
   byId('message').value = scenario.input;
-  byId('example-loaded').textContent = `Loaded: ${scenario.label}. ${scenario.type === 'upload' ? 'This one is scripted, because the app does not read images yet; no file is needed.' : 'Choose “Check this” to run it through the checker.'}`;
+  updateCount();
+  byId('example-loaded').textContent = `Loaded: ${scenario.label}. ${scenario.type === 'upload' ? 'A scripted screenshot example; no file is needed.' : 'Choose “Check this” to compare the text with the local list.'}`;
   byId('example-loaded').hidden = false;
+  submitButton.focus();
 }
 
 const stateDetails = {
-  mismatch: { title: 'Suspicious mismatch', label: 'CONFLICTING EVIDENCE', symbol: '!' },
-  match: { title: 'Matches what we have on file', label: 'MATCHING DETAILS · THE REQUEST STILL MATTERS', symbol: '=' },
+  mismatch: { title: 'Suspicious mismatch', label: 'CONFLICTING DETAILS', symbol: '!' },
+  match: { title: 'Details match our list', label: 'ADDRESS MATCH · SENDER STILL UNKNOWN', symbol: '=' },
   unknown: { title: 'Not enough evidence', label: 'UNRESOLVED · PAUSE BEFORE ACTING', symbol: '?' }
 };
+
+function textElement(tag, text, className) {
+  const element = document.createElement(tag);
+  element.textContent = text;
+  if (className) element.className = className;
+  return element;
+}
+
 function renderResult(result) {
   const state = stateDetails[result.state];
-  const risky = result.requestRisk && result.requestRisk.level !== 'none';
-  let title = state.title;
-  let label = state.label;
-  if (result.state === 'mismatch' && result.strength === 'moderate') { title = 'Does not match our list'; }
-  if (result.state === 'match' && risky) { label = 'DETAILS MATCH · BUT THIS REQUEST IS RISKY'; }
-  if (result.state === 'unknown' && result.requestRisk && result.requestRisk.level === 'high') { label = 'UNRESOLVED · THIS REQUEST IS RISKY'; }
+  const flags = result.requestRisk.flags;
+  const risky = result.requestRisk.level !== 'none';
+  const highRisk = result.requestRisk.level === 'high';
   byId('result-banner').className = `result-banner ${result.state}${risky ? ' risky' : ''}`;
   byId('state-symbol').textContent = state.symbol;
-  byId('state-label').textContent = label;
-  byId('result-title').textContent = title;
+  byId('state-label').textContent = highRisk ? `${state.label} · ACTION WARNING` : state.label;
+  byId('result-title').textContent = result.state === 'mismatch' && result.strength === 'moderate'
+    ? 'Conflicting address details' : state.title;
   byId('result-description').textContent = result.description;
-  for (const [id, field] of Object.entries({identity:'claimedIdentity', channel:'channel', inspected:'inspected', meaning:'meaning'})) byId(id).textContent = result[field];
+  byId('result-kind').textContent = selectedScenario === 'screenshot'
+    ? 'SCRIPTED SCREENSHOT EXAMPLE' : inputType === 'upload' ? 'IMAGE NOT ANALYZED' : 'YOUR LOCAL CHECK';
+  byId('result-scope').textContent = inputType === 'upload'
+    ? 'This app has not read the image or checked any hidden link.'
+    : 'Local text comparison only. No website was opened. The sender and caller were not checked.';
+  for (const [id, field] of Object.entries({ identity: 'claimedIdentity', channel: 'channel', inspected: 'inspected', meaning: 'meaning' })) {
+    byId(id).textContent = result[field];
+  }
+
+  // Put critical action advice next to the evidence state, also on narrow screens.
+  const leadingFlag = flags.find(flag => flag.level === 'high');
+  const lead = leadingFlag ? leadingFlag.explanation : result.actionWarnings[0];
+  byId('action-lead').textContent = lead;
+  byId('action-note').classList.toggle('high-risk', highRisk);
   byId('checks').replaceChildren();
-  const checkLabels = { SUPPORTS: 'Details match', CONTRADICTS: 'Details conflict', UNKNOWN: 'Cannot establish a match' };
+  const checkLabels = { SUPPORTS: 'On our list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
   for (const check of result.checks) {
     const item = document.createElement('li');
-    const label = document.createElement('span');
-    label.className = 'check-label';
-    label.textContent = checkLabels[check.status];
-    const detail = document.createElement('p');
-    detail.textContent = check.detail;
-    const source = document.createElement('span');
-    source.className = 'source';
-    source.textContent = `Source: ${check.source}`;
-    item.append(label, detail, source);
+    item.className = `check-item ${check.status.toLowerCase()}`;
+    const source = document.createElement('details');
+    source.className = 'check-source';
+    source.append(textElement('summary', 'About this check'), textElement('p', check.source, 'source'));
+    item.append(textElement('span', checkLabels[check.status], 'check-label'), textElement('p', check.detail), source);
     byId('checks').append(item);
   }
-  // What the message asks for: quoted words from the request signals.
-  const flags = (result.requestRisk && result.requestRisk.flags) || [];
+
   byId('asks-section').hidden = flags.length === 0;
   byId('asks').replaceChildren();
   for (const flag of flags) {
     const item = document.createElement('li');
-    const name = document.createElement('span');
-    name.className = 'check-label';
-    name.textContent = flag.label || flag.id;
-    const quote = document.createElement('p');
-    quote.className = 'quote';
-    quote.textContent = `“${flag.words}”`;
-    item.append(name, quote);
+    item.append(textElement('span', flag.label, 'check-label'), textElement('p', `“${flag.words}”`, 'quote'));
     byId('asks').append(item);
   }
-  // Render warnings for every state, including matching details.
   byId('warnings').replaceChildren();
-  for (const text of result.actionWarnings) {
-    const warning = document.createElement('p');
-    warning.className = 'warning';
-    warning.textContent = text;
-    byId('warnings').append(warning);
+  for (const text of result.actionWarnings.filter(text => text !== lead)) {
+    byId('warnings').append(textElement('p', text, 'warning'));
   }
   byId('next-list').replaceChildren();
-  for (const text of result.nextSteps) {
-    const step = document.createElement('li');
-    step.textContent = text;
-    byId('next-list').append(step);
-  }
+  for (const text of result.nextSteps) byId('next-list').append(textElement('li', text));
   byId('paste-link').hidden = !result.offerPaste;
   showScreen('result');
 }
 
 byId('paste-option').addEventListener('click', () => selectInput('paste'));
 byId('upload-option').addEventListener('click', () => selectInput('upload'));
-byId('message').addEventListener('input', () => { clearExample(); byId('error').textContent = ''; byId('message').removeAttribute('aria-invalid'); });
+byId('message').addEventListener('input', () => {
+  clearExample();
+  clearError();
+  updateCount();
+});
 byId('screenshot').addEventListener('change', () => {
   clearExample();
-  byId('error').textContent = '';
-  byId('screenshot').removeAttribute('aria-invalid');
-  byId('file-name').textContent = byId('screenshot').files[0]?.name || 'No screenshot selected.';
+  clearError();
+  const file = byId('screenshot').files[0];
+  byId('file-name').textContent = file ? `Selected: ${file.name}` : 'No screenshot selected.';
+  byId('remove-file').hidden = !file;
 });
-byId('submission-form').addEventListener('submit', async event => {
+byId('remove-file').addEventListener('click', () => {
+  byId('screenshot').value = '';
+  byId('file-name').textContent = 'No screenshot selected.';
+  byId('remove-file').hidden = true;
+  clearExample();
+  clearError();
+  byId('screenshot').focus();
+});
+
+form.addEventListener('submit', async event => {
   event.preventDefault();
+  if (submitButton.disabled) return;
+  clearError();
   const text = byId('message').value.trim();
   const file = byId('screenshot').files[0];
   let error = '';
   if (inputType === 'paste' && !text) error = 'Paste a message or link first.';
-  if (inputType === 'upload' && !file && selectedScenario !== 'screenshot') error = 'Choose a screenshot first.';
-  if (inputType === 'upload' && file && (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024)) error = 'Choose a PNG, JPG, or WebP image smaller than 10 MB.';
-  byId('error').textContent = error;
+  else if (inputType === 'paste' && text.length > maxChars) error = `This is too long to check fully. Paste ${maxChars.toLocaleString()} characters or fewer, or one complete link.`;
+  else if (inputType === 'upload' && !file && selectedScenario !== 'screenshot') error = 'Choose a screenshot first.';
+  else if (inputType === 'upload' && file && (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024)) error = 'Choose a PNG, JPG, or WebP image up to 10 MB.';
   if (error) {
-    const field = byId(inputType === 'paste' ? 'message' : 'screenshot');
-    field.setAttribute('aria-invalid', 'true'); field.focus(); return;
+    showError(error, byId(inputType === 'paste' ? 'message' : 'screenshot'));
+    return;
   }
+
   const currentRevision = ++revision;
-  const submit = byId('submission-form').querySelector('[type=submit]');
-  submit.disabled = true;
+  submitButton.disabled = true;
+  byId('checking-title').textContent = inputType === 'upload' ? 'Preparing image guidance…' : 'Comparing the details…';
+  byId('checking-note').textContent = inputType === 'upload' ? 'Your image is not being read or sent anywhere.' : 'Using the local reference list. No links are opened.';
   showScreen('checking');
   try {
-    const result = await analyzeSubmission({ type: inputType, text, file, scenarioId: selectedScenario });
+    const result = await analyzeSubmission({ type: inputType, text, scenarioId: selectedScenario });
     if (currentRevision === revision) renderResult(result);
   } catch {
-    if (currentRevision === revision) { showScreen('home'); byId('error').textContent = 'The check could not finish. Please try again.'; }
-  } finally { submit.disabled = false; }
+    if (currentRevision === revision) {
+      showScreen('home');
+      showError('The check could not finish. Your input is still here. Please try again.', byId(inputType === 'paste' ? 'message' : 'screenshot'));
+    }
+  } finally {
+    if (currentRevision === revision) submitButton.disabled = false;
+  }
 });
+
 for (const [id, scenario] of Object.entries(window.demoScenarios)) {
-  const button = document.createElement('button');
-  button.type = 'button'; button.textContent = scenario.label;
+  const button = textElement('button', scenario.label);
+  button.type = 'button';
   button.addEventListener('click', () => loadScenario(id));
   byId('scenario-buttons').append(button);
 }
-byId('back').addEventListener('click', () => showScreen('home'));
+byId('back').addEventListener('click', () => {
+  showScreen('home');
+  byId(inputType === 'paste' ? 'message' : 'screenshot').focus();
+});
 byId('start-again').addEventListener('click', reset);
 byId('reset').addEventListener('click', reset);
 byId('paste-link').addEventListener('click', () => { reset(); byId('message').focus(); });
+byId('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations · Website list ${window.TFS_STORE.version}`;
+updateCount();

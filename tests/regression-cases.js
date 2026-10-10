@@ -1,0 +1,28 @@
+/* Failures reproduced during review. Each case guards a user-visible decision. */
+window.TFS_REAL_CASES.push(
+  { id: 'G01', text: 'Chase: visit https://help-center.example', expect: { state: 'unknown', codes: ['not_in_official_list'] }, guards: 'Missing from a limited list is not a conflict' },
+  { id: 'G02', text: 'Chase: visit chase.com and EVIL.COM', expect: { state: 'unknown', codes: ['domain_official', 'not_in_official_list'] }, guards: 'Uppercase hosts cannot disappear beside a listed link' },
+  { id: 'G03', text: 'Chase: visit CHASE.COM', expect: { state: 'match', codes: ['domain_official'] }, guards: 'Host comparison ignores case' },
+  { id: 'G04', text: 'Chase: visit chase.com and suspicious.agency', expect: { state: 'unknown', codes: ['not_in_official_list'] }, guards: 'Unfamiliar domain endings do not vanish' },
+  { id: 'G05', text: 'Chase: https://chase.com https://evil.example/' + 'x'.repeat(2100), expect: { state: 'unknown', codes: ['input_incomplete'], incomplete: true }, guards: 'Skipped long tokens block a full match' },
+  { id: 'G06', text: 'Chase: https://chase.com ' + ' '.repeat(20000) + 'https://evil.example', expect: { state: 'unknown', codes: ['input_incomplete'], incomplete: true }, guards: 'Truncation cannot hide a later link and yield a match' },
+  { id: 'G07', text: 'PayPal: https://paypal.com|evil.example', expect: { state: 'unknown', codes: ['link_unreadable'] }, guards: 'A malformed link is never reduced to its trusted prefix' },
+  { id: 'G08', text: 'PayPal: https://paypal.com^evil.example', expect: { state: 'unknown', codes: ['link_unreadable'] }, guards: 'Malformed separators stay part of the parsed token' },
+  { id: 'G09', text: 'Chase: Do not delay. Share your code.', expect: { state: 'unknown', flags: ['share_code'], risk: 'high' }, guards: 'A prior sentence cannot cancel a dangerous request' },
+  { id: 'G10', text: 'Chase: Don’t share your code.', expect: { state: 'unknown', risk: 'none' }, guards: 'Smart apostrophes do not defeat negation' },
+  { id: 'G11', text: 'Chase: Never tell anyone your code.', expect: { state: 'unknown', risk: 'none' }, guards: 'Keeping a code private is not a secrecy demand' },
+  { id: 'G12', text: 'Chase: Never share your code. Do not send your code. Never share your code. Read me the code.', expect: { state: 'unknown', flags: ['share_code'], risk: 'high' }, guards: 'A later direct request still fires after protective advice' },
+  { id: 'G13', text: 'Chase: Never share your code. We will never ask you to share your code.', expect: { state: 'unknown', risk: 'none' }, guards: 'Repeated protective advice stays quiet' },
+  { id: 'G14', text: 'PayPal: https://paypal.com\\@evil.example', expect: { state: 'unknown', codes: ['link_unreadable'] }, guards: 'Backslashes are not silently normalized into trusted input' },
+  { id: 'G15', text: 'Chase: https://chase.com and https://google.com', expect: { state: 'mismatch', codes: ['domain_belongs_to_other_org'] }, guards: 'A known different owner is still an explicit conflict' },
+  { id: 'G16', text: 'https://chase.com https://google.com', expect: { state: 'unknown' }, guards: 'Multiple known owners do not imply a single sender' },
+  { id: 'G17', text: 'Chase: https://chase.com ' + Array.from({length: 35}, function (_, i) { return 'https://part' + i + '.chase.com'; }).join(' '), expect: { state: 'unknown', codes: ['input_incomplete'], incomplete: true }, guards: 'The target cap is explicit and prevents a complete match' },
+  { id: 'G18', text: 'PNC: https://pnc.com', expect: { state: 'unknown', codes: ['reference_needs_review'] }, guards: 'A source marked needs review cannot produce a match' },
+  { id: 'G19', text: 'Chase: https://chase.com ' + '\uFDFA'.repeat(2000), expect: { state: 'unknown', codes: ['input_incomplete'], incomplete: true }, guards: 'Normalization expansion respects the input cap' },
+  { id: 'G20', text: 'Chase: Never share your code, but read me the code.', expect: { state: 'unknown', flags: ['share_code'], risk: 'high' }, guards: 'A contrast clause cannot inherit a negation' },
+  { id: 'G21', text: 'USPS: https://tools.usps.com/go/TrackConfirmAction', expect: { state: 'match', risk: 'none' }, guards: 'Ordinary listed delivery links retain a narrow address match' },
+  { id: 'G25', text: 'Chase: https://chase.com https://chase.com\\@evil.example', expect: { state: 'unknown', codes: ['domain_official', 'link_unreadable'] }, guards: 'A malformed target is not deduplicated against a listed host' },
+  { id: 'G23', text: 'Please send it by Zelle: https://chase.com', expect: { state: 'match', flags: ['peer_payment'], notCodes: ['domain_belongs_to_other_org'] }, guards: 'A payment service named early is not the sender' },
+  { id: 'G24', text: 'Can you help me with Apple pie? https://chase.com', expect: { state: 'match', notCodes: ['domain_belongs_to_other_org'], risk: 'none' }, guards: 'A brand mentioned as a topic is not a sender' },
+  { id: 'G22', text: 'Chase: https://chase.com <img src=x onerror=alert(1)>', expect: { state: 'match', risk: 'none' }, guards: 'Markup is input text, never executed by the engine' }
+);

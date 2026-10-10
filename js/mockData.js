@@ -46,3 +46,24 @@ window.demoScenarios = {
     input: 'USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction'
   }
 };
+
+// Real file selections must never inherit facts from a scripted example.
+window.screenshotResult = {
+  schemaVersion: 1,
+  state: 'unknown',
+  claimedIdentity: 'Not assessed — image not read',
+  claimSource: 'none',
+  channel: 'A screenshot selected on this device',
+  inspected: 'No image content or hidden links inspected',
+  description: 'This prototype cannot read screenshots yet.',
+  checks: [{
+    status: 'UNKNOWN', code: 'screenshot_not_read',
+    detail: 'Your image has not been read. We cannot identify a sender or see where a button leads from this file.',
+    source: 'Image analysis is not available in this prototype.'
+  }],
+  meaning: 'No conclusion can be drawn from the selected image. A displayed website name can differ from a hidden link destination.',
+  requestRisk: { level: 'none', flags: [] },
+  actionWarnings: ['Pause before opening links or sharing personal details.'],
+  nextSteps: ['Paste the message text or a complete link if you can copy it without opening it.', 'If you are unsure how, ask a trusted person to help or contact the organization through a contact you already trust.'],
+  offerPaste: true
+};
