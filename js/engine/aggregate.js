@@ -109,7 +109,7 @@
     if (!r.requestRisk || !Object.prototype.hasOwnProperty.call(LEVELS, r.requestRisk.level) || !Array.isArray(r.requestRisk.flags)) return false;
     if (!Array.isArray(r.requestRisk.established) || !Array.isArray(r.requestRisk.unresolved)) return false;
     if (!r.requestRisk.established.every(function (e) {
-      return e && ['T1-GIFT', 'T1-WIRE', 'T1-REMOTE'].indexOf(e.ruleId) >= 0 && e.action && isText(e.action.quote) && e.clause && isText(e.clause.quote);
+      return e && e.ruleId !== 'T1-DOMAIN' && gate.TIER1_RULES.indexOf(e.ruleId) >= 0 && e.action && isText(e.action.quote) && e.clause && isText(e.clause.quote);
     })) return false;
     if (!r.requestRisk.flags.every(function (f) {
       return f && isText(f.id) && isText(f.label) && isText(f.words) && isText(f.explanation) && ['medium', 'high'].indexOf(f.level) >= 0;

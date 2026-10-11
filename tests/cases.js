@@ -134,7 +134,10 @@ window.TFS_CASES = [
     "id": "T02",
     "text": "Chase: Your account has been locked. Sign in at chase-secure-login.net to restore access.",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus a sign-in lure word. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "brand_in_foreign_domain"
@@ -150,7 +153,10 @@ window.TFS_CASES = [
     "id": "T03",
     "text": "Chase alert: verify your login at https://chase.com.account-verify.net/login",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: official domain glued to another site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "official_domain_as_subdomain"
@@ -162,7 +168,10 @@ window.TFS_CASES = [
     "id": "T04",
     "text": "PayPal: confirm your payment at https://paypal.com@pay-secure.example/confirm",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: text before @ hides the real site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "userinfo_trick"
@@ -174,7 +183,10 @@ window.TFS_CASES = [
     "id": "T05",
     "text": "Chase: sign in at https://ch\u0430se.com",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: Cyrillic letter swapped in. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "homoglyph"
@@ -309,14 +321,17 @@ window.TFS_CASES = [
     "id": "T16",
     "text": "Example Bank: Call (202) 555-0123 or visit https://examplebank-secure.example",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus a security lure word. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "brand_in_foreign_domain",
         "phone_official"
       ]
     },
-    "guards": "A contact conflict blocks a match despite a supporting check"
+    "guards": "A supporting phone cannot cancel a brand-plus-lure address (T1-DOMAIN)"
   },
   {
     "id": "T17",

@@ -73,6 +73,27 @@
   var URGENT = /\b(?:urgent(?:ly)?|right now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
   var THREAT = /\b(?:arrest(?:ed)?|jail|fines?|account(?:\s+\w+){0,3}\s+(?:closed|closure|locked|loss)|lose (?:your )?(?:funds|money)|loss of (?:funds|money)|service disconnection|(?:device|computer)(?:\s+\w+){0,3}\s+locked)\b/i;
 
+  // T1-CODE: the secret must be the direct object, after at most a recipient and two modifiers.
+  var SECRET_OBJECT = /\b(?:codes?|pins?|otps?|passcodes?|passwords?)\b/i;
+  var OBJECT_GAP = /^\s*(?:(?:me|us|them|him|her|back|to me|to us)\s+)?(?:(?:the|your|that|this|those|these|their|any)\s+)?(?:[\w-]+\s+){0,2}$/i;
+  // Codes that are not secrets, or that T1-GIFT already judges.
+  var NOT_SECRET = /\b(?:promo(?:tional)?|coupon|discount|zip|postal|area|qr|bar|referral|invite|invitation|gift[ -]?cards?|confirmation|tracking|reference|order|booking|pick-?up|voucher|redemption|rewards?|offer|country|dial)\s+$/i;
+  // Household codes family members share: the wifi password, the garage code.
+  var HOUSEHOLD = /\b(?:wi-?fi|wireless|network|router|garage|door|gate|alarm|lockbox|locker|keypad|building|house|guest|bike lock|gym)\s+$/i;
+  var HOUSEHOLD_AFTER = /^\s+(?:for|to|of)\s+(?:the\s+|your\s+|our\s+|my\s+)?(?:wi-?fi|wireless|network|router|garage|door|front door|gate|alarm|lockbox|locker|keypad|building|house|bike|gym)\b/i;
+  var REQUESTER = /\b(?:me|us|them|him|her|back|to (?:the )?(?:agent|caller|representative|rep|officer|technician|team)|our (?:agent|team|representative|staff))\b/i;
+  // Handing a delivery or pickup code to a courier in person is how the code is meant to be used.
+  var IN_PERSON = /\b(?:driver|courier|delivery (?:associate|person|agent)|cashier|checkout|front desk)\b/i;
+
+  // The last account secret named in some text, unless it is a promo, household or gift-card code.
+  function secretBefore(text) {
+    var pattern = new RegExp(SECRET_OBJECT.source, 'gi'), m, last = null;
+    while ((m = pattern.exec(text)) !== null) last = m;
+    if (!last) return false;
+    var before = text.slice(0, last.index);
+    return !NOT_SECRET.test(before) && !HOUSEHOLD.test(before) && !HOUSEHOLD_AFTER.test(text.slice(last.index + last[0].length));
+  }
+
   function span(raw, start, end) { return { start: start, end: end, quote: raw.slice(start, end) }; }
 
   function clausesOf(text) {
@@ -105,6 +126,8 @@
     if (negatedAction(prefix) || /["“][^"”]*$/.test(prefix)) return false;
     var rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
     if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
+    // A leading purpose phrase keeps the imperative: "To fix your computer, tell me your password."
+    if (/^\s*(?:to|in order to|before|so)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
     if (/\b(?:do not|don['’]t|dont|never)\s+(?:delay|wait|tell(?:\s+\w+){1,3}|hang up)\s*,\s*$/i.test(rest)) return true;
     return priorDemand && /(?:\band|\bthen|,)\s*(?:please\s+)?$/i.test(rest);
@@ -158,7 +181,7 @@
         var prefix = clause.text.slice(0, m.index);
         if (!directAction(prefix, priorDemand)) continue;
         priorDemand = true;
-        var verb = m[0].toLowerCase(), tail = clause.text.slice(m.index + m[0].length);
+        var verb = m[0].toLowerCase(), tail = clause.text.slice(m.index + m[0].length), giftDisclosed = false;
         var windowText = tail.slice(0, 40), action = matchedSpan(raw, clause, m), hit;
         if (/^(?:buy|purchase|pay)$/.test(verb) && (hit = windowText.match(GIFT))) {
           var gift = matchedSpan(raw, clause, hit, m.index + m[0].length);
@@ -182,6 +205,7 @@
             var antecedent = matchedSpan(raw, giftClause, giftHit);
             flag('gift_card_disclosure', clause, action.start, code.end);
             tier1('T1-GIFT', action, clause, code, null, antecedent);
+            giftDisclosed = true;
           } else if (giftHit && recipient && competing) {
             unresolved.push({ id: 'competing_card_code_antecedent', action: action, clause: span(raw, clause.start, clause.end) });
           }
@@ -202,6 +226,27 @@
           var remoteContext = tiedContext(clauses, index, action, raw);
           if (remoteContext) tier1('T1-REMOTE', action, clause, remote, remoteContext);
         }
+        // "Read it back to me" after "we sent you a verification code": the pronoun takes the code.
+        if (!giftDisclosed && /^(?:send|read|give|tell|text|share|provide)$/.test(verb) && (hit = windowText.match(/^\s+(?:it|them)\b/i)) && REQUESTER.test(tail.slice(hit[0].length, 65)) && !IN_PERSON.test(clause.text)) {
+          var named = secretBefore(clause.text.slice(0, m.index)) || (clauses[index - 1] && !clauses[index - 1].inReport && secretBefore(clauses[index - 1].text));
+          if (named) {
+            var pronoun = matchedSpan(raw, clause, hit, m.index + m[0].length);
+            flag('share_code', clause, action.start, pronoun.end);
+            tier1('T1-CODE', action, clause, pronoun, null);
+            continue;
+          }
+        }
+        // No context is needed: no organization asks for a sign-in code, PIN or password this way.
+        if (!giftDisclosed && /^(?:send|read|give|tell|text|share|provide|reply with)$/.test(verb) && (hit = windowText.match(SECRET_OBJECT))) {
+          var gap = windowText.slice(0, hit.index);
+          var toRequester = /^(?:read|give|tell|reply with)$/.test(verb) || REQUESTER.test(tail.slice(0, 65));
+          var household = HOUSEHOLD.test(gap) || HOUSEHOLD_AFTER.test(windowText.slice(hit.index + hit[0].length) + tail.slice(40, 70));
+          if (OBJECT_GAP.test(gap) && !NOT_SECRET.test(gap) && !household && toRequester && !IN_PERSON.test(clause.text)) {
+            var secret = matchedSpan(raw, clause, hit, m.index + m[0].length);
+            flag('share_code', clause, action.start, secret.end);
+            tier1('T1-CODE', action, clause, secret, null);
+          }
+        }
       }
     });
     return { flags: flags, established: established, unresolved: unresolved, clauses: clauses };
@@ -218,6 +263,8 @@
     var contextual = contextualSignals(text, raw);
     var flags = contextual.flags;
     FLAGS.forEach(function (flag) {
+      // A contextual rule already reported this signal with its exact action.
+      if (flags.some(function (f) { return f.id === flag.id; })) return;
       for (var p = 0; p < flag.patterns.length; p++) {
         var pattern = new RegExp(flag.patterns[p].source, 'gi');
         var hit = null, m;
