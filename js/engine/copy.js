@@ -105,6 +105,7 @@
     gift_card_payment: 'Do not send gift card numbers to someone demanding payment. Contact the organization independently.',
     gift_card_disclosure: 'Do not send or read gift-card numbers, PINs, or codes to the requester. Check with the person through a number you already trust.',
     crypto_or_wire: 'Requests to pay with cryptocurrency, a crypto ATM or a wire transfer are a frequent scam pattern.',
+    tech_support_call: 'Real device warnings do not ask you to call a phone number. Do not call it. Use a support contact you already trust.',
     share_code: 'Keep sign-in codes private. Do not read or send them to a caller, even if they say they work for your bank.',
     remote_access: 'Do not let anyone you did not contact yourself control your computer or phone.',
     arrest_threat: 'A threat of arrest or legal action is a reason to pause and contact the office independently.',
@@ -125,6 +126,7 @@
     gift_card_payment: 'Payment with gift cards',
     gift_card_disclosure: 'Sending gift-card numbers or codes',
     crypto_or_wire: 'Payment by crypto or wire transfer',
+    tech_support_call: 'Calling a number about a device alarm',
     share_code: 'Sharing a code or password',
     remote_access: 'Control of your device',
     arrest_threat: 'A threat of arrest or legal action',
@@ -147,7 +149,8 @@
     'T1-WIRE': 'pressures you to send cryptocurrency or a wire transfer',
     'T1-REMOTE': 'pressures you to let someone control your device',
     'T1-CODE': 'asks you to give a sign-in code, PIN or password to the sender',
-    'T1-DOMAIN': 'uses a link or address built to imitate a known organization'
+    'T1-DOMAIN': 'uses a link or address built to imitate a known organization',
+    'T1-CALLBACK': 'warns about your device and pressures you to call a number'
   };
 
   function joinPhrases(list) {

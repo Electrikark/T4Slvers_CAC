@@ -60,7 +60,7 @@
     ] }
   ];
 
-  var ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant)\b/gi;
+  var ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
   var GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?)\b/i;
   var CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?)\b/i;
   var SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
@@ -78,6 +78,13 @@
   var OBJECT_GAP = /^\s*(?:(?:me|us|them|him|her|back|to me|to us)\s+)?(?:(?:the|your|that|this|those|these|their|any)\s+)?(?:[\w-]+\s+){0,2}$/i;
   // Codes that are not secrets, or that T1-GIFT already judges.
   var NOT_SECRET = /\b(?:promo(?:tional)?|coupon|discount|zip|postal|area|qr|bar|referral|invite|invitation|gift[ -]?cards?|confirmation|tracking|reference|order|booking|pick-?up|voucher|redemption|rewards?|offer|country|dial)\s+$/i;
+  // T1-CALLBACK: a device alarm paired with a demand to call. Real security warnings
+  // from Microsoft and other vendors do not include a phone number to call.
+  var DEVICE_ALARM = /\b(?:(?:device|computer|pc|laptop|mac|system|windows|browser|iphone|phone)\b[^.!?\n]{0,25}\b(?:is|has been|was|are|have been|may be)\s+(?:locked|infected|hacked|compromised|blocked|disabled|at risk)|infected with (?:a |an )?(?:virus|viruses|malware|trojan|spyware)|(?:virus|viruses|malware|trojan|spyware|ransomware)\s+(?:detected|found|alert|warning|infection)|(?:hackers?|someone) (?:has |have )?(?:accessed|hacked|breached) your (?:computer|device|pc|laptop|phone))\b/i;
+  var CALL_OBJECT = /^\s+(?:us\b|me\b|them\b|(?:this|the|our|that) (?:toll[- ]free )?(?:number|helpline|hotline)\b|(?:the |a )?(?:microsoft|windows|apple|google|norton|mcafee|geek squad)?\s*(?:tech(?:nical)? |customer |security )?(?:support|helpline|help desk|helpdesk|technicians?)\b|(?:on |at )?\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b|(?:\w+\s+){0,3}(?:at|on)\s+\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b)/i;
+  // Calling a number you already trust is the advice, not the trick.
+  var TRUSTED_CALL = /\b(?:back of your card|you (?:already )?(?:trust|know)|on your (?:statement|bill)|official (?:website|site|app))\b/i;
+
   // Household codes family members share: the wifi password, the garage code.
   var HOUSEHOLD = /\b(?:wi-?fi|wireless|network|router|garage|door|gate|alarm|lockbox|locker|keypad|building|house|guest|bike lock|gym)\s+$/i;
   var HOUSEHOLD_AFTER = /^\s+(?:for|to|of)\s+(?:the\s+|your\s+|our\s+|my\s+)?(?:wi-?fi|wireless|network|router|garage|door|front door|gate|alarm|lockbox|locker|keypad|building|house|bike|gym)\b/i;
@@ -225,6 +232,19 @@
           flag('remote_access', clause, action.start, remote.end);
           var remoteContext = tiedContext(clauses, index, action, raw);
           if (remoteContext) tier1('T1-REMOTE', action, clause, remote, remoteContext);
+        }
+        if (/^(?:call|dial|contact)$/.test(verb) && (hit = tail.match(CALL_OBJECT)) && !TRUSTED_CALL.test(tail.slice(0, 80))) {
+          var alarm = null;
+          for (var a = 0; a < clauses.length && !alarm; a++) {
+            if (clauses[a].inReport || reported(clauses[a].text)) continue;
+            var found = clauses[a].text.match(DEVICE_ALARM);
+            if (found) alarm = matchedSpan(raw, clauses[a], found);
+          }
+          if (alarm) {
+            var number = matchedSpan(raw, clause, hit, m.index + m[0].length);
+            flag('tech_support_call', clause, action.start, number.end);
+            tier1('T1-CALLBACK', action, clause, number, alarm);
+          }
         }
         // "Read it back to me" after "we sent you a verification code": the pronoun takes the code.
         if (!giftDisclosed && /^(?:send|read|give|tell|text|share|provide)$/.test(verb) && (hit = windowText.match(/^\s+(?:it|them)\b/i)) && REQUESTER.test(tail.slice(hit[0].length, 65)) && !IN_PERSON.test(clause.text)) {
