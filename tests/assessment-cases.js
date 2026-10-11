@@ -87,6 +87,27 @@ window.runAssessmentTests = function (gate) {
     try { gate.assertAssessment('match'); } catch (err) { threw = true; }
     assert(threw, 'legacy match accepted');
   });
+  test('U11 T1-DOMAIN takes priority over a verified contact', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-DOMAIN', tier: 1, status: 'established', span: null }];
+    resultIs(e, 'suspicious', ['T1-DOMAIN'], []);
+  });
+  test('U12 T1-CODE takes priority over a verified contact', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-CODE', tier: 1, status: 'established', span: null }];
+    resultIs(e, 'suspicious', ['T1-CODE'], []);
+  });
+  test('U15 T1-CALLBACK takes priority over a verified contact', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-CALLBACK', tier: 1, status: 'established', span: null }];
+    resultIs(e, 'suspicious', ['T1-CALLBACK'], []);
+  });
+  test('U13 Unknown Tier 1 rule is rejected, not trusted', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-MADE-UP', tier: 1, status: 'established', span: null }];
+    var threw = false;
+    try { gate.assess(e); } catch (err) { threw = true; }
+    assert(threw, 'unknown Tier 1 rule accepted');
+  });
+  test('U14 Closed Tier 1 list', function () {
+    same(Array.prototype.slice.call(gate.TIER1_RULES), ['T1-GIFT', 'T1-WIRE', 'T1-REMOTE', 'T1-DOMAIN', 'T1-CODE', 'T1-CALLBACK'], 'Tier 1 rules');
+  });
   test('E1 Gift-card demand through the real engine', function () {
     var r = engineIs('Example Bank: Buy gift cards to restore your account. Visit https://example.com.', 'suspicious', ['T1-GIFT'], []);
     assert(r.evidence.findings.some(function (f) { return f.ruleId === 'T1-GIFT' && f.tier === 1 && f.status === 'established'; }), 'gift rule lost');
@@ -127,12 +148,12 @@ window.runAssessmentTests = function (gate) {
     assert(r.evidence.findings.some(function (f) { return f.ruleId === 'account_locked' && f.tier === 2; }), 'low severity dropped');
   });
   test('I9 High severity alone never becomes Tier 1', function () {
-    var r = engineIs('Example Bank: Please send me your code. Visit https://example.com.', 'insufficient_evidence', [], ['RISK_SIGNAL']);
+    var r = engineIs('Example Bank: Keep this between us. Visit https://example.com.', 'insufficient_evidence', [], ['RISK_SIGNAL']);
     same(r.requestRisk.level, 'high', 'legacy severity');
     assert(r.evidence.findings.every(function (f) { return f.tier === 2; }), 'severity promoted');
   });
   test('I10 Unresolved gift candidate retains support', function () {
-    var r = engineIs('Example Bank: Buy gift cards and send me your authorization code. Visit https://example.com.', 'insufficient_evidence', [], ['UNCERTAINTY', 'RISK_SIGNAL']);
+    var r = engineIs('Example Bank: Buy gift cards and send me the numbers on your debit card. Visit https://example.com.', 'insufficient_evidence', [], ['UNCERTAINTY', 'RISK_SIGNAL']);
     assert(r.evidence.findings.some(function (f) { return f.ruleId === 'T1-GIFT' && f.tier === 1 && f.status === 'unresolved' && f.support.id === 'competing_card_code_antecedent'; }), 'unresolved gift lost');
   });
   test('I11 Contact conflict stays visible as Tier 2, with no invented span', function () {
