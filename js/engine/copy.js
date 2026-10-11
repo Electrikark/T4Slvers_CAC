@@ -110,6 +110,7 @@
     arrest_threat: 'A threat of arrest or legal action is a reason to pause and contact the office independently.',
     secrecy: 'Being told to keep something secret from your family or your bank is a warning sign.',
     family_emergency: 'If someone says they are family and in trouble, check with that person through a number you already know.',
+    new_number: 'If someone says they have a new number, call the number you already have for them before you reply or send anything.',
     pay_fee: 'Be careful with surprise fees, fines or tolls that must be paid through a link.',
     urgency: 'Pressure to act fast is a warning sign. Take your time.',
     account_locked: 'Messages about a locked or suspended account are often used to rush people.',
@@ -129,6 +130,7 @@
     arrest_threat: 'A threat of arrest or legal action',
     secrecy: 'Keeping it secret',
     family_emergency: 'A family member in trouble',
+    new_number: 'A new phone number for someone you know',
     pay_fee: 'Paying a fee or fine',
     urgency: 'Acting fast',
     account_locked: 'A locked or suspended account',
@@ -139,12 +141,36 @@
     peer_payment: 'Sending money by app'
   };
 
+  // Plain words for each established Tier 1 rule, used to name the request itself.
+  var RULE_ASKS = {
+    'T1-GIFT': 'asks you to pay with gift cards or share gift-card codes',
+    'T1-WIRE': 'pressures you to send cryptocurrency or a wire transfer',
+    'T1-REMOTE': 'pressures you to let someone control your device'
+  };
+
+  function joinPhrases(list) {
+    if (list.length < 2) return list.join('');
+    return list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
+  }
+
+  function conflicts(result) {
+    return result.checks.filter(function (c) { return c.status === 'CONTRADICTS'; });
+  }
+
   function describe(result, ctx) {
     var codes = result.checks.map(function (c) { return c.code; });
+    var anySupport = result.checks.some(function (c) { return c.status === 'SUPPORTS'; });
     if (result.assessment === 'suspicious') {
+      var asks = [];
+      result.requestRisk.established.forEach(function (e) {
+        var phrase = RULE_ASKS[e.ruleId];
+        if (phrase && asks.indexOf(phrase) < 0) asks.push(phrase);
+      });
       return {
-        description: 'The message asks for an action that meets a concrete risk rule.',
-        meaning: 'Matching contact details cannot cancel this action warning. Check independently before acting.'
+        description: 'This message ' + (asks.length ? joinPhrases(asks) : 'asks for a high-risk action') + '. Fraudsters often ask for this.',
+        meaning: anySupport
+          ? 'A contact detail matches our stored list, but that cannot cancel this warning. Real addresses can be copied into a fake message. Check independently before acting.'
+          : 'Check independently before acting. Use a phone number or website you already trust.'
       };
     }
     if (result.assessment === 'details_match') {
@@ -153,21 +179,34 @@
         meaning: 'This checks written address details only. It does not confirm the sender or inspect pages, redirects, or hidden links. A real address can be copied into a deceptive message.'
       };
     }
+    var risky = result.requestRisk.flags.length || result.requestRisk.unresolved.length;
+    var conflict = conflicts(result).length > 0;
+    var description = 'We do not have enough reliable evidence for a complete assessment.';
+    if (conflict) description = 'A contact detail in this message does not match our stored list. We cannot give a complete assessment.';
+    else if (risky) description = 'The message contains warning signs, and we cannot give a complete assessment.';
     var meaning = 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
     if (codes.indexOf('input_incomplete') >= 0) meaning = 'Some input was not inspected. Check a shorter message before drawing a conclusion.';
     else if (codes.indexOf('shortener_unresolvable') >= 0) meaning = 'The destination remains unknown because this app does not follow links.';
     else if (codes.indexOf('nothing_to_check') >= 0) meaning = 'Without a link, email address or phone number, there is nothing to compare. Judge it by what it asks you to do.';
     else if (codes.indexOf('phone_not_on_file') >= 0) meaning = 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.';
     else if (codes.indexOf('user_content_platform') >= 0) meaning = 'A page on a site where anyone can publish does not show who made it.';
-    if (result.requestRisk.flags.length || result.requestRisk.unresolved.length) meaning = 'Risk signals remain in the requested action. Matching contact details cannot clear those signals.';
-    if (result.checks.some(function (c) { return c.status === 'CONTRADICTS'; })) meaning += ' Contact details also conflict with our stored list. That conflict blocks a match. This checker cannot resolve it from the available evidence.';
-    return { description: 'We do not have enough reliable evidence for a complete assessment.', meaning: meaning };
+    if (risky) {
+      meaning = anySupport
+        ? 'Warning signs remain in what the message asks. Matching contact details cannot clear those signs.'
+        : 'Warning signs remain in what the message asks. Judge it by those signs, not by how official it looks.';
+    }
+    if (conflict) meaning += ' Contact details also conflict with our stored list. That conflict blocks a match. This checker cannot resolve it from the available evidence.';
+    return { description: description, meaning: meaning };
   }
 
   function warnings(result, ctx) {
     var list = [];
     var flagWarnings = result.requestRisk.flags.map(function (f) { return FLAG_WARNINGS[f.id]; });
-    if (result.assessment !== 'details_match') list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the organization using a website, app, statement, or number you already trust.");
+    if (result.assessment !== 'details_match') list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the person or organization using a website, app, statement, or number you already trust.");
+    // Name each lookalike address so the person knows exactly what not to open.
+    conflicts(result).forEach(function (c) {
+      if (c.strength === 'strong' && c.target) list.push('Do not open or reply to ' + c.target + '. It looks like a known address but is not on our list for that organization.');
+    });
     if (result.assessment !== 'details_match' && result.checks.some(function (c) { return c.code === 'nothing_to_check'; }) && (flagWarnings.length || result.requestRisk.unresolved.length)) list.push('Do not act on this request until you check independently.');
     list = list.concat(flagWarnings);
     if (result.assessment === 'details_match' && !flagWarnings.length) list.push('Even when details match, never share passwords or codes.');
@@ -182,7 +221,7 @@
     if (org) {
       steps.push('Contact ' + org.displayName + ' using a number you already trust, such as the one on your card, bill or statement.');
       steps.push('If you need their website, type ' + primary(org) + ' yourself instead of tapping a link.');
-    } else if (result.requestRisk.flags.some(function (f) { return f.id === 'family_emergency'; })) {
+    } else if (result.requestRisk.flags.some(function (f) { return f.id === 'family_emergency' || f.id === 'new_number'; })) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
       steps.push('Contact the organization using contact details you already trust, not the ones in the message.');
