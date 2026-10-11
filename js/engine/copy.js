@@ -145,7 +145,9 @@
   var RULE_ASKS = {
     'T1-GIFT': 'asks you to pay with gift cards or share gift-card codes',
     'T1-WIRE': 'pressures you to send cryptocurrency or a wire transfer',
-    'T1-REMOTE': 'pressures you to let someone control your device'
+    'T1-REMOTE': 'pressures you to let someone control your device',
+    'T1-CODE': 'asks you to give a sign-in code, PIN or password to the sender',
+    'T1-DOMAIN': 'uses a link or address built to imitate a known organization'
   };
 
   function joinPhrases(list) {
@@ -162,12 +164,12 @@
     var anySupport = result.checks.some(function (c) { return c.status === 'SUPPORTS'; });
     if (result.assessment === 'suspicious') {
       var asks = [];
-      result.requestRisk.established.forEach(function (e) {
+      result.evidence.findings.filter(function (f) { return f.tier === 1 && f.status === 'established'; }).forEach(function (e) {
         var phrase = RULE_ASKS[e.ruleId];
         if (phrase && asks.indexOf(phrase) < 0) asks.push(phrase);
       });
       return {
-        description: 'This message ' + (asks.length ? joinPhrases(asks) : 'asks for a high-risk action') + '. Fraudsters often ask for this.',
+        description: 'This message ' + (asks.length ? joinPhrases(asks) : 'asks for a high-risk action') + '. ' + (asks.length > 1 ? 'These are frequent fraud patterns.' : 'This is a frequent fraud pattern.'),
         meaning: anySupport
           ? 'A contact detail matches our stored list, but that cannot cancel this warning. Real addresses can be copied into a fake message. Check independently before acting.'
           : 'Check independently before acting. Use a phone number or website you already trust.'

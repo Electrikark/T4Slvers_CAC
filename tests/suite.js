@@ -28,7 +28,9 @@ window.runEngineTests = function () {
     var flagIds = (risk.flags || []).map(function (f) { return f.id; });
     (expect.flags || []).forEach(function (f) { if (flagIds.indexOf(f) < 0) problems.push('missing flag ' + f + ' (got ' + (flagIds.join(', ') || 'none') + ')'); });
     (expect.notFlags || []).forEach(function (f) { if (flagIds.indexOf(f) >= 0) problems.push('unexpected flag ' + f); });
-    var ruleIds = risk.established.map(function (e) { return e.ruleId; });
+    // Tier 1 can come from the wording (requestRisk) or from a contact (T1-DOMAIN).
+    var ruleIds = risk.established.map(function (e) { return e.ruleId; }).concat((result.evidence ? result.evidence.findings : [])
+      .filter(function (f) { return f.tier === 1 && f.status === 'established'; }).map(function (f) { return f.ruleId; }));
     (expect.rules || []).forEach(function (id) { if (ruleIds.indexOf(id) < 0) problems.push('missing rule ' + id); });
     (expect.notRules || []).forEach(function (id) { if (ruleIds.indexOf(id) >= 0) problems.push('unexpected rule ' + id); });
     if (expect.unresolved && !risk.unresolved.length) problems.push('missing unresolved risk');
