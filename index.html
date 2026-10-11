@@ -52,27 +52,20 @@
       <div class="submission-card">
         <form id="submission-form" novalidate>
           <h2>Let’s take a look</h2>
-          <p class="muted">How would you like to share it?</p>
-          <div class="input-options" role="group" aria-label="Choose input type">
-            <button type="button" id="paste-option" class="option active" aria-pressed="true" aria-controls="paste-panel">
-              <span aria-hidden="true">Aa</span>Paste a message<br>or link
-            </button>
-            <button type="button" id="upload-option" class="option" aria-pressed="false" aria-controls="upload-panel">
-              <span aria-hidden="true">▧</span>Choose a<br>screenshot
-            </button>
-          </div>
+          <fieldset id="channel-question" class="channel-question" aria-describedby="channel-hint error">
+            <legend>Where did you get this?</legend>
+            <div class="channel-options">
+              <button type="button" id="channel-text" class="option" aria-pressed="false">Text</button>
+              <button type="button" id="channel-email" class="option" aria-pressed="false">Email</button>
+              <button type="button" id="channel-unknown" class="option" aria-pressed="false">Not sure</button>
+            </div>
+            <p id="channel-hint" class="hint">Choose one before checking.</p>
+          </fieldset>
           <div id="paste-panel">
             <label for="message">Your message or link</label>
             <textarea id="message" rows="5" placeholder="Paste the message or link here…" aria-describedby="input-hint character-count error" spellcheck="false" autocapitalize="off"></textarea>
             <p id="character-count" class="character-count"></p>
-            <p id="input-hint" class="hint">Leave out passwords, account details, and real verification codes.</p>
-          </div>
-          <div id="upload-panel" hidden>
-            <label for="screenshot">Choose a screenshot</label>
-            <input id="screenshot" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="file-hint file-name error">
-            <p id="file-hint" class="hint">PNG, JPG, or WebP, up to 10 MB. Images are not read or analyzed.</p>
-            <p id="file-name" class="file-name" aria-live="polite">No screenshot selected.</p>
-            <button type="button" id="remove-file" class="text-button" hidden>Remove screenshot</button>
+            <p id="input-hint" class="hint">Copy from the original text or email. Leave out passwords, account details, and real verification codes.</p>
           </div>
           <p id="example-loaded" class="example-loaded" hidden></p>
           <p id="error" class="error" role="alert"></p>
@@ -148,7 +141,7 @@
     <details class="demo-tools" id="demo-tools">
       <summary>Demo examples <span>For workshop testing</span></summary>
       <div class="demo-inner">
-        <p>Load an example, then choose “Check this.” Text examples run through the local rules. The screenshot example is scripted; selected images are never read.</p>
+        <p>Load an example, choose its listed channel, then choose “Check this.” Each example runs through the local rules.</p>
         <div id="scenario-buttons" class="scenario-buttons"></div>
         <button type="button" id="reset" class="text-button">Reset for the next participant</button>
       </div>

@@ -56,7 +56,7 @@ window.TFS_REAL_CASES = [
     "id": "R05",
     "text": "Visit https://www.dmv.ca.gov/portal/ to renew",
     "expect": {
-      "state": "match",
+      "state": "unknown",
       "codes": [
         "domain_official"
       ],
@@ -92,7 +92,7 @@ window.TFS_REAL_CASES = [
     "id": "R08",
     "text": "From support@chase.com: your statement is ready",
     "expect": {
-      "state": "match",
+      "state": "unknown",
       "codes": [
         "domain_official"
       ]
@@ -103,7 +103,7 @@ window.TFS_REAL_CASES = [
     "id": "R09",
     "text": "IRS FINAL NOTICE: You owe back taxes. Pay with gift cards or a warrant will be issued. Call 888-555-0100",
     "expect": {
-      "state": "unknown",
+      "state": "mismatch",
       "codes": [
         "phone_not_on_file"
       ],
@@ -161,7 +161,7 @@ window.TFS_REAL_CASES = [
     "id": "R13",
     "text": "Chase: We noticed a new sign-in. Review it at https://www.chase.com/personal/security. A team member will call you; read them the code we text you.",
     "expect": {
-      "state": "match",
+      "state": "unknown",
       "codes": [
         "domain_official"
       ],
@@ -176,7 +176,7 @@ window.TFS_REAL_CASES = [
     "id": "R14",
     "text": "hxxps://chase[.]com is the real site",
     "expect": {
-      "state": "match",
+      "state": "unknown",
       "codes": [
         "domain_official"
       ]

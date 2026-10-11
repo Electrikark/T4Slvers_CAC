@@ -22,7 +22,7 @@ window.TFS_REAL_CASES.push(
   { id: 'G20', text: 'Chase: Never share your code, but read me the code.', expect: { state: 'unknown', flags: ['share_code'], risk: 'high' }, guards: 'A contrast clause cannot inherit a negation' },
   { id: 'G21', text: 'USPS: https://tools.usps.com/go/TrackConfirmAction', expect: { state: 'match', risk: 'none' }, guards: 'Ordinary listed delivery links retain a narrow address match' },
   { id: 'G25', text: 'Chase: https://chase.com https://chase.com\\@evil.example', expect: { state: 'unknown', codes: ['domain_official', 'link_unreadable'] }, guards: 'A malformed target is not deduplicated against a listed host' },
-  { id: 'G23', text: 'Please send it by Zelle: https://chase.com', expect: { state: 'match', flags: ['peer_payment'], notCodes: ['domain_belongs_to_other_org'] }, guards: 'A payment service named early is not the sender' },
-  { id: 'G24', text: 'Can you help me with Apple pie? https://chase.com', expect: { state: 'match', notCodes: ['domain_belongs_to_other_org'], risk: 'none' }, guards: 'A brand mentioned as a topic is not a sender' },
+  { id: 'G23', text: 'Please send it by Zelle: https://chase.com', expect: { state: 'unknown', flags: ['peer_payment'], notCodes: ['domain_belongs_to_other_org'] }, guards: 'A payment service named early is not the sender' },
+  { id: 'G24', text: 'Can you help me with Apple pie? https://chase.com', expect: { state: 'unknown', notCodes: ['domain_belongs_to_other_org'], risk: 'none' }, guards: 'A brand mentioned as a topic is not a sender' },
   { id: 'G22', text: 'Chase: https://chase.com <img src=x onerror=alert(1)>', expect: { state: 'match', risk: 'none' }, guards: 'Markup is input text, never executed by the engine' }
 );

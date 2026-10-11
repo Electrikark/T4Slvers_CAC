@@ -333,7 +333,7 @@ window.TFS_CASES = [
     "id": "T18",
     "text": "Example Bank: Call us at (202) 555-0123 and read us the code we sent you. Do not tell anyone, including your family.",
     "expect": {
-      "state": "match",
+      "state": "unknown",
       "codes": [
         "phone_official"
       ],

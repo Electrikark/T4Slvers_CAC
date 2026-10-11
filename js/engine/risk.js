@@ -1,6 +1,5 @@
-/* Request signals: what a message asks for, separate from who it claims to be.
-   Exposes TFS.requestSignals(maskedText) -> { level, flags: [{ id, level, words }] }.
-   Every pattern uses bounded gaps ({0,40}) and stays inside one sentence, so it runs in linear time. */
+/* English request rules, with exact source spans and separate Tier 1 findings.
+   Contact tokens are masked at the same offsets before clause detection. */
 (function (root) {
   'use strict';
   var T = root.TFS = root.TFS || {};
@@ -12,18 +11,8 @@
 
   // Each flag: id, level, and patterns. The first pattern that matches supplies the quoted words.
   var FLAGS = [
-    { id: 'gift_card_payment', level: 'high', patterns: [
-      re('\\b(?:buy|purchase|pay|paid|send|redeem|scratch)\\b' + GAP + '\\b(?:gift ?cards?|itunes cards?|google play cards?|steam cards?|prepaid cards?|vanilla cards?|ebay cards?)\\b'),
-      re('\\b(?:gift ?cards?|prepaid cards?)\\b' + GAP + '\\b(?:numbers?|codes?|pins?|back of the card)\\b')
-    ] },
-    { id: 'crypto_or_wire', level: 'high', patterns: [
-      re('\\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|bitcoin atm|crypto atm|wire transfer|wire the money|western union|moneygram)\\b')
-    ] },
     { id: 'share_code', level: 'high', negatable: true, patterns: [
-      re('\\b(?:read|tell|give|send|share|provide|reply with|text|forward|say)\\b(?:\\s+(?:us|me|them|him|her|it|back))?\\s+(?:the|your|that|this)?\\s*(?:\\w+\\s+)?(?:code|pin|otp|passcode|password|verification number|security code)\\b')
-    ] },
-    { id: 'remote_access', level: 'high', patterns: [
-      re('\\b(?:anydesk|teamviewer|logmein|ultraviewer|supremo|quick ?assist|remote (?:access|control|desktop|session)|screen ?shar(?:e|ing))\\b')
+      re('\\b(?:read|tell|give|send|share|provide|reply with|text|forward|say)\\b(?:\\s+(?:us|me|them|him|her|it|back))?\\s+(?:the|your|that|this|their)?\\s*(?:\\w+\\s+)?(?:codes?|pins?|otp|passcodes?|passwords?|verification numbers?|security codes?)\\b')
     ] },
     { id: 'arrest_threat', level: 'high', patterns: [
       re('\\b(?:arrest(?:ed)?|warrant|lawsuit|legal action|jail|deport(?:ed|ation)?)\\b')
@@ -67,36 +56,191 @@
     ] }
   ];
 
-  // Only a negation in the same clause can cancel a request.
-  function isNegated(text, index) {
-    var clause = text.slice(Math.max(0, index - 80), index).split(/[.!?;,\n]|\b(?:but|instead|however|then)\b/i).pop();
-    return /\b(?:never|not|don't|dont|won't|cannot|can't)\b(?:\s+[a-z']+){0,6}\s*$/i.test(clause);
+  var ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant)\b/gi;
+  var GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?)\b/i;
+  var CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?)\b/i;
+  var SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
+  var WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|western union|moneygram)\b/i;
+  var REMOTE = /\b(?:anydesk|teamviewer|logmein|ultraviewer|supremo|quick ?assist|remote (?:access|control|desktop|session)|screen[ -]?shar(?:e|ing)|(?:your|the|my) screen)\b/i;
+  var PURPOSE = /\b(?:payment|pay|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?|(?:restore|release|unlock)(?:\s+\w+){0,3}\s+account)\b/i;
+  var REPORT = /\b(?:scam{2}ers?|fraudsters?|criminals?|an example scam|example (?:message|scam)|beware of|watch (?:out )?for|never ask you to|will not ask you to)\b/i;
+  var NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
+  var PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
+  var URGENT = /\b(?:urgent(?:ly)?|right now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
+  var THREAT = /\b(?:arrest(?:ed)?|jail|fines?|account(?:\s+\w+){0,3}\s+(?:closed|closure|locked|loss)|lose (?:your )?(?:funds|money)|loss of (?:funds|money)|service disconnection|(?:device|computer)(?:\s+\w+){0,3}\s+locked)\b/i;
+
+  function span(raw, start, end) { return { start: start, end: end, quote: raw.slice(start, end) }; }
+
+  function clausesOf(text) {
+    var cuts = /[.!?;\n]|\b(?:but|however|instead)\b/gi;
+    var clauses = [], start = 0, m;
+    var ranges = [], quotes = /["“]([^"”]*)["”]/g, q;
+    while ((q = quotes.exec(text)) !== null) {
+      var prefix = text.slice(Math.max(0, q.index - 120), q.index).split(/[.!?;\n]/).pop();
+      if (REPORT.test(prefix) || /\b(?:example|warning|says?|said|quoted)\b/i.test(prefix)) ranges.push({ start: q.index, end: q.index + q[0].length });
+    }
+    while ((m = cuts.exec(text)) !== null) {
+      if (m[0] === '.' && /\d/.test(text.charAt(m.index - 1)) && /\d/.test(text.charAt(m.index + 1))) continue;
+      if (text.slice(start, m.index).trim()) clauses.push({ start: start, end: m.index, text: text.slice(start, m.index) });
+      start = m.index + m[0].length;
+    }
+    if (text.slice(start).trim()) clauses.push({ start: start, end: text.length, text: text.slice(start) });
+    clauses.forEach(function (c) {
+      c.inReport = ranges.some(function (r) { return c.start >= r.start && c.start < r.end; });
+    });
+    return clauses;
   }
 
-  function requestSignals(text) {
-    var flags = [];
+  function reported(clause) {
+    return REPORT.test(clause) || /\b(?:says?|said|reads?|example|quoted|warning)[^.!?]{0,40}["“]/i.test(clause);
+  }
+
+  function negatedAction(prefix) { return NEGATION.test(prefix); }
+
+  function directAction(prefix, priorDemand) {
+    if (negatedAction(prefix) || /["“][^"”]*$/.test(prefix)) return false;
+    var rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
+    if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
+    if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
+    if (/\b(?:do not|don['’]t|dont|never)\s+(?:delay|wait|tell(?:\s+\w+){1,3}|hang up)\s*,\s*$/i.test(rest)) return true;
+    return priorDemand && /(?:\band|\bthen|,)\s*(?:please\s+)?$/i.test(rest);
+  }
+
+  function matchedSpan(raw, clause, hit, offset) {
+    var start = clause.start + (offset || 0) + hit.index;
+    return span(raw, start, start + hit[0].length);
+  }
+
+  function giftPaymentContext(clause, gift, raw) {
+    var offset = gift.end - clause.start;
+    var hit = clause.text.slice(offset).match(/^\s+(?:to (?:pay|cover|settle)\b|(?:as|for)\s+(?:(?:a|the|this|your)\s+)?(?:payment|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?)\b|to (?:restore|release|unlock)(?:\s+\w+){0,3}\s+account\b)/i);
+    return hit ? matchedSpan(raw, clause, hit, offset) : null;
+  }
+
+  function tiedContext(clauses, index, action, raw) {
+    var own = clauses[index], hit;
+    if (!own.inReport && !reported(own.text)) {
+      var pressure = own.text.match(PRESSURE);
+      if (pressure && SECRET.test(own.text.slice(pressure.index + pressure[0].length))) pressure = null;
+      hit = pressure || own.text.match(URGENT) || own.text.match(THREAT);
+      if (hit && !/\b(?:meeting|lunch|birthday|weather)\b/i.test(own.text)) return matchedSpan(raw, own, hit);
+    }
+    for (var d = -1; d <= 1; d += 2) {
+      var other = clauses[index + d];
+      if (!other || other.inReport || reported(other.text)) continue;
+      var text = other.text.trim();
+      hit = other.text.match(PRESSURE);
+      if (hit && !SECRET.test(other.text) && /^(?:(?:please|and)\s+)?(?:(?:do not|don['’]t|dont) tell|keep (?:this|it)|(?:do not|don['’]t|dont) hang up|stay on the line)/i.test(text) && text.length < 100) return matchedSpan(raw, other, hit);
+      hit = other.text.match(URGENT) || other.text.match(THREAT);
+      if (hit && /^(?:urgent\b|(?:do (?:it|this|that)|this is|you must act|otherwise|or\b|your account|you will be arrested|your device|your computer|to avoid)\b)/i.test(text) && !/\b(?:meeting|lunch|birthday|weather)\b/i.test(text)) return matchedSpan(raw, other, hit);
+    }
+    return null;
+  }
+
+  function contextualSignals(text, raw) {
+    var clauses = clausesOf(text), flags = [], established = [], unresolved = [];
+    function flag(id, clause, start, end) {
+      if (!flags.some(function (f) { return f.id === id; })) flags.push({ id: id, level: 'high', words: raw.slice(start, end), start: start, end: end });
+    }
+    function tier1(id, action, clause, object, context, antecedent) {
+      var item = { ruleId: id, action: action, clause: span(raw, clause.start, clause.end), object: object, context: context, directDemand: true, negated: false, reported: false };
+      if (antecedent) item.antecedent = antecedent;
+      established.push(item);
+    }
+    clauses.forEach(function (clause, index) {
+      if (clause.inReport || reported(clause.text)) return;
+      var pattern = new RegExp(ACTIONS.source, 'gi'), m, priorDemand = false;
+      while ((m = pattern.exec(clause.text)) !== null) {
+        var prefix = clause.text.slice(0, m.index);
+        if (!directAction(prefix, priorDemand)) continue;
+        priorDemand = true;
+        var verb = m[0].toLowerCase(), tail = clause.text.slice(m.index + m[0].length);
+        var windowText = tail.slice(0, 40), action = matchedSpan(raw, clause, m), hit;
+        if (/^(?:buy|purchase|pay)$/.test(verb) && (hit = windowText.match(GIFT))) {
+          var gift = matchedSpan(raw, clause, hit, m.index + m[0].length);
+          var paymentContext = giftPaymentContext(clause, gift, raw);
+          if (verb === 'pay' || paymentContext) {
+            flag('gift_card_payment', clause, action.start, gift.end);
+            tier1('T1-GIFT', action, clause, gift, paymentContext);
+          } else if (PURPOSE.test(clause.text)) {
+            unresolved.push({ id: 'unclear_gift_payment_purpose', action: action, clause: span(raw, clause.start, clause.end), object: gift });
+          }
+        }
+        if (/^(?:send|read|give|tell|text|share|provide|reply with)$/.test(verb) && (hit = windowText.match(CODE))) {
+          var code = matchedSpan(raw, clause, hit, m.index + m[0].length);
+          var giftHit = clause.text.match(GIFT), giftClause = clause;
+          if (!giftHit && clauses[index - 1] && !clauses[index - 1].inReport && !reported(clauses[index - 1].text)) {
+            giftClause = clauses[index - 1]; giftHit = giftClause.text.match(GIFT);
+          }
+          var recipient = /\b(?:me|us|to me|to us|back to me|back to us|to (?:the )?(?:requester|caller))\b/i.test(tail.slice(0, 65));
+          var competing = /\b(?:otp|one[ -]time|authorization|verification|password|credit card|debit card)\b/i.test(clause.text + ' ' + (giftClause === clause ? '' : giftClause.text));
+          if (giftHit && recipient && !competing && !/\b(?:checkout|retailer|redeem at)\b/i.test(clause.text)) {
+            var antecedent = matchedSpan(raw, giftClause, giftHit);
+            flag('gift_card_disclosure', clause, action.start, code.end);
+            tier1('T1-GIFT', action, clause, code, null, antecedent);
+          } else if (giftHit && recipient && competing) {
+            unresolved.push({ id: 'competing_card_code_antecedent', action: action, clause: span(raw, clause.start, clause.end) });
+          }
+        }
+        if (/^(?:pay|send|transfer|wire)$/.test(verb)) {
+          hit = windowText.match(WIRE);
+          if (!hit && verb === 'wire') hit = windowText.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
+          if (hit) {
+            var wire = matchedSpan(raw, clause, hit, m.index + m[0].length);
+            flag('crypto_or_wire', clause, action.start, wire.end);
+            var wireContext = tiedContext(clauses, index, action, raw);
+            if (wireContext) tier1('T1-WIRE', action, clause, wire, wireContext);
+          }
+        }
+        if (/^(?:install|download|run|start|allow|grant|share)$/.test(verb) && (hit = windowText.match(REMOTE))) {
+          var remote = matchedSpan(raw, clause, hit, m.index + m[0].length);
+          flag('remote_access', clause, action.start, remote.end);
+          var remoteContext = tiedContext(clauses, index, action, raw);
+          if (remoteContext) tier1('T1-REMOTE', action, clause, remote, remoteContext);
+        }
+      }
+    });
+    return { flags: flags, established: established, unresolved: unresolved, clauses: clauses };
+  }
+
+  // Negation only governs the action it precedes.
+  function isNegated(text, index) {
+    var prefix = text.slice(Math.max(0, index - 80), index).split(/[.!?;,\n]|\b(?:but|instead|however|then)\b/i).pop();
+    return negatedAction(prefix);
+  }
+
+  function requestSignals(text, source) {
+    var raw = typeof source === 'string' ? source : text;
+    var contextual = contextualSignals(text, raw);
+    var flags = contextual.flags;
     FLAGS.forEach(function (flag) {
       for (var p = 0; p < flag.patterns.length; p++) {
         var pattern = new RegExp(flag.patterns[p].source, 'gi');
         var hit = null, m;
         while ((m = pattern.exec(text)) !== null) {
+          var clause = contextual.clauses.filter(function (c) { return m.index >= c.start && m.index < c.end; })[0];
+          if (clause && (clause.inReport || reported(clause.text))) continue;
           if (flag.negatable && isNegated(text, m.index)) continue;
+          if (flag.id === 'share_code' && clause && !directAction(text.slice(clause.start, m.index), /\b(?:please|call|read|send|share)\b/i.test(text.slice(clause.start, m.index)))) continue;
           // Advice to protect a code is not a demand to hide a payment or conversation.
           if (flag.id === 'secrecy' && /^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length))) continue;
           hit = m;
           break;
         }
         if (!hit) continue;
-        flags.push({ id: flag.id, level: flag.level, words: hit[0].trim().slice(0, 80) });
+        flags.push({ id: flag.id, level: flag.level, words: raw.slice(hit.index, hit.index + hit[0].length), start: hit.index, end: hit.index + hit[0].length });
         break;
       }
+    });
+    flags = flags.filter(function (f) {
+      return f.id !== 'share_code' || !flags.some(function (gift) { return gift.id === 'gift_card_disclosure' && f.start >= gift.start && f.end <= gift.end; });
     });
     var highs = flags.filter(function (f) { return f.level === 'high'; }).length;
     var mediums = flags.filter(function (f) { return f.level === 'medium'; }).length;
     var level = highs > 0 || mediums >= 3 ? 'high' : mediums > 0 ? 'elevated' : 'none';
-    return { level: level, flags: flags };
+    return { level: level, flags: flags, established: contextual.established, unresolved: contextual.unresolved };
   }
 
   T.requestSignals = requestSignals;
-  T.FLAG_IDS = FLAGS.map(function (f) { return f.id; });
+  T.FLAG_IDS = ['gift_card_payment', 'gift_card_disclosure', 'crypto_or_wire', 'remote_access'].concat(FLAGS.map(function (f) { return f.id; }));
 })(typeof window !== 'undefined' ? window : globalThis);

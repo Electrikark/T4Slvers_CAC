@@ -8,7 +8,7 @@ const files = [
   'js/engine/normalize.js', 'js/engine/extract.js', 'js/engine/domain.js',
   'js/engine/risk.js', 'js/engine/aggregate.js', 'js/engine/copy.js',
   'data/store.js', 'js/mockData.js', 'tests/cases.js', 'tests/real-store-cases.js',
-  'tests/regression-cases.js', 'tests/suite.js'
+  'tests/regression-cases.js', 'tests/step1-cases.js', 'tests/suite.js'
 ];
 for (const file of files) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });

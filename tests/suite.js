@@ -2,7 +2,7 @@ window.runEngineTests = function () {
   var RANK = { none: 0, elevated: 1, high: 2 };
   var store = window.TFS_FIXTURE_STORE;
   var engine = window.TfsEngine;
-  var rowsEl = [], invEl = [], realEl = [];
+  var rowsEl = [], invEl = [], realEl = [], stepEl = [];
   var realResults = [];
 
   function addRow(tbody, cells, ok) {
@@ -17,6 +17,7 @@ window.runEngineTests = function () {
     var problems = [];
     if (!result || typeof result !== 'object') return ['analyze did not return an object'];
     if (result.state !== expect.state) problems.push('state is ' + result.state + ', expected ' + expect.state);
+    if (expect.assessment && result.assessment !== expect.assessment) problems.push('assessment differs');
     if (expect.strength && result.strength !== expect.strength) problems.push('strength is ' + result.strength + ', expected ' + expect.strength);
     var codes = codesOf(result);
     (expect.codes || []).forEach(function (c) { if (codes.indexOf(c) < 0) problems.push('missing code ' + c + ' (got ' + (codes.join(', ') || 'none') + ')'); });
@@ -28,11 +29,15 @@ window.runEngineTests = function () {
     var flagIds = (risk.flags || []).map(function (f) { return f.id; });
     (expect.flags || []).forEach(function (f) { if (flagIds.indexOf(f) < 0) problems.push('missing flag ' + f + ' (got ' + (flagIds.join(', ') || 'none') + ')'); });
     (expect.notFlags || []).forEach(function (f) { if (flagIds.indexOf(f) >= 0) problems.push('unexpected flag ' + f); });
+    var ruleIds = risk.established.map(function (e) { return e.ruleId; });
+    (expect.rules || []).forEach(function (id) { if (ruleIds.indexOf(id) < 0) problems.push('missing rule ' + id); });
+    (expect.notRules || []).forEach(function (id) { if (ruleIds.indexOf(id) >= 0) problems.push('unexpected rule ' + id); });
+    if (expect.unresolved && !risk.unresolved.length) problems.push('missing unresolved risk');
     return problems;
   }
 
   function run(text) {
-    return engine.analyze(text, store);
+    return engine.analyze(text, store, { declaredChannel: 'unknown' });
   }
 
   if (!engine || typeof engine.analyze !== 'function') {
@@ -61,7 +66,7 @@ window.runEngineTests = function () {
     window.TFS_REAL_CASES.forEach(function (c) {
       realTotal += 1;
       var problems;
-      try { var r = engine.analyze(c.text, window.TFS_STORE); realResults.push(r); problems = judge(r, c.expect); }
+      try { var r = engine.analyze(c.text, window.TFS_STORE, { declaredChannel: 'unknown' }); realResults.push(r); problems = judge(r, c.expect); }
       catch (err) { problems = ['threw: ' + (err && err.message ? err.message : err)]; }
       var ok = problems.length === 0;
       if (ok) realPassed += 1;
@@ -69,9 +74,28 @@ window.runEngineTests = function () {
     });
   }
 
+  window.TFS_STEP1_CASES.forEach(function (c) {
+    var problems;
+    try {
+      var r = engine.analyze(c.text, store, { declaredChannel: c.channel || 'text' });
+      realResults.push(r);
+      problems = judge(r, c.expect);
+      if (!engine.validateResult(r)) problems.push('invalid result shape');
+      r.requestRisk.flags.forEach(function (f) { if (c.text.slice(f.start, f.end) !== f.words) problems.push('flag source differs'); });
+      r.requestRisk.established.forEach(function (e) {
+        [e.action, e.clause, e.object, e.context, e.antecedent].filter(Boolean).forEach(function (s) {
+          if (c.text.slice(s.start, s.end) !== s.quote) problems.push('rule source differs');
+        });
+        if (e.ruleId === 'T1-GIFT' && e.antecedent && !/gift[ -]?card/i.test(e.antecedent.quote)) problems.push('missing gift antecedent');
+      });
+      if (r.state !== 'match' && !r.actionWarnings.some(function (w) { return w.indexOf("Don't use the links or numbers") === 0; })) problems.push('protective advice missing');
+    } catch (err) { problems = ['threw: ' + err.message]; }
+    addRow(stepEl, [c.id, problems.length ? 'FAIL' : 'PASS', c.text, problems.length ? problems.join('; ') : c.guards], !problems.length);
+  });
+
   var fixtureResults = results;
   results = results.concat(realResults);
-  var caseIds = window.TFS_CASES.concat(window.TFS_REAL_CASES).map(function (c) { return c.id; });
+  var caseIds = window.TFS_CASES.concat(window.TFS_REAL_CASES, window.TFS_STEP1_CASES).map(function (c) { return c.id; });
   var invPassed = 0, invTotal = 0;
   function invariant(name, fn) {
     invTotal += 1;
@@ -102,12 +126,12 @@ window.runEngineTests = function () {
     });
     return bad.length ? ['contradiction ignored in ' + bad.join(', ')] : [];
   });
-  invariant('3 No targets, no verdict', function () {
+  invariant('3 No targets cannot match; independent risk can warn', function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
       var codes = r ? codesOf(r) : [];
-      if (r && codes.indexOf('nothing_to_check') >= 0 && r.state !== 'unknown') bad.push(caseIds[i]);
+      if (r && codes.indexOf('nothing_to_check') >= 0 && r.state !== 'unknown' && !r.requestRisk.established.length) bad.push(caseIds[i]);
     });
     return bad.length ? ['verdict without targets in ' + bad.join(', ')] : [];
   });
@@ -115,7 +139,7 @@ window.runEngineTests = function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
-      if (r && /\b(safe|verified|legitimate)\b/i.test(JSON.stringify(r))) bad.push(caseIds[i]);
+      if (r && /\b(safe|verified|legitimate)\b/i.test(JSON.stringify(r).replace('We have not verified who sent this message.', ''))) bad.push(caseIds[i]);
     });
     return bad.length ? ['reassurance word in ' + bad.join(', ')] : [];
   });
@@ -123,9 +147,9 @@ window.runEngineTests = function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
-      if (r && r.state === 'match' && r.requestRisk && r.requestRisk.level !== 'none' && !(r.actionWarnings && r.actionWarnings.length)) bad.push(caseIds[i]);
+      if (r && r.state === 'match' && (r.requestRisk.flags.length || r.requestRisk.unresolved.length)) bad.push(caseIds[i]);
     });
-    return bad.length ? ['match with request signals but no warning in ' + bad.join(', ')] : [];
+    return bad.length ? ['match with risk signals in ' + bad.join(', ')] : [];
   });
   invariant('6 Never throws on odd input', function () {
     var odd = ['', '   ', 'x'.repeat(100000), '\u{1F600}\u{1F600}\u{1F600}', 'שלום مرحبا', 'a\u0000b', 'lone \uD800 surrogate'];
@@ -164,21 +188,29 @@ window.runEngineTests = function () {
       Object.assign({}, good, { checks: [null] }),
       Object.assign({}, good, { channel: undefined }),
       Object.assign({}, good, { nextSteps: [] }),
+      Object.assign({}, good, { checks: [{ status: 'UNKNOWN', code: 'nothing_to_check', detail: 'No contact', source: 'Test' }] }),
+      Object.assign({}, good, { requestRisk: Object.assign({}, good.requestRisk, { level: 'high' }) }),
+      Object.assign({}, good, { reputationLookup: { status: 'clean' } }),
       Object.assign({}, good, { requestRisk: { level: 'high', flags: [null] } })];
     return bad.some(function (r) { return engine.validateResult(r); }) ? ['accepted a malformed result'] : [];
   });
-  invariant('11 Image results have a valid shape', function () {
-    return engine.validateResult(window.screenshotResult) && engine.validateResult(window.demoScenarios.screenshot.result) ? [] : ['invalid image result'];
+  invariant('11 Required channel rejects missing and invalid choices', function () {
+    var options = [undefined, {}, { declaredChannel: 'constructor' }, { declaredChannel: 'sms' }, { declaredChannel: ['text'] }, { declaredChannel: new String('text') }];
+    var accepted = options.some(function (o) { try { engine.analyze('Chase: https://chase.com', store, o); return true; } catch (err) { return false; } });
+    return accepted ? ['invalid channel accepted'] : [];
   });
-  invariant('12 A selected image invents no sender', function () {
-    return /Chase|chase\.com/.test(JSON.stringify(window.screenshotResult)) ? ['sample identity leaked into a file result'] : [];
+  invariant('12 Each declared channel survives analysis', function () {
+    return ['text', 'email', 'unknown'].some(function (ch) {
+      return engine.analyze('Chase: https://chase.com', store, { declaredChannel: ch }).declaredChannel !== ch;
+    }) ? ['channel lost'] : [];
   });
   invariant('13 Partial input cannot match', function () {
     return results.some(function (r) { return r.incomplete && r.state === 'match'; }) ? ['partial input matched'] : [];
   });
   return { groups: [
-    { name: 'Spec cases', rows: rowsEl },
+    { name: 'Legacy baseline cases', rows: rowsEl },
     { name: 'Reference-list and regression cases', rows: realEl },
+    { name: 'v1.2 step 1 cases', rows: stepEl },
     { name: 'Invariants', rows: invEl }
   ] };
 };

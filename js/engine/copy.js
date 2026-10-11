@@ -50,6 +50,8 @@
         return t + ' is listed for ' + orgName(org) + ', but its source record still needs review. We cannot count it as a match.';
       case 'input_incomplete':
         return 'Part of this input exceeds the checker’s limits. A partial check cannot establish a full match. Paste a shorter message or one complete link.';
+      case 'risk_unresolved':
+        return 'A requested action has more than one possible meaning. This uncertainty blocks a contact-details match.';
       case 'phone_not_on_file':
         return t + ' is not on our list' + (org ? ' for ' + orgName(org) : '') + '. That alone does not mean it is fake.';
       case 'free_email_address':
@@ -101,12 +103,13 @@
 
   var FLAG_WARNINGS = {
     gift_card_payment: 'Do not send gift card numbers to someone demanding payment. Contact the organization independently.',
+    gift_card_disclosure: 'Do not send or read gift-card numbers, PINs, or codes to the requester. Check with the person through a number you already trust.',
     crypto_or_wire: 'Requests to pay with cryptocurrency, a crypto ATM or a wire transfer are a frequent scam pattern.',
     share_code: 'Keep sign-in codes private. Do not read or send them to a caller, even if they say they work for your bank.',
     remote_access: 'Do not let anyone you did not contact yourself control your computer or phone.',
     arrest_threat: 'A threat of arrest or legal action is a reason to pause and contact the office independently.',
     secrecy: 'Being told to keep something secret from your family or your bank is a warning sign.',
-    family_emergency: 'If someone says they are family and in trouble, hang up and call that person on the number you already know.',
+    family_emergency: 'If someone says they are family and in trouble, check with that person through a number you already know.',
     pay_fee: 'Be careful with surprise fees, fines or tolls that must be paid through a link.',
     urgency: 'Pressure to act fast is a warning sign. Take your time.',
     account_locked: 'Messages about a locked or suspended account are often used to rush people.',
@@ -119,6 +122,7 @@
 
   var FLAG_LABELS = {
     gift_card_payment: 'Payment with gift cards',
+    gift_card_disclosure: 'Sending gift-card numbers or codes',
     crypto_or_wire: 'Payment by crypto or wire transfer',
     share_code: 'Sharing a code or password',
     remote_access: 'Control of your device',
@@ -140,6 +144,12 @@
     var name = org ? org.displayName : null;
     var codes = result.checks.map(function (c) { return c.code; });
     if (result.state === 'mismatch') {
+      if (result.requestRisk.established.length) {
+        return {
+          description: 'The message asks for an action that meets a concrete risk rule.',
+          meaning: 'Matching contact details cannot cancel this action warning. Check independently before acting.'
+        };
+      }
       if (result.strength === 'strong') {
         return {
           description: 'An address resembles one on our list, but the details differ.',
@@ -153,7 +163,7 @@
     }
     if (result.state === 'match') {
       return {
-        description: 'The address details we extracted match our stored list for ' + name + '.',
+        description: 'Contact details match our stored list. We have not verified who sent this message.',
         meaning: 'This checks written address details only. It does not confirm the sender or inspect pages, redirects, or hidden links. A real address can be copied into a deceptive message.'
       };
     }
@@ -163,17 +173,15 @@
     else if (codes.indexOf('nothing_to_check') >= 0) meaning = 'Without a link, email address or phone number, there is nothing to compare. Judge it by what it asks you to do.';
     else if (codes.indexOf('phone_not_on_file') >= 0) meaning = 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.';
     else if (codes.indexOf('user_content_platform') >= 0) meaning = 'A page on a site where anyone can publish does not show who made it.';
-    return { description: 'We do not have enough information to check who sent this.', meaning: meaning };
+    if (result.requestRisk.flags.length || result.requestRisk.unresolved.length) meaning = 'Risk signals remain in the requested action. Matching contact details cannot clear those signals.';
+    return { description: 'We do not have enough reliable evidence for a complete assessment.', meaning: meaning };
   }
 
   function warnings(result, ctx) {
     var list = [];
     var flagWarnings = result.requestRisk.flags.map(function (f) { return FLAG_WARNINGS[f.id]; });
-    if (result.state === 'match' && flagWarnings.length) {
-      list.push('The details match, but the wording includes a reason for caution. Read the action advice below.');
-    }
-    if (result.state === 'mismatch') list.push('Do not open the link, call the number, or reply to this message.');
-    if (result.state === 'unknown') list.push('Pause before opening links or sharing personal details.');
+    if (result.state !== 'match') list.push("Don't use the links or numbers in this message. Contact the organization using a website, app, statement, or number you already trust.");
+    if (result.state !== 'match' && result.checks.some(function (c) { return c.code === 'nothing_to_check'; }) && (flagWarnings.length || result.requestRisk.unresolved.length)) list.push('Do not act on this request until you check independently.');
     list = list.concat(flagWarnings);
     if (result.state === 'match' && !flagWarnings.length) list.push('Even when details match, never share passwords or codes.');
     return list;
@@ -187,6 +195,8 @@
     if (org) {
       steps.push('Contact ' + org.displayName + ' using a number you already trust, such as the one on your card, bill or statement.');
       steps.push('If you need their website, type ' + primary(org) + ' yourself instead of tapping a link.');
+    } else if (result.requestRisk.flags.some(function (f) { return f.id === 'family_emergency'; })) {
+      steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
       steps.push('Contact the organization using contact details you already trust, not the ones in the message.');
     }

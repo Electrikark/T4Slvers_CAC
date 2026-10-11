@@ -242,11 +242,20 @@ h2 {
   font-size:1rem;
 }
 
-.input-options {
-  display:grid;
-  grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
-  gap:12px;
+.channel-question {
+  border:0;
+  padding:0;
   margin:24px 0;
+}
+.channel-question legend {
+  font-size:1rem;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.channel-options {
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:12px;
 }
 
 .option {
@@ -950,7 +959,7 @@ summary span {
   .source, .hint, .privacy { font-size:1rem; }
 }
 @media (max-width:360px) {
-  .input-options { grid-template-columns:1fr; }
+  .channel-options { grid-template-columns:1fr; }
   .submission-card { padding:18px; }
 }
 @media (forced-colors:active) {
