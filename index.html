@@ -15,6 +15,7 @@
   <script defer src="js/engine/aggregate.js"></script>
   <script defer src="js/engine/copy.js"></script>
   <script defer src="data/store.js"></script>
+  <script defer src="js/selfCheck.js"></script>
   <script defer src="js/mockData.js"></script>
   <script defer src="js/app.js"></script>
 </head>
@@ -134,6 +135,22 @@
           <p class="hint">Use contact details you already trust, such as the number on your bank card.</p>
         </aside>
       </div>
+      <section id="self-check" class="self-check" aria-labelledby="self-check-title">
+        <h2 id="self-check-title">Did you check it yourself?</h2>
+        <p class="self-check-intro">This app cannot confirm who sent a message. You can. Contact them using details you had before this message arrived, then tell us what you found out.</p>
+        <fieldset class="self-check-step">
+          <legend id="method-title" tabindex="-1">How did you check?</legend>
+          <div id="method-options" class="self-check-options"></div>
+        </fieldset>
+        <fieldset id="answer-step" class="self-check-step" hidden>
+          <legend id="answer-title" tabindex="-1">What did they tell you?</legend>
+          <div id="answer-options" class="self-check-options"></div>
+        </fieldset>
+        <div id="self-check-outcome" class="self-check-outcome" hidden>
+          <h3 id="outcome-title" tabindex="-1"></h3>
+          <ul id="outcome-lines"></ul>
+        </div>
+      </section>
       <div class="result-bottom">
         <p id="result-scope">Local text comparison only. The sender was not checked.</p>
         <button id="start-again" class="primary" type="button">Check another message <span aria-hidden="true">→</span></button>
