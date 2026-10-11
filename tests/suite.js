@@ -224,6 +224,7 @@ window.runEngineTests = function () {
     { name: 'Reference-list and regression cases', rows: realEl },
     { name: 'v1.2 step 1 cases', rows: stepEl },
     { name: 'Invariants', rows: invEl },
-    { name: 'Single assessment gate', rows: window.runAssessmentTests(window.TfsAssessment) }
+    { name: 'Single assessment gate', rows: window.runAssessmentTests(window.TfsAssessment) },
+    { name: 'Self-check step', rows: window.runSelfCheckTests() }
   ] };
 };
