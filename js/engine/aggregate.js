@@ -33,11 +33,11 @@
     // Risk evidence uses the supplied source, before legacy contact normalization.
     var raw = input == null ? '' : String(input);
     var bounded = raw.slice(0, T.MAX_CHARS);
-    var riskTargets = T.extractTargets(bounded);
-    if (riskTargets.incomplete && !checks.some(function (c) { return c.code === 'input_incomplete'; })) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
-    var signals = T.requestSignals(riskTargets.masked, bounded);
+    // Curly apostrophes, invisible characters and fullwidth letters must not hide a request.
+    var signals = T.sourceSignals(bounded);
+    if (signals.incomplete && !checks.some(function (c) { return c.code === 'input_incomplete'; })) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
     if (signals.unresolved.length) checks.push({ status: 'UNKNOWN', code: 'risk_unresolved' });
-    var incomplete = norm.truncated || extracted.incomplete || riskTargets.incomplete;
+    var incomplete = norm.truncated || extracted.incomplete || signals.incomplete;
     var evidence = T.normalizeEvidence(checks, {
       explicit: Boolean(claim.org), recognizedOrg: claim.org ? claim.org.id : null
     }, Boolean(ctx.implicitOrg), signals, incomplete);
@@ -109,7 +109,7 @@
     if (!r.requestRisk || !Object.prototype.hasOwnProperty.call(LEVELS, r.requestRisk.level) || !Array.isArray(r.requestRisk.flags)) return false;
     if (!Array.isArray(r.requestRisk.established) || !Array.isArray(r.requestRisk.unresolved)) return false;
     if (!r.requestRisk.established.every(function (e) {
-      return e && ['T1-GIFT', 'T1-WIRE', 'T1-REMOTE'].indexOf(e.ruleId) >= 0 && e.action && isText(e.action.quote) && e.clause && isText(e.clause.quote);
+      return e && e.ruleId !== 'T1-DOMAIN' && gate.TIER1_RULES.indexOf(e.ruleId) >= 0 && e.action && isText(e.action.quote) && e.clause && isText(e.clause.quote);
     })) return false;
     if (!r.requestRisk.flags.every(function (f) {
       return f && isText(f.id) && isText(f.label) && isText(f.words) && isText(f.explanation) && ['medium', 'high'].indexOf(f.level) >= 0;
