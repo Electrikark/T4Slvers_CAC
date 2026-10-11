@@ -31,11 +31,14 @@ window.runSelfCheckTests = function () {
       assert(o.kind === 'not_independent', String(answer) + ': ' + o.kind);
     });
   });
-  test('S3 They did not send it: delete and report', function () {
+  test('S3 They did not send it: report first, then delete', function () {
     var o = check.outcome('card', 'denied', usps);
     assert(o.kind === 'not_them', o.kind);
     says(o, '7726');
     says(o, 'reportfraud.ftc.gov');
+    var all = o.lines.join(' ');
+    // Deleting first removes what the person needs to forward (FTC: report it, then delete it).
+    assert(all.indexOf('7726') < all.toLowerCase().indexOf('delete'), 'deletion comes before reporting');
   });
   test('S4 Still unsure keeps the pause', function () {
     assert(check.outcome('app', 'unsure', usps).kind === 'still_unsure', 'pause lost');
@@ -91,6 +94,22 @@ window.runSelfCheckTests = function () {
         });
       });
     });
+  });
+  test('S13 Typing an address from the message is not independent', function () {
+    var methods = check.methodsFor(lookalike);
+    var site = methods.filter(function (m) { return m.id === 'app'; })[0];
+    var fromMessage = methods.filter(function (m) { return m.id === 'message'; })[0];
+    // A typed website counts only if the person knew it before the message arrived.
+    assert(/already knew/.test(site.label + ' ' + site.hint), 'website method does not require prior knowledge: ' + site.label);
+    assert(!/\btyped the website\b/i.test(site.label), 'any typed website still counts');
+    assert(/even if I typed it/i.test(fromMessage.hint), 'typed message address not named as dependent: ' + fromMessage.hint);
+    assert(!fromMessage.independent, 'message address counted');
+  });
+  test('S14 The message\'s own addresses are named in that choice', function () {
+    var hint = check.methodsFor(lookalike).filter(function (m) { return m.id === 'message'; })[0].hint;
+    assert(hint.indexOf('chase-secure-login.net') >= 0, 'lookalike address not named: ' + hint);
+    var none = check.methodsFor(gift).filter(function (m) { return m.id === 'message'; })[0].hint;
+    assert(/even if I typed it/i.test(none), 'hint without addresses: ' + none);
   });
   test('S12 Unknown choices are rejected', function () {
     var threw = 0;
