@@ -243,9 +243,11 @@
     }
 
     // 6. An official domain used as the start of a different site: chase.com.account-verify.net
+    // A country form of the same name (amazon.com.au) is not this trick; the label rules judge it.
     var dotted = '.' + host + '.';
     for (var s = 0; s < store.orgs.length; s++) {
       var sd = (store.orgs[s].officialDomains || []).filter(function (d) {
+        if (countryForm(host, d)) return false;
         return dotted.indexOf('.' + d + '.') >= 0 || ('.' + host).indexOf('.' + d + '-') >= 0;
       })[0];
       if (sd) return make('CONTRADICTS', 'official_domain_as_subdomain', merge(base, { strength: 'strong', orgId: store.orgs[s].id, lookalikeOf: sd }));
@@ -324,6 +326,11 @@
 
     // 12 and 13. Nothing to compare against.
     return make('UNKNOWN', 'no_claimed_identity', base);
+  }
+
+  function countryForm(host, domain) {
+    var tail = ('.' + host).slice(-(domain.length + 4));
+    return tail.slice(0, domain.length + 1) === '.' + domain && /^\.[a-z]{2}$/.test(tail.slice(domain.length + 1));
   }
 
   function merge(a, b) {
