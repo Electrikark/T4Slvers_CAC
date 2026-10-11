@@ -1,0 +1,9 @@
+{
+  "name": "tech-for-silvers",
+  "version": "0.4.0",
+  "private": true,
+  "scripts": {
+    "build:gate": "node scripts/build-assessment.cjs",
+    "test": "node scripts/build-assessment.cjs --check && node tests/run-node.cjs"
+  }
+}

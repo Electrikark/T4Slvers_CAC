@@ -15,10 +15,13 @@ python3 -m http.server 8000 --bind 127.0.0.1
 Visit `http://localhost:8000`. Open `tests/run.html` for browser test results. With Node installed:
 
 ```sh
+npm test
+# Without npm, run the same dependency-free checks:
+node scripts/build-assessment.cjs --check
 node tests/run-node.cjs
 ```
 
-There are 111 engine checks: 20 legacy baseline, 41 reference/regression, 37 focused step-1 cases, and 13 invariants. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
+The recorded eac1229 baseline passes all 111 checks. Step 1 now has 139 shared checks: the original 111 (with contract updates), plus 28 gate and integration checks. The Node runner also runs those 28 checks with the source gate and compares its assessment and trace with the browser wrapper. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
 
 ## Analysis contract
 
@@ -27,13 +30,19 @@ window.TfsEngine.analyze(text, store, { declaredChannel: 'text' });
 // declaredChannel must be 'text', 'email', or 'unknown'.
 ```
 
-Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.3.0 and schema version 2.
+Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.4.0 and schema version 3.
 
-- Suspicious: an established contextual risk or existing contact contradiction takes priority.
-- Details Match: all contact checks support a named claim, with no detected risk, unresolved risk, or incomplete input. The trusted-reference gate still needs repair, so this is not full v1.2 conformance.
-- Insufficient Evidence: neither result threshold passes. Risk or uncertainty cannot retain a match.
+- `suspicious`: established Tier 1 takes priority over contact support, missing contacts, and uncertainty.
+- `details_match`: an explicit recognized sender, at least one contact verified for that sender, all contacts verified for that sender, and no findings or uncertainty. The adapter preserves legacy contact-verification semantics; this is not full v1.2 conformance.
+- `insufficient_evidence`: neither threshold passes. Every finding blocks a match, including Tier 2 and unresolved Tier 1. Legacy contact conflicts are Tier 2 until the reference prerequisites for T1-DOMAIN exist.
 
-Internal state values remain `mismatch`, `match`, and `unknown`. `assessment` provides the visible spec label. `requestRisk.established` retains rule IDs and raw evidence spans. `requestRisk.unresolved` and `decision.matchBlockers` retain uncertainty. Contact comparisons cannot erase a qualifying risk demand.
+`assessment` is the sole verdict. `trace` is returned unchanged by `assess(evidence)`; it holds winning rule IDs or blocker codes. There is no separate `state` or `decision` field. Only `js/app.js` maps canonical values to visible labels, symbols, and existing CSS classes. Risk severity can decorate advice but cannot change the label.
+
+`evidence` retains sender identity, contacts with organization IDs and original supporting checks, normalized findings, and uncertainty. Findings preserve rule support and existing raw spans. Contact extraction supplies no offsets, so conflict spans stay `null` with explicit uncertainty. Missing contacts stay empty. Inferred senders have a null sender ID and `inferred_sender` uncertainty. `requestRisk` and rendered `checks` preserve existing explanations.
+
+`validateResult` checks the assessment enum, evidence shape, display/evidence consistency, and the same gate's output. It is a wiring check, not independent proof of policy. U1–U10 have hand-written expected assessments and trace codes. E1 runs the real engine and already establishes T1-GIFT; it must remain Suspicious.
+
+`src/assessment.js` is the supplied gate verbatim. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. The classic-script browser artifact is checked for freshness by `npm test`; stale output fails instead of silently using old policy. No packages are required. Both browser and Node load the same detector and adapter. There is no separate browser-only grounding path here; the broader frozen-spec grounding port is still open work.
 
 ## Main files
 
@@ -43,7 +52,9 @@ Internal state values remain `mismatch`, `match`, and `unknown`. `assessment` pr
 | `js/app.js` | Validation, rendering, focus, reset |
 | `js/mockData.js` | Seven text examples; each runs through the real engine |
 | `js/engine/risk.js` | Contextual gift-card, wire/crypto, remote-access rules and caution flags |
-| `js/engine/aggregate.js` | Assessment priority, risk gate, public analysis boundary, result validation |
+| `src/assessment.js`, `scripts/build-assessment.cjs` | Sole assessment gate and generated browser wrapper |
+| `js/engine/evidence.js` | Legacy evidence adapter; no verdict logic |
+| `js/engine/aggregate.js` | Public analysis boundary and result validation |
 | `js/engine/copy.js` | Evidence explanations and shared protective advice |
 | `js/engine/normalize.js`, `extract.js`, `domain.js` | Legacy contact paths still being brought into conformance |
 | `data/store.js` | Legacy records: 46 organizations and 61 website names |
@@ -56,6 +67,8 @@ Paste directly from original digital text. The form rejects more than 20,000 cha
 No screenshot controls or scripted image results remain. Demo examples state a channel but leave its selection to the person. Reset clears input, channel, rendered result, and active example. Nothing is stored in app storage. Pasted markup is rendered as text.
 
 ## Release boundaries
+
+This checkpoint covers Step 1 only. The earlier channel controls and screenshot removal are preserved; it does not finish the broader frozen-spec implementation.
 
 The app has not passed full v1.2 conformance or locked field evaluation. Some unreviewed legacy records can still support contacts; phone lists are empty. Legacy contact normalization, sender-role checks, and domain rules remain open work. The parser uses a limited suffix list and character map.
 

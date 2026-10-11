@@ -1,3 +1,4 @@
+// Schema v3: assert canonical assessment; contact strength remains evidence, not a verdict.
 /* Tech for Silvers engine: the 20 must-pass cases and the fixture store they run against.
    A case asserts only the fields it lists. codes are matched against checks[].code.
    Plain script that sets window globals, because browsers block fetch() on file:// pages. */
@@ -121,7 +122,7 @@ window.TFS_CASES = [
     "id": "T01",
     "text": "Chase: Your statement is ready. View it at https://www.chase.com/personal/online-banking",
     "expect": {
-      "state": "match",
+      "assessment": "details_match",
       "codes": [
         "domain_official"
       ],
@@ -133,8 +134,8 @@ window.TFS_CASES = [
     "id": "T02",
     "text": "Chase: Your account has been locked. Sign in at chase-secure-login.net to restore access.",
     "expect": {
-      "state": "mismatch",
-      "strength": "strong",
+      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "contactStrength": "strong",
       "codes": [
         "brand_in_foreign_domain"
       ],
@@ -149,8 +150,8 @@ window.TFS_CASES = [
     "id": "T03",
     "text": "Chase alert: verify your login at https://chase.com.account-verify.net/login",
     "expect": {
-      "state": "mismatch",
-      "strength": "strong",
+      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "contactStrength": "strong",
       "codes": [
         "official_domain_as_subdomain"
       ]
@@ -161,8 +162,8 @@ window.TFS_CASES = [
     "id": "T04",
     "text": "PayPal: confirm your payment at https://paypal.com@pay-secure.example/confirm",
     "expect": {
-      "state": "mismatch",
-      "strength": "strong",
+      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "contactStrength": "strong",
       "codes": [
         "userinfo_trick"
       ]
@@ -173,8 +174,8 @@ window.TFS_CASES = [
     "id": "T05",
     "text": "Chase: sign in at https://ch\u0430se.com",
     "expect": {
-      "state": "mismatch",
-      "strength": "strong",
+      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "contactStrength": "strong",
       "codes": [
         "homoglyph"
       ]
@@ -185,8 +186,8 @@ window.TFS_CASES = [
     "id": "T06",
     "text": "Amazon: your order shipped. Track it at https://www.amazom.com/track",
     "expect": {
-      "state": "mismatch",
-      "strength": "strong",
+      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "contactStrength": "strong",
       "codes": [
         "typosquat"
       ]
@@ -197,7 +198,7 @@ window.TFS_CASES = [
     "id": "T07",
     "text": "UPS: Your package is arriving. Track it at https://www.groups.com/track",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "not_in_official_list"
       ],
@@ -212,7 +213,7 @@ window.TFS_CASES = [
     "id": "T08",
     "text": "Amazon: Your order cannot ship. Update payment at https://order-help.example/pay",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "not_in_official_list"
       ]
@@ -223,8 +224,8 @@ window.TFS_CASES = [
     "id": "T09",
     "text": "USPS: Your parcel is delayed. See https://www.ups.com/track",
     "expect": {
-      "state": "mismatch",
-      "strength": "moderate",
+      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "contactStrength": "moderate",
       "codes": [
         "domain_belongs_to_other_org"
       ],
@@ -238,7 +239,7 @@ window.TFS_CASES = [
     "id": "T10",
     "text": "USPS: Your package is on hold. Reschedule at https://bit.ly/3xYz",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "shortener_unresolvable"
       ]
@@ -249,7 +250,7 @@ window.TFS_CASES = [
     "id": "T11",
     "text": "Chase: See https://www.chase.com/alerts or https://bit.ly/3xYz",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "domain_official",
         "shortener_unresolvable"
@@ -261,7 +262,7 @@ window.TFS_CASES = [
     "id": "T12",
     "text": "Google: Your storage is full. Fix it at https://docs.google.com/forms/d/e/1FAIpQLSabc/viewform",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "user_content_platform"
       ]
@@ -272,7 +273,7 @@ window.TFS_CASES = [
     "id": "T13",
     "text": "Microsoft: Review your account activity at https://account.microsoft.com/security",
     "expect": {
-      "state": "match",
+      "assessment": "details_match",
       "codes": [
         "domain_official"
       ],
@@ -284,7 +285,7 @@ window.TFS_CASES = [
     "id": "T14",
     "text": "Example Bank: Questions about your card? Call (202) 555-0123.",
     "expect": {
-      "state": "match",
+      "assessment": "details_match",
       "codes": [
         "phone_official"
       ],
@@ -296,7 +297,7 @@ window.TFS_CASES = [
     "id": "T15",
     "text": "Example Bank: Fraud alert. Call (202) 555-0148 now.",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "phone_not_on_file"
       ],
@@ -308,20 +309,20 @@ window.TFS_CASES = [
     "id": "T16",
     "text": "Example Bank: Call (202) 555-0123 or visit https://examplebank-secure.example",
     "expect": {
-      "state": "mismatch",
-      "strength": "strong",
+      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "contactStrength": "strong",
       "codes": [
         "brand_in_foreign_domain",
         "phone_official"
       ]
     },
-    "guards": "A contradicting check outranks a supporting one"
+    "guards": "A contact conflict blocks a match despite a supporting check"
   },
   {
     "id": "T17",
     "text": "Example Bank: Your code is 482910. Never share this code with anyone.",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "nothing_to_check"
       ],
@@ -333,7 +334,7 @@ window.TFS_CASES = [
     "id": "T18",
     "text": "Example Bank: Call us at (202) 555-0123 and read us the code we sent you. Do not tell anyone, including your family.",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "phone_official"
       ],
@@ -349,7 +350,7 @@ window.TFS_CASES = [
     "id": "T19",
     "text": "MICROSOFT SECURITY ALERT: Your device is locked! Call (202) 555-0199 now. Pay a support fee and grant remote access.",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "phone_not_on_file"
       ],
@@ -365,7 +366,7 @@ window.TFS_CASES = [
     "id": "T20",
     "text": "hello grandma, dinner at 6?",
     "expect": {
-      "state": "unknown",
+      "assessment": "insufficient_evidence",
       "codes": [
         "nothing_to_check"
       ],

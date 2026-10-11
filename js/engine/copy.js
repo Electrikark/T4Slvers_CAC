@@ -140,28 +140,14 @@
   };
 
   function describe(result, ctx) {
-    var org = ctx.claimOrg || ctx.implicitOrg;
-    var name = org ? org.displayName : null;
     var codes = result.checks.map(function (c) { return c.code; });
-    if (result.state === 'mismatch') {
-      if (result.requestRisk.established.length) {
-        return {
-          description: 'The message asks for an action that meets a concrete risk rule.',
-          meaning: 'Matching contact details cannot cancel this action warning. Check independently before acting.'
-        };
-      }
-      if (result.strength === 'strong') {
-        return {
-          description: 'An address resembles one on our list, but the details differ.',
-          meaning: 'Lookalike names can be misleading. This is a reason to pause and contact the organization independently.'
-        };
-      }
+    if (result.assessment === 'suspicious') {
       return {
-        description: 'This message does not match the official addresses we have on file' + (name ? ' for ' + name : '') + '.',
-        meaning: 'Our list can be missing an address, so treat this as a strong warning sign rather than proof.'
+        description: 'The message asks for an action that meets a concrete risk rule.',
+        meaning: 'Matching contact details cannot cancel this action warning. Check independently before acting.'
       };
     }
-    if (result.state === 'match') {
+    if (result.assessment === 'details_match') {
       return {
         description: 'Contact details match our stored list. We have not verified who sent this message.',
         meaning: 'This checks written address details only. It does not confirm the sender or inspect pages, redirects, or hidden links. A real address can be copied into a deceptive message.'
@@ -174,16 +160,17 @@
     else if (codes.indexOf('phone_not_on_file') >= 0) meaning = 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.';
     else if (codes.indexOf('user_content_platform') >= 0) meaning = 'A page on a site where anyone can publish does not show who made it.';
     if (result.requestRisk.flags.length || result.requestRisk.unresolved.length) meaning = 'Risk signals remain in the requested action. Matching contact details cannot clear those signals.';
+    if (result.checks.some(function (c) { return c.status === 'CONTRADICTS'; })) meaning += ' Contact details also conflict with our stored list. That conflict blocks a match. This checker cannot resolve it from the available evidence.';
     return { description: 'We do not have enough reliable evidence for a complete assessment.', meaning: meaning };
   }
 
   function warnings(result, ctx) {
     var list = [];
     var flagWarnings = result.requestRisk.flags.map(function (f) { return FLAG_WARNINGS[f.id]; });
-    if (result.state !== 'match') list.push("Don't use the links or numbers in this message. Contact the organization using a website, app, statement, or number you already trust.");
-    if (result.state !== 'match' && result.checks.some(function (c) { return c.code === 'nothing_to_check'; }) && (flagWarnings.length || result.requestRisk.unresolved.length)) list.push('Do not act on this request until you check independently.');
+    if (result.assessment !== 'details_match') list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the organization using a website, app, statement, or number you already trust.");
+    if (result.assessment !== 'details_match' && result.checks.some(function (c) { return c.code === 'nothing_to_check'; }) && (flagWarnings.length || result.requestRisk.unresolved.length)) list.push('Do not act on this request until you check independently.');
     list = list.concat(flagWarnings);
-    if (result.state === 'match' && !flagWarnings.length) list.push('Even when details match, never share passwords or codes.');
+    if (result.assessment === 'details_match' && !flagWarnings.length) list.push('Even when details match, never share passwords or codes.');
     return list;
   }
 
