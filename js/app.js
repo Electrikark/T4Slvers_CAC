@@ -87,10 +87,10 @@ function loadScenario(id) {
   submitButton.focus();
 }
 
-const stateDetails = {
-  mismatch: { title: 'Suspicious', label: 'PAUSE BEFORE ACTING', symbol: '!' },
-  match: { title: 'Details Match', label: 'CONTACT DETAILS ONLY', symbol: '=' },
-  unknown: { title: 'Insufficient Evidence', label: 'UNRESOLVED · PAUSE BEFORE ACTING', symbol: '?' }
+const assessmentDetails = {
+  suspicious: { css: 'mismatch', title: 'Suspicious', label: 'PAUSE BEFORE ACTING', symbol: '!' },
+  details_match: { css: 'match', title: 'Details Match', label: 'CONTACT DETAILS ONLY', symbol: '=' },
+  insufficient_evidence: { css: 'unknown', title: 'Insufficient Evidence', label: 'UNRESOLVED · PAUSE BEFORE ACTING', symbol: '?' }
 };
 
 function textElement(tag, text, className) {
@@ -101,11 +101,11 @@ function textElement(tag, text, className) {
 }
 
 function renderResult(result) {
-  const state = stateDetails[result.state];
+  const state = assessmentDetails[result.assessment];
   const flags = result.requestRisk.flags;
   const risky = result.requestRisk.level !== 'none';
   const highRisk = result.requestRisk.level === 'high';
-  byId('result-banner').className = `result-banner ${result.state}${risky ? ' risky' : ''}`;
+  byId('result-banner').className = `result-banner ${state.css}${risky ? ' risky' : ''}`;
   byId('state-symbol').textContent = state.symbol;
   byId('state-label').textContent = highRisk ? `${state.label} · ACTION WARNING` : state.label;
   byId('result-title').textContent = state.title;

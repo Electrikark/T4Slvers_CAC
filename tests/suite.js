@@ -16,9 +16,8 @@ window.runEngineTests = function () {
   function judge(result, expect) {
     var problems = [];
     if (!result || typeof result !== 'object') return ['analyze did not return an object'];
-    if (result.state !== expect.state) problems.push('state is ' + result.state + ', expected ' + expect.state);
-    if (expect.assessment && result.assessment !== expect.assessment) problems.push('assessment differs');
-    if (expect.strength && result.strength !== expect.strength) problems.push('strength is ' + result.strength + ', expected ' + expect.strength);
+    if (expect.assessment && result.assessment !== expect.assessment) problems.push('assessment is ' + result.assessment + ', expected ' + expect.assessment);
+    if (expect.contactStrength && !result.checks.some(function (c) { return c.strength === expect.contactStrength; })) problems.push('missing contact strength ' + expect.contactStrength);
     var codes = codesOf(result);
     (expect.codes || []).forEach(function (c) { if (codes.indexOf(c) < 0) problems.push('missing code ' + c + ' (got ' + (codes.join(', ') || 'none') + ')'); });
     (expect.notCodes || []).forEach(function (c) { if (codes.indexOf(c) >= 0) problems.push('forbidden code ' + c); });
@@ -88,7 +87,7 @@ window.runEngineTests = function () {
         });
         if (e.ruleId === 'T1-GIFT' && e.antecedent && !/gift[ -]?card/i.test(e.antecedent.quote)) problems.push('missing gift antecedent');
       });
-      if (r.state !== 'match' && !r.actionWarnings.some(function (w) { return w.indexOf("Don't use the links or numbers") === 0; })) problems.push('protective advice missing');
+      if (r.assessment !== 'details_match' && !r.actionWarnings.some(function (w) { return w.indexOf("Don't use any contact information") === 0; })) problems.push('protective advice missing');
     } catch (err) { problems = ['threw: ' + err.message]; }
     addRow(stepEl, [c.id, problems.length ? 'FAIL' : 'PASS', c.text, problems.length ? problems.join('; ') : c.guards], !problems.length);
   });
@@ -110,7 +109,7 @@ window.runEngineTests = function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
-      if (r && r.state === 'match') {
+      if (r && r.assessment === 'details_match') {
         var checks = r.checks || [];
         var allSupport = checks.length > 0 && checks.every(function (k) { return k.status === 'SUPPORTS'; });
         if (!allSupport || !r.claimedIdentity || r.claimedIdentity === 'Not stated') bad.push(caseIds[i]);
@@ -118,28 +117,30 @@ window.runEngineTests = function () {
     });
     return bad.length ? ['match without full support in ' + bad.join(', ')] : [];
   });
-  invariant('2 Contradiction wins', function () {
+  // spec v1.2: only established Tier 1 wins; legacy contact conflicts block a match.
+  invariant('2 Established Tier 1 wins', function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
-      if (r && (r.checks || []).some(function (k) { return k.status === 'CONTRADICTS'; }) && r.state !== 'mismatch') bad.push(caseIds[i]);
+      if (r && r.evidence.findings.some(function (f) { return f.tier === 1 && f.status === 'established'; }) && r.assessment !== 'suspicious') bad.push(caseIds[i]);
     });
-    return bad.length ? ['contradiction ignored in ' + bad.join(', ')] : [];
+    return bad.length ? ['established Tier 1 ignored in ' + bad.join(', ')] : [];
   });
   invariant('3 No targets cannot match; independent risk can warn', function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
       var codes = r ? codesOf(r) : [];
-      if (r && codes.indexOf('nothing_to_check') >= 0 && r.state !== 'unknown' && !r.requestRisk.established.length) bad.push(caseIds[i]);
+      if (r && codes.indexOf('nothing_to_check') >= 0 && r.assessment !== 'insufficient_evidence' && !r.requestRisk.established.length) bad.push(caseIds[i]);
     });
     return bad.length ? ['verdict without targets in ' + bad.join(', ')] : [];
   });
+  // Schema v3: the internal 'verified' contact enum is not a user-facing assurance.
   invariant('4 No reassurance words', function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
-      if (r && /\b(safe|verified|legitimate)\b/i.test(JSON.stringify(r).replace('We have not verified who sent this message.', ''))) bad.push(caseIds[i]);
+      if (r && /\b(safe|verified|legitimate)\b/i.test(JSON.stringify(Object.assign({}, r, { evidence: undefined })).replace('We have not verified who sent this message.', ''))) bad.push(caseIds[i]);
     });
     return bad.length ? ['reassurance word in ' + bad.join(', ')] : [];
   });
@@ -147,7 +148,7 @@ window.runEngineTests = function () {
     if (results.some(function (r) { return !r; })) return ['engine returned no result for some cases'];
     var bad = [];
     results.forEach(function (r, i) {
-      if (r && r.state === 'match' && (r.requestRisk.flags.length || r.requestRisk.unresolved.length)) bad.push(caseIds[i]);
+      if (r && r.assessment === 'details_match' && (r.requestRisk.flags.length || r.requestRisk.unresolved.length)) bad.push(caseIds[i]);
     });
     return bad.length ? ['match with risk signals in ' + bad.join(', ')] : [];
   });
@@ -156,7 +157,7 @@ window.runEngineTests = function () {
     var bad = [];
     odd.forEach(function (t, i) {
       var r = run(t);
-      if (!r || typeof r !== 'object' || !r.state) bad.push('input ' + i);
+      if (!r || typeof r !== 'object' || !r.assessment) bad.push('input ' + i);
     });
     return bad.length ? ['no valid result for ' + bad.join(', ')] : [];
   });
@@ -184,7 +185,7 @@ window.runEngineTests = function () {
 
   invariant('10 Malformed results fail closed', function () {
     var good = fixtureResults[0];
-    var bad = [null, {}, Object.assign({}, good, { state: 'constructor' }),
+    var bad = [null, {}, Object.assign({}, good, { assessment: 'constructor' }),
       Object.assign({}, good, { checks: [null] }),
       Object.assign({}, good, { channel: undefined }),
       Object.assign({}, good, { nextSteps: [] }),
@@ -205,12 +206,13 @@ window.runEngineTests = function () {
     }) ? ['channel lost'] : [];
   });
   invariant('13 Partial input cannot match', function () {
-    return results.some(function (r) { return r.incomplete && r.state === 'match'; }) ? ['partial input matched'] : [];
+    return results.some(function (r) { return r.incomplete && r.assessment === 'details_match'; }) ? ['partial input matched'] : [];
   });
   return { groups: [
     { name: 'Legacy baseline cases', rows: rowsEl },
     { name: 'Reference-list and regression cases', rows: realEl },
     { name: 'v1.2 step 1 cases', rows: stepEl },
-    { name: 'Invariants', rows: invEl }
+    { name: 'Invariants', rows: invEl },
+    { name: 'Single assessment gate', rows: window.runAssessmentTests(window.TfsAssessment) }
   ] };
 };
