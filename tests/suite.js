@@ -32,6 +32,9 @@ window.runEngineTests = function () {
     (expect.rules || []).forEach(function (id) { if (ruleIds.indexOf(id) < 0) problems.push('missing rule ' + id); });
     (expect.notRules || []).forEach(function (id) { if (ruleIds.indexOf(id) >= 0) problems.push('unexpected rule ' + id); });
     if (expect.unresolved && !risk.unresolved.length) problems.push('missing unresolved risk');
+    var words = [result.description, result.meaning].concat(result.actionWarnings || [], result.nextSteps || []).join(' ');
+    (expect.says || []).forEach(function (w) { if (words.indexOf(w) < 0) problems.push('missing wording: ' + w); });
+    (expect.neverSays || []).forEach(function (w) { if (words.indexOf(w) >= 0) problems.push('unexpected wording: ' + w); });
     return problems;
   }
 

@@ -21,7 +21,7 @@ node scripts/build-assessment.cjs --check
 node tests/run-node.cjs
 ```
 
-The recorded eac1229 baseline passes all 111 checks. Step 1 now has 139 shared checks: the original 111 (with contract updates), plus 28 gate and integration checks. The Node runner also runs those 28 checks with the source gate and compares its assessment and trace with the browser wrapper. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
+The recorded eac1229 baseline passes all 111 checks. Step 1 now has 149 shared checks: the original 111 (with contract updates), 28 gate and integration checks, and 10 input-robustness and wording checks (N1–N10). The Node runner also runs those 28 checks with the source gate and compares its assessment and trace with the browser wrapper. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
 
 ## Analysis contract
 
@@ -51,7 +51,7 @@ Missing or invalid channel choice is rejected. The form uses large Text / Email 
 | `index.html`, `css/styles.css` | Text input, required channel, responsive result view |
 | `js/app.js` | Validation, rendering, focus, reset |
 | `js/mockData.js` | Seven text examples; each runs through the real engine |
-| `js/engine/risk.js` | Contextual gift-card, wire/crypto, remote-access rules and caution flags |
+| `js/engine/risk.js` | Contextual gift-card, wire/crypto, remote-access rules and caution flags (including the "new number" family opening) |
 | `src/assessment.js`, `scripts/build-assessment.cjs` | Sole assessment gate and generated browser wrapper |
 | `js/engine/evidence.js` | Legacy evidence adapter; no verdict logic |
 | `js/engine/aggregate.js` | Public analysis boundary and result validation |
@@ -62,7 +62,7 @@ Missing or invalid channel choice is rejected. The form uses large Text / Email 
 
 ## Input and reset
 
-Paste directly from original digital text. The form rejects more than 20,000 characters. The engine caps input at 20,000 characters, target tokens at 2,048, and targets at 30; skipped input blocks a full match. Established risk in the inspected portion survives incomplete input.
+Paste directly from original digital text. Risk rules read a folded view of the input: invisible characters are skipped, curly apostrophes and fullwidth letters read as plain ones, and Cyrillic or Greek lookalike letters inside an English word read as Latin. Every quoted span still points at the original characters. The form rejects more than 20,000 characters. The engine caps input at 20,000 characters, target tokens at 2,048, and targets at 30; skipped input blocks a full match. Established risk in the inspected portion survives incomplete input.
 
 No screenshot controls or scripted image results remain. Demo examples state a channel but leave its selection to the person. Reset clears input, channel, rendered result, and active example. Nothing is stored in app storage. Pasted markup is rendered as text.
 

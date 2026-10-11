@@ -25,6 +25,10 @@
     { id: 'family_emergency', level: 'medium', patterns: [
       re('\\b(?:grandma|grandpa|grandmother|grandfather|it\'s me|it is me)\\b[\\s\\S]{0,80}?\\b(?:in trouble|in jail|accident|hospital|arrested|bail|stuck|lawyer)\\b')
     ] },
+    // The opening of the "Hi Mom, new number" impersonation, before any request appears.
+    { id: 'new_number', level: 'medium', patterns: [
+      re("\\b(?:this is my new (?:phone |cell )?number|(?:i (?:got|have) a|my) new (?:phone|cell)? ?number|i (?:lost|dropped|broke) my (?:old )?phone|my (?:old )?phone (?:is )?(?:broken|broke|lost))\\b")
+    ] },
     { id: 'pay_fee', level: 'medium', patterns: [
       re('\\bpay\\b' + GAP + '\\b(?:fees?|fines?|deposit|penalty|penalties|tolls?|charges?)\\b'),
       re('\\b(?:processing|support|service|release|unlock|redelivery|delivery|customs|reactivation) fee\\b')
@@ -241,6 +245,32 @@
     return { level: level, flags: flags, established: contextual.established, unresolved: contextual.unresolved };
   }
 
+  // Rules read T.riskView text; every reported span must point at the original source.
+  function sourceSignals(source) {
+    var raw = source == null ? '' : String(source);
+    var view = T.riskView(raw);
+    var targets = T.extractTargets(view.text);
+    var signals = requestSignals(targets.masked, view.text);
+    signals.incomplete = targets.incomplete;
+    if (view.identity) return signals;
+    function move(s) {
+      if (!s) return s;
+      var moved = T.sourceSpan(view, raw, s.start, s.end);
+      return { start: moved.start, end: moved.end, quote: moved.quote };
+    }
+    signals.flags.forEach(function (f) {
+      var moved = move(f);
+      f.start = moved.start; f.end = moved.end; f.words = moved.quote;
+    });
+    signals.established.concat(signals.unresolved).forEach(function (item) {
+      ['action', 'clause', 'object', 'context', 'antecedent'].forEach(function (key) {
+        if (item[key]) item[key] = move(item[key]);
+      });
+    });
+    return signals;
+  }
+
   T.requestSignals = requestSignals;
+  T.sourceSignals = sourceSignals;
   T.FLAG_IDS = ['gift_card_payment', 'gift_card_disclosure', 'crypto_or_wire', 'remote_access'].concat(FLAGS.map(function (f) { return f.id; }));
 })(typeof window !== 'undefined' ? window : globalThis);
