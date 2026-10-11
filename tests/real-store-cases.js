@@ -5,7 +5,10 @@ window.TFS_REAL_CASES = [
     "id": "R01",
     "text": "FasTrak: You have an unpaid toll of $4.15. Pay within 24 hours to avoid a fine: https://fastrak-ca-tolls.com/pay",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus a toll lure word. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "brand_in_foreign_domain"
@@ -18,7 +21,10 @@ window.TFS_REAL_CASES = [
     "id": "R02",
     "text": "USPS: Your package could not be delivered. Update your address: https://usps.com-redelivery.top/track",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: official domain glued to another site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "official_domain_as_subdomain"
@@ -30,7 +36,10 @@ window.TFS_REAL_CASES = [
     "id": "R03",
     "text": "PayPal: confirm your identity at https://paypa1.com/login",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: digit 1 swapped for letter l. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "homoglyph"
@@ -42,7 +51,10 @@ window.TFS_REAL_CASES = [
     "id": "R04",
     "text": "DMV: Final notice. Your license will be suspended. Pay fines at https://dmv.ca.gov-xyz.top",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: official domain glued to another site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "official_domain_as_subdomain"
@@ -69,7 +81,10 @@ window.TFS_REAL_CASES = [
     "id": "R06",
     "text": "Wells Fargo alert: https://wellsfargo.secure-account.help/verify",
     "expect": {
-      "assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */,
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus security lure words. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": [
         "brand_in_foreign_domain"
@@ -162,7 +177,10 @@ window.TFS_REAL_CASES = [
     "id": "R13",
     "text": "Chase: We noticed a new sign-in. Review it at https://www.chase.com/personal/security. A team member will call you; read them the code we text you.",
     "expect": {
-      "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-CODE: reading a texted code to a caller. */,
+      "rules": [
+        "T1-CODE"
+      ],
       "codes": [
         "domain_official"
       ],
