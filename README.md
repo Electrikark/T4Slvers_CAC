@@ -21,7 +21,7 @@ node scripts/build-assessment.cjs --check
 node tests/run-node.cjs
 ```
 
-The recorded eac1229 baseline passes all 111 checks. There are now 198 shared checks, including 12 for the self-check step (S1–S12): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 42 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), and one unresolved card-number case. The Node runner also runs the 33 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
+The recorded eac1229 baseline passes all 111 checks. There are now 200 shared checks, including 14 for the self-check step (S1–S14): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 42 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), and one unresolved card-number case. The Node runner also runs the 33 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
 
 ## Analysis contract
 
@@ -71,8 +71,8 @@ The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, 
 
 Below every result, the person can record a check they made themselves. They pick how they checked, and if that check was independent, what they were told. The step never changes the assessment, and the app never claims to confirm a sender.
 
-- A number they already had, the official app or a typed website, or a number they already know for a family member counts as independent. A number or link from the message does not count, whatever they were told.
-- "They did not send it" gives delete-and-report steps (7726 for texts, reportfraud.ftc.gov).
+- A number they already had, the official app or a website they knew before the message arrived, or a number they already know for a family member counts as independent. A number, link or address from the message never counts, even if they typed it in themselves; that choice names the message's own addresses so the difference is concrete.
+- "They did not send it" says to report first (7726 for texts, reportfraud.ftc.gov), then delete, since a deleted text can no longer be forwarded.
 - "They said they sent it" says the confirmation came from the person's own check. If the message made an established Tier 1 request (gift cards, codes, wire or crypto, remote access, a device-alarm callback), it warns instead: no real organization makes that request, so whoever "confirmed" it may be the fraudster. A T1-DOMAIN link stays flagged even when the message itself is confirmed.
 
 ## Input and reset

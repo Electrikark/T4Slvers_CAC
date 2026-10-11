@@ -104,8 +104,8 @@ function chooseMethod(method) {
 }
 
 function resetSelfCheck() {
-  byId('method-options').replaceChildren(...Object.entries(window.TfsSelfCheck.METHODS).map(([method, m]) =>
-    choiceButton(m.label, m.hint, () => chooseMethod(method))));
+  byId('method-options').replaceChildren(...window.TfsSelfCheck.methodsFor(shownResult).map(m =>
+    choiceButton(m.label, m.hint, () => chooseMethod(m.id))));
   byId('answer-options').replaceChildren();
   byId('answer-step').hidden = true;
   byId('self-check-outcome').hidden = true;
@@ -197,8 +197,8 @@ function renderResult(result) {
   byId('next-list').replaceChildren();
   for (const text of result.nextSteps) byId('next-list').append(textElement('li', text));
   byId('paste-link').hidden = !result.offerPaste;
-  resetSelfCheck();
   shownResult = result;
+  resetSelfCheck();
   showScreen('result');
 }
 
