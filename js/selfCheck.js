@@ -1,7 +1,7 @@
 /* "I checked it myself": the person's own independent check, recorded after a result.
    The app never confirms a sender. This step reports what the person found out
    through contact details they already had, and it never changes the assessment.
-   window.TfsSelfCheck = { METHODS, ANSWERS, outcome(method, answer, result) } */
+   window.TfsSelfCheck = { METHODS, ANSWERS, methodsFor(result), outcome(method, answer, result) } */
 (function (root) {
   'use strict';
 
@@ -9,11 +9,12 @@
   var METHODS = {
     card: { label: 'I called a number I already had', hint: 'From my card, bill or statement', independent: true,
       did: 'by calling a number you already had' },
-    app: { label: 'I used the official app or typed the website', hint: 'Not a link from the message', independent: true,
-      did: 'through the official app or a website you typed yourself' },
+    // Typing an address does not make it independent: it must be one they knew before the message.
+    app: { label: 'I used the official app or a website I already knew', hint: 'One I knew before this message arrived', independent: true,
+      did: 'through the official app or a website you already knew' },
     known_person: { label: 'I called the person on a number I know', hint: 'For a message from family or a friend', independent: true,
       did: 'by calling a number you already knew for them' },
-    message: { label: 'I used a number or link from the message', hint: '', independent: false },
+    message: { label: 'I used a number, link or address from the message', hint: 'Even if I typed it in myself', independent: false },
     not_yet: { label: 'I haven’t checked yet', hint: '', independent: false }
   };
 
@@ -32,7 +33,8 @@
     'T1-CALLBACK': 'Real device warnings do not ask you to call a phone number.'
   };
 
-  var REPORT = 'Forward fake texts to 7726 (SPAM) and report fraud at reportfraud.ftc.gov.';
+  // Report before deleting: a deleted text can no longer be forwarded.
+  var REPORT = 'First, report it: forward a fake text to 7726 (SPAM), and report fraud at reportfraud.ftc.gov.';
   var PAID = 'If you already shared information or paid, call your bank right away and ask a trusted person for help.';
 
   function tier1Rules(result) {
@@ -41,6 +43,21 @@
       if (f.tier === 1 && f.status === 'established' && seen.indexOf(f.ruleId) < 0) seen.push(f.ruleId);
     });
     return seen;
+  }
+
+  // The choices, with this message's own contact details named in the one that does not count.
+  function methodsFor(result) {
+    var seen = [];
+    ((result && result.checks) || []).forEach(function (c) {
+      if (c.target && seen.indexOf(c.target) < 0) seen.push(c.target);
+    });
+    return Object.keys(METHODS).map(function (id) {
+      var m = METHODS[id], hint = m.hint;
+      if (id === 'message' && seen.length) {
+        hint = 'Such as ' + seen.slice(0, 2).join(' or ') + ', even if I typed it in myself';
+      }
+      return { id: id, label: m.label, hint: hint, independent: m.independent };
+    });
   }
 
   // Returns { kind, title, lines }. answer is ignored for methods that end the check early.
@@ -55,13 +72,13 @@
     }
     if (!m.independent) {
       return { kind: 'not_independent', title: 'That check does not count yet',
-        lines: ['A number or link from the message can lead straight back to whoever sent it.',
+        lines: ['A number, link or address from the message can lead straight back to whoever sent it, even if you typed it in yourself.',
           'Check again using contact details you had before this message arrived.'] };
     }
     if (!Object.prototype.hasOwnProperty.call(ANSWERS, answer)) throw new Error('Unknown check answer: ' + answer);
     if (answer === 'denied') {
       return { kind: 'not_them', title: 'They did not send this message',
-        lines: ['Delete it and do not reply or use anything in it.', REPORT, PAID] };
+        lines: [REPORT, 'Then delete it. Do not reply or use anything in it.', PAID] };
     }
     if (answer === 'unsure') {
       return { kind: 'still_unsure', title: 'Keep pausing',
@@ -80,9 +97,9 @@
     }
     lines.push(method === 'known_person'
       ? 'Keep talking with them on the number you already know.'
-      : 'To act on it, use the official app or a website you type yourself, not the links in the message.');
+      : 'To act on it, use the official app or a website you already knew, not anything in the message.');
     return { kind: 'confirmed', title: 'You confirmed this ' + m.did, lines: lines };
   }
 
-  root.TfsSelfCheck = { METHODS: METHODS, ANSWERS: ANSWERS, outcome: outcome };
+  root.TfsSelfCheck = { METHODS: METHODS, ANSWERS: ANSWERS, methodsFor: methodsFor, outcome: outcome };
 })(typeof window !== 'undefined' ? window : globalThis);
