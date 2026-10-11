@@ -349,7 +349,10 @@ window.TFS_CASES = [
     "id": "T18",
     "text": "Example Bank: Call us at (202) 555-0123 and read us the code we sent you. Do not tell anyone, including your family.",
     "expect": {
-      "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-CODE: reading a code to the caller. */,
+      "rules": [
+        "T1-CODE"
+      ],
       "codes": [
         "phone_official"
       ],
@@ -365,7 +368,10 @@ window.TFS_CASES = [
     "id": "T19",
     "text": "MICROSOFT SECURITY ALERT: Your device is locked! Call (202) 555-0199 now. Pay a support fee and grant remote access.",
     "expect": {
-      "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-CALLBACK: a device alarm with a number to call. */,
+      "rules": [
+        "T1-CALLBACK"
+      ],
       "codes": [
         "phone_not_on_file"
       ],
