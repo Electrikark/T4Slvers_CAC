@@ -11,7 +11,7 @@ let shownResult = null;
 
 // Future API boundary: return the same validated result shape from this function.
 async function analyzeSubmission(input) {
-  const result = window.TfsEngine.analyze(input.text, window.TFS_STORE, { declaredChannel: input.declaredChannel });
+  const result = window.TfsEngine.analyze(input.text, window.TFS_STORE, { declaredChannel: input.declaredChannel, policies: window.TFS_POLICIES });
   if (!window.TfsEngine.validateResult(result)) throw new Error('Invalid result shape');
   return result;
 }

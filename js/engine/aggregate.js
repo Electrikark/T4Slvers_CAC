@@ -47,9 +47,16 @@
     if (signals.incomplete && !checks.some(function (c) { return c.code === 'input_incomplete'; })) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
     if (signals.unresolved.length) checks.push({ status: 'UNKNOWN', code: 'risk_unresolved' });
     var incomplete = norm.truncated || extracted.incomplete || signals.incomplete;
+    // Reviewed organization policies (T1-POLICY). Drafts never reach the evaluator.
+    var policyView = options.policies ? T.buildPolicyView(options.policies, options.today) : null;
+    var policy = T.evaluatePolicies({
+      raw: bounded, declaredChannel: options.declaredChannel, attribution: attribution, signals: signals,
+      contacts: T.sourceTargets(bounded), view: policyView, answers: options.answers
+    });
+    policy.excluded = policyView ? policyView.excluded.slice() : [];
     var evidence = T.normalizeEvidence(checks, {
       explicit: Boolean(claim.org), recognizedOrg: claim.org ? claim.org.id : null
-    }, Boolean(ctx.implicitOrg), signals, incomplete);
+    }, Boolean(ctx.implicitOrg), signals, incomplete, policy.findings);
     var assessed = gate.assess(evidence);
     gate.assertAssessment(assessed.assessment);
 
@@ -68,6 +75,7 @@
         : claim.generic || 'Not stated',
       claimSource: claim.org ? 'explicit' : ctx.implicitOrg ? 'implicit' : 'none',
       senderAttribution: attribution,
+      policy: policy,
       otherMentions: claim.otherMentions,
       channel: CHANNELS[options.declaredChannel] + ' · ' + T.copy.channel(extracted.targets),
       inspected: extracted.targets.length
@@ -165,7 +173,9 @@
     if (r.checks.some(function (c, index) { return Boolean(c.target) !== seen.has(index); })) return false;
     if (r.incomplete !== r.checks.some(function (c) { return c.code === 'input_incomplete'; })) return false;
     // Rebuild the adapter output to ensure displayed checks and risk retain their evidence.
-    var rebuilt = T.normalizeEvidence(rawChecks, e.sender, r.claimSource === 'implicit', r.requestRisk, r.incomplete);
+    if (!r.policy || !Array.isArray(r.policy.findings) || !Array.isArray(r.policy.trace)) return false;
+    if (!r.policy.findings.every(function (f) { return f && f.ruleId === 'T1-POLICY' && isText(f.policyId) && isText(f.quote); })) return false;
+    var rebuilt = T.normalizeEvidence(rawChecks, e.sender, r.claimSource === 'implicit', r.requestRisk, r.incomplete, r.policy.findings);
     if (!equal(e, rebuilt)) return false;
     // Severity decorates advice only; enforce its shape without deriving an assessment from it.
     var flags = r.requestRisk.flags;
