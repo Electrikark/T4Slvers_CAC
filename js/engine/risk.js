@@ -49,8 +49,8 @@
     ] },
     // A request to sign in, usually through the message's own link. Tier 2: it blocks Details Match.
     { id: 'login_request', level: 'medium', negatable: true, patterns: [
-      re('\\b(?:log|sign)\\s?(?:in|on)(?:to)?\\b(?!-)'),
-      re('\\b(?:by|after|when|before)\\s+(?:logging|signing)\\s+(?:in|on)(?:to)?\\b')
+      re('\\b(?:log|sign)[ \\t-]*(?:in|on)(?:to)?\\b'),
+      re('\\b(?:by|after|when|before)\\s+(?:logging|signing)[ \\t-]*(?:in|on)(?:to)?\\b')
     ] },
     { id: 'prize_refund', level: 'medium', patterns: [
       re("\\b(?:you(?:'ve| have)? won|winner|claim your (?:prize|reward|refund|gift)|sweepstakes|lottery|overpaid|refund (?:is )?(?:pending|available|due))\\b")
@@ -279,11 +279,17 @@
 
   // A login phrase counts only as a demand: "Log in at", "please sign in", "click here to log in",
   // "verify your account by signing in". Notices ("you signed in", "a new sign-in") never match.
-  // Signing in at a front desk is a visit, not an account login.
-  var IN_PERSON_SIGN_IN = /^\s+(?:at|with)\s+(?:the\s+)?(?:front desk|reception|desk|office|counter|check-in|lobby|nurses?['’]? station)\b/i;
+  // Signing in at a front desk is a visit, not an account login. The place must end the
+  // request ("at the office." / "at the office when you arrive"), so "the office portal" still counts.
+  var IN_PERSON_SIGN_IN = /^\s+(?:at|with)\s+(?:the\s+)?(?:front desk|reception(?: desk)?|office|counter|check-in desk|lobby|nurses?['’]? station)(?=\s*(?:[.!?,;]|$)|\s+(?:when|before|upon|after|on arrival|and)\b)/i;
+  // "Sign-in attempt", "sign in code", "sign in successful": a notice about a sign-in, not a request.
+  var LOGIN_NOTICE = /^[ \t]*(?:alerts?|notices?|attempts?|activity|codes?|history|was|has been|detected|confirmed|successful|succeeded|failed|details|information|credentials|problems?|issues?)\b/i;
+  // Negation in the same part of the sentence: "No need to sign in", "Do not click links to log in".
+  var LOGIN_NEGATION = /\b(?:do not|don['’]t|does not|doesn['’]t|did not|didn['’]t|never|no need|not need|not have to|not required|won['’]t|will not|cannot|can['’]t|without)\b/i;
 
   function loginDemand(prefix, phrase) {
-    if (/^(?:by|after|when|before)\s/i.test(phrase)) return !/\b(?:do not|don['’]t|never)\b/i.test(prefix);
+    if (LOGIN_NEGATION.test(prefix.split(',').pop())) return false;
+    if (/^(?:by|after|when|before)\s/i.test(phrase)) return true;
     if (directAction(prefix, true)) return true;
     return /\b(?:click|tap|press|select|visit|go|use|open|follow)\b[^.!?\n]{0,40}\bto\s*$/i.test(prefix) ||
       /\b(?:please|you must|you need to|you have to|you should|need to|have to|required to)\s*$/i.test(prefix);
@@ -310,7 +316,8 @@
           if (clause && (clause.inReport || reported(clause.text))) continue;
           if (flag.negatable && isNegated(text, m.index)) continue;
           if (flag.id === 'login_request' && clause && (!loginDemand(text.slice(clause.start, m.index), m[0]) ||
-              IN_PERSON_SIGN_IN.test(text.slice(m.index + m[0].length, m.index + m[0].length + 40)))) continue;
+              LOGIN_NOTICE.test(text.slice(m.index + m[0].length, m.index + m[0].length + 30)) ||
+              IN_PERSON_SIGN_IN.test(text.slice(m.index + m[0].length, clause.end + 1)))) continue;
           if (flag.id === 'share_code' && clause && !directAction(text.slice(clause.start, m.index), /\b(?:please|call|read|send|share)\b/i.test(text.slice(clause.start, m.index)))) continue;
           // Advice to protect a code is not a demand to hide a payment or conversation.
           if (flag.id === 'secrecy' && /^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length))) continue;
