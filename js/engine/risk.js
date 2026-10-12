@@ -168,7 +168,8 @@
       var other = clauses[index + d];
       if (!other || other.inReport || reported(other.text)) continue;
       var text = other.text.trim();
-      hit = other.text.match(PRESSURE);
+      // Secrecy counts only in the demand's own clause or the clause right after it.
+      hit = d === 1 ? other.text.match(PRESSURE) : null;
       if (hit && !SECRET.test(other.text) && /^(?:(?:please|and)\s+)?(?:(?:do not|don['’]t|dont) tell|keep (?:this|it)|(?:do not|don['’]t|dont) hang up|stay on the line)/i.test(text) && text.length < 100) return matchedSpan(raw, other, hit);
       hit = other.text.match(URGENT) || other.text.match(THREAT);
       if (hit && /^(?:urgent\b|(?:do (?:it|this|that)|this is|you must act|otherwise|or\b|your account|you will be arrested|your device|your computer|to avoid)\b)/i.test(text) && !/\b(?:meeting|lunch|birthday|weather)\b/i.test(text)) return matchedSpan(raw, other, hit);
