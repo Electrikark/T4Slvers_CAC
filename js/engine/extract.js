@@ -86,6 +86,8 @@
         target = { kind: 'link', raw: token, error: 'unreadable' };
       }
       if (target) {
+        // Offsets into the text given to extractTargets (see sourceTargets for the person's text).
+        target.at = [start, start + token.length];
         spans.push([start, start + token.length]);
         var key = target.kind + ':' + (target.error ? target.raw : target.host || target.raw) + ':' + (target.userinfo || '');
         if (!seen[key]) {
@@ -111,7 +113,9 @@
       if (!seen['phone:' + e164]) {
         seen['phone:' + e164] = 1;
         if (targets.length < MAX_TARGETS) {
-          targets.push({ kind: 'phone', raw: p[0].trim(), e164: e164, display: '(' + p[1] + ') ' + p[2] + '-' + p[3] });
+          var lead = p[0].length - p[0].replace(/^\s+/, '').length;
+          var phoneText = p[0].trim();
+          targets.push({ kind: 'phone', raw: phoneText, e164: e164, display: '(' + p[1] + ') ' + p[2] + '-' + p[3], at: [p.index + lead, p.index + lead + phoneText.length] });
         } else incomplete = true;
       }
     }
@@ -139,6 +143,35 @@
     return { org: null, generic: null, otherMentions: [], attribution: attribution };
   }
 
+  /* Contacts with spans in the person's own text: the same extraction as the risk rules use,
+     moved back to source offsets. Every occurrence is listed, repeats included. */
+  function sourceTargets(source) {
+    var raw = source == null ? '' : String(source);
+    var view = T.riskView(raw);
+    var found = [], seen = {};
+    extractTargets(view.text).targets.forEach(function (target) {
+      var moved = T.sourceSpan(view, raw, target.at[0], target.at[1]);
+      found.push({ target: target, start: moved.start, end: moved.end, quote: raw.slice(moved.start, moved.end) });
+      seen[target.kind + ':' + target.at[0]] = 1;
+    });
+    // extractTargets keeps the first copy of a repeated contact; find the later copies too.
+    found.slice().forEach(function (item) {
+      var text = view.text, needle = text.slice(item.target.at[0], item.target.at[1]), from = item.target.at[1], k;
+      while (needle && (k = text.indexOf(needle, from)) >= 0) {
+        from = k + needle.length;
+        var before = text.charAt(k - 1), after = text.charAt(from);
+        if (/[\w.@\/-]/.test(before) || /[\w@\/-]/.test(after)) continue;
+        if (seen[item.target.kind + ':' + k]) continue;
+        seen[item.target.kind + ':' + k] = 1;
+        var moved = T.sourceSpan(view, raw, k, from);
+        found.push({ target: item.target, start: moved.start, end: moved.end, quote: raw.slice(moved.start, moved.end) });
+      }
+    });
+    found.sort(function (a, b) { return a.start - b.start; });
+    return found;
+  }
+
   T.extractTargets = extractTargets;
+  T.sourceTargets = sourceTargets;
   T.findClaim = findClaim;
 })(typeof window !== 'undefined' ? window : globalThis);

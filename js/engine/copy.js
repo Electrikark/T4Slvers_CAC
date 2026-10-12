@@ -152,8 +152,30 @@
     'T1-REMOTE': 'pressures you to let someone control your device',
     'T1-CODE': 'asks you to give a sign-in code, PIN or password to the sender',
     'T1-DOMAIN': 'uses a link or address built to imitate a known organization',
-    'T1-CALLBACK': 'warns about your device and pressures you to call a number'
+    'T1-CALLBACK': 'warns about your device and pressures you to call a number',
+    'T1-POLICY': 'does something its claimed sender has said it never does'
   };
+
+  // What each policy action means, for notes about a broken organization policy.
+  var POLICY_ACTIONS = {
+    link_present: 'include a link',
+    request_code_disclosure: 'ask for a code this way',
+    request_personal_data: 'ask for personal or account details this way',
+    request_payment_gift_card: 'ask for payment with gift cards',
+    request_payment_wire_crypto: 'ask for payment by wire transfer or cryptocurrency',
+    request_remote_access: 'ask to control your device',
+    threaten_arrest_or_penalty: 'threaten arrest or penalties this way',
+    request_move_money: 'ask you to move money',
+    any_contact_on_channel: 'contact people this way'
+  };
+
+  // Fixed template per policy finding: the organization's own words, then what this message does.
+  function policyNote(finding, store) {
+    var org = T.orgById(store, finding.orgId);
+    var name = org ? org.displayName : 'This organization';
+    if (finding.action === 'link_present' && finding.serviceLabel) return name + ' says its ' + finding.serviceLabel + ' never contain a link. This one does.';
+    return name + ' says it will never ' + (POLICY_ACTIONS[finding.action] || 'send a message like this') + '. This message does.';
+  }
 
   function joinPhrases(list) {
     if (list.length < 2) return list.join('');
@@ -216,6 +238,9 @@
       if (c.strength === 'strong' && c.target) list.push('Do not open or reply to ' + c.target + '. It looks like a known address but is not on our list for that organization.');
     });
     if (result.assessment !== 'details_match' && result.checks.some(function (c) { return c.code === 'nothing_to_check'; }) && (flagWarnings.length || result.requestRisk.unresolved.length)) list.push('Do not act on this request until you check independently.');
+    (result.policy ? result.policy.findings : []).forEach(function (f) {
+      if (f.status === 'established') list.push(policyNote(f, ctx.store) + ' Do not use anything in it.');
+    });
     list = list.concat(flagWarnings);
     if (result.assessment === 'details_match' && !flagWarnings.length) list.push('Even when details match, never share passwords or codes.');
     return list;
@@ -257,6 +282,8 @@
     warnings: warnings,
     nextSteps: nextSteps,
     channel: channel,
+    policyNote: policyNote,
+    RULE_ASKS: RULE_ASKS,
     FLAG_WARNINGS: FLAG_WARNINGS,
     FLAG_LABELS: FLAG_LABELS
   };
