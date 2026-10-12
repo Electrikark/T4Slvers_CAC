@@ -5,11 +5,11 @@ const vm = require('node:vm');
 const context = vm.createContext({ URL, performance, console });
 context.window = context;
 const files = [
-  'js/engine/normalize.js', 'js/engine/extract.js', 'js/engine/domain.js', 'js/engine/trusted.js',
+  'js/engine/normalize.js', 'js/engine/extract.js', 'js/engine/sender.js', 'js/engine/domain.js', 'js/engine/trusted.js',
   'js/engine/risk.js', 'js/assessment-gate.js', 'js/engine/evidence.js', 'js/engine/aggregate.js', 'js/engine/copy.js',
   'data/store.js', 'js/selfCheck.js', 'js/mockData.js', 'tests/cases.js', 'tests/real-store-cases.js',
   'tests/regression-cases.js', 'tests/step1-cases.js', 'tests/assessment-cases.js', 'tests/self-check-cases.js',
-  'tests/phase2-harness.js', 'tests/trusted-cases.js', 'tests/suite.js'
+  'tests/phase2-harness.js', 'tests/trusted-cases.js', 'tests/sender-cases.js', 'tests/suite.js'
 ];
 for (const file of files) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });
