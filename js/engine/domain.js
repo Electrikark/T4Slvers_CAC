@@ -338,8 +338,16 @@
      unreviewed list fails closed (no Details Match) instead of open. Conflicts are unaffected. */
   function humanReviewed(org) {
     var review = org && org.humanReview;
-    return Boolean(review && typeof review.reviewer === 'string' && review.reviewer.trim() &&
-      typeof review.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(review.date));
+    return Boolean(review && typeof review.reviewer === 'string' && review.reviewer.trim() && reviewDate(review.date));
+  }
+
+  // A real calendar date (no 2026-02-30), not in the future, and not before this project existed.
+  function reviewDate(value) {
+    var m = typeof value === 'string' && value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return false;
+    var y = +m[1], mo = +m[2], d = +m[3], time = Date.UTC(y, mo - 1, d), day = new Date(time);
+    if (day.getUTCFullYear() !== y || day.getUTCMonth() !== mo - 1 || day.getUTCDate() !== d) return false;
+    return y >= 2020 && time <= Date.now();
   }
 
   function supported(org, code, extra) {
