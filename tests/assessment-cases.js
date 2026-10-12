@@ -227,6 +227,19 @@ window.runAssessmentTests = function (gate) {
     store.orgs[0].humanReview = { reviewer: 'Example Reviewer' };
     same(engine.analyze('Example Bank: Visit https://example.com.', store, { declaredChannel: 'text' }).checks[0].code, 'reference_needs_review', 'review without a date');
   });
+  test('I20 Impossible review dates cannot permit Details Match', function () {
+    ['2026-02-30', '2026-13-45', '2026-00-10', '2025-02-29', '2099-01-01', '1999-12-31', '2026-1-5', ' 2026-10-12', '', null].forEach(function (date) {
+      var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      var r = engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' });
+      same([String(date), r.assessment, r.checks[0].code], [String(date), 'insufficient_evidence', 'reference_needs_review'], 'impossible date accepted');
+    });
+    ['2024-02-29', '2026-10-01'].forEach(function (date) {
+      var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      same(engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' }).assessment, 'details_match', 'real date ' + date);
+    });
+  });
   test('I17 Remote access pressure retains established Tier 1', function () {
     // Both existing demands (install and grant) establish a rule; retain both trace entries.
     engineIs('Example Bank: Install AnyDesk and grant remote access. Keep this between us. Visit https://example.com.', 'suspicious', ['T1-REMOTE', 'T1-REMOTE'], []);
