@@ -119,69 +119,24 @@
   }
 
   /* ---------- Claim ---------- */
-  var compiledCache = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
-
-  function escapeRe(s) {
-    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
-  function compileAliases(store) {
-    if (compiledCache && compiledCache.has(store)) return compiledCache.get(store);
-    var list = [];
-    (store.orgs || []).forEach(function (org) {
-      (org.aliases || []).forEach(function (a) { list.push({ org: org, alias: a, strict: false }); });
-      (org.strictAliases || []).forEach(function (a) { list.push({ org: org, alias: a, strict: true }); });
-    });
-    list.forEach(function (item) {
-      var body = escapeRe(item.alias.trim()).replace(/\s+/g, '\\s+');
-      item.re = new RegExp('(?<![A-Za-z0-9&])' + body + '(?![A-Za-z0-9&])', 'gi');
-    });
-    if (compiledCache) compiledCache.set(store, list);
-    return list;
-  }
-
   var GENERIC_CLAIMS = [
     { re: /\b(?:your|the)\s+(?:bank|credit union|card issuer)\b/i, label: 'Your bank (not named)' },
     { re: /\b(?:tech(?:nical)?\s+support|customer\s+support|help\s+desk|security\s+team)\b/i, label: 'A support service (not named)' },
     { re: /\b(?:toll|tolls)\b/i, label: 'A toll service (not named)' }
   ];
 
-  var SENDER_AFTER = /^\s*(?::|-|\u2013|alert|security|support|team|customer|fraud|account|notice|services?|bank|credit union)/i;
-  var SENDER_BEFORE = /(?:\bfrom|\bthis is|\bwe are|\byour)\s+(?:the\s+)?$/i;
-
-  function senderPosition(text, index, length) {
-    var before = text.slice(Math.max(0, index - 35), index);
-    // A payment method or topic is not a sender, even near the start of a message.
-    if (/\b(?:by|via|using|through|about|with|for|to)\s+$/i.test(before)) return false;
-    if (index < 60 && /^\s*$/.test(text.slice(0, index))) return true;
-    if (SENDER_AFTER.test(text.slice(index + length, index + length + 20))) return true;
-    return SENDER_BEFORE.test(before);
-  }
-
+  // The claimed sender comes only from TFS.attributeSender (sender.js); an address is never a claim.
   function findClaim(masked, store) {
-    var best = null;
-    var mentions = {};
-    compileAliases(store).forEach(function (item) {
-      item.re.lastIndex = 0;
-      var m;
-      while ((m = item.re.exec(masked)) !== null) {
-        if (item.strict && !/[A-Z]/.test(m[0].charAt(0))) continue;
-        mentions[item.org.id] = item.org;
-        // A name counts as the sender only where senders name themselves: near the start,
-        // as a label ("Chase:", "Chase alert"), or after "from" / "this is".
-        if (!senderPosition(masked, m.index, m[0].length)) continue;
-        if (!best || m.index < best.index || (m.index === best.index && m[0].length > best.length)) {
-          best = { org: item.org, index: m.index, length: m[0].length, words: m[0] };
-        }
-      }
-    });
-    var others = Object.keys(mentions).filter(function (id) { return !best || id !== best.org.id; })
-      .map(function (id) { return mentions[id].displayName; });
-    if (best) return { org: best.org, words: best.words, generic: null, otherMentions: others };
+    var orgs = store.orgs || [];
+    var attribution = T.attributeSender(masked, orgs);
+    var org = attribution.orgId ? orgs.filter(function (o) { return o.id === attribution.orgId; })[0] : null;
+    var others = T.senderMentions(masked, orgs).filter(function (o) { return !org || o.id !== org.id; })
+      .map(function (o) { return o.displayName; });
+    if (org) return { org: org, words: attribution.alias, generic: null, otherMentions: others, attribution: attribution };
     for (var g = 0; g < GENERIC_CLAIMS.length; g++) {
-      if (GENERIC_CLAIMS[g].re.test(masked)) return { org: null, generic: GENERIC_CLAIMS[g].label, otherMentions: [] };
+      if (GENERIC_CLAIMS[g].re.test(masked)) return { org: null, generic: GENERIC_CLAIMS[g].label, otherMentions: [], attribution: attribution };
     }
-    return { org: null, generic: null, otherMentions: [] };
+    return { org: null, generic: null, otherMentions: [], attribution: attribution };
   }
 
   T.extractTargets = extractTargets;
