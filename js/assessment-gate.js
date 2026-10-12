@@ -15,6 +15,7 @@ const TIER1_RULES = Object.freeze([
 'T1-DOMAIN',
 'T1-CODE',
 'T1-CALLBACK',
+'T1-POLICY',
 ]);
 
 function assertFindings(findings) {
