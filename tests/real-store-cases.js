@@ -71,7 +71,7 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": [
-        "domain_official"
+        "reference_needs_review" /* Real list: awaiting human review. */
       ],
       "risk": "none"
     },
@@ -110,7 +110,7 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": [
-        "domain_official"
+        "reference_needs_review" /* Real list: awaiting human review. */
       ]
     },
     "guards": "Email address on an official domain"
@@ -182,7 +182,7 @@ window.TFS_REAL_CASES = [
         "T1-CODE"
       ],
       "codes": [
-        "domain_official"
+        "reference_needs_review" /* Real list: awaiting human review. */
       ],
       "risk": "high",
       "flags": [
@@ -197,7 +197,7 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": [
-        "domain_official"
+        "reference_needs_review" /* Real list: awaiting human review. */
       ]
     },
     "guards": "Defanged links are read correctly"
