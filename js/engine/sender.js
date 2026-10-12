@@ -34,8 +34,8 @@
   var LINE_START = /(?:^|\n)[ \t>*"'(\[]*(?:from[ \t]*:?[ \t]+)?(?:the[ \t]+)?$/i;
   var DIRECT_BEFORE = /\b(?:this is|we are|we're|it is|it's)\s+(?:(?:a|an|your)\s+(?:\w+\s+){0,2}(?:message|notice|reminder|text|call|alert|notification|update|email|e-mail|letter)\s+from\s+)?(?:the\s+|your\s+)?$/i;
   var FROM_BEFORE = /\b(?:is|are|was|were|comes?|came|sent|message|messages|text|texts|email|e-mail|notice|alert|letter|call|reminder|update|notification|statement)\s+(?:\w+\s+)?from\s+(?:the\s+|your\s+)?$/i;
-  var SIGNOFF_LINE = /^[ \t]*(?:[-–—~]+[ \t]*)?(?:(?:sincerely|regards|best regards|kind regards|warm regards|thanks|thank you|best|cheers|respectfully)[ \t]*,?[ \t]*)?(?:the[ \t]+)?$/i;
-  var SIGNOFF_TAIL = /(?:^|[\s.!?])[-–—~]+[ \t]*(?:the[ \t]+)?$/;
+  var SIGNOFF_LINE = /^[ \t]*(?:[-\u2013\u2014~]+[ \t]*)?(?:(?:sincerely|regards|best regards|kind regards|warm regards|thanks|thank you|best|cheers|respectfully)[ \t]*,?[ \t]*)?(?:the[ \t]+)?$/i;
+  var SIGNOFF_TAIL = /(?:^|[\s.!?])[-\u2013\u2014~]+[ \t]*(?:the[ \t]+)?$/;
   var SIGNOFF_AFTER = /^(?:[ \t]+(?:team|support|customer service|customer care|fraud department|fraud team|security team|security|alerts?|services?))?[ \t]*[.!]?[ \t]*$/i;
 
   // Exclusions read the clause that holds the name.
@@ -52,8 +52,8 @@
   }
 
   function lastLineBounds(text) {
-    var trimmed = text.replace(/\s+$/, '');
-    return { start: trimmed.lastIndexOf('\n') + 1, end: trimmed.length };
+    var kept = text.replace(/\s+$/, '');
+    return { start: kept.lastIndexOf('\n') + 1, end: kept.length };
   }
 
   function patternOf(text, start, end, last) {
