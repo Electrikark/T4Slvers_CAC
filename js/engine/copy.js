@@ -117,6 +117,7 @@
     account_locked: 'Messages about a locked or suspended account are often used to rush people.',
     device_alarm: 'Do not call a number shown in an unexpected device-warning pop-up. Use a support contact you already trust.',
     credential_request: 'Do not enter passwords, card numbers or your Social Security number from a link in a message.',
+    login_request: 'Do not sign in through a link or address in a message. Open the official app or type a website you already know.',
     prize_refund: 'Prizes and refunds you did not expect are a frequent lure.',
     callback_now: 'Call back only on a number you already trust, not the one in the message.',
     peer_payment: 'Payments by Zelle, Venmo or Cash App are hard to get back. Only send money to people you know.'
@@ -138,6 +139,7 @@
     account_locked: 'A locked or suspended account',
     device_alarm: 'An alarm about your device',
     credential_request: 'Confirming personal or login details',
+    login_request: 'Signing in to an account',
     prize_refund: 'A prize or refund',
     callback_now: 'Calling a number now',
     peer_payment: 'Sending money by app'
@@ -195,6 +197,7 @@
     else if (codes.indexOf('nothing_to_check') >= 0) meaning = 'Without a link, email address or phone number, there is nothing to compare. Judge it by what it asks you to do.';
     else if (codes.indexOf('phone_not_on_file') >= 0) meaning = 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.';
     else if (codes.indexOf('user_content_platform') >= 0) meaning = 'A page on a site where anyone can publish does not show who made it.';
+    else if (codes.indexOf('reference_needs_review') >= 0) meaning = 'Our list has this address, but no person has reviewed that record yet. Until someone does, it cannot count as a match.';
     if (risky) {
       meaning = anySupport
         ? 'Warning signs remain in what the message asks. Matching contact details cannot clear those signs.'
