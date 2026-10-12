@@ -12,6 +12,7 @@ window.TFS_FIXTURE_STORE = {
   "orgs": [
     {
       "id": "chase",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Chase",
       "aliases": [
         "chase",
@@ -25,6 +26,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "paypal",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "PayPal",
       "aliases": [
         "paypal"
@@ -37,6 +39,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "amazon",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Amazon",
       "aliases": [
         "amazon"
@@ -49,6 +52,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "usps",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "USPS",
       "aliases": [
         "usps",
@@ -62,6 +66,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "ups",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "UPS",
       "aliases": [
         "ups"
@@ -74,6 +79,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "microsoft",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Microsoft",
       "aliases": [
         "microsoft"
@@ -86,6 +92,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "google",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Google",
       "aliases": [
         "google"
@@ -102,6 +109,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "examplebank",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Example Bank (fictional)",
       "aliases": [
         "example bank"
