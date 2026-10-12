@@ -4,8 +4,10 @@ window.TFS_GATE_STORE = {
   version: 'fictional-gate-fixture', shorteners: [],
   orgs: [
     { id: 'example-bank', displayName: 'Example Bank', aliases: ['example bank'],
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
       officialDomains: ['example.com'], officialPhones: ['+12025550123'], userContentHosts: [] },
     { id: 'sample-union', displayName: 'Sample Union', aliases: ['sample union'],
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
       officialDomains: ['example.org'], officialPhones: [], userContentHosts: [] }
   ]
 };
@@ -206,6 +208,36 @@ window.runAssessmentTests = function (gate) {
       var r = engine.analyze('Example Bank: Buy gift cards to restore your account. Visit https://example.com.', window.TFS_GATE_STORE, { declaredChannel: channel });
       same(r.assessment, 'suspicious', 'channel changed risk');
       same(r.trace, { rules: ['T1-GIFT'], blockedBy: [] }, 'channel trace');
+    });
+  });
+  test('I18 Unreviewed reference records cannot support a match', function () {
+    // data/store.js records carry an automated check only; none is human-reviewed yet.
+    var r = engine.analyze('USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction', window.TFS_STORE, { declaredChannel: 'text' });
+    assert(engine.validateResult(r), 'invalid result');
+    same(r.assessment, 'insufficient_evidence', 'assessment');
+    same(r.checks.map(function (c) { return c.code; }), ['reference_needs_review'], 'codes');
+    assert(r.evidence.contacts.every(function (c) { return c.verification !== 'verified'; }), 'unreviewed record verified a contact');
+  });
+  test('I19 Review status decides support, not the record alone', function () {
+    var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+    delete store.orgs[0].humanReview;
+    var r = engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' });
+    same(r.assessment, 'insufficient_evidence', 'unreviewed fixture');
+    same(r.checks[0].code, 'reference_needs_review', 'code');
+    store.orgs[0].humanReview = { reviewer: 'Example Reviewer' };
+    same(engine.analyze('Example Bank: Visit https://example.com.', store, { declaredChannel: 'text' }).checks[0].code, 'reference_needs_review', 'review without a date');
+  });
+  test('I20 Impossible review dates cannot permit Details Match', function () {
+    ['2026-02-30', '2026-13-45', '2026-00-10', '2025-02-29', '2099-01-01', '1999-12-31', '2026-1-5', ' 2026-10-12', '', null].forEach(function (date) {
+      var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      var r = engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' });
+      same([String(date), r.assessment, r.checks[0].code], [String(date), 'insufficient_evidence', 'reference_needs_review'], 'impossible date accepted');
+    });
+    ['2024-02-29', '2026-10-01'].forEach(function (date) {
+      var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      same(engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' }).assessment, 'details_match', 'real date ' + date);
     });
   });
   test('I17 Remote access pressure retains established Tier 1', function () {

@@ -47,6 +47,11 @@
     { id: 'credential_request', level: 'medium', patterns: [
       re('\\b(?:verify|confirm|update|validate|re-?enter|provide|enter)\\b' + SHORT_GAP + '\\b(?:password|passcode|pin|ssn|social security(?: number)?|card (?:number|details)|bank (?:details|information|account)|login|identity|account(?: details| information)?)\\b')
     ] },
+    // A request to sign in, usually through the message's own link. Tier 2: it blocks Details Match.
+    { id: 'login_request', level: 'medium', negatable: true, patterns: [
+      re('\\b(?:log|sign)\\s*-?\\s*(?:in|on)(?:to)?\\b'),
+      re('\\b(?:by|after|when|before)\\s+(?:logging|signing)\\s*-?\\s*(?:in|on)(?:to)?\\b')
+    ] },
     { id: 'prize_refund', level: 'medium', patterns: [
       re("\\b(?:you(?:'ve| have)? won|winner|claim your (?:prize|reward|refund|gift)|sweepstakes|lottery|overpaid|refund (?:is )?(?:pending|available|due))\\b")
     ] },
@@ -272,6 +277,47 @@
     return { flags: flags, established: established, unresolved: unresolved, clauses: clauses };
   }
 
+  // A login phrase counts only as a demand: "Log in at", "please sign in", "click here to log in",
+  // "verify your account by signing in". Notices ("you signed in", "a new sign-in") never match.
+  // Signing in at a front desk is a visit, not an account login. The place must end the
+  // request ("at the office." / "at the office when you arrive"), so "the office portal" still counts.
+  var IN_PERSON_SIGN_IN = /^\s+(?:at|with)\s+(?:the\s+)?(?:front desk|reception(?: desk)?|office|counter|check-in desk|lobby|nurses?['’]? station)(?=\s*(?:[.!?,;\n]|$)|\s+(?:when|before|upon|after|on arrival|and)\b)/i;
+  // "Sign-in attempt", "sign in code", "sign in successful": a notice about a sign-in, not a request.
+  var LOGIN_NOTICE = /^[ \t]*(?:alerts?|notices?|attempts?|activity|codes?|history|was|has been|detected|confirmed|successful|succeeded|failed|details|information|credentials|problems?|issues?)\b/i;
+  // Negation in the same part of the sentence: "No need to sign in", "Do not click links to log in".
+  var LOGIN_NEGATION = /\b(?:do not|don['’]t|does not|doesn['’]t|did not|didn['’]t|never|no need|not need|not have to|not required|won['’]t|will not|cannot|can['’]t|without)\b/i;
+
+  // A new instruction between a negation and the login ends that negation's reach:
+  // "You do not need to visit a branch because you must log in" is still a login request.
+  var NEW_INSTRUCTION = /\b(?:because|since|so|but|and|then|instead|however|otherwise|please|you must|you need to|you have to|you should|must|required)\b/i;
+  // "Verify your account by signing in" is an instruction; "You last accessed it by signing in" is not.
+  var INSTRUCTION_START = /^\s*(?:please\s+)?(?:verify|confirm|update|restore|unlock|secure|protect|review|check|reactivate|validate|complete|claim|keep|continue|finish|accept|activate|access|view|see|pay|track|reschedule|avoid|prevent|stop|cancel|fix|resolve|reset|change|start|go|get)\b/i;
+
+  // Signing in through a route the person already trusts is safety advice, not a lure:
+  // "only through the official app", "a website you already know". "This secure link" is not one.
+  var SAFE_ROUTE = /^\s+(?:only\s+)?(?:through|in|on|with|using|from|at)\s+(?:the\s+|your\s+)?(?:official\s+app|app\s+you\s+(?:already\s+)?(?:have|trust|know)|(?:website|site|address|number)\s+you\s+(?:already\s+)?(?:know|trust|typed?|type yourself))\b/i;
+
+  function negatesLogin(prefix) {
+    var segment = prefix.split(',').pop();
+    var pattern = new RegExp(LOGIN_NEGATION.source, 'gi'), m, last = null;
+    while ((m = pattern.exec(segment)) !== null) last = m;
+    return Boolean(last) && !NEW_INSTRUCTION.test(segment.slice(last.index + last[0].length));
+  }
+
+  function loginDemand(prefix, phrase) {
+    if (negatesLogin(prefix)) return false;
+    // "Check the address before signing in", "protect your password when signing in": timing for
+    // advice about signing in, not a request to sign in. "By/after signing in" names the means.
+    if (/^(?:when|before)\s/i.test(phrase)) return false;
+    if (/^(?:by|after)\s/i.test(phrase)) {
+      var rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
+      return INSTRUCTION_START.test(rest) || /\b(?:please|you must|you need to|you have to|you should|required to)\b/i.test(rest);
+    }
+    if (directAction(prefix, true)) return true;
+    return /\b(?:click|tap|press|select|visit|go|use|open|follow)\b[^.!?\n]{0,40}\bto\s*$/i.test(prefix) ||
+      /\b(?:please|you must|you need to|you have to|you should|need to|have to|required to)\s*$/i.test(prefix);
+  }
+
   // Negation only governs the action it precedes.
   function isNegated(text, index) {
     var prefix = text.slice(Math.max(0, index - 80), index).split(/[.!?;,\n]|\b(?:but|instead|however|then)\b/i).pop();
@@ -292,6 +338,10 @@
           var clause = contextual.clauses.filter(function (c) { return m.index >= c.start && m.index < c.end; })[0];
           if (clause && (clause.inReport || reported(clause.text))) continue;
           if (flag.negatable && isNegated(text, m.index)) continue;
+          if (flag.id === 'login_request' && clause && (!loginDemand(text.slice(clause.start, m.index), m[0]) ||
+              LOGIN_NOTICE.test(text.slice(m.index + m[0].length, m.index + m[0].length + 30)) ||
+              SAFE_ROUTE.test(text.slice(m.index + m[0].length, m.index + m[0].length + 60)) ||
+              IN_PERSON_SIGN_IN.test(text.slice(m.index + m[0].length, m.index + m[0].length + 60)))) continue;
           if (flag.id === 'share_code' && clause && !directAction(text.slice(clause.start, m.index), /\b(?:please|call|read|send|share)\b/i.test(text.slice(clause.start, m.index)))) continue;
           // Advice to protect a code is not a demand to hide a payment or conversation.
           if (flag.id === 'secrecy' && /^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length))) continue;
