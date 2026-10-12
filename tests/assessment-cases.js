@@ -4,8 +4,10 @@ window.TFS_GATE_STORE = {
   version: 'fictional-gate-fixture', shorteners: [],
   orgs: [
     { id: 'example-bank', displayName: 'Example Bank', aliases: ['example bank'],
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
       officialDomains: ['example.com'], officialPhones: ['+12025550123'], userContentHosts: [] },
     { id: 'sample-union', displayName: 'Sample Union', aliases: ['sample union'],
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
       officialDomains: ['example.org'], officialPhones: [], userContentHosts: [] }
   ]
 };
@@ -207,6 +209,23 @@ window.runAssessmentTests = function (gate) {
       same(r.assessment, 'suspicious', 'channel changed risk');
       same(r.trace, { rules: ['T1-GIFT'], blockedBy: [] }, 'channel trace');
     });
+  });
+  test('I18 Unreviewed reference records cannot support a match', function () {
+    // data/store.js records carry an automated check only; none is human-reviewed yet.
+    var r = engine.analyze('USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction', window.TFS_STORE, { declaredChannel: 'text' });
+    assert(engine.validateResult(r), 'invalid result');
+    same(r.assessment, 'insufficient_evidence', 'assessment');
+    same(r.checks.map(function (c) { return c.code; }), ['reference_needs_review'], 'codes');
+    assert(r.evidence.contacts.every(function (c) { return c.verification !== 'verified'; }), 'unreviewed record verified a contact');
+  });
+  test('I19 Review status decides support, not the record alone', function () {
+    var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+    delete store.orgs[0].humanReview;
+    var r = engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' });
+    same(r.assessment, 'insufficient_evidence', 'unreviewed fixture');
+    same(r.checks[0].code, 'reference_needs_review', 'code');
+    store.orgs[0].humanReview = { reviewer: 'Example Reviewer' };
+    same(engine.analyze('Example Bank: Visit https://example.com.', store, { declaredChannel: 'text' }).checks[0].code, 'reference_needs_review', 'review without a date');
   });
   test('I17 Remote access pressure retains established Tier 1', function () {
     // Both existing demands (install and grant) establish a rule; retain both trace entries.
