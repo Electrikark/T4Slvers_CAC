@@ -15,7 +15,9 @@
     var norm = T.normalizeText(input);
     var extracted = T.extractTargets(norm.text);
     var claim = T.findClaim(extracted.masked, store);
-    var ctx = { store: store, claimOrg: claim.org, implicitOrg: null };
+    // Only the filtered view can support a contact; the full list still names lookalikes.
+    var trusted = T.buildTrustedView(store, options.today);
+    var ctx = { store: store, trusted: trusted, claimOrg: claim.org, implicitOrg: null };
 
     var checks = extracted.targets.map(function (target) {
       return target.kind === 'phone' ? T.checkPhone(target, ctx) : T.checkHost(target, ctx);
@@ -48,6 +50,7 @@
       schemaVersion: 3,
       engineVersion: VERSION,
       storeVersion: store.version || null,
+      referenceView: { day: trusted.day, trusted: trusted.trusted.length, excluded: trusted.excluded.length },
       assessment: assessed.assessment,
       trace: assessed.trace,
       evidence: evidence,
