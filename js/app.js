@@ -60,9 +60,10 @@ function selectChannel(channel) {
 }
 
 function clearResult() {
-  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead']) {
+  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotated-advice', 'annotation-notes']) {
     byId(id).replaceChildren();
   }
+  byId('annotated-section').hidden = true;
   shownResult = null;
   resetSelfCheck();
 }
@@ -149,7 +150,17 @@ function textElement(tag, text, className) {
   return element;
 }
 
-function renderResult(result) {
+// The person's own message with each finding marked. Text nodes only: pasted markup stays text.
+function renderAnnotations(text, result) {
+  const model = window.TFS.annotate(text, result, window.TFS_STORE);
+  window.TFS.renderAnnotations(document, model, byId('annotated'), byId('annotation-notes'));
+  const advice = model.notes.length && result.assessment !== 'details_match' ? result.actionWarnings[0] : '';
+  byId('annotated-advice').textContent = advice;
+  byId('annotated-advice').hidden = !advice;
+  byId('annotated-section').hidden = model.notes.length === 0;
+}
+
+function renderResult(result, text) {
   const state = assessmentDetails[result.assessment];
   const flags = result.requestRisk.flags;
   const risky = result.requestRisk.level !== 'none';
@@ -197,6 +208,7 @@ function renderResult(result) {
   byId('next-list').replaceChildren();
   for (const text of result.nextSteps) byId('next-list').append(textElement('li', text));
   byId('paste-link').hidden = !result.offerPaste;
+  renderAnnotations(text, result);
   shownResult = result;
   resetSelfCheck();
   showScreen('result');
@@ -236,7 +248,7 @@ form.addEventListener('submit', async event => {
   showScreen('checking');
   try {
     const result = await analyzeSubmission({ text, declaredChannel });
-    if (currentRevision === revision) renderResult(result);
+    if (currentRevision === revision) renderResult(result, text);
   } catch {
     if (currentRevision === revision) {
       showScreen('home');
