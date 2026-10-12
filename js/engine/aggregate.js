@@ -14,7 +14,16 @@
     if (!options || typeof options.declaredChannel !== 'string' || !Object.prototype.hasOwnProperty.call(CHANNELS, options.declaredChannel)) throw new Error('Choose Text, Email, or Not sure before analysis');
     var norm = T.normalizeText(input);
     var extracted = T.extractTargets(norm.text);
-    var claim = T.findClaim(extracted.masked, store);
+    // Sender attribution reads the person's own text, so its span points at what they pasted.
+    var raw = input == null ? '' : String(input);
+    var bounded = raw.slice(0, T.MAX_CHARS);
+    var senderView = T.riskView(bounded);
+    var claim = T.findClaim(T.extractTargets(senderView.text).masked, store);
+    var attribution = claim.attribution;
+    if (attribution.span) {
+      var moved = T.sourceSpan(senderView, bounded, attribution.span.start, attribution.span.end);
+      attribution.span = { start: moved.start, end: moved.end, quote: bounded.slice(moved.start, moved.end) };
+    }
     // Only the filtered view can support a contact; the full list still names lookalikes.
     var trusted = T.buildTrustedView(store, options.today);
     var ctx = { store: store, trusted: trusted, claimOrg: claim.org, implicitOrg: null };
@@ -33,8 +42,6 @@
     }
 
     // Risk evidence uses the supplied source, before legacy contact normalization.
-    var raw = input == null ? '' : String(input);
-    var bounded = raw.slice(0, T.MAX_CHARS);
     // Curly apostrophes, invisible characters and fullwidth letters must not hide a request.
     var signals = T.sourceSignals(bounded);
     if (signals.incomplete && !checks.some(function (c) { return c.code === 'input_incomplete'; })) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
@@ -60,6 +67,7 @@
         : ctx.implicitOrg ? 'Not stated (an address refers to ' + ctx.implicitOrg.displayName + ')'
         : claim.generic || 'Not stated',
       claimSource: claim.org ? 'explicit' : ctx.implicitOrg ? 'implicit' : 'none',
+      senderAttribution: attribution,
       otherMentions: claim.otherMentions,
       channel: CHANNELS[options.declaredChannel] + ' · ' + T.copy.channel(extracted.targets),
       inspected: extracted.targets.length
