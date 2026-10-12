@@ -293,6 +293,10 @@
   // "Verify your account by signing in" is an instruction; "You last accessed it by signing in" is not.
   var INSTRUCTION_START = /^\s*(?:please\s+)?(?:verify|confirm|update|restore|unlock|secure|protect|review|check|reactivate|validate|complete|claim|keep|continue|finish|accept|activate|access|view|see|pay|track|reschedule|avoid|prevent|stop|cancel|fix|resolve|reset|change|start|go|get)\b/i;
 
+  // Signing in through a route the person already trusts is safety advice, not a lure:
+  // "only through the official app", "a website you already know". "This secure link" is not one.
+  var SAFE_ROUTE = /^\s+(?:only\s+)?(?:through|in|on|with|using|from|at)\s+(?:the\s+|your\s+)?(?:official\s+app|app\s+you\s+(?:already\s+)?(?:have|trust|know)|(?:website|site|address|number)\s+you\s+(?:already\s+)?(?:know|trust|typed?|type yourself))\b/i;
+
   function negatesLogin(prefix) {
     var segment = prefix.split(',').pop();
     var pattern = new RegExp(LOGIN_NEGATION.source, 'gi'), m, last = null;
@@ -302,7 +306,10 @@
 
   function loginDemand(prefix, phrase) {
     if (negatesLogin(prefix)) return false;
-    if (/^(?:by|after|when|before)\s/i.test(phrase)) {
+    // "Check the address before signing in", "protect your password when signing in": timing for
+    // advice about signing in, not a request to sign in. "By/after signing in" names the means.
+    if (/^(?:when|before)\s/i.test(phrase)) return false;
+    if (/^(?:by|after)\s/i.test(phrase)) {
       var rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
       return INSTRUCTION_START.test(rest) || /\b(?:please|you must|you need to|you have to|you should|required to)\b/i.test(rest);
     }
@@ -333,6 +340,7 @@
           if (flag.negatable && isNegated(text, m.index)) continue;
           if (flag.id === 'login_request' && clause && (!loginDemand(text.slice(clause.start, m.index), m[0]) ||
               LOGIN_NOTICE.test(text.slice(m.index + m[0].length, m.index + m[0].length + 30)) ||
+              SAFE_ROUTE.test(text.slice(m.index + m[0].length, m.index + m[0].length + 60)) ||
               IN_PERSON_SIGN_IN.test(text.slice(m.index + m[0].length, m.index + m[0].length + 60)))) continue;
           if (flag.id === 'share_code' && clause && !directAction(text.slice(clause.start, m.index), /\b(?:please|call|read|send|share)\b/i.test(text.slice(clause.start, m.index)))) continue;
           // Advice to protect a code is not a demand to hide a payment or conversation.
