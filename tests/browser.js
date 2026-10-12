@@ -5,7 +5,24 @@ try {
   let passed = 0;
   let total = 0;
   suite.groups.forEach((group, index) => {
-    const body = document.getElementById(targets[index]);
+    let body = document.getElementById(targets[index]);
+    if (!body) {
+      // Phase 2 groups get their own table, built with text only.
+      const heading = document.createElement('h2');
+      heading.textContent = group.name;
+      const table = document.createElement('table');
+      const head = document.createElement('thead');
+      const headRow = document.createElement('tr');
+      for (const label of ['Check', 'Result', 'Details']) {
+        const th = document.createElement('th');
+        th.textContent = label;
+        headRow.append(th);
+      }
+      head.append(headRow);
+      body = document.createElement('tbody');
+      table.append(head, body);
+      document.body.append(heading, table);
+    }
     for (const row of group.rows) {
       total += 1;
       if (row.passed) passed += 1;
