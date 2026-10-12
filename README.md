@@ -21,7 +21,7 @@ node scripts/build-assessment.cjs --check
 node tests/run-node.cjs
 ```
 
-The recorded eac1229 baseline passes all 111 checks. There are now 200 shared checks, including 14 for the self-check step (S1–S14): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 42 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), and one unresolved card-number case. The Node runner also runs the 33 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
+The recorded eac1229 baseline passes all 111 checks. There are now 212 shared checks, including 14 for the self-check step (S1–S14), 10 for login requests (L1–L10) and 2 for review status (I18–I19): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 42 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), and one unresolved card-number case. The Node runner also runs the 35 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
 
 ## Analysis contract
 
@@ -35,6 +35,10 @@ Missing or invalid channel choice is rejected. The form uses large Text / Email 
 - `suspicious`: established Tier 1 takes priority over contact support, missing contacts, and uncertainty.
 - `details_match`: an explicit recognized sender, at least one contact verified for that sender, all contacts verified for that sender, and no findings or uncertainty. The adapter preserves legacy contact-verification semantics; this is not full v1.2 conformance.
 - `insufficient_evidence`: neither threshold passes. Every finding blocks a match, including Tier 2 and unresolved Tier 1.
+
+**Login requests** ("Log in at…", "please sign in to your account", "click here to log in", "verify your account by signing in") are a Tier 2 finding (`login_request`), so they always block Details Match. Sign-in notices ("a new sign-in", "you signed in"), negated advice, reported examples and signing in at a front desk stay quiet.
+
+**Review status (stopgap until the trusted reference view).** A reference record supports a contact only when it has `humanReview: { reviewer, date }` with a real date. An automated check alone, which is what every record in `data/store.js` has today, gives `reference_needs_review` instead. Until records are reviewed by a person, Details Match cannot be reached on the real list; that is the intended safe failure. Conflicts and T1-DOMAIN still work, because they do not depend on a record supporting anything. Test fixtures are marked as reviewed by a fictional test fixture.
 
 The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, T1-REMOTE, T1-DOMAIN, T1-CODE and T1-CALLBACK. A Tier 1 finding with any other rule ID throws instead of winning.
 
