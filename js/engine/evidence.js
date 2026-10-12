@@ -23,7 +23,7 @@
     return check.strength === 'strong' && (DOMAIN_TRICKS.indexOf(check.code) >= 0 || brandLure(check));
   }
 
-  function normalizeEvidence(checks, sender, inferred, signals, incomplete) {
+  function normalizeEvidence(checks, sender, inferred, signals, incomplete, policyFindings) {
     var uncertainty = [];
     var findings = [];
     function finding(ruleId, tier, status, span, support) {
@@ -65,6 +65,11 @@
         ? { start: flag.start, end: flag.end, quote: flag.words } : null;
       // Old severity is display metadata, never sufficient evidence for Tier 1.
       finding(flag.id, 2, 'established', span, support);
+    });
+    // A reviewed policy the message breaks (policy.js). Unresolved when its detector is unsure.
+    (policyFindings || []).forEach(function (p) {
+      finding('T1-POLICY', 1, p.status, p.spans.action, p);
+      if (p.status !== 'established') uncertainty.push('policy_unresolved:' + p.policyId);
     });
     return { sender: sender, contacts: contacts, findings: findings, uncertainty: uncertainty };
   }
