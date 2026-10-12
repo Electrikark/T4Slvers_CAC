@@ -1058,3 +1058,87 @@ summary span {
   .option.active, .self-check-option[aria-pressed="true"] { outline:3px solid Highlight; }
   .action-note, .check-item { border-color:CanvasText; }
 }
+
+/* Annotations on the pasted message. Marks differ by line style and symbol, not color alone. */
+.annotated {
+  margin-top:18px;
+  padding:22px 26px;
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+.annotated h2 {
+  font-size:1.125rem;
+  margin:0 0 6px;
+}
+.annotated-key {
+  color:var(--muted);
+  margin:0 0 12px;
+}
+.annotated-message {
+  font-size:1.125rem;
+  line-height:1.9;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  margin:0 0 16px;
+  padding:16px;
+  background:var(--paper);
+  border-radius:6px;
+}
+.ann {
+  color:inherit;
+  padding:1px 2px;
+  border-radius:3px;
+}
+.ann:focus-visible {
+  outline:3px solid var(--teal);
+  outline-offset:2px;
+}
+.ann-strong {
+  background:#fbe3d6;
+  text-decoration:underline 3px solid #8c2f14;
+  text-underline-offset:4px;
+}
+.ann-check {
+  background:#f6edd2;
+  text-decoration:underline 2px dashed #7a5a12;
+  text-underline-offset:4px;
+}
+.ann-list {
+  background:transparent;
+  border:1px dotted var(--muted);
+}
+.ann-ref {
+  font-size:0.8125rem;
+  font-weight:700;
+  margin:0 2px;
+}
+.annotated-advice {
+  font-size:1.125rem;
+  font-weight:700;
+  margin:0 0 12px;
+}
+.annotation-notes {
+  margin:0;
+  padding-left:28px;
+  font-size:1.125rem;
+}
+.ann-note + .ann-note {
+  margin-top:10px;
+}
+.ann-label {
+  display:block;
+  font-weight:700;
+}
+.ann-note.ann-strong, .ann-note.ann-check, .ann-note.ann-list {
+  background:none;
+  text-decoration:none;
+  border:0;
+}
+@media (max-width:680px) {
+  .annotated { padding:20px 16px; }
+  .annotated-message { padding:12px; }
+}
+@media (forced-colors:active) {
+  .ann { border:1px solid CanvasText; }
+}
