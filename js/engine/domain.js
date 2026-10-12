@@ -237,8 +237,8 @@
         return hostMatches(host, source.domain) && /^needs review/i.test(source.check || '');
       });
       if (pendingSource) return make('UNKNOWN', 'reference_needs_review', merge(base, { orgId: listedOwner.id }));
-      if (!claim) return make('SUPPORTS', 'domain_official', merge(base, { orgId: owners[0].id, implicit: true }));
-      if (owners.some(function (o) { return o.id === claim.id; })) return make('SUPPORTS', 'domain_official', merge(base, { orgId: claim.id }));
+      if (!claim) return supported(owners[0], 'domain_official', merge(base, { orgId: owners[0].id, implicit: true }));
+      if (owners.some(function (o) { return o.id === claim.id; })) return supported(claim, 'domain_official', merge(base, { orgId: claim.id }));
       return make('CONTRADICTS', 'domain_belongs_to_other_org', merge(base, { strength: 'moderate', orgId: owners[0].id }));
     }
 
@@ -333,6 +333,19 @@
     return tail.slice(0, domain.length + 1) === '.' + domain && /^\.[a-z]{2}$/.test(tail.slice(domain.length + 1));
   }
 
+  /* A record supports a contact only after a person has reviewed it: humanReview names the
+     reviewer and the date. An automated check alone leaves the contact unresolved, so an
+     unreviewed list fails closed (no Details Match) instead of open. Conflicts are unaffected. */
+  function humanReviewed(org) {
+    var review = org && org.humanReview;
+    return Boolean(review && typeof review.reviewer === 'string' && review.reviewer.trim() &&
+      typeof review.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(review.date));
+  }
+
+  function supported(org, code, extra) {
+    return humanReviewed(org) ? make('SUPPORTS', code, extra) : make('UNKNOWN', 'reference_needs_review', extra);
+  }
+
   function merge(a, b) {
     var out = {};
     for (var k in a) if (a.hasOwnProperty(k)) out[k] = a[k];
@@ -345,11 +358,11 @@
     var store = ctx.store, claim = ctx.claimOrg;
     var base = { target: target };
     if (claim) {
-      if ((claim.officialPhones || []).indexOf(target.e164) >= 0) return make('SUPPORTS', 'phone_official', merge(base, { orgId: claim.id }));
+      if ((claim.officialPhones || []).indexOf(target.e164) >= 0) return supported(claim, 'phone_official', merge(base, { orgId: claim.id }));
       return make('UNKNOWN', 'phone_not_on_file', merge(base, { orgId: claim.id }));
     }
     var owner = store.orgs.filter(function (o) { return (o.officialPhones || []).indexOf(target.e164) >= 0; })[0];
-    if (owner) return make('SUPPORTS', 'phone_official', merge(base, { orgId: owner.id, implicit: true }));
+    if (owner) return supported(owner, 'phone_official', merge(base, { orgId: owner.id, implicit: true }));
     return make('UNKNOWN', 'phone_not_on_file', base);
   }
 
@@ -363,4 +376,5 @@
   T.orgById = orgById;
   T.checkHost = checkHost;
   T.checkPhone = checkPhone;
+  T.humanReviewed = humanReviewed;
 })(typeof window !== 'undefined' ? window : globalThis);
