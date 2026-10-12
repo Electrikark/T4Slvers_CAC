@@ -25,6 +25,7 @@
       target.hostUnicode = T.toUnicodeHost(host);
       target.userinfo = url.username ? decodeSafe(url.username) + (url.password ? ':' + decodeSafe(url.password) : '') : '';
       target.scheme = url.protocol.replace(':', '');
+      target.path = url.pathname || '/';
       // Do not silently turn malformed separators into a partial, trusted host.
       if (/[|\\^]/.test(raw)) target.error = 'unreadable';
     } catch (err) {

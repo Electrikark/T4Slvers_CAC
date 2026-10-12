@@ -226,5 +226,5 @@ window.runEngineTests = function () {
     { name: 'Invariants', rows: invEl },
     { name: 'Single assessment gate', rows: window.runAssessmentTests(window.TfsAssessment) },
     { name: 'Self-check step', rows: window.runSelfCheckTests() }
-  ] };
+  ].concat(window.TFS_PHASE2 ? window.TFS_PHASE2.run() : []) };
 };

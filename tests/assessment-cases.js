@@ -4,10 +4,10 @@ window.TFS_GATE_STORE = {
   version: 'fictional-gate-fixture', shorteners: [],
   orgs: [
     { id: 'example-bank', displayName: 'Example Bank', aliases: ['example bank'],
-      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12', reviewDue: '2099-12-31', sourceUrl: 'https://example.invalid/fixture-record' },
       officialDomains: ['example.com'], officialPhones: ['+12025550123'], userContentHosts: [] },
     { id: 'sample-union', displayName: 'Sample Union', aliases: ['sample union'],
-      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12', reviewDue: '2099-12-31', sourceUrl: 'https://example.invalid/fixture-record' },
       officialDomains: ['example.org'], officialPhones: [], userContentHosts: [] }
   ]
 };
@@ -230,13 +230,15 @@ window.runAssessmentTests = function (gate) {
   test('I20 Impossible review dates cannot permit Details Match', function () {
     ['2026-02-30', '2026-13-45', '2026-00-10', '2025-02-29', '2099-01-01', '1999-12-31', '2026-1-5', ' 2026-10-12', '', null].forEach(function (date) {
       var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
-      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      // Complete apart from the date, so only the date can be what rejects it.
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date, reviewDue: '2099-12-31', sourceUrl: 'https://example.invalid/fixture-record' };
       var r = engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' });
       same([String(date), r.assessment, r.checks[0].code], [String(date), 'insufficient_evidence', 'reference_needs_review'], 'impossible date accepted');
     });
     ['2024-02-29', '2026-10-01'].forEach(function (date) {
       var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
-      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      // R05: a usable review also names its source and a review-due date (trusted view, Phase 2 A).
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date, reviewDue: '2099-12-31', sourceUrl: 'https://example.invalid/fixture-record' };
       same(engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' }).assessment, 'details_match', 'real date ' + date);
     });
   });
