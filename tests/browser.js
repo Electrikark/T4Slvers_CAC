@@ -1,7 +1,7 @@
 /* Render the same suite used by the terminal runner. */
 try {
   const suite = window.runEngineTests();
-  const targets = ['rows', 'real', 'step1', 'inv', 'gate'];
+  const targets = ['rows', 'real', 'step1', 'inv', 'gate', 'self'];
   let passed = 0;
   let total = 0;
   suite.groups.forEach((group, index) => {
