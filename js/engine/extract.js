@@ -1,6 +1,4 @@
-/* Stages 2 and 3: extract targets (links, email addresses, phone numbers) and find the claim.
-   Exposes TFS.extractTargets(text) and TFS.findClaim(maskedText, store).
-   Works token by token with bounded lengths, so hostile input cannot make it slow. */
+// Find contacts, then look for a sender name outside those contacts.
 (function (root) {
   'use strict';
   var T = root.TFS = root.TFS || {};
@@ -117,15 +115,14 @@
     return { targets: targets, masked: masked, incomplete: incomplete };
   }
 
-  /* ---------- Claim ---------- */
-  var compiledCache = typeof WeakMap !== 'undefined' ? new WeakMap() : null;
+  var compiledCache = new WeakMap();
 
   function escapeRe(s) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   function compileAliases(store) {
-    if (compiledCache && compiledCache.has(store)) return compiledCache.get(store);
+    if (compiledCache.has(store)) return compiledCache.get(store);
     var list = [];
     (store.orgs || []).forEach(function (org) {
       (org.aliases || []).forEach(function (a) { list.push({ org: org, alias: a, strict: false }); });
@@ -135,7 +132,7 @@
       var body = escapeRe(item.alias.trim()).replace(/\s+/g, '\\s+');
       item.re = new RegExp('(?<![A-Za-z0-9&])' + body + '(?![A-Za-z0-9&])', 'gi');
     });
-    if (compiledCache) compiledCache.set(store, list);
+    compiledCache.set(store, list);
     return list;
   }
 

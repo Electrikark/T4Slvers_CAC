@@ -1,7 +1,4 @@
-/* Stage 4a: link and email checks.
-   Host helpers (punycode, registrable domain, lookalike skeleton, edit distance)
-   and TFS.checkHost(target, ctx), which applies the rule table from the spec in order:
-   the first rule that fires decides the check. */
+// Check website and email hosts in order; the first matching rule wins.
 (function (root) {
   'use strict';
   var T = root.TFS = root.TFS || {};
@@ -155,8 +152,7 @@
   }
 
   function orgById(store, id) {
-    for (var k = 0; k < store.orgs.length; k++) if (store.orgs[k].id === id) return store.orgs[k];
-    return null;
+    return store.orgs.find(function (org) { return org.id === id; }) || null;
   }
 
   function officialOrgsFor(store, host) {
@@ -179,10 +175,8 @@
     return list;
   }
 
-  function make(status, code, extra) {
-    var c = { status: status, code: code };
-    for (var key in extra) if (extra.hasOwnProperty(key)) c[key] = extra[key];
-    return c;
+  function make(status, code, base, extra = {}) {
+    return { status, code, ...base, ...extra };
   }
 
   /* ---------- The rule table ---------- */
@@ -215,24 +209,24 @@
       var infoSquash = squash(info);
       for (var a = 0; a < store.orgs.length; a++) {
         var org = store.orgs[a];
-        var hitDomain = (org.officialDomains || []).filter(function (d) { return info.indexOf(d) >= 0; })[0];
-        var hitToken = brandTokens(org).filter(function (t) { return t.length >= 4 && infoSquash.indexOf(t) >= 0; })[0];
+        var hitDomain = (org.officialDomains || []).find(function (d) { return info.indexOf(d) >= 0; });
+        var hitToken = brandTokens(org).find(function (t) { return t.length >= 4 && infoSquash.indexOf(t) >= 0; });
         if (hitDomain || hitToken) {
-          return make('CONTRADICTS', 'userinfo_trick', merge(base, { strength: 'strong', orgId: org.id, lookalikeOf: hitDomain || org.officialDomains[0] }));
+          return make('CONTRADICTS', 'userinfo_trick', base, { strength: 'strong', orgId: org.id, lookalikeOf: hitDomain || org.officialDomains[0] });
         }
       }
     }
 
     // 3. Official domains where anyone can publish a page.
     for (var u = 0; u < store.orgs.length; u++) {
-      var uh = (store.orgs[u].userContentHosts || []).filter(function (h) { return hostMatches(host, h); })[0];
-      if (uh) return make('UNKNOWN', 'user_content_platform', merge(base, { orgId: store.orgs[u].id }));
+      var hasUserContent = (store.orgs[u].userContentHosts || []).some(function (h) { return hostMatches(host, h); });
+      if (hasUserContent) return make('UNKNOWN', 'user_content_platform', base, { orgId: store.orgs[u].id });
     }
 
     // 4 and 5. Official for the claimed organization, or for someone else.
     var owners = officialOrgsFor(store, host);
     if (owners.length) {
-      var listedOwner = owners.filter(function (o) { return claim && o.id === claim.id; })[0] || owners[0];
+      var listedOwner = owners.find(function (o) { return claim && o.id === claim.id; }) || owners[0];
       var pendingSource = (listedOwner.sources || []).some(function (source) {
         return hostMatches(host, source.domain) && /^needs review/i.test(source.check || '');
       });
@@ -249,8 +243,8 @@
       var sd = (store.orgs[s].officialDomains || []).filter(function (d) {
         if (countryForm(host, d)) return false;
         return dotted.indexOf('.' + d + '.') >= 0 || ('.' + host).indexOf('.' + d + '-') >= 0;
-      })[0];
-      if (sd) return make('CONTRADICTS', 'official_domain_as_subdomain', merge(base, { strength: 'strong', orgId: store.orgs[s].id, lookalikeOf: sd }));
+      });
+      if (sd) return make('CONTRADICTS', 'official_domain_as_subdomain', base, { strength: 'strong', orgId: store.orgs[s].id, lookalikeOf: sd });
     }
 
     // 7 to 9. Label rules against every organization.
@@ -271,11 +265,11 @@
         if (offLabel.length < 4 || GENERIC_LABELS[offLabel]) continue;
         // 7a. Same letters to the eye, different characters: chаse.com with a Cyrillic а
         if (labelUnicode !== offLabel && labelSkeleton === skeleton(offLabel)) {
-          return make('CONTRADICTS', 'homoglyph', merge(base, { strength: 'strong', orgId: cand.id, lookalikeOf: off }));
+          return make('CONTRADICTS', 'homoglyph', base, { strength: 'strong', orgId: cand.id, lookalikeOf: off });
         }
         // 7b. Same name, different ending: chase.net
         if (labelUnicode === offLabel && reg !== registrable(off)) {
-          return make('CONTRADICTS', 'same_label_other_tld', merge(base, { strength: 'strong', orgId: cand.id, lookalikeOf: off }));
+          return make('CONTRADICTS', 'same_label_other_tld', base, { strength: 'strong', orgId: cand.id, lookalikeOf: off });
         }
         // 8. One or two letters off: amazom.com
         var minLen = isClaimed ? 4 : 6;
@@ -283,7 +277,7 @@
           var limit = offLabel.length >= 8 ? 2 : 1;
           var dist = editDistance(labelAscii, offLabel, limit);
           if (dist > 0 && dist <= limit) {
-            return make('CONTRADICTS', 'typosquat', merge(base, { strength: 'strong', orgId: cand.id, lookalikeOf: off, distance: dist }));
+            return make('CONTRADICTS', 'typosquat', base, { strength: 'strong', orgId: cand.id, lookalikeOf: off, distance: dist });
           }
         }
       }
@@ -311,18 +305,18 @@
             (tok.length >= 7 && (lab.indexOf(tok) >= 0 || labLook.indexOf(tokLook) >= 0))
           );
           if (delimited || inside) {
-            return make('CONTRADICTS', 'brand_in_foreign_domain', merge(base, { strength: 'strong', orgId: borg.id, lookalikeOf: borg.officialDomains[0], brandWord: tok }));
+            return make('CONTRADICTS', 'brand_in_foreign_domain', base, { strength: 'strong', orgId: borg.id, lookalikeOf: borg.officialDomains[0], brandWord: tok });
           }
         }
       }
     }
 
     // 10. A bare number address with a claim.
-    if (claim && isIp(host)) return make('CONTRADICTS', 'ip_host', merge(base, { strength: 'moderate', orgId: claim.id }));
+    if (claim && isIp(host)) return make('CONTRADICTS', 'ip_host', base, { strength: 'moderate', orgId: claim.id });
 
     // 11. A named organization, and an address that is not theirs.
     // A limited list cannot establish that an unfamiliar site conflicts with a sender.
-    if (claim) return make('UNKNOWN', 'not_in_official_list', merge(base, { orgId: claim.id }));
+    if (claim) return make('UNKNOWN', 'not_in_official_list', base, { orgId: claim.id });
 
     // 12 and 13. Nothing to compare against.
     return make('UNKNOWN', 'no_claimed_identity', base);
@@ -366,6 +360,11 @@
     var store = ctx.store, claim = ctx.claimOrg;
     var base = { target: target };
     if (claim) {
+      if ((claim.officialPhones || []).indexOf(target.e164) >= 0) return make('SUPPORTS', 'phone_official', base, { orgId: claim.id });
+      return make('UNKNOWN', 'phone_not_on_file', base, { orgId: claim.id });
+    }
+    var owner = store.orgs.find(function (o) { return (o.officialPhones || []).indexOf(target.e164) >= 0; });
+    if (owner) return make('SUPPORTS', 'phone_official', base, { orgId: owner.id, implicit: true });
       if ((claim.officialPhones || []).indexOf(target.e164) >= 0) return supported(claim, 'phone_official', merge(base, { orgId: claim.id }));
       return make('UNKNOWN', 'phone_not_on_file', merge(base, { orgId: claim.id }));
     }
