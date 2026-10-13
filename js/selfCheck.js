@@ -6,7 +6,7 @@
   'use strict';
 
   // How the person checked. Only contact details they had before the message count.
-  var METHODS = {
+  const METHODS = {
     card: { label: 'I called a number I already had', hint: 'From my card, bill or statement', independent: true,
       did: 'by calling a number you already had' },
     // Typing an address does not make it independent: it must be one they knew before the message.
@@ -18,14 +18,14 @@
     not_yet: { label: 'I haven’t checked yet', hint: '', independent: false }
   };
 
-  var ANSWERS = {
+  const ANSWERS = {
     confirmed: 'They said they sent it',
     denied: 'They said they did not send it',
     unsure: 'I’m still not sure'
   };
 
   // Requests that no real organization makes, whoever confirms them.
-  var NEVER_NORMAL = {
+  const NEVER_NORMAL = {
     'T1-GIFT': 'No real company or government office asks to be paid with gift cards or for gift-card codes.',
     'T1-CODE': 'No real company asks you to read or send a sign-in code, PIN or password to someone.',
     'T1-WIRE': 'Pressure to send cryptocurrency or a wire transfer is a fraud pattern, even when the caller sounds official.',
@@ -34,35 +34,26 @@
   };
 
   // Report before deleting: a deleted text can no longer be forwarded.
-  var REPORT = 'First, report it: forward a fake text to 7726 (SPAM), and report fraud at reportfraud.ftc.gov.';
-  var PAID = 'If you already shared information or paid, call your bank right away and ask a trusted person for help.';
+  const REPORT = 'First, report it: forward a fake text to 7726 (SPAM), and report fraud at reportfraud.ftc.gov.';
+  const PAID = 'If you already shared information or paid, call your bank right away and ask a trusted person for help.';
 
-  function tier1Rules(result) {
-    var seen = [];
-    ((result && result.evidence && result.evidence.findings) || []).forEach(function (f) {
-      if (f.tier === 1 && f.status === 'established' && seen.indexOf(f.ruleId) < 0) seen.push(f.ruleId);
-    });
-    return seen;
-  }
+  const tier1Rules = result => [...new Set(((result && result.evidence && result.evidence.findings) || [])
+    .filter(f => f.tier === 1 && f.status === 'established').map(f => f.ruleId))];
 
   // The choices, with this message's own contact details named in the one that does not count.
   function methodsFor(result) {
-    var seen = [];
-    ((result && result.checks) || []).forEach(function (c) {
-      if (c.target && seen.indexOf(c.target) < 0) seen.push(c.target);
-    });
-    return Object.keys(METHODS).map(function (id) {
-      var m = METHODS[id], hint = m.hint;
-      if (id === 'message' && seen.length) {
-        hint = 'Such as ' + seen.slice(0, 2).join(' or ') + ', even if I typed it in myself';
-      }
-      return { id: id, label: m.label, hint: hint, independent: m.independent };
-    });
+    const addresses = [...new Set(((result && result.checks) || []).map(c => c.target).filter(Boolean))];
+    return Object.entries(METHODS).map(([id, m]) => ({
+      id,
+      label: m.label,
+      hint: id === 'message' && addresses.length ? `Such as ${addresses.slice(0, 2).join(' or ')}, even if I typed it in myself` : m.hint,
+      independent: m.independent
+    }));
   }
 
   // Returns { kind, title, lines }. answer is ignored for methods that end the check early.
   function outcome(method, answer, result) {
-    var m = METHODS[method];
+    const m = METHODS[method];
     if (!m) throw new Error('Unknown check method: ' + method);
     if (method === 'not_yet') {
       return { kind: 'not_yet', title: 'Take your time',
@@ -85,21 +76,21 @@
         lines: ['Do not act on the message until someone you reached on your own confirms it.',
           'It is fine to ask a trusted person to help you check.'] };
     }
-    var rules = tier1Rules(result);
-    var never = rules.map(function (id) { return NEVER_NORMAL[id]; }).filter(Boolean);
+    const rules = tier1Rules(result);
+    const never = rules.map(id => NEVER_NORMAL[id]).filter(Boolean);
     if (never.length) {
       return { kind: 'confirmed_but_risky', title: 'Be careful: this request is never normal',
         lines: never.concat(['If someone “confirmed” this request, you may have reached the fraudster. Hang up and call the number on your card or statement.']) };
     }
-    var lines = ['This confirmation comes from your own check, not from this app.'];
-    if (rules.indexOf('T1-DOMAIN') >= 0) {
+    const lines = ['This confirmation comes from your own check, not from this app.'];
+    if (rules.includes('T1-DOMAIN')) {
       lines.push('The link in the message still imitates another website. Do not use it, even if the message itself is real.');
     }
     lines.push(method === 'known_person'
       ? 'Keep talking with them on the number you already know.'
       : 'To act on it, use the official app or a website you already knew, not anything in the message.');
-    return { kind: 'confirmed', title: 'You confirmed this ' + m.did, lines: lines };
+    return { kind: 'confirmed', title: 'You confirmed this ' + m.did, lines };
   }
 
-  root.TfsSelfCheck = { METHODS: METHODS, ANSWERS: ANSWERS, methodsFor: methodsFor, outcome: outcome };
+  root.TfsSelfCheck = { METHODS, ANSWERS, methodsFor, outcome };
 })(typeof window !== 'undefined' ? window : globalThis);
