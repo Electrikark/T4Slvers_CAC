@@ -1,5 +1,4 @@
-/* Stage 5: normalize evidence, call the sole gate, and expose the public entry point.
-   window.TfsEngine = { analyze(text, store), validateResult(result), version } */
+// Run the checks, assess the evidence, and prepare the result for display.
 (function (root) {
   'use strict';
   var T = root.TFS = root.TFS || {};
@@ -30,7 +29,7 @@
       if (pointer && pointers.every(function (c) { return c.orgId === pointer.orgId; })) ctx.implicitOrg = T.orgById(store, pointer.orgId);
     }
 
-    // Risk evidence uses the supplied source, before legacy contact normalization.
+    // Use the original text here so risk quotes retain their exact positions.
     var raw = input == null ? '' : String(input);
     var bounded = raw.slice(0, T.MAX_CHARS);
     // Curly apostrophes, invisible characters and fullwidth letters must not hide a request.
@@ -42,7 +41,6 @@
       explicit: Boolean(claim.org), recognizedOrg: claim.org ? claim.org.id : null
     }, Boolean(ctx.implicitOrg), signals, incomplete);
     var assessed = gate.assess(evidence);
-    gate.assertAssessment(assessed.assessment);
 
     var result = {
       schemaVersion: 3,
@@ -81,10 +79,10 @@
       truncated: norm.truncated,
       incomplete: incomplete
     };
-    var words = T.copy.describe(result, ctx);
+    var words = T.copy.describe(result);
     result.description = words.description;
     result.meaning = words.meaning;
-    result.actionWarnings = T.copy.warnings(result, ctx);
+    result.actionWarnings = T.copy.warnings(result);
     result.nextSteps = T.copy.nextSteps(result, ctx);
     return result;
   }
