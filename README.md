@@ -56,11 +56,30 @@ The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, 
 
 `validateResult` checks the assessment enum, evidence shape, display/evidence consistency, and the same gate's output. It is a wiring check, not independent proof of policy. U1–U14 have hand-written expected assessments and trace codes. E1 runs the real engine and already establishes T1-GIFT; it must remain Suspicious.
 
-`src/assessment.js` is the supplied gate verbatim. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. The classic-script browser artifact is checked for freshness by `npm test`; stale output fails instead of silently using old policy. No packages are required. Both browser and Node load the same detector and adapter. There is no separate browser-only grounding path here; the broader frozen-spec grounding port is still open work.
+`src/assessment.js` is the gate: the supplied logic, now indented and commented, plus the closed Tier 1 list. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. The classic-script browser artifact is checked for freshness by `npm test`; stale output fails instead of silently using old policy. No packages are required. Both browser and Node load the same detector and adapter. There is no separate browser-only grounding path here; the broader frozen-spec grounding port is still open work.
+`src/assessment.js` holds the assessment rules. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. This creates `js/assessment-gate.js` for the browser. `npm test` rejects an outdated generated file. Both browser and Node use the same detector and adapter; the broader frozen-spec grounding port is still open work.
+
+## How one check works
+
+Start reading at `analyze()` in `js/engine/aggregate.js`. It calls the other files in this order:
+
+1. `normalize.js` cleans the text and caps its length.
+2. `extract.js` finds contacts and masks them before looking for a sender name. A name inside a link must not count as the sender.
+3. `domain.js` compares contacts with `data/store.js`. The first matching rule decides each contact check.
+4. `risk.js` checks what the message asks the person to do. It distinguishes a direct request from negation or quoted advice.
+5. `evidence.js` groups the contact checks, risk findings, and uncertainty.
+6. `src/assessment.js` chooses one result. Established Tier 1 risk wins; otherwise a match needs an explicit sender, matching contacts, and no risk or uncertainty. Everything else is insufficient evidence.
+7. `copy.js` writes the explanations. `app.js` displays them and handles the form, examples, focus, and reset.
+
+Contacts use cleaned text, but risk quotes use the original text so their positions stay accurate. This is why extraction runs twice. `validateResult()` also rebuilds the evidence and repeats the assessment to check that the displayed result agrees with its evidence. These repeated steps serve different purposes.
+
+In the JavaScript, `find()` returns the first match, `some()` asks whether any item matches, and `every()` asks whether all items match. In `domain.js`, `{ ...base, ...extra }` copies the shared contact fields and adds the fields for that rule.
 
 ## Main files
 
-| File | Role |
+In the order a message passes through them:
+
+| File | What it does |
 | --- | --- |
 | `index.html`, `css/styles.css` | Text input, required channel, responsive result view |
 | `js/app.js` | Validation, rendering, focus, reset |
@@ -75,6 +94,20 @@ The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, 
 | `data/store.js` | Legacy records: 46 organizations and 61 website names |
 | `tests/step1-cases.js`, `tests/suite.js` | Focused step-1 checks and shared invariants |
 | `eval/` | Field evaluation on real messages (`npm run eval`); `tests/eval-tests.cjs` checks the tool itself |
+| `index.html`, `css/styles.css` | The page: message box, Text / Email / Not sure, result view |
+| `js/app.js` | Reads the form, shows the result, runs the "I checked it myself" step; decides nothing |
+| `js/engine/normalize.js` | Cleans the text; `riskView` keeps a map back to the original so quotes stay exact |
+| `js/engine/extract.js` | Finds links, email addresses and phone numbers, and the sender the message names |
+| `js/engine/domain.js` | Checks each address against the organization list (a fixed rule table, first match wins) |
+| `js/engine/risk.js` | What the message asks for: one function per Tier 1 rule, then the Tier 2 wording flags |
+| `js/engine/evidence.js` | Puts both readings into one standard form; sorts conflicts into T1-DOMAIN or Tier 2 |
+| `src/assessment.js` | **The only place a result is decided**; `js/assessment-gate.js` is its generated browser copy |
+| `js/engine/aggregate.js` | Runs every stage (`analyze`) and refuses inconsistent results (`validateResult`) |
+| `js/engine/copy.js` | Every sentence the person reads |
+| `js/selfCheck.js` | "I checked it myself" outcomes; never changes the result |
+| `data/store.js` | The organization list: 46 organizations, none human-reviewed yet |
+| `js/mockData.js` | The seven demo examples |
+| `tests/` | `npm test` runs everything here; `tests/run.html` shows the same checks in a browser |
 
 ## I checked it myself
 
