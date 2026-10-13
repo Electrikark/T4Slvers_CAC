@@ -1,7 +1,6 @@
 /* The engine's front door: analyze() runs every stage and builds the result;
    validateResult() refuses any result whose parts disagree with each other.
    window.TfsEngine = { analyze(text, store, { declaredChannel }), validateResult(result), version } */
-// Run the checks, assess the evidence, and prepare the result for display.
 (function (root) {
   'use strict';
   const T = root.TFS = root.TFS || {};
@@ -41,18 +40,6 @@
     const sender = { explicit: Boolean(claim.org), recognizedOrg: claim.org ? claim.org.id : null };
     const evidence = T.normalizeEvidence(checks, sender, Boolean(ctx.implicitOrg), signals, incomplete);
     const decided = gate.assess(evidence);
-    // Use the original text here so risk quotes retain their exact positions.
-    var raw = input == null ? '' : String(input);
-    var bounded = raw.slice(0, T.MAX_CHARS);
-    // Curly apostrophes, invisible characters and fullwidth letters must not hide a request.
-    var signals = T.sourceSignals(bounded);
-    if (signals.incomplete && !checks.some(function (c) { return c.code === 'input_incomplete'; })) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
-    if (signals.unresolved.length) checks.push({ status: 'UNKNOWN', code: 'risk_unresolved' });
-    var incomplete = norm.truncated || extracted.incomplete || signals.incomplete;
-    var evidence = T.normalizeEvidence(checks, {
-      explicit: Boolean(claim.org), recognizedOrg: claim.org ? claim.org.id : null
-    }, Boolean(ctx.implicitOrg), signals, incomplete);
-    var assessed = gate.assess(evidence);
 
     const result = {
       schemaVersion: 3,
@@ -87,9 +74,6 @@
       incomplete
     };
     Object.assign(result, T.copy.describe(result));
-    var words = T.copy.describe(result);
-    result.description = words.description;
-    result.meaning = words.meaning;
     result.actionWarnings = T.copy.warnings(result);
     result.nextSteps = T.copy.nextSteps(result, ctx);
     return result;
