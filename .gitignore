@@ -1,0 +1,4 @@
+# Real messages can contain names, numbers and account details. Keep them out of git by default.
+eval/data/*
+!eval/data/.gitkeep
+eval/results/
