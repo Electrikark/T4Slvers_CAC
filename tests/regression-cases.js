@@ -1,4 +1,4 @@
-// Schema v3: assert canonical assessment; contact strength remains evidence, not a verdict.
+// Contact conflicts block a match; only established Tier 1 risk yields Suspicious.
 /* Failures reproduced during review. Each case guards a user-visible decision. */
 window.TFS_REAL_CASES.push(
   { id: 'G01', text: 'Chase: visit https://help-center.example', expect: { assessment: 'insufficient_evidence', codes: ['not_in_official_list'] }, guards: 'Missing from a limited list is not a conflict' },
@@ -15,7 +15,7 @@ window.TFS_REAL_CASES.push(
   { id: 'G12', text: 'Chase: Never share your code. Do not send your code. Never share your code. Read me the code.', expect: { assessment: 'suspicious', rules: ['T1-CODE'], flags: ['share_code'], risk: 'high' }, guards: 'A later direct request still fires after protective advice' },
   { id: 'G13', text: 'Chase: Never share your code. We will never ask you to share your code.', expect: { assessment: 'insufficient_evidence', risk: 'none' }, guards: 'Repeated protective advice stays quiet' },
   { id: 'G14', text: 'PayPal: https://paypal.com\\@evil.example', expect: { assessment: 'insufficient_evidence', codes: ['link_unreadable'] }, guards: 'Backslashes are not silently normalized into trusted input' },
-  { id: 'G15', text: 'Chase: https://chase.com and https://google.com', expect: { assessment: 'insufficient_evidence' /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */, codes: ['domain_belongs_to_other_org'] }, guards: 'A known different owner is still an explicit conflict' },
+  { id: 'G15', text: 'Chase: https://chase.com and https://google.com', expect: { assessment: 'insufficient_evidence', codes: ['domain_belongs_to_other_org'] }, guards: 'A known different owner is still an explicit conflict' },
   { id: 'G16', text: 'https://chase.com https://google.com', expect: { assessment: 'insufficient_evidence' }, guards: 'Multiple known owners do not imply a single sender' },
   { id: 'G17', text: 'Chase: https://chase.com ' + Array.from({length: 35}, function (_, i) { return 'https://part' + i + '.chase.com'; }).join(' '), expect: { assessment: 'insufficient_evidence', codes: ['input_incomplete'], incomplete: true }, guards: 'The target cap is explicit and prevents a complete match' },
   { id: 'G18', text: 'PNC: https://pnc.com', expect: { assessment: 'insufficient_evidence', codes: ['reference_needs_review'] }, guards: 'A source marked needs review cannot produce a match' },
