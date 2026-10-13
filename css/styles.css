@@ -305,7 +305,7 @@ textarea::placeholder {
   margin:9px 0 18px;
 }
 
-.primary,.secondary {
+.primary {
   min-height:52px;
   border:1px solid var(--teal);
   border-radius:8px;
@@ -327,15 +327,6 @@ textarea::placeholder {
   margin-left:14px;
 }
 
-.secondary {
-  background:transparent;
-  color:var(--teal);
-}
-
-.secondary:hover {
-  background:#e2eada;
-}
-
 .full {
   width:100%;
 }
@@ -355,6 +346,16 @@ textarea::placeholder {
 
 .error:empty {
   display:none;
+}
+
+input::file-selector-button {
+  background:var(--soft);
+  color:var(--ink);
+  border:1px solid #a9b8a3;
+  border-radius:6px;
+  min-height:48px;
+  margin-right:12px;
+  cursor:pointer;
 }
 
 .example-loaded {
@@ -438,33 +439,6 @@ summary span {
 
 .site-footer p {
   margin:0;
-}
-
-.checking {
-  text-align:center;
-  min-height:500px;
-  padding:85px 0;
-}
-
-.checking h1 {
-  font-size:2.5rem;
-}
-
-.loader {
-  display:block;
-  width:42px;
-  height:42px;
-  border:3px solid #d4dece;
-  border-top-color:var(--teal);
-  border-radius:50%;
-  margin:0 auto 30px;
-  animation:turn 1.1s linear infinite;
-}
-
-@keyframes turn {
-  to {
-    transform:rotate(360deg);
-  }
 }
 
 .result {
@@ -868,9 +842,6 @@ summary span {
   .next-steps {
     padding:22px;
   }
-  .checking h1 {
-    font-size:2.125rem;
-  }
   summary span {
     display:block;
     margin:4px 0 0 18px;
@@ -892,12 +863,6 @@ summary span {
   }
 }
 
-@media(prefers-reduced-motion:reduce) {
-  .loader {
-    animation:none;
-  }
-}
-
 .skip-link {
   position:absolute;
   top:-100px;
@@ -911,6 +876,109 @@ summary span {
   top:12px;
 }
 
+
+/* Added with the checker: request signals and stacked warnings. */
+.asks .quote {
+  font-style:italic;
+  margin:4px 0 0;
+}
+
+.warning + .warning {
+  margin-top:-10px;
+  font-weight:400;
+}
+
+.result-banner.match.risky {
+  background:#f8f0dd;
+  border-color:#ad8a37;
+  color:#674d12;
+}
+
+/* Result details can contain very long addresses; keep them within the grid. */
+.home-layout > *, .result-layout > *, .result-banner > div {
+  min-width:0;
+}
+.result, .prototype-note, .brand, .option {
+  overflow-wrap:anywhere;
+}
+.character-count {
+  color:var(--muted);
+  font-size:0.875rem;
+  margin:4px 0 0;
+  text-align:right;
+}
+.over-limit {
+  color:#923823;
+  font-weight:700;
+}
+.action-note {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  margin-top:18px;
+  padding:22px 26px;
+  background:#edf1e8;
+  border-left:4px solid var(--teal);
+  border-radius:0 8px 8px 0;
+}
+.action-note.high-risk {
+  background:#fbefdd;
+  border-color:#946024;
+  color:#654011;
+}
+.action-note h2 {
+  font-size:1rem;
+  margin-bottom:6px;
+}
+.action-note p {
+  margin:0;
+  max-width:65ch;
+}
+.action-link {
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:44px;
+  font-size:1rem;
+  text-underline-offset:4px;
+}
+.check-item {
+  padding-left:16px;
+  border-left:2px solid #b4c3af;
+}
+.check-item.contradicts {
+  border-left-color:#a76745;
+}
+.check-item.unknown {
+  border-left-color:#a68a47;
+}
+.check-source {
+  margin-top:8px;
+}
+.check-source summary {
+  color:var(--muted);
+  font-size:0.875rem;
+  font-weight:400;
+}
+.check-source .source {
+  margin:0 0 12px;
+}
+#next-title {
+  scroll-margin-top:24px;
+}
+@media (max-width:680px) {
+  .site-header { flex-wrap:wrap; }
+  .brand-caption { max-width:220px; }
+  .prototype-tag { max-width:none; }
+  .prototype-note { margin-bottom:24px; }
+  .action-note { align-items:flex-start; flex-direction:column; gap:8px; padding:20px; }
+  .result-banner { flex-direction:column; }
+  .state-label { letter-spacing:0.5px; }
+  .checks { margin-bottom:0; }
+  .source, .hint, .privacy { font-size:1rem; }
+}
 @media (max-width:360px) {
   .channel-options {
     grid-template-columns:1fr;
