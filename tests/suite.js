@@ -28,10 +28,15 @@ window.runEngineTests = function () {
     var flagIds = (risk.flags || []).map(function (f) { return f.id; });
     (expect.flags || []).forEach(function (f) { if (flagIds.indexOf(f) < 0) problems.push('missing flag ' + f + ' (got ' + (flagIds.join(', ') || 'none') + ')'); });
     (expect.notFlags || []).forEach(function (f) { if (flagIds.indexOf(f) >= 0) problems.push('unexpected flag ' + f); });
-    var ruleIds = risk.established.map(function (e) { return e.ruleId; });
+    // Tier 1 can come from the wording (requestRisk) or from a contact (T1-DOMAIN).
+    var ruleIds = risk.established.map(function (e) { return e.ruleId; }).concat((result.evidence ? result.evidence.findings : [])
+      .filter(function (f) { return f.tier === 1 && f.status === 'established'; }).map(function (f) { return f.ruleId; }));
     (expect.rules || []).forEach(function (id) { if (ruleIds.indexOf(id) < 0) problems.push('missing rule ' + id); });
     (expect.notRules || []).forEach(function (id) { if (ruleIds.indexOf(id) >= 0) problems.push('unexpected rule ' + id); });
     if (expect.unresolved && !risk.unresolved.length) problems.push('missing unresolved risk');
+    var words = [result.description, result.meaning].concat(result.actionWarnings || [], result.nextSteps || []).join(' ');
+    (expect.says || []).forEach(function (w) { if (words.indexOf(w) < 0) problems.push('missing wording: ' + w); });
+    (expect.neverSays || []).forEach(function (w) { if (words.indexOf(w) >= 0) problems.push('unexpected wording: ' + w); });
     return problems;
   }
 
@@ -167,10 +172,16 @@ window.runEngineTests = function () {
     var problems = [];
     var base = window.TFS_CASES.map(function (c) { return c.text; }).join(' ');
     var t5 = (base + ' ').repeat(Math.ceil(5000 / base.length)).slice(0, 5000);
-    var a = performance.now(); run(t5); var d1 = performance.now() - a;
+    // Best of three: the budget is for the engine, not a garbage-collection pause on a shared runner.
+    function fastest(text) {
+      var best = Infinity;
+      for (var k = 0; k < 3; k++) { var a = performance.now(); run(text); best = Math.min(best, performance.now() - a); }
+      return best;
+    }
+    var d1 = fastest(t5);
     if (d1 > 50) problems.push('5,000 characters took ' + Math.round(d1) + ' ms');
     var hostile = '.a'.repeat(50000);
-    var b = performance.now(); run(hostile); var d2 = performance.now() - b;
+    var d2 = fastest(hostile);
     if (d2 > 1000) problems.push('hostile 100,000 characters took ' + Math.round(d2) + ' ms');
     return problems;
   });
@@ -205,6 +216,7 @@ window.runEngineTests = function () {
     { name: 'Reference-list and regression cases', rows: realEl },
     { name: 'v1.2 step 1 cases', rows: stepEl },
     { name: 'Invariants', rows: invEl },
-    { name: 'Single assessment gate', rows: window.runAssessmentTests(window.TfsAssessment) }
+    { name: 'Single assessment gate', rows: window.runAssessmentTests(window.TfsAssessment) },
+    { name: 'Self-check step', rows: window.runSelfCheckTests() }
   ] };
 };

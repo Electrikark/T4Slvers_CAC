@@ -6,6 +6,10 @@ window.TFS_REAL_CASES = [
     "text": "FasTrak: You have an unpaid toll of $4.15. Pay within 24 hours to avoid a fine: https://fastrak-ca-tolls.com/pay",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus a toll lure word. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["brand_in_foreign_domain"],
       "riskAtLeast": "elevated"
@@ -17,6 +21,10 @@ window.TFS_REAL_CASES = [
     "text": "USPS: Your package could not be delivered. Update your address: https://usps.com-redelivery.top/track",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: official domain glued to another site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["official_domain_as_subdomain"]
     },
@@ -27,6 +35,10 @@ window.TFS_REAL_CASES = [
     "text": "PayPal: confirm your identity at https://paypa1.com/login",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: digit 1 swapped for letter l. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["homoglyph"]
     },
@@ -37,6 +49,10 @@ window.TFS_REAL_CASES = [
     "text": "DMV: Final notice. Your license will be suspended. Pay fines at https://dmv.ca.gov-xyz.top",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: official domain glued to another site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["official_domain_as_subdomain"],
       "flags": ["pay_fee"]
@@ -49,6 +65,9 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": ["domain_official"],
+      "codes": [
+        "reference_needs_review" /* Real list: awaiting human review. */
+      ],
       "risk": "none"
     },
     "guards": "Official state agency link with no named sender"
@@ -58,6 +77,10 @@ window.TFS_REAL_CASES = [
     "text": "Wells Fargo alert: https://wellsfargo.secure-account.help/verify",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus security lure words. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["brand_in_foreign_domain"]
     },
@@ -79,6 +102,9 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": ["domain_official"]
+      "codes": [
+        "reference_needs_review" /* Real list: awaiting human review. */
+      ]
     },
     "guards": "Email address on an official domain"
   },
@@ -130,6 +156,13 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": ["domain_official"],
+      "assessment": "suspicious" /* T1-CODE: reading a texted code to a caller. */,
+      "rules": [
+        "T1-CODE"
+      ],
+      "codes": [
+        "reference_needs_review" /* Real list: awaiting human review. */
+      ],
       "risk": "high",
       "flags": ["share_code"]
     },
@@ -141,6 +174,9 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": ["domain_official"]
+      "codes": [
+        "reference_needs_review" /* Real list: awaiting human review. */
+      ]
     },
     "guards": "Defanged links are read correctly"
   },
