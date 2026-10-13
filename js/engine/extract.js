@@ -1,6 +1,7 @@
 /* Finds what the message contains and who it claims to be from.
    extractTargets(text): links, email addresses and phone numbers, with bounded work per token.
    findClaim(maskedText, store): the organization the message names as its sender, if any. */
+// Find contacts, then look for a sender name outside those contacts.
 (function (root) {
   'use strict';
   const T = root.TFS = root.TFS || {};
@@ -104,6 +105,7 @@
   }
 
   /* ---------- The claimed sender ---------- */
+  var compiledCache = new WeakMap();
 
   const aliasCache = new WeakMap();
 
@@ -120,6 +122,18 @@
       item.re = new RegExp('(?<![A-Za-z0-9&])' + body + '(?![A-Za-z0-9&])', 'gi');
     }
     aliasCache.set(store, list);
+  function compileAliases(store) {
+    if (compiledCache.has(store)) return compiledCache.get(store);
+    var list = [];
+    (store.orgs || []).forEach(function (org) {
+      (org.aliases || []).forEach(function (a) { list.push({ org: org, alias: a, strict: false }); });
+      (org.strictAliases || []).forEach(function (a) { list.push({ org: org, alias: a, strict: true }); });
+    });
+    list.forEach(function (item) {
+      var body = escapeRe(item.alias.trim()).replace(/\s+/g, '\\s+');
+      item.re = new RegExp('(?<![A-Za-z0-9&])' + body + '(?![A-Za-z0-9&])', 'gi');
+    });
+    compiledCache.set(store, list);
     return list;
   }
 
