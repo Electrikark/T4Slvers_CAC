@@ -156,7 +156,7 @@
     return hit ? matchedSpan(raw, clause, hit, offset) : null;
   }
 
-  function tiedContext(clauses, index, action, raw) {
+  function tiedContext(clauses, index, raw) {
     var own = clauses[index], hit;
     if (!own.inReport && !reported(own.text)) {
       var pressure = own.text.match(PRESSURE);
@@ -178,7 +178,7 @@
 
   function contextualSignals(text, raw) {
     var clauses = clausesOf(text), flags = [], established = [], unresolved = [];
-    function flag(id, clause, start, end) {
+    function flag(id, start, end) {
       if (!flags.some(function (f) { return f.id === id; })) flags.push({ id: id, level: 'high', words: raw.slice(start, end), start: start, end: end });
     }
     function tier1(id, action, clause, object, context, antecedent) {
@@ -199,7 +199,7 @@
           var gift = matchedSpan(raw, clause, hit, m.index + m[0].length);
           var paymentContext = giftPaymentContext(clause, gift, raw);
           if (verb === 'pay' || paymentContext) {
-            flag('gift_card_payment', clause, action.start, gift.end);
+            flag('gift_card_payment', action.start, gift.end);
             tier1('T1-GIFT', action, clause, gift, paymentContext);
           } else if (PURPOSE.test(clause.text)) {
             unresolved.push({ id: 'unclear_gift_payment_purpose', action: action, clause: span(raw, clause.start, clause.end), object: gift });
@@ -215,7 +215,7 @@
           var competing = /\b(?:otp|one[ -]time|authorization|verification|password|credit card|debit card)\b/i.test(clause.text + ' ' + (giftClause === clause ? '' : giftClause.text));
           if (giftHit && recipient && !competing && !/\b(?:checkout|retailer|redeem at)\b/i.test(clause.text)) {
             var antecedent = matchedSpan(raw, giftClause, giftHit);
-            flag('gift_card_disclosure', clause, action.start, code.end);
+            flag('gift_card_disclosure', action.start, code.end);
             tier1('T1-GIFT', action, clause, code, null, antecedent);
             giftDisclosed = true;
           } else if (giftHit && recipient && competing) {
@@ -227,15 +227,15 @@
           if (!hit && verb === 'wire') hit = windowText.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
           if (hit) {
             var wire = matchedSpan(raw, clause, hit, m.index + m[0].length);
-            flag('crypto_or_wire', clause, action.start, wire.end);
-            var wireContext = tiedContext(clauses, index, action, raw);
+            flag('crypto_or_wire', action.start, wire.end);
+            var wireContext = tiedContext(clauses, index, raw);
             if (wireContext) tier1('T1-WIRE', action, clause, wire, wireContext);
           }
         }
         if (/^(?:install|download|run|start|allow|grant|share)$/.test(verb) && (hit = windowText.match(REMOTE))) {
           var remote = matchedSpan(raw, clause, hit, m.index + m[0].length);
-          flag('remote_access', clause, action.start, remote.end);
-          var remoteContext = tiedContext(clauses, index, action, raw);
+          flag('remote_access', action.start, remote.end);
+          var remoteContext = tiedContext(clauses, index, raw);
           if (remoteContext) tier1('T1-REMOTE', action, clause, remote, remoteContext);
         }
         if (/^(?:call|dial|contact)$/.test(verb) && (hit = tail.match(CALL_OBJECT)) && !TRUSTED_CALL.test(tail.slice(0, 80))) {
@@ -335,7 +335,7 @@
         var pattern = new RegExp(flag.patterns[p].source, 'gi');
         var hit = null, m;
         while ((m = pattern.exec(text)) !== null) {
-          var clause = contextual.clauses.filter(function (c) { return m.index >= c.start && m.index < c.end; })[0];
+          var clause = contextual.clauses.find(function (c) { return m.index >= c.start && m.index < c.end; });
           if (clause && (clause.inReport || reported(clause.text))) continue;
           if (flag.negatable && isNegated(text, m.index)) continue;
           if (flag.id === 'login_request' && clause && (!loginDemand(text.slice(clause.start, m.index), m[0]) ||
@@ -356,9 +356,9 @@
     flags = flags.filter(function (f) {
       return f.id !== 'share_code' || !flags.some(function (gift) { return gift.id === 'gift_card_disclosure' && f.start >= gift.start && f.end <= gift.end; });
     });
-    var highs = flags.filter(function (f) { return f.level === 'high'; }).length;
+    var hasHigh = flags.some(function (f) { return f.level === 'high'; });
     var mediums = flags.filter(function (f) { return f.level === 'medium'; }).length;
-    var level = highs > 0 || mediums >= 3 ? 'high' : mediums > 0 ? 'elevated' : 'none';
+    var level = hasHigh || mediums >= 3 ? 'high' : mediums > 0 ? 'elevated' : 'none';
     return { level: level, flags: flags, established: contextual.established, unresolved: contextual.unresolved };
   }
 
