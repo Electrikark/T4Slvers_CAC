@@ -65,7 +65,8 @@
     risk.flags.forEach(function (f) {
       var covered = COMPANION[f.id] && risk.established.some(function (e) { return e.ruleId === COMPANION[f.id] && e.action.start === f.start; });
       if (covered) return;
-      item(f.id, 'check', (T.copy.FLAG_LABELS[f.id] || 'A warning sign') + '. ' + (T.copy.FLAG_WARNINGS[f.id] || ''), [{ start: f.start, end: f.end }]);
+      var flag = T.copy.FLAGS[f.id] || { label: 'A warning sign', advice: '' };
+      item(f.id, 'check', flag.label + '. ' + flag.advice, [{ start: f.start, end: f.end }]);
     });
     // Contacts, with the check that was made on each.
     var found = T.sourceTargets(raw);
