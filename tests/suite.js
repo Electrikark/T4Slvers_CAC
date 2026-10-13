@@ -48,7 +48,6 @@ window.runEngineTests = function () {
     throw new Error('The engine did not load.');
   }
 
-  var passed = 0;
   var results = [];
   window.TFS_CASES.forEach(function (c) {
     var result, problems;
@@ -61,19 +60,15 @@ window.runEngineTests = function () {
     }
     results.push(result);
     var ok = problems.length === 0;
-    if (ok) passed += 1;
     addRow(rowsEl, [c.id, ok ? 'PASS' : 'FAIL', c.text, ok ? c.guards : problems.join('; ')], ok);
   });
 
-  var realPassed = 0, realTotal = 0;
   if (window.TFS_REAL_CASES && window.TFS_STORE && engine) {
     window.TFS_REAL_CASES.forEach(function (c) {
-      realTotal += 1;
       var problems;
       try { var r = engine.analyze(c.text, window.TFS_STORE, { declaredChannel: 'unknown' }); realResults.push(r); problems = judge(r, c.expect); }
       catch (err) { problems = ['threw: ' + (err && err.message ? err.message : err)]; }
       var ok = problems.length === 0;
-      if (ok) realPassed += 1;
       addRow(realEl, [c.id, ok ? 'PASS' : 'FAIL', c.text, ok ? c.guards : problems.join('; ')], ok);
     });
   }
@@ -100,13 +95,10 @@ window.runEngineTests = function () {
   var fixtureResults = results;
   results = results.concat(realResults);
   var caseIds = window.TFS_CASES.concat(window.TFS_REAL_CASES, window.TFS_STEP1_CASES).map(function (c) { return c.id; });
-  var invPassed = 0, invTotal = 0;
   function invariant(name, fn) {
-    invTotal += 1;
     var problems = [];
     try { problems = fn(); } catch (err) { problems = ['threw: ' + (err && err.message ? err.message : err)]; }
     var ok = problems.length === 0;
-    if (ok) invPassed += 1;
     addRow(invEl, [name, ok ? 'PASS' : 'FAIL', ok ? '' : problems.join('; ')], ok);
   }
 
