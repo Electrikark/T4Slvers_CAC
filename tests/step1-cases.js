@@ -1,4 +1,4 @@
-// Schema v3: assert canonical assessment; contact strength remains evidence, not a verdict.
+// Contact conflicts block a match; only established Tier 1 risk yields Suspicious.
 /* Focused v1.2 decisions through the real analysis path, using local contact fixtures.
    These are policy checks, not a detection-accuracy sample. */
 window.TFS_STEP1_CASES = [
@@ -38,6 +38,8 @@ window.TFS_STEP1_CASES = [
   { id: 'C22-info', text: 'Chase: AnyDesk is a remote support tool. Visit https://chase.com.', expect: { assessment: 'details_match', risk: 'none', notRules: ['T1-REMOTE'] }, guards: 'Tool information is not a demand' },
   { id: 'C22-unhurried', text: 'Chase: Please install AnyDesk. Visit https://chase.com.', expect: { assessment: 'insufficient_evidence', flags: ['remote_access'], notRules: ['T1-REMOTE'] }, guards: 'An unhurried access demand remains Tier 2' },
   { id: 'C22-no-access', text: 'Chase: Do not install AnyDesk right now. Visit https://chase.com.', expect: { assessment: 'details_match', notRules: ['T1-REMOTE'], notFlags: ['remote_access'] }, guards: 'Negation governs installation' },
+  { id: 'priority-contact', text: 'Chase: https://chase.com https://chase-secure-login.net', expect: { assessment: 'suspicious', rules: ['T1-DOMAIN'], codes: ['brand_in_foreign_domain'] }, guards: 'A real website cannot outweigh an imitation one in the same message' },
+  { id: 'priority-no-claim', text: 'Please send me your code. Visit https://chase.com.', expect: { assessment: 'suspicious', rules: ['T1-CODE'], flags: ['share_code'] }, guards: 'A real website cannot outweigh a direct request for a code' },
   { id: 'N1-zero-width', text: 'Chase: Buy g​ift cards to pay the fine. Visit https://chase.com.', expect: { assessment: 'suspicious', rules: ['T1-GIFT'] }, guards: 'An invisible character cannot hide a gift-card demand; quotes keep the source text' },
   { id: 'N2-fullwidth', text: 'Chase: Ｂｕｙ ｇｉｆｔ ｃａｒｄｓ to pay the fine. Visit https://chase.com.', expect: { assessment: 'suspicious', rules: ['T1-GIFT'] }, guards: 'Fullwidth letters read as the words they spell' },
   { id: 'N3-curly-apostrophe', text: 'Chase: Don’t tell your family about this. Visit https://chase.com.', expect: { assessment: 'insufficient_evidence', flags: ['secrecy'] }, guards: 'Phone keyboards type curly apostrophes; secrecy is still seen' },
