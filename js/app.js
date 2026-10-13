@@ -1,16 +1,14 @@
-/* The view owns input and focus. The engine owns evidence and action guidance.
-   No text or file is stored, read from disk, or sent to a server. */
+// Read the form, run the local checker, and display its result.
 const byId = id => document.getElementById(id);
 const form = byId('submission-form');
 const submitButton = byId('check-button');
 const maxChars = window.TFS.MAX_CHARS;
+const channels = ['text', 'email', 'unknown'];
 let declaredChannel = null;
-let selectedScenario = null;
 let revision = 0;
 
-// Future API boundary: return the same validated result shape from this function.
-async function analyzeSubmission(input) {
-  const result = window.TfsEngine.analyze(input.text, window.TFS_STORE, { declaredChannel: input.declaredChannel });
+function analyzeSubmission(text, declaredChannel) {
+  const result = window.TfsEngine.analyze(text, window.TFS_STORE, { declaredChannel });
   if (!window.TfsEngine.validateResult(result)) throw new Error('Invalid result shape');
   return result;
 }
@@ -26,7 +24,7 @@ function clearError() {
   byId('error').textContent = '';
   byId('message').removeAttribute('aria-invalid');
   byId('channel-question').removeAttribute('aria-invalid');
-  for (const channel of ['text', 'email', 'unknown']) byId(`channel-${channel}`).removeAttribute('aria-invalid');
+  for (const channel of channels) byId(`channel-${channel}`).removeAttribute('aria-invalid');
 }
 
 function showError(text, field) {
@@ -38,7 +36,6 @@ function showError(text, field) {
 }
 
 function clearExample() {
-  selectedScenario = null;
   byId('example-loaded').textContent = '';
   byId('example-loaded').hidden = true;
 }
@@ -51,7 +48,7 @@ function updateCount() {
 
 function selectChannel(channel) {
   declaredChannel = channel;
-  for (const option of ['text', 'email', 'unknown']) {
+  for (const option of channels) {
     byId(`channel-${option}`).setAttribute('aria-pressed', String(option === channel));
     byId(`channel-${option}`).classList.toggle('active', option === channel);
   }
@@ -78,7 +75,6 @@ function reset() {
 
 function loadScenario(id) {
   reset();
-  selectedScenario = id;
   const scenario = window.demoScenarios[id];
   byId('message').value = scenario.input;
   updateCount();
@@ -110,13 +106,10 @@ function renderResult(result) {
   byId('state-label').textContent = highRisk ? `${state.label} · ACTION WARNING` : state.label;
   byId('result-title').textContent = state.title;
   byId('result-description').textContent = result.description;
-  byId('result-kind').textContent = 'YOUR LOCAL CHECK';
-  byId('result-scope').textContent = 'Local text comparison only. No website was opened. The sender and caller were not checked.';
   for (const [id, field] of Object.entries({ identity: 'claimedIdentity', channel: 'channel', inspected: 'inspected', meaning: 'meaning' })) {
     byId(id).textContent = result[field];
   }
 
-  // Put critical action advice next to the evidence state, also on narrow screens.
   const lead = result.actionWarnings[0];
   byId('action-lead').textContent = lead;
   byId('action-note').classList.toggle('high-risk', highRisk);
@@ -127,7 +120,7 @@ function renderResult(result) {
     item.className = `check-item ${check.status.toLowerCase()}`;
     const source = document.createElement('details');
     source.className = 'check-source';
-    source.append(textElement(['sum', 'mary'].join(''), 'About this check'), textElement('p', check.source, 'source'));
+    source.append(textElement('summary', 'About this check'), textElement('p', check.source, 'source'));
     item.append(textElement('span', checkLabels[check.status], 'check-label'), textElement('p', check.detail), source);
     byId('checks').append(item);
   }
@@ -151,7 +144,7 @@ function renderResult(result) {
   showScreen('result');
 }
 
-for (const channel of ['text', 'email', 'unknown']) {
+for (const channel of channels) {
   byId(`channel-${channel}`).addEventListener('click', () => selectChannel(channel));
 }
 byId('message').addEventListener('input', () => {
@@ -180,11 +173,9 @@ form.addEventListener('submit', async event => {
 
   const currentRevision = ++revision;
   submitButton.disabled = true;
-  byId('checking-title').textContent = 'Checking the details…';
-  byId('checking-note').textContent = 'Using the local reference list. No links are opened.';
   showScreen('checking');
   try {
-    const result = await analyzeSubmission({ text, declaredChannel });
+    const result = await analyzeSubmission(text, declaredChannel);
     if (currentRevision === revision) renderResult(result);
   } catch {
     if (currentRevision === revision) {

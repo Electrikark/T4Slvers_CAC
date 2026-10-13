@@ -1,6 +1,4 @@
-/* Plain-language wording, keyed by reason code and flag id.
-   Rules for every string here: short sentences, no jargon, and never the words
-   "safe", "verified" or "legitimate" (invariant 4 in the spec). */
+// Turn contact checks and risk flags into text for the result page.
 (function (root) {
   'use strict';
   var T = root.TFS = root.TFS || {};
@@ -139,7 +137,7 @@
     peer_payment: 'Sending money by app'
   };
 
-  function describe(result, ctx) {
+  function describe(result) {
     var codes = result.checks.map(function (c) { return c.code; });
     if (result.assessment === 'suspicious') {
       return {
@@ -164,7 +162,7 @@
     return { description: 'We do not have enough reliable evidence for a complete assessment.', meaning: meaning };
   }
 
-  function warnings(result, ctx) {
+  function warnings(result) {
     var list = [];
     var flagWarnings = result.requestRisk.flags.map(function (f) { return FLAG_WARNINGS[f.id]; });
     if (result.assessment !== 'details_match') list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the organization using a website, app, statement, or number you already trust.");
