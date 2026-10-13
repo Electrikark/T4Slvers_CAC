@@ -23,6 +23,10 @@ node tests/run-node.cjs
 
 The recorded eac1229 baseline passes all 111 checks. There are now 241 shared checks, including 14 for the self-check step (S1–S14), 38 for login requests (L1–L38) and 3 for review status (I18–I20): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 42 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), and one unresolved card-number case. The Node runner also runs the 36 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
 
+## Field evaluation
+
+The tests above check that rules behave as written; they cannot measure real-world accuracy. `npm run eval` runs a spreadsheet of **real, labeled messages** through the same engine and reference list and reports the false-reassurance count (fraud given Details Match, which must be 0), the catch rate, the "at least paused" rate and the false-alarm rate, each with a 95% Wilson range, plus the rules that fired, results by category, and every miss and false alarm. Messages are split into `dev` (tune rules here) and `test` (report this). See [`eval/README.md`](eval/README.md) for how to collect and label messages. `eval/data/` and `eval/results/` are ignored by git because real messages can contain private details.
+
 ## Analysis contract
 
 ```js
@@ -70,6 +74,7 @@ The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, 
 | `js/engine/normalize.js`, `extract.js`, `domain.js` | Legacy contact paths still being brought into conformance |
 | `data/store.js` | Legacy records: 46 organizations and 61 website names |
 | `tests/step1-cases.js`, `tests/suite.js` | Focused step-1 checks and shared invariants |
+| `eval/` | Field evaluation on real messages (`npm run eval`); `tests/eval-tests.cjs` checks the tool itself |
 
 ## I checked it myself
 
