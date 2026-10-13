@@ -1,5 +1,6 @@
 /* All the plain-language wording the person reads.
    For every string: short sentences, no jargon, and never "safe", "verified" or "legitimate". */
+// Turn contact checks and risk flags into text for the result page.
 (function (root) {
   'use strict';
   const T = root.TFS = root.TFS || {};
@@ -177,6 +178,10 @@
     const flagAdvice = result.requestRisk.flags.map(f => FLAGS[f.id].advice);
     const matched = result.assessment === 'details_match';
     if (!matched) list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the person or organization using a website, app, statement, or number you already trust.");
+  function warnings(result) {
+    var list = [];
+    var flagWarnings = result.requestRisk.flags.map(function (f) { return FLAG_WARNINGS[f.id]; });
+    if (result.assessment !== 'details_match') list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the person or organization using a website, app, statement, or number you already trust.");
     // Name each lookalike address so the person knows exactly what not to open.
     for (const c of conflicts(result)) {
       if (c.strength === 'strong' && c.target) list.push(`Do not open or reply to ${c.target}. It looks like a known address but is not on our list for that organization.`);
