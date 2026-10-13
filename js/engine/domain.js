@@ -1,15 +1,18 @@
+/* Checks each link and email address against the organization list.
+   checkHost() runs a fixed rule table in order; the first rule that fires decides.
+   Helpers: punycode decoding, the registrable part of a host, lookalike letters, edit distance. */
 // Check website and email hosts in order; the first matching rule wins.
 (function (root) {
   'use strict';
-  var T = root.TFS = root.TFS || {};
+  const T = root.TFS = root.TFS || {};
 
-  /* ---------- Punycode (RFC 3492): turns xn--chse-63d into its Unicode form ---------- */
-  var BASE = 36, T_MIN = 1, T_MAX = 26, SKEW = 38, DAMP = 700, INITIAL_BIAS = 72, INITIAL_N = 128;
+  /* ---------- Punycode (RFC 3492): xn--chse-63d.com back into its Unicode letters ---------- */
+  const BASE = 36, T_MIN = 1, T_MAX = 26, SKEW = 38, DAMP = 700, INITIAL_BIAS = 72, INITIAL_N = 128;
 
   function adapt(delta, numPoints, firstTime) {
     delta = firstTime ? Math.floor(delta / DAMP) : delta >> 1;
     delta += Math.floor(delta / numPoints);
-    var k = 0;
+    let k = 0;
     while (delta > ((BASE - T_MIN) * T_MAX) >> 1) {
       delta = Math.floor(delta / (BASE - T_MIN));
       k += BASE;
@@ -25,78 +28,82 @@
   }
 
   function decodeLabel(input) {
-    var output = [];
-    var basic = input.lastIndexOf('-');
-    if (basic < 0) basic = 0;
-    for (var j = 0; j < basic; j++) {
-      if (input.charCodeAt(j) >= 0x80) throw new Error('bad punycode');
+    const bad = () => { throw new Error('bad punycode'); };
+    const basic = Math.max(0, input.lastIndexOf('-'));
+    const output = [];
+    for (let j = 0; j < basic; j++) {
+      if (input.charCodeAt(j) >= 0x80) bad();
       output.push(input.charCodeAt(j));
     }
-    var n = INITIAL_N, bias = INITIAL_BIAS, i = 0;
-    for (var index = basic > 0 ? basic + 1 : 0; index < input.length;) {
-      var oldi = i, w = 1;
-      for (var k = BASE; ; k += BASE) {
-        if (index >= input.length) throw new Error('bad punycode');
-        var digit = digitOf(input.charCodeAt(index++));
-        if (digit >= BASE) throw new Error('bad punycode');
+    let n = INITIAL_N, bias = INITIAL_BIAS, i = 0;
+    for (let index = basic > 0 ? basic + 1 : 0; index < input.length;) {
+      const oldi = i;
+      let w = 1;
+      for (let k = BASE; ; k += BASE) {
+        if (index >= input.length) bad();
+        const digit = digitOf(input.charCodeAt(index++));
+        if (digit >= BASE) bad();
         i += digit * w;
-        var t = k <= bias ? T_MIN : (k >= bias + T_MAX ? T_MAX : k - bias);
+        const t = k <= bias ? T_MIN : k >= bias + T_MAX ? T_MAX : k - bias;
         if (digit < t) break;
         w *= BASE - t;
-        if (w > 1e9) throw new Error('bad punycode');
+        if (w > 1e9) bad();
       }
-      var out = output.length + 1;
+      const out = output.length + 1;
       bias = adapt(i - oldi, out, oldi === 0);
       n += Math.floor(i / out);
       i %= out;
-      if (n > 0x10FFFF) throw new Error('bad punycode');
+      if (n > 0x10FFFF) bad();
       output.splice(i++, 0, n);
     }
-    return String.fromCodePoint.apply(null, output);
+    return String.fromCodePoint(...output);
   }
 
-  // Returns the Unicode form of a host, or null when a label cannot be decoded.
+  // The Unicode form of a host, or null when a label cannot be decoded.
   function toUnicodeHost(host) {
     try {
-      return host.split('.').map(function (label) {
-        return label.indexOf('xn--') === 0 ? decodeLabel(label.slice(4)) : label;
-      }).join('.');
+      return host.split('.').map(label => label.startsWith('xn--') ? decodeLabel(label.slice(4)) : label).join('.');
     } catch (err) {
       return null;
     }
   }
 
-  /* ---------- Registrable domain ---------- */
+  /* ---------- Host helpers ---------- */
+
   // Two-part endings where the registrable domain has three labels (bbc.co.uk).
-  // A trimmed list; the full Public Suffix List is a later upgrade.
-  var MULTI_SUFFIX = {
-    'co.uk': 1, 'org.uk': 1, 'ac.uk': 1, 'gov.uk': 1, 'me.uk': 1, 'ltd.uk': 1, 'plc.uk': 1,
-    'com.au': 1, 'net.au': 1, 'org.au': 1, 'gov.au': 1, 'edu.au': 1,
-    'co.nz': 1, 'org.nz': 1, 'co.jp': 1, 'ne.jp': 1, 'co.in': 1, 'org.in': 1,
-    'com.br': 1, 'com.mx': 1, 'co.za': 1, 'com.cn': 1, 'com.sg': 1, 'com.hk': 1, 'com.tw': 1,
-    'com.ph': 1, 'com.ng': 1, 'co.kr': 1, 'com.tr': 1, 'com.ar': 1, 'com.co': 1
-  };
+  // A trimmed list; the full Public Suffix List would be a later upgrade.
+  const MULTI_SUFFIX = new Set([
+    'co.uk', 'org.uk', 'ac.uk', 'gov.uk', 'me.uk', 'ltd.uk', 'plc.uk',
+    'com.au', 'net.au', 'org.au', 'gov.au', 'edu.au',
+    'co.nz', 'org.nz', 'co.jp', 'ne.jp', 'co.in', 'org.in',
+    'com.br', 'com.mx', 'co.za', 'com.cn', 'com.sg', 'com.hk', 'com.tw',
+    'com.ph', 'com.ng', 'co.kr', 'com.tr', 'com.ar', 'com.co'
+  ]);
 
-  function isIp(host) {
-    return /^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host.indexOf(':') >= 0 || /^\[.*\]$/.test(host);
-  }
+  const isIp = host => /^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host.includes(':') || /^\[.*\]$/.test(host);
 
+  // The part of a host someone registers: login.chase.com -> chase.com, news.bbc.co.uk -> bbc.co.uk.
   function registrable(host) {
     if (isIp(host)) return host;
-    var labels = host.split('.');
+    const labels = host.split('.');
     if (labels.length <= 2) return host;
-    var lastTwo = labels.slice(-2).join('.');
-    return MULTI_SUFFIX[lastTwo] ? labels.slice(-3).join('.') : lastTwo;
+    return labels.slice(MULTI_SUFFIX.has(labels.slice(-2).join('.')) ? -3 : -2).join('.');
   }
 
-  function hostMatches(host, domain) {
-    return host === domain || host.slice(-(domain.length + 1)) === '.' + domain;
+  // True for the domain itself and any of its subdomains.
+  const hostMatches = (host, domain) => host === domain || host.endsWith('.' + domain);
+
+  // amazon.com.au is a country form of amazon.com, not a glued-on fake.
+  function countryForm(host, domain) {
+    const tail = ('.' + host).slice(-(domain.length + 4));
+    return tail.slice(0, domain.length + 1) === '.' + domain && /^\.[a-z]{2}$/.test(tail.slice(domain.length + 1));
   }
 
-  /* ---------- Lookalike skeleton ---------- */
-  // Characters that look like ASCII letters, mapped to the letter they imitate.
-  // Built from the idea behind Unicode TS #39 confusables; a hand-picked subset.
-  var CONFUSABLE = {
+  /* ---------- Lookalikes ---------- */
+
+  // Characters that look like ASCII letters, mapped to the letter they imitate
+  // (a hand-picked subset of the Unicode confusables idea).
+  const CONFUSABLE = {
     'а': 'a', 'е': 'e', 'ё': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'у': 'y',
     'х': 'x', 'к': 'k', 'м': 'm', 'і': 'i', 'ј': 'j', 'ѕ': 's', 'ԁ': 'd',
     'һ': 'h', 'ӏ': 'l', 'ԛ': 'q', 'ԝ': 'w', 'ɡ': 'g', 'в': 'b', 'н': 'h', 'т': 't',
@@ -105,106 +112,107 @@
     '0': 'o', '1': 'l', '|': 'l', 'i': 'l', '!': 'l'
   };
 
+  // How a label looks at a glance: accents dropped, lookalikes swapped, "rn" read as "m".
   function skeleton(label) {
-    var s = String(label || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-    var out = '';
-    for (var k = 0; k < s.length; k++) {
-      var ch = s.charAt(k);
-      out += CONFUSABLE.hasOwnProperty(ch) ? CONFUSABLE[ch] : ch;
-    }
-    // Letter pairs that read as one letter at a glance.
-    return out.replace(/rn/g, 'm').replace(/vv/g, 'w').replace(/cl/g, 'd');
+    const s = String(label || '').normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLowerCase();
+    return [...s].map(ch => CONFUSABLE[ch] || ch).join('')
+      .replace(/rn/g, 'm').replace(/vv/g, 'w').replace(/cl/g, 'd');
   }
 
-  /* ---------- Edit distance (optimal string alignment, a Damerau-Levenshtein variant) ---------- */
+  // Edit distance where swapping two neighbors counts as one change; stops early past `limit`.
   function editDistance(a, b, limit) {
     if (Math.abs(a.length - b.length) > limit) return limit + 1;
-    var prev2 = null, prev = [], cur;
-    for (var j = 0; j <= b.length; j++) prev.push(j);
-    for (var i = 1; i <= a.length; i++) {
-      cur = [i];
-      var rowMin = i;
-      for (var j2 = 1; j2 <= b.length; j2++) {
-        var cost = a.charAt(i - 1) === b.charAt(j2 - 1) ? 0 : 1;
-        var v = Math.min(prev[j2] + 1, cur[j2 - 1] + 1, prev[j2 - 1] + cost);
-        if (prev2 && i > 1 && j2 > 1 && a.charAt(i - 1) === b.charAt(j2 - 2) && a.charAt(i - 2) === b.charAt(j2 - 1)) {
-          v = Math.min(v, prev2[j2 - 2] + 1);
-        }
-        cur.push(v);
-        if (v < rowMin) rowMin = v;
+    let before = null;
+    let previous = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+      const row = [i];
+      let rowMin = i;
+      for (let j = 1; j <= b.length; j++) {
+        let v = Math.min(previous[j] + 1, row[j - 1] + 1, previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        if (before && i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) v = Math.min(v, before[j - 2] + 1);
+        row.push(v);
+        rowMin = Math.min(rowMin, v);
       }
       if (rowMin > limit) return limit + 1;
-      prev2 = prev;
-      prev = cur;
+      before = previous;
+      previous = row;
     }
-    return prev[b.length];
+    return previous[b.length];
   }
 
-  /* ---------- Rule helpers ---------- */
-  // Official labels too generic to use for lookalike rules (cash.app would flag every cash.* site).
-  var GENERIC_LABELS = {
-    cash: 1, live: 1, office: 1, meta: 1, forms: 1, cloud: 1, mail: 1, login: 1, secure: 1, account: 1,
-    support: 1, help: 1, bank: 1, pay: 1, cms: 1, web: 1, app: 1, online: 1
-  };
+  /* ---------- Organizations ---------- */
 
-  function squash(s) {
-    return String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
-  }
+  // Official names too generic for lookalike rules (cash.app would flag every cash.* site).
+  const GENERIC_LABELS = new Set(['cash', 'live', 'office', 'meta', 'forms', 'cloud', 'mail', 'login', 'secure', 'account',
+    'support', 'help', 'bank', 'pay', 'cms', 'web', 'app', 'online']);
 
+  const squash = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const orgById = (store, id) => store.orgs.find(org => org.id === id) || null;
   function orgById(store, id) {
     return store.orgs.find(function (org) { return org.id === id; }) || null;
   }
 
-  function officialOrgsFor(store, host) {
-    return store.orgs.filter(function (org) {
-      return (org.officialDomains || []).some(function (d) { return hostMatches(host, d); });
-    });
-  }
-
-  // Lookalike tokens for each org: squashed aliases and official labels.
+  // The words a lookalike would copy: the organization's names and the first part of its domains.
   function brandTokens(org) {
-    var seen = {}, list = [];
-    (org.aliases || []).concat(org.strictAliases || []).forEach(function (a) {
-      var t = squash(a);
-      if (t.length >= 3 && !GENERIC_LABELS[t] && !seen[t]) { seen[t] = 1; list.push(t); }
-    });
-    (org.officialDomains || []).forEach(function (d) {
-      var t = squash(d.split('.')[0]);
-      if (t.length >= 3 && !GENERIC_LABELS[t] && !seen[t]) { seen[t] = 1; list.push(t); }
-    });
-    return list;
+    const words = (org.aliases || []).concat(org.strictAliases || []).map(squash)
+      .concat((org.officialDomains || []).map(d => squash(d.split('.')[0])));
+    return [...new Set(words)].filter(t => t.length >= 3 && !GENERIC_LABELS.has(t));
   }
 
+  /* A record supports a contact only after a person has reviewed it: humanReview names the
+     reviewer and the date. An automated check alone leaves the contact unresolved, so an
+     unreviewed list fails closed (no Details Match) instead of open. Conflicts are unaffected. */
+  function humanReviewed(org) {
+    const review = org && org.humanReview;
+    return Boolean(review && typeof review.reviewer === 'string' && review.reviewer.trim() && realReviewDate(review.date));
   function make(status, code, base, extra = {}) {
     return { status, code, ...base, ...extra };
   }
 
-  /* ---------- The rule table ---------- */
-  // target: { kind: 'link' | 'email', raw, host, hostUnicode, userinfo, error }
-  // ctx: { store, claimOrg (explicit claim or null) }
+  // A real calendar date (no 2026-02-30), not in the future, and not before this project existed.
+  function realReviewDate(value) {
+    const m = typeof value === 'string' && value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return false;
+    const [y, month, d] = [+m[1], +m[2], +m[3]];
+    const day = new Date(Date.UTC(y, month - 1, d));
+    if (day.getUTCFullYear() !== y || day.getUTCMonth() !== month - 1 || day.getUTCDate() !== d) return false;
+    return y >= 2020 && day.getTime() <= Date.now();
+  }
+
+  const check = (status, code, extra) => ({ status, code, ...extra });
+  const supported = (org, code, extra) => humanReviewed(org) ? check('SUPPORTS', code, extra) : check('UNKNOWN', 'reference_needs_review', extra);
+
+  /* ---------- The rule table ----------
+     target: { kind: 'link' | 'email', raw, host, hostUnicode, userinfo, error }
+     ctx: { store, claimOrg } (claimOrg is the named sender, or null) */
   function checkHost(target, ctx) {
-    var store = ctx.store, claim = ctx.claimOrg;
-    var host = target.host;
-    var base = { target: target };
-
-    if (target.error || !host) return make('UNKNOWN', 'link_unreadable', base);
-    if (target.hostUnicode === null) return make('UNKNOWN', 'link_unreadable', base);
-
-    var reg = registrable(host);
-    base.registrable = reg;
+    const { store } = ctx;
+    const claim = ctx.claimOrg;
+    const host = target.host;
+    if (target.error || !host || target.hostUnicode === null) return check('UNKNOWN', 'link_unreadable', { target });
+    const reg = registrable(host);
+    const base = { target, registrable: reg };
+    const on = list => (list || []).some(d => hostMatches(host, d));
 
     // Free email accounts: anyone can create one, so they say nothing about the sender.
-    if (target.kind === 'email' && (store.freeMailDomains || []).some(function (d) { return hostMatches(host, d); })) {
-      return make('UNKNOWN', 'free_email_address', base);
-    }
+    if (target.kind === 'email' && on(store.freeMailDomains)) return check('UNKNOWN', 'free_email_address', base);
 
     // 1. Link shorteners hide the destination.
-    if (target.kind === 'link' && (store.shorteners || []).some(function (d) { return hostMatches(host, d); })) {
-      return make('UNKNOWN', 'shortener_unresolvable', base);
+    if (target.kind === 'link' && on(store.shorteners)) return check('UNKNOWN', 'shortener_unresolvable', base);
+
+    // 2. Browsers ignore text before an @ in a link: https://paypal.com@evil.example
+    if (target.userinfo) {
+      const info = target.userinfo.toLowerCase();
+      for (const org of store.orgs) {
+        const domain = (org.officialDomains || []).find(d => info.includes(d));
+        const token = brandTokens(org).find(t => t.length >= 4 && squash(info).includes(t));
+        if (domain || token) return check('CONTRADICTS', 'userinfo_trick', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: domain || org.officialDomains[0] });
+      }
     }
 
-    // 2. Text before an @ in a link is ignored by browsers: https://paypal.com@evil.example
-    if (target.userinfo) {
+    // 3. Official sites where anyone can publish a page.
+    const platform = store.orgs.find(org => on(org.userContentHosts));
+    if (platform) return check('UNKNOWN', 'user_content_platform', { ...base, orgId: platform.id });
       var info = target.userinfo.toLowerCase();
       var infoSquash = squash(info);
       for (var a = 0; a < store.orgs.length; a++) {
@@ -223,9 +231,24 @@
       if (hasUserContent) return make('UNKNOWN', 'user_content_platform', base, { orgId: store.orgs[u].id });
     }
 
-    // 4 and 5. Official for the claimed organization, or for someone else.
-    var owners = officialOrgsFor(store, host);
+    // 4 and 5. Official for the named sender, or for someone else.
+    const owners = store.orgs.filter(org => on(org.officialDomains));
     if (owners.length) {
+      const listed = owners.find(o => claim && o.id === claim.id) || owners[0];
+      if ((listed.sources || []).some(source => hostMatches(host, source.domain) && /^needs review/i.test(source.check || ''))) {
+        return check('UNKNOWN', 'reference_needs_review', { ...base, orgId: listed.id });
+      }
+      if (!claim) return supported(owners[0], 'domain_official', { ...base, orgId: owners[0].id, implicit: true });
+      if (owners.some(o => o.id === claim.id)) return supported(claim, 'domain_official', { ...base, orgId: claim.id });
+      return check('CONTRADICTS', 'domain_belongs_to_other_org', { ...base, strength: 'moderate', orgId: owners[0].id });
+    }
+
+    // 6. An official domain glued onto a different site: chase.com.account-verify.net
+    const dotted = '.' + host + '.';
+    for (const org of store.orgs) {
+      const glued = (org.officialDomains || []).find(d => !countryForm(host, d) &&
+        (dotted.includes('.' + d + '.') || ('.' + host).includes('.' + d + '-')));
+      if (glued) return check('CONTRADICTS', 'official_domain_as_subdomain', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: glued });
       var listedOwner = owners.find(function (o) { return claim && o.id === claim.id; }) || owners[0];
       var pendingSource = (listedOwner.sources || []).some(function (source) {
         return hostMatches(host, source.domain) && /^needs review/i.test(source.check || '');
@@ -247,23 +270,25 @@
       if (sd) return make('CONTRADICTS', 'official_domain_as_subdomain', base, { strength: 'strong', orgId: store.orgs[s].id, lookalikeOf: sd });
     }
 
-    // 7 to 9. Label rules against every organization.
-    var labelAscii = reg.split('.')[0];
-    var regUnicode = toUnicodeHost(reg) || reg;
-    var labelUnicode = regUnicode.split('.')[0];
-    var labelSkeleton = skeleton(labelUnicode);
-    var hostLabels = host.split('.');
-    var hostLabelsNoTld = hostLabels.slice(0, Math.max(1, hostLabels.length - (MULTI_SUFFIX[hostLabels.slice(-2).join('.')] ? 2 : 1)));
-
-    for (var o = 0; o < store.orgs.length; o++) {
-      var cand = store.orgs[o];
-      var isClaimed = claim && claim.id === cand.id;
-      var domains = cand.officialDomains || [];
-      for (var d = 0; d < domains.length; d++) {
-        var off = domains[d];
-        var offLabel = off.split('.')[0];
-        if (offLabel.length < 4 || GENERIC_LABELS[offLabel]) continue;
+    // 7 and 8. The main name compared with every organization's official names.
+    const labelAscii = reg.split('.')[0];
+    const labelUnicode = (toUnicodeHost(reg) || reg).split('.')[0];
+    const labelLook = skeleton(labelUnicode);
+    for (const org of store.orgs) {
+      for (const official of org.officialDomains || []) {
+        const name = official.split('.')[0];
+        if (name.length < 4 || GENERIC_LABELS.has(name)) continue;
+        const lookalike = { ...base, strength: 'strong', orgId: org.id, lookalikeOf: official };
         // 7a. Same letters to the eye, different characters: chаse.com with a Cyrillic а
+        if (labelUnicode !== name && labelLook === skeleton(name)) return check('CONTRADICTS', 'homoglyph', lookalike);
+        // 7b. Same name, different ending: chase.net
+        if (labelUnicode === name && reg !== registrable(official)) return check('CONTRADICTS', 'same_label_other_tld', lookalike);
+        // 8. One or two letters off: amazom.com (shorter names only when that organization is the named sender)
+        const minLength = claim && claim.id === org.id ? 4 : 6;
+        if (name.length >= minLength && !labelAscii.startsWith('xn--')) {
+          const limit = name.length >= 8 ? 2 : 1;
+          const distance = editDistance(labelAscii, name, limit);
+          if (distance > 0 && distance <= limit) return check('CONTRADICTS', 'typosquat', { ...lookalike, distance });
         if (labelUnicode !== offLabel && labelSkeleton === skeleton(offLabel)) {
           return make('CONTRADICTS', 'homoglyph', base, { strength: 'strong', orgId: cand.id, lookalikeOf: off });
         }
@@ -284,14 +309,36 @@
     }
 
     // 9. A brand name inside someone else's address: chase-secure-login.net, paypal-help.com
-    for (var b = 0; b < store.orgs.length; b++) {
-      var borg = store.orgs[b];
-      var claimedHere = claim && claim.id === borg.id;
-      var tokens = brandTokens(borg);
-      for (var h = 0; h < hostLabelsNoTld.length; h++) {
-        var lab = (toUnicodeHost(hostLabelsNoTld[h]) || hostLabelsNoTld[h]).toLowerCase();
-        var parts = lab.split(/[-_0-9]+/);
+    const hostLabels = host.split('.');
+    const labels = hostLabels.slice(0, Math.max(1, hostLabels.length - (MULTI_SUFFIX.has(hostLabels.slice(-2).join('.')) ? 2 : 1)));
+    for (const org of store.orgs) {
+      const named = claim && claim.id === org.id;
+      for (const label of labels) {
+        const lab = (toUnicodeHost(label) || label).toLowerCase();
+        const parts = lab.split(/[-_0-9]+/);
         // Also read the label as it looks: amaz0n-secure reads as amazon-secure.
+        const look = skeleton(lab);
+        const lookParts = look.split(/[-_]+/);
+        for (const token of brandTokens(org)) {
+          const tokenLook = skeleton(token);
+          const separate = parts.includes(token) || (tokenLook.length >= 4 && lookParts.includes(tokenLook));
+          const inside = (named || token.length >= 6) && lab !== token && (
+            (token.length >= 4 && (lab.startsWith(token) || look.startsWith(tokenLook))) ||
+            (token.length >= 6 && (lab.endsWith(token) || look.endsWith(tokenLook))) ||
+            (token.length >= 7 && (lab.includes(token) || look.includes(tokenLook))));
+          if (separate || inside) {
+            return check('CONTRADICTS', 'brand_in_foreign_domain', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: org.officialDomains[0], brandWord: token });
+          }
+        }
+      }
+    }
+
+    // 10. A bare number address, from a named sender.
+    if (claim && isIp(host)) return check('CONTRADICTS', 'ip_host', { ...base, strength: 'moderate', orgId: claim.id });
+    // 11. A named sender and an address not on its list. A limited list cannot prove a conflict.
+    if (claim) return check('UNKNOWN', 'not_in_official_list', { ...base, orgId: claim.id });
+    // 12. No named sender and nothing to compare against.
+    return check('UNKNOWN', 'no_claimed_identity', base);
         var labLook = skeleton(lab);
         var partsLook = labLook.split(/[-_]+/);
         for (var t = 0; t < tokens.length; t++) {
@@ -355,11 +402,14 @@
     return out;
   }
 
-  // Phone numbers written in the text. Absence from a sparse list is never a contradiction.
+  // Phone numbers. Missing from a sparse list is never a conflict.
   function checkPhone(target, ctx) {
-    var store = ctx.store, claim = ctx.claimOrg;
-    var base = { target: target };
+    const claim = ctx.claimOrg;
+    const listsNumber = org => (org.officialPhones || []).includes(target.e164);
     if (claim) {
+      return listsNumber(claim)
+        ? supported(claim, 'phone_official', { target, orgId: claim.id })
+        : check('UNKNOWN', 'phone_not_on_file', { target, orgId: claim.id });
       if ((claim.officialPhones || []).indexOf(target.e164) >= 0) return make('SUPPORTS', 'phone_official', base, { orgId: claim.id });
       return make('UNKNOWN', 'phone_not_on_file', base, { orgId: claim.id });
     }
@@ -368,20 +418,11 @@
       if ((claim.officialPhones || []).indexOf(target.e164) >= 0) return supported(claim, 'phone_official', merge(base, { orgId: claim.id }));
       return make('UNKNOWN', 'phone_not_on_file', merge(base, { orgId: claim.id }));
     }
-    var owner = store.orgs.filter(function (o) { return (o.officialPhones || []).indexOf(target.e164) >= 0; })[0];
-    if (owner) return supported(owner, 'phone_official', merge(base, { orgId: owner.id, implicit: true }));
-    return make('UNKNOWN', 'phone_not_on_file', base);
+    const owner = ctx.store.orgs.find(listsNumber);
+    return owner
+      ? supported(owner, 'phone_official', { target, orgId: owner.id, implicit: true })
+      : check('UNKNOWN', 'phone_not_on_file', { target });
   }
 
-  T.decodeLabel = decodeLabel;
-  T.toUnicodeHost = toUnicodeHost;
-  T.registrable = registrable;
-  T.hostMatches = hostMatches;
-  T.skeleton = skeleton;
-  T.editDistance = editDistance;
-  T.isIp = isIp;
-  T.orgById = orgById;
-  T.checkHost = checkHost;
-  T.checkPhone = checkPhone;
-  T.humanReviewed = humanReviewed;
+  Object.assign(T, { toUnicodeHost, orgById, checkHost, checkPhone, humanReviewed });
 })(typeof window !== 'undefined' ? window : globalThis);
