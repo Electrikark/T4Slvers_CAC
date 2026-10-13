@@ -4,8 +4,10 @@ window.TFS_GATE_STORE = {
   version: 'fictional-gate-fixture', shorteners: [],
   orgs: [
     { id: 'example-bank', displayName: 'Example Bank', aliases: ['example bank'],
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
       officialDomains: ['example.com'], officialPhones: ['+12025550123'], userContentHosts: [] },
     { id: 'sample-union', displayName: 'Sample Union', aliases: ['sample union'],
+      humanReview: { reviewer: 'Test fixture (fictional record)', date: '2026-10-12' },
       officialDomains: ['example.org'], officialPhones: [], userContentHosts: [] }
   ]
 };
@@ -87,6 +89,27 @@ window.runAssessmentTests = function (gate) {
     try { gate.assertAssessment('match'); } catch (err) { threw = true; }
     assert(threw, 'legacy match accepted');
   });
+  test('U11 T1-DOMAIN takes priority over a verified contact', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-DOMAIN', tier: 1, status: 'established', span: null }];
+    resultIs(e, 'suspicious', ['T1-DOMAIN'], []);
+  });
+  test('U12 T1-CODE takes priority over a verified contact', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-CODE', tier: 1, status: 'established', span: null }];
+    resultIs(e, 'suspicious', ['T1-CODE'], []);
+  });
+  test('U15 T1-CALLBACK takes priority over a verified contact', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-CALLBACK', tier: 1, status: 'established', span: null }];
+    resultIs(e, 'suspicious', ['T1-CALLBACK'], []);
+  });
+  test('U13 Unknown Tier 1 rule is rejected, not trusted', function () {
+    var e = valid(); e.findings = [{ ruleId: 'T1-MADE-UP', tier: 1, status: 'established', span: null }];
+    var threw = false;
+    try { gate.assess(e); } catch (err) { threw = true; }
+    assert(threw, 'unknown Tier 1 rule accepted');
+  });
+  test('U14 Closed Tier 1 list', function () {
+    same(Array.prototype.slice.call(gate.TIER1_RULES), ['T1-GIFT', 'T1-WIRE', 'T1-REMOTE', 'T1-DOMAIN', 'T1-CODE', 'T1-CALLBACK'], 'Tier 1 rules');
+  });
   test('E1 Gift-card demand through the real engine', function () {
     var r = engineIs('Example Bank: Buy gift cards to restore your account. Visit https://example.com.', 'suspicious', ['T1-GIFT'], []);
     assert(r.evidence.findings.some(function (f) { return f.ruleId === 'T1-GIFT' && f.tier === 1 && f.status === 'established'; }), 'gift rule lost');
@@ -127,12 +150,12 @@ window.runAssessmentTests = function (gate) {
     assert(r.evidence.findings.some(function (f) { return f.ruleId === 'account_locked' && f.tier === 2; }), 'low severity dropped');
   });
   test('I9 High severity alone never becomes Tier 1', function () {
-    var r = engineIs('Example Bank: Please send me your code. Visit https://example.com.', 'insufficient_evidence', [], ['RISK_SIGNAL']);
+    var r = engineIs('Example Bank: Keep this between us. Visit https://example.com.', 'insufficient_evidence', [], ['RISK_SIGNAL']);
     same(r.requestRisk.level, 'high', 'legacy severity');
     assert(r.evidence.findings.every(function (f) { return f.tier === 2; }), 'severity promoted');
   });
   test('I10 Unresolved gift candidate retains support', function () {
-    var r = engineIs('Example Bank: Buy gift cards and send me your authorization code. Visit https://example.com.', 'insufficient_evidence', [], ['UNCERTAINTY', 'RISK_SIGNAL']);
+    var r = engineIs('Example Bank: Buy gift cards and send me the numbers on your debit card. Visit https://example.com.', 'insufficient_evidence', [], ['UNCERTAINTY', 'RISK_SIGNAL']);
     assert(r.evidence.findings.some(function (f) { return f.ruleId === 'T1-GIFT' && f.tier === 1 && f.status === 'unresolved' && f.support.id === 'competing_card_code_antecedent'; }), 'unresolved gift lost');
   });
   test('I11 Contact conflict stays visible as Tier 2, with no invented span', function () {
@@ -185,6 +208,36 @@ window.runAssessmentTests = function (gate) {
       var r = engine.analyze('Example Bank: Buy gift cards to restore your account. Visit https://example.com.', window.TFS_GATE_STORE, { declaredChannel: channel });
       same(r.assessment, 'suspicious', 'channel changed risk');
       same(r.trace, { rules: ['T1-GIFT'], blockedBy: [] }, 'channel trace');
+    });
+  });
+  test('I18 Unreviewed reference records cannot support a match', function () {
+    // data/store.js records carry an automated check only; none is human-reviewed yet.
+    var r = engine.analyze('USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction', window.TFS_STORE, { declaredChannel: 'text' });
+    assert(engine.validateResult(r), 'invalid result');
+    same(r.assessment, 'insufficient_evidence', 'assessment');
+    same(r.checks.map(function (c) { return c.code; }), ['reference_needs_review'], 'codes');
+    assert(r.evidence.contacts.every(function (c) { return c.verification !== 'verified'; }), 'unreviewed record verified a contact');
+  });
+  test('I19 Review status decides support, not the record alone', function () {
+    var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+    delete store.orgs[0].humanReview;
+    var r = engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' });
+    same(r.assessment, 'insufficient_evidence', 'unreviewed fixture');
+    same(r.checks[0].code, 'reference_needs_review', 'code');
+    store.orgs[0].humanReview = { reviewer: 'Example Reviewer' };
+    same(engine.analyze('Example Bank: Visit https://example.com.', store, { declaredChannel: 'text' }).checks[0].code, 'reference_needs_review', 'review without a date');
+  });
+  test('I20 Impossible review dates cannot permit Details Match', function () {
+    ['2026-02-30', '2026-13-45', '2026-00-10', '2025-02-29', '2099-01-01', '1999-12-31', '2026-1-5', ' 2026-10-12', '', null].forEach(function (date) {
+      var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      var r = engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' });
+      same([String(date), r.assessment, r.checks[0].code], [String(date), 'insufficient_evidence', 'reference_needs_review'], 'impossible date accepted');
+    });
+    ['2024-02-29', '2026-10-01'].forEach(function (date) {
+      var store = JSON.parse(JSON.stringify(window.TFS_GATE_STORE));
+      store.orgs[0].humanReview = { reviewer: 'Example Reviewer', date: date };
+      same(engine.analyze('Example Bank: Your statement is ready. Visit https://example.com.', store, { declaredChannel: 'text' }).assessment, 'details_match', 'real date ' + date);
     });
   });
   test('I17 Remote access pressure retains established Tier 1', function () {

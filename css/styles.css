@@ -927,4 +927,99 @@ summary span {
   .action-note, .check-item {
     border-color:CanvasText;
   }
+.self-check {
+  margin:8px 0 32px;
+  padding:27px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+}
+.self-check h2 {
+  font-family:Georgia,serif;
+  font-size:1.6875rem;
+  font-weight:400;
+  margin-bottom:8px;
+}
+.self-check-intro {
+  max-width:65ch;
+  margin:0 0 20px;
+}
+.self-check-step {
+  border:0;
+  padding:0;
+  margin:0 0 20px;
+}
+.self-check-step legend {
+  font-size:1rem;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.self-check-options {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:12px;
+}
+.self-check-option {
+  min-height:56px;
+  border:1px solid #c3cec3;
+  border-radius:10px;
+  background:#fff;
+  color:var(--ink);
+  padding:14px 16px;
+  text-align:left;
+  font-size:1rem;
+  cursor:pointer;
+}
+.self-check-option:hover {
+  background:#f1f5ee;
+}
+.self-check-option[aria-pressed="true"] {
+  border:2px solid var(--teal);
+  background:#edf3e9;
+  padding:13px 15px;
+}
+.choice-label {
+  display:block;
+  font-weight:700;
+}
+.choice-hint {
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:0.9375rem;
+}
+.self-check-outcome {
+  padding:20px 22px;
+  border-left:4px solid #8a9a86;
+  background:var(--soft);
+  border-radius:0 8px 8px 0;
+}
+.self-check-outcome h3 {
+  font-size:1.125rem;
+  margin:0 0 8px;
+}
+.self-check-outcome ul {
+  margin:0;
+  padding-left:20px;
+}
+.self-check-outcome li + li {
+  margin-top:6px;
+}
+.self-check-outcome.confirmed {
+  border-color:var(--teal);
+  background:#edf3e9;
+}
+.self-check-outcome.not_them,
+.self-check-outcome.confirmed_but_risky {
+  border-color:#946024;
+  background:#fbefdd;
+  color:#654011;
+}
+@media (max-width:680px) {
+  .self-check { padding:20px; }
+  .self-check-options { grid-template-columns:1fr; }
+}
+@media (forced-colors:active) {
+  .option.active, .self-check-option[aria-pressed="true"] { outline:3px solid Highlight; }
+  .action-note, .check-item { border-color:CanvasText; }
 }

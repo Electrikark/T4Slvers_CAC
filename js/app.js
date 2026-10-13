@@ -6,6 +6,7 @@ const maxChars = window.TFS.MAX_CHARS;
 const channels = ['text', 'email', 'unknown'];
 let declaredChannel = null;
 let revision = 0;
+let shownResult = null;
 
 function analyzeSubmission(text, declaredChannel) {
   const result = window.TfsEngine.analyze(text, window.TFS_STORE, { declaredChannel });
@@ -59,6 +60,54 @@ function clearResult() {
   for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead']) {
     byId(id).replaceChildren();
   }
+  shownResult = null;
+  resetSelfCheck();
+}
+
+/* "I checked it myself": records the person's own check. It never changes the assessment. */
+function choiceButton(label, hint, onChoose) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'self-check-option';
+  button.setAttribute('aria-pressed', 'false');
+  button.append(textElement('span', label, 'choice-label'));
+  if (hint) button.append(textElement('span', hint, 'choice-hint'));
+  button.addEventListener('click', () => {
+    for (const other of button.parentElement.children) other.setAttribute('aria-pressed', String(other === button));
+    onChoose();
+  });
+  return button;
+}
+
+function showOutcome(outcome) {
+  byId('outcome-title').textContent = outcome.title;
+  byId('outcome-lines').replaceChildren(...outcome.lines.map(line => textElement('li', line)));
+  byId('self-check-outcome').className = `self-check-outcome ${outcome.kind}`;
+  byId('self-check-outcome').hidden = false;
+  byId('outcome-title').focus();
+}
+
+function chooseMethod(method) {
+  byId('self-check-outcome').hidden = true;
+  const done = !window.TfsSelfCheck.METHODS[method].independent;
+  byId('answer-step').hidden = done;
+  if (done) {
+    showOutcome(window.TfsSelfCheck.outcome(method, null, shownResult));
+    return;
+  }
+  byId('answer-options').replaceChildren(...Object.entries(window.TfsSelfCheck.ANSWERS).map(([answer, label]) =>
+    choiceButton(label, '', () => showOutcome(window.TfsSelfCheck.outcome(method, answer, shownResult)))));
+  byId('answer-title').focus();
+}
+
+function resetSelfCheck() {
+  byId('method-options').replaceChildren(...window.TfsSelfCheck.methodsFor(shownResult).map(m =>
+    choiceButton(m.label, m.hint, () => chooseMethod(m.id))));
+  byId('answer-options').replaceChildren();
+  byId('answer-step').hidden = true;
+  byId('self-check-outcome').hidden = true;
+  byId('outcome-title').replaceChildren();
+  byId('outcome-lines').replaceChildren();
 }
 
 function reset() {
@@ -141,6 +190,8 @@ function renderResult(result) {
   byId('next-list').replaceChildren();
   for (const text of result.nextSteps) byId('next-list').append(textElement('li', text));
   byId('paste-link').hidden = !result.offerPaste;
+  shownResult = result;
+  resetSelfCheck();
   showScreen('result');
 }
 
@@ -200,5 +251,6 @@ byId('back').addEventListener('click', () => {
 byId('start-again').addEventListener('click', reset);
 byId('reset').addEventListener('click', reset);
 byId('paste-link').addEventListener('click', () => { reset(); byId('message').focus(); });
+resetSelfCheck();
 byId('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations · Website list ${window.TFS_STORE.version}`;
 updateCount();
