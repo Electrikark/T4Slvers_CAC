@@ -20,20 +20,6 @@ function textElement(tag, text, className) {
   element.textContent = text;
   if (className) element.className = className;
   return element;
-// Read the form, run the local checker, and display its result.
-const byId = id => document.getElementById(id);
-const form = byId('submission-form');
-const submitButton = byId('check-button');
-const maxChars = window.TFS.MAX_CHARS;
-const channels = ['text', 'email', 'unknown'];
-let declaredChannel = null;
-let revision = 0;
-let shownResult = null;
-
-function analyzeSubmission(text, declaredChannel) {
-  const result = window.TfsEngine.analyze(text, window.TFS_STORE, { declaredChannel });
-  if (!window.TfsEngine.validateResult(result)) throw new Error('Invalid result shape');
-  return result;
 }
 
 // Shows one screen and moves keyboard and screen-reader focus to its heading.
@@ -44,12 +30,6 @@ function showScreen(name) {
 }
 
 /* ---------- The form ---------- */
-function clearError() {
-  byId('error').textContent = '';
-  byId('message').removeAttribute('aria-invalid');
-  byId('channel-question').removeAttribute('aria-invalid');
-  for (const channel of channels) byId(`channel-${channel}`).removeAttribute('aria-invalid');
-}
 
 function showError(text, field) {
   byId('error').textContent = text;
@@ -60,9 +40,6 @@ function showError(text, field) {
 function clearError() {
   byId('error').textContent = '';
   for (const id of ['message', 'channel-question', ...CHANNELS.map(c => `channel-${c}`)]) byId(id).removeAttribute('aria-invalid');
-function clearExample() {
-  byId('example-loaded').textContent = '';
-  byId('example-loaded').hidden = true;
 }
 
 function updateCount() {
@@ -74,9 +51,6 @@ function updateCount() {
 function chooseChannel(channel) {
   chosenChannel = channel;
   for (const option of CHANNELS) {
-function selectChannel(channel) {
-  declaredChannel = channel;
-  for (const option of channels) {
     byId(`channel-${option}`).setAttribute('aria-pressed', String(option === channel));
     byId(`channel-${option}`).classList.toggle('active', option === channel);
   }
@@ -236,129 +210,12 @@ function resetSelfCheck() {
 /* ---------- Wiring ---------- */
 
 for (const channel of CHANNELS) byId(`channel-${channel}`).addEventListener('click', () => chooseChannel(channel));
-function loadScenario(id) {
-  reset();
-  const scenario = window.demoScenarios[id];
-  byId('message').value = scenario.input;
-  updateCount();
-  byId('example-loaded').textContent = `Loaded: ${scenario.label}. Example channel: ${scenario.channelLabel}. Choose that channel before checking.`;
-  byId('example-loaded').hidden = false;
-  submitButton.focus();
-}
-
-const assessmentDetails = {
-  suspicious: { css: 'mismatch', title: 'Suspicious', label: 'PAUSE BEFORE ACTING', symbol: '!' },
-  details_match: { css: 'match', title: 'Details Match', label: 'CONTACT DETAILS ONLY', symbol: '=' },
-  insufficient_evidence: { css: 'unknown', title: 'Insufficient Evidence', label: 'UNRESOLVED · PAUSE BEFORE ACTING', symbol: '?' }
-};
-
-function textElement(tag, text, className) {
-  const element = document.createElement(tag);
-  element.textContent = text;
-  if (className) element.className = className;
-  return element;
-}
-
-function renderResult(result) {
-  const state = assessmentDetails[result.assessment];
-  const flags = result.requestRisk.flags;
-  const risky = result.requestRisk.level !== 'none';
-  const highRisk = result.requestRisk.level === 'high';
-  byId('result-banner').className = `result-banner ${state.css}${risky ? ' risky' : ''}`;
-  byId('state-symbol').textContent = state.symbol;
-  byId('state-label').textContent = highRisk ? `${state.label} · ACTION WARNING` : state.label;
-  byId('result-title').textContent = state.title;
-  byId('result-description').textContent = result.description;
-  for (const [id, field] of Object.entries({ identity: 'claimedIdentity', channel: 'channel', inspected: 'inspected', meaning: 'meaning' })) {
-    byId(id).textContent = result[field];
-  }
-
-  const lead = result.actionWarnings[0];
-  byId('action-lead').textContent = lead;
-  byId('action-note').classList.toggle('high-risk', highRisk);
-  byId('checks').replaceChildren();
-  const checkLabels = { SUPPORTS: 'On our list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
-  for (const check of result.checks) {
-    const item = document.createElement('li');
-    item.className = `check-item ${check.status.toLowerCase()}`;
-    const source = document.createElement('details');
-    source.className = 'check-source';
-    source.append(textElement('summary', 'About this check'), textElement('p', check.source, 'source'));
-    item.append(textElement('span', checkLabels[check.status], 'check-label'), textElement('p', check.detail), source);
-    byId('checks').append(item);
-  }
-
-  byId('asks-section').hidden = flags.length === 0;
-  byId('asks').replaceChildren();
-  for (const flag of flags) {
-    const item = document.createElement('li');
-    item.append(textElement('span', flag.label, 'check-label'), textElement('p', `“${flag.words}”`, 'quote'));
-    const evidence = result.requestRisk.established.find(e => e.antecedent && e.action.start === flag.start);
-    if (evidence) item.append(textElement('p', `The request refers to “${evidence.antecedent.quote}” in this message.`, 'source'));
-    byId('asks').append(item);
-  }
-  byId('warnings').replaceChildren();
-  for (const text of result.actionWarnings.filter(text => text !== lead)) {
-    byId('warnings').append(textElement('p', text, 'warning'));
-  }
-  byId('next-list').replaceChildren();
-  for (const text of result.nextSteps) byId('next-list').append(textElement('li', text));
-  byId('paste-link').hidden = !result.offerPaste;
-  shownResult = result;
-  resetSelfCheck();
-  showScreen('result');
-}
-
-for (const channel of channels) {
-  byId(`channel-${channel}`).addEventListener('click', () => selectChannel(channel));
-}
 byId('message').addEventListener('input', () => {
   clearExampleNote();
   clearError();
   updateCount();
 });
 byId('submission-form').addEventListener('submit', checkMessage);
-
-form.addEventListener('submit', async event => {
-  event.preventDefault();
-  if (submitButton.disabled) return;
-  clearError();
-  const text = byId('message').value;
-  let error = '';
-  if (!text.trim()) error = 'Paste a message or link first.';
-  else if (text.length > maxChars) error = `This is too long to check fully. Paste ${maxChars.toLocaleString()} characters or fewer, or one complete link.`;
-  if (error) {
-    showError(error, byId('message'));
-    return;
-  }
-  if (!declaredChannel) {
-    byId('channel-question').setAttribute('aria-invalid', 'true');
-    showError('Choose Text, Email, or Not sure before checking.', byId('channel-text'));
-    return;
-  }
-
-  const currentRevision = ++revision;
-  submitButton.disabled = true;
-  showScreen('checking');
-  try {
-    const result = await analyzeSubmission(text, declaredChannel);
-    if (currentRevision === revision) renderResult(result);
-  } catch {
-    if (currentRevision === revision) {
-      showScreen('home');
-      showError('The check could not finish. Your input is still here. Please try again.', byId('message'));
-    }
-  } finally {
-    if (currentRevision === revision) submitButton.disabled = false;
-  }
-});
-
-for (const [id, scenario] of Object.entries(window.demoScenarios)) {
-  const button = textElement('button', scenario.label);
-  button.type = 'button';
-  button.addEventListener('click', () => loadScenario(id));
-  byId('scenario-buttons').append(button);
-}
 byId('back').addEventListener('click', () => {
   showScreen('home');
   byId('message').focus();
