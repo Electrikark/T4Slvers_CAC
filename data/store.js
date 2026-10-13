@@ -65,17 +65,9 @@ window.TFS_STORE = {
       "id": "chase",
       "displayName": "Chase",
       "category": "bank",
-      "aliases": [
-        "chase bank",
-        "jpmorgan chase",
-        "jp morgan chase"
-      ],
-      "strictAliases": [
-        "chase"
-      ],
-      "officialDomains": [
-        "chase.com"
-      ],
+      "aliases": ["chase bank", "jpmorgan chase", "jp morgan chase"],
+      "strictAliases": ["chase"],
+      "officialDomains": ["chase.com"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -92,13 +84,8 @@ window.TFS_STORE = {
       "id": "bankofamerica",
       "displayName": "Bank of America",
       "category": "bank",
-      "aliases": [
-        "bank of america",
-        "bofa"
-      ],
-      "officialDomains": [
-        "bankofamerica.com"
-      ],
+      "aliases": ["bank of america", "bofa"],
+      "officialDomains": ["bankofamerica.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -116,12 +103,8 @@ window.TFS_STORE = {
       "id": "wellsfargo",
       "displayName": "Wells Fargo",
       "category": "bank",
-      "aliases": [
-        "wells fargo"
-      ],
-      "officialDomains": [
-        "wellsfargo.com"
-      ],
+      "aliases": ["wells fargo"],
+      "officialDomains": ["wellsfargo.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -139,16 +122,9 @@ window.TFS_STORE = {
       "id": "citi",
       "displayName": "Citi",
       "category": "bank",
-      "aliases": [
-        "citibank"
-      ],
-      "strictAliases": [
-        "citi"
-      ],
-      "officialDomains": [
-        "citi.com",
-        "citibank.com"
-      ],
+      "aliases": ["citibank"],
+      "strictAliases": ["citi"],
+      "officialDomains": ["citi.com", "citibank.com"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -171,16 +147,9 @@ window.TFS_STORE = {
       "id": "usbank",
       "displayName": "U.S. Bank",
       "category": "bank",
-      "aliases": [
-        "u.s. bank",
-        "usbank"
-      ],
-      "strictAliases": [
-        "us bank"
-      ],
-      "officialDomains": [
-        "usbank.com"
-      ],
+      "aliases": ["u.s. bank", "usbank"],
+      "strictAliases": ["us bank"],
+      "officialDomains": ["usbank.com"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -197,13 +166,8 @@ window.TFS_STORE = {
       "id": "capitalone",
       "displayName": "Capital One",
       "category": "bank",
-      "aliases": [
-        "capital one",
-        "capitalone"
-      ],
-      "officialDomains": [
-        "capitalone.com"
-      ],
+      "aliases": ["capital one", "capitalone"],
+      "officialDomains": ["capitalone.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -221,15 +185,9 @@ window.TFS_STORE = {
       "id": "pnc",
       "displayName": "PNC Bank",
       "category": "bank",
-      "aliases": [
-        "pnc bank"
-      ],
-      "strictAliases": [
-        "pnc"
-      ],
-      "officialDomains": [
-        "pnc.com"
-      ],
+      "aliases": ["pnc bank"],
+      "strictAliases": ["pnc"],
+      "officialDomains": ["pnc.com"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -246,12 +204,8 @@ window.TFS_STORE = {
       "id": "navyfederal",
       "displayName": "Navy Federal Credit Union",
       "category": "bank",
-      "aliases": [
-        "navy federal"
-      ],
-      "officialDomains": [
-        "navyfederal.org"
-      ],
+      "aliases": ["navy federal"],
+      "officialDomains": ["navyfederal.org"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -269,14 +223,8 @@ window.TFS_STORE = {
       "id": "golden1",
       "displayName": "Golden 1 Credit Union",
       "category": "bank",
-      "aliases": [
-        "golden 1",
-        "golden one",
-        "golden1"
-      ],
-      "officialDomains": [
-        "golden1.com"
-      ],
+      "aliases": ["golden 1", "golden one", "golden1"],
+      "officialDomains": ["golden1.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -294,13 +242,8 @@ window.TFS_STORE = {
       "id": "amex",
       "displayName": "American Express",
       "category": "bank",
-      "aliases": [
-        "american express",
-        "amex"
-      ],
-      "officialDomains": [
-        "americanexpress.com"
-      ],
+      "aliases": ["american express", "amex"],
+      "officialDomains": ["americanexpress.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -318,12 +261,8 @@ window.TFS_STORE = {
       "id": "paypal",
       "displayName": "PayPal",
       "category": "payments",
-      "aliases": [
-        "paypal"
-      ],
-      "officialDomains": [
-        "paypal.com"
-      ],
+      "aliases": ["paypal"],
+      "officialDomains": ["paypal.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -341,12 +280,8 @@ window.TFS_STORE = {
       "id": "venmo",
       "displayName": "Venmo",
       "category": "payments",
-      "aliases": [
-        "venmo"
-      ],
-      "officialDomains": [
-        "venmo.com"
-      ],
+      "aliases": ["venmo"],
+      "officialDomains": ["venmo.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -364,13 +299,8 @@ window.TFS_STORE = {
       "id": "zelle",
       "displayName": "Zelle",
       "category": "payments",
-      "aliases": [
-        "zelle"
-      ],
-      "officialDomains": [
-        "zellepay.com",
-        "zelle.com"
-      ],
+      "aliases": ["zelle"],
+      "officialDomains": ["zellepay.com", "zelle.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -394,13 +324,8 @@ window.TFS_STORE = {
       "id": "cashapp",
       "displayName": "Cash App",
       "category": "payments",
-      "aliases": [
-        "cash app",
-        "cashapp"
-      ],
-      "officialDomains": [
-        "cash.app"
-      ],
+      "aliases": ["cash app", "cashapp"],
+      "officialDomains": ["cash.app"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -418,13 +343,8 @@ window.TFS_STORE = {
       "id": "amazon",
       "displayName": "Amazon",
       "category": "retail",
-      "aliases": [
-        "amazon",
-        "amazon prime"
-      ],
-      "officialDomains": [
-        "amazon.com"
-      ],
+      "aliases": ["amazon", "amazon prime"],
+      "officialDomains": ["amazon.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -442,18 +362,9 @@ window.TFS_STORE = {
       "id": "apple",
       "displayName": "Apple",
       "category": "tech",
-      "aliases": [
-        "apple support",
-        "apple id",
-        "icloud"
-      ],
-      "strictAliases": [
-        "apple"
-      ],
-      "officialDomains": [
-        "apple.com",
-        "icloud.com"
-      ],
+      "aliases": ["apple support", "apple id", "icloud"],
+      "strictAliases": ["apple"],
+      "officialDomains": ["apple.com", "icloud.com"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -476,18 +387,8 @@ window.TFS_STORE = {
       "id": "microsoft",
       "displayName": "Microsoft",
       "category": "tech",
-      "aliases": [
-        "microsoft",
-        "windows defender",
-        "microsoft support"
-      ],
-      "officialDomains": [
-        "microsoft.com",
-        "microsoftonline.com",
-        "live.com",
-        "office.com",
-        "cloud.microsoft"
-      ],
+      "aliases": ["microsoft", "windows defender", "microsoft support"],
+      "officialDomains": ["microsoft.com", "microsoftonline.com", "live.com", "office.com", "cloud.microsoft"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -529,15 +430,8 @@ window.TFS_STORE = {
       "id": "google",
       "displayName": "Google",
       "category": "tech",
-      "aliases": [
-        "google",
-        "gmail",
-        "google account"
-      ],
-      "officialDomains": [
-        "google.com",
-        "forms.gle"
-      ],
+      "aliases": ["google", "gmail", "google account"],
+      "officialDomains": ["google.com", "forms.gle"],
       "userContentHosts": [
         "docs.google.com",
         "sites.google.com",
@@ -568,24 +462,10 @@ window.TFS_STORE = {
       "id": "meta",
       "displayName": "Meta (Facebook, Instagram, WhatsApp)",
       "category": "tech",
-      "aliases": [
-        "facebook",
-        "instagram",
-        "whatsapp"
-      ],
-      "strictAliases": [
-        "meta"
-      ],
-      "officialDomains": [
-        "meta.com",
-        "facebook.com",
-        "instagram.com",
-        "whatsapp.com"
-      ],
-      "userContentHosts": [
-        "facebook.com",
-        "instagram.com"
-      ],
+      "aliases": ["facebook", "instagram", "whatsapp"],
+      "strictAliases": ["meta"],
+      "officialDomains": ["meta.com", "facebook.com", "instagram.com", "whatsapp.com"],
+      "userContentHosts": ["facebook.com", "instagram.com"],
       "officialPhones": [],
       "sources": [
         {
@@ -619,12 +499,8 @@ window.TFS_STORE = {
       "id": "netflix",
       "displayName": "Netflix",
       "category": "tech",
-      "aliases": [
-        "netflix"
-      ],
-      "officialDomains": [
-        "netflix.com"
-      ],
+      "aliases": ["netflix"],
+      "officialDomains": ["netflix.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -642,15 +518,8 @@ window.TFS_STORE = {
       "id": "geeksquad",
       "displayName": "Geek Squad (Best Buy)",
       "category": "tech",
-      "aliases": [
-        "geek squad",
-        "geeksquad",
-        "best buy"
-      ],
-      "officialDomains": [
-        "bestbuy.com",
-        "geeksquad.com"
-      ],
+      "aliases": ["geek squad", "geeksquad", "best buy"],
+      "officialDomains": ["bestbuy.com", "geeksquad.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -674,13 +543,8 @@ window.TFS_STORE = {
       "id": "norton",
       "displayName": "Norton",
       "category": "tech",
-      "aliases": [
-        "norton",
-        "lifelock"
-      ],
-      "officialDomains": [
-        "norton.com"
-      ],
+      "aliases": ["norton", "lifelock"],
+      "officialDomains": ["norton.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -698,12 +562,8 @@ window.TFS_STORE = {
       "id": "mcafee",
       "displayName": "McAfee",
       "category": "tech",
-      "aliases": [
-        "mcafee"
-      ],
-      "officialDomains": [
-        "mcafee.com"
-      ],
+      "aliases": ["mcafee"],
+      "officialDomains": ["mcafee.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -721,13 +581,8 @@ window.TFS_STORE = {
       "id": "docusign",
       "displayName": "DocuSign",
       "category": "tech",
-      "aliases": [
-        "docusign"
-      ],
-      "officialDomains": [
-        "docusign.com",
-        "docusign.net"
-      ],
+      "aliases": ["docusign"],
+      "officialDomains": ["docusign.com", "docusign.net"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -751,12 +606,8 @@ window.TFS_STORE = {
       "id": "walmart",
       "displayName": "Walmart",
       "category": "retail",
-      "aliases": [
-        "walmart"
-      ],
-      "officialDomains": [
-        "walmart.com"
-      ],
+      "aliases": ["walmart"],
+      "officialDomains": ["walmart.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -774,12 +625,8 @@ window.TFS_STORE = {
       "id": "costco",
       "displayName": "Costco",
       "category": "retail",
-      "aliases": [
-        "costco"
-      ],
-      "officialDomains": [
-        "costco.com"
-      ],
+      "aliases": ["costco"],
+      "officialDomains": ["costco.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -797,13 +644,8 @@ window.TFS_STORE = {
       "id": "att",
       "displayName": "AT&T",
       "category": "telecom",
-      "aliases": [
-        "at&t",
-        "at & t"
-      ],
-      "officialDomains": [
-        "att.com"
-      ],
+      "aliases": ["at&t", "at & t"],
+      "officialDomains": ["att.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -821,12 +663,8 @@ window.TFS_STORE = {
       "id": "verizon",
       "displayName": "Verizon",
       "category": "telecom",
-      "aliases": [
-        "verizon"
-      ],
-      "officialDomains": [
-        "verizon.com"
-      ],
+      "aliases": ["verizon"],
+      "officialDomains": ["verizon.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -844,13 +682,8 @@ window.TFS_STORE = {
       "id": "tmobile",
       "displayName": "T-Mobile",
       "category": "telecom",
-      "aliases": [
-        "t-mobile",
-        "tmobile"
-      ],
-      "officialDomains": [
-        "t-mobile.com"
-      ],
+      "aliases": ["t-mobile", "tmobile"],
+      "officialDomains": ["t-mobile.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -868,14 +701,8 @@ window.TFS_STORE = {
       "id": "xfinity",
       "displayName": "Xfinity (Comcast)",
       "category": "telecom",
-      "aliases": [
-        "xfinity",
-        "comcast"
-      ],
-      "officialDomains": [
-        "xfinity.com",
-        "comcast.com"
-      ],
+      "aliases": ["xfinity", "comcast"],
+      "officialDomains": ["xfinity.com", "comcast.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -899,13 +726,8 @@ window.TFS_STORE = {
       "id": "pge",
       "displayName": "PG&E",
       "category": "utility",
-      "aliases": [
-        "pg&e",
-        "pacific gas and electric"
-      ],
-      "officialDomains": [
-        "pge.com"
-      ],
+      "aliases": ["pg&e", "pacific gas and electric"],
+      "officialDomains": ["pge.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -923,13 +745,8 @@ window.TFS_STORE = {
       "id": "smud",
       "displayName": "SMUD",
       "category": "utility",
-      "aliases": [
-        "smud",
-        "sacramento municipal utility district"
-      ],
-      "officialDomains": [
-        "smud.org"
-      ],
+      "aliases": ["smud", "sacramento municipal utility district"],
+      "officialDomains": ["smud.org"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -947,15 +764,8 @@ window.TFS_STORE = {
       "id": "usps",
       "displayName": "USPS",
       "category": "delivery",
-      "aliases": [
-        "usps",
-        "postal service",
-        "u.s. postal service",
-        "us postal service"
-      ],
-      "officialDomains": [
-        "usps.com"
-      ],
+      "aliases": ["usps", "postal service", "u.s. postal service", "us postal service"],
+      "officialDomains": ["usps.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -974,12 +784,8 @@ window.TFS_STORE = {
       "displayName": "UPS",
       "category": "delivery",
       "aliases": [],
-      "strictAliases": [
-        "ups"
-      ],
-      "officialDomains": [
-        "ups.com"
-      ],
+      "strictAliases": ["ups"],
+      "officialDomains": ["ups.com"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -996,13 +802,8 @@ window.TFS_STORE = {
       "id": "fedex",
       "displayName": "FedEx",
       "category": "delivery",
-      "aliases": [
-        "fedex",
-        "federal express"
-      ],
-      "officialDomains": [
-        "fedex.com"
-      ],
+      "aliases": ["fedex", "federal express"],
+      "officialDomains": ["fedex.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1020,12 +821,8 @@ window.TFS_STORE = {
       "id": "dhl",
       "displayName": "DHL",
       "category": "delivery",
-      "aliases": [
-        "dhl"
-      ],
-      "officialDomains": [
-        "dhl.com"
-      ],
+      "aliases": ["dhl"],
+      "officialDomains": ["dhl.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1043,13 +840,8 @@ window.TFS_STORE = {
       "id": "irs",
       "displayName": "IRS",
       "category": "government",
-      "aliases": [
-        "irs",
-        "internal revenue service"
-      ],
-      "officialDomains": [
-        "irs.gov"
-      ],
+      "aliases": ["irs", "internal revenue service"],
+      "officialDomains": ["irs.gov"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1067,16 +859,9 @@ window.TFS_STORE = {
       "id": "ssa",
       "displayName": "Social Security Administration",
       "category": "government",
-      "aliases": [
-        "social security",
-        "social security administration"
-      ],
-      "strictAliases": [
-        "ssa"
-      ],
-      "officialDomains": [
-        "ssa.gov"
-      ],
+      "aliases": ["social security", "social security administration"],
+      "strictAliases": ["ssa"],
+      "officialDomains": ["ssa.gov"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -1093,13 +878,8 @@ window.TFS_STORE = {
       "id": "medicare",
       "displayName": "Medicare",
       "category": "government",
-      "aliases": [
-        "medicare"
-      ],
-      "officialDomains": [
-        "medicare.gov",
-        "cms.gov"
-      ],
+      "aliases": ["medicare"],
+      "officialDomains": ["medicare.gov", "cms.gov"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1123,12 +903,8 @@ window.TFS_STORE = {
       "id": "ftc",
       "displayName": "Federal Trade Commission",
       "category": "government",
-      "aliases": [
-        "ftc"
-      ],
-      "officialDomains": [
-        "ftc.gov"
-      ],
+      "aliases": ["ftc"],
+      "officialDomains": ["ftc.gov"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1146,16 +922,9 @@ window.TFS_STORE = {
       "id": "cadmv",
       "displayName": "California DMV",
       "category": "government",
-      "aliases": [
-        "california dmv",
-        "department of motor vehicles"
-      ],
-      "strictAliases": [
-        "dmv"
-      ],
-      "officialDomains": [
-        "dmv.ca.gov"
-      ],
+      "aliases": ["california dmv", "department of motor vehicles"],
+      "strictAliases": ["dmv"],
+      "officialDomains": ["dmv.ca.gov"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -1172,15 +941,9 @@ window.TFS_STORE = {
       "id": "caedd",
       "displayName": "California EDD",
       "category": "government",
-      "aliases": [
-        "employment development department"
-      ],
-      "strictAliases": [
-        "edd"
-      ],
-      "officialDomains": [
-        "edd.ca.gov"
-      ],
+      "aliases": ["employment development department"],
+      "strictAliases": ["edd"],
+      "officialDomains": ["edd.ca.gov"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
@@ -1197,14 +960,8 @@ window.TFS_STORE = {
       "id": "fastrak",
       "displayName": "FasTrak (Bay Area)",
       "category": "tolls",
-      "aliases": [
-        "fastrak",
-        "fas trak",
-        "bay area fastrak"
-      ],
-      "officialDomains": [
-        "bayareafastrak.org"
-      ],
+      "aliases": ["fastrak", "fas trak", "bay area fastrak"],
+      "officialDomains": ["bayareafastrak.org"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1222,12 +979,8 @@ window.TFS_STORE = {
       "id": "tollroads",
       "displayName": "The Toll Roads (Orange County)",
       "category": "tolls",
-      "aliases": [
-        "the toll roads"
-      ],
-      "officialDomains": [
-        "thetollroads.com"
-      ],
+      "aliases": ["the toll roads"],
+      "officialDomains": ["thetollroads.com"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1245,12 +998,8 @@ window.TFS_STORE = {
       "id": "aarp",
       "displayName": "AARP",
       "category": "nonprofit",
-      "aliases": [
-        "aarp"
-      ],
-      "officialDomains": [
-        "aarp.org"
-      ],
+      "aliases": ["aarp"],
+      "officialDomains": ["aarp.org"],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
@@ -1268,15 +1017,9 @@ window.TFS_STORE = {
       "id": "pch",
       "displayName": "Publishers Clearing House",
       "category": "sweepstakes",
-      "aliases": [
-        "publishers clearing house"
-      ],
-      "strictAliases": [
-        "pch"
-      ],
-      "officialDomains": [
-        "pch.com"
-      ],
+      "aliases": ["publishers clearing house"],
+      "strictAliases": ["pch"],
+      "officialDomains": ["pch.com"],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
