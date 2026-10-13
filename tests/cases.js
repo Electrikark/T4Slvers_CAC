@@ -8,6 +8,7 @@ window.TFS_FIXTURE_STORE = {
   "orgs": [
     {
       "id": "chase",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Chase",
       "aliases": ["chase", "chase bank"],
       "officialDomains": ["chase.com"],
@@ -16,6 +17,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "paypal",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "PayPal",
       "aliases": ["paypal"],
       "officialDomains": ["paypal.com"],
@@ -24,6 +26,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "amazon",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Amazon",
       "aliases": ["amazon"],
       "officialDomains": ["amazon.com"],
@@ -32,6 +35,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "usps",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "USPS",
       "aliases": ["usps", "postal service"],
       "officialDomains": ["usps.com"],
@@ -40,6 +44,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "ups",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "UPS",
       "aliases": ["ups"],
       "officialDomains": ["ups.com"],
@@ -48,6 +53,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "microsoft",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Microsoft",
       "aliases": ["microsoft"],
       "officialDomains": ["microsoft.com"],
@@ -56,6 +62,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "google",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Google",
       "aliases": ["google"],
       "officialDomains": ["google.com"],
@@ -64,6 +71,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "examplebank",
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
       "displayName": "Example Bank (fictional)",
       "aliases": ["example bank"],
       "officialDomains": ["examplebank.test"],
@@ -89,6 +97,10 @@ window.TFS_CASES = [
     "text": "Chase: Your account has been locked. Sign in at chase-secure-login.net to restore access.",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus a sign-in lure word. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["brand_in_foreign_domain"],
       "risk": "elevated",
@@ -101,6 +113,10 @@ window.TFS_CASES = [
     "text": "Chase alert: verify your login at https://chase.com.account-verify.net/login",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: official domain glued to another site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["official_domain_as_subdomain"]
     },
@@ -111,6 +127,10 @@ window.TFS_CASES = [
     "text": "PayPal: confirm your payment at https://paypal.com@pay-secure.example/confirm",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: text before @ hides the real site. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["userinfo_trick"]
     },
@@ -121,6 +141,10 @@ window.TFS_CASES = [
     "text": "Chase: sign in at https://ch\u0430se.com",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: Cyrillic letter swapped in. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["homoglyph"]
     },
@@ -228,10 +252,14 @@ window.TFS_CASES = [
     "text": "Example Bank: Call (202) 555-0123 or visit https://examplebank-secure.example",
     "expect": {
       "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* T1-DOMAIN: brand name plus a security lure word. */,
+      "rules": [
+        "T1-DOMAIN"
+      ],
       "contactStrength": "strong",
       "codes": ["brand_in_foreign_domain", "phone_official"]
     },
-    "guards": "A contact conflict blocks a match despite a supporting check"
+    "guards": "A supporting phone cannot cancel a brand-plus-lure address (T1-DOMAIN)"
   },
   {
     "id": "T17",
@@ -249,6 +277,13 @@ window.TFS_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": ["phone_official"],
+      "assessment": "suspicious" /* T1-CODE: reading a code to the caller. */,
+      "rules": [
+        "T1-CODE"
+      ],
+      "codes": [
+        "phone_official"
+      ],
       "risk": "high",
       "flags": ["share_code", "secrecy"]
     },
@@ -260,6 +295,13 @@ window.TFS_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": ["phone_not_on_file"],
+      "assessment": "suspicious" /* T1-CALLBACK: a device alarm with a number to call. */,
+      "rules": [
+        "T1-CALLBACK"
+      ],
+      "codes": [
+        "phone_not_on_file"
+      ],
       "risk": "high",
       "flags": ["remote_access", "pay_fee"]
     },

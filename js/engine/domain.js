@@ -230,16 +230,18 @@
       var pendingSource = (listedOwner.sources || []).some(function (source) {
         return hostMatches(host, source.domain) && /^needs review/i.test(source.check || '');
       });
-      if (pendingSource) return make('UNKNOWN', 'reference_needs_review', base, { orgId: listedOwner.id });
-      if (!claim) return make('SUPPORTS', 'domain_official', base, { orgId: owners[0].id, implicit: true });
-      if (owners.some(function (o) { return o.id === claim.id; })) return make('SUPPORTS', 'domain_official', base, { orgId: claim.id });
-      return make('CONTRADICTS', 'domain_belongs_to_other_org', base, { strength: 'moderate', orgId: owners[0].id });
+      if (pendingSource) return make('UNKNOWN', 'reference_needs_review', merge(base, { orgId: listedOwner.id }));
+      if (!claim) return supported(owners[0], 'domain_official', merge(base, { orgId: owners[0].id, implicit: true }));
+      if (owners.some(function (o) { return o.id === claim.id; })) return supported(claim, 'domain_official', merge(base, { orgId: claim.id }));
+      return make('CONTRADICTS', 'domain_belongs_to_other_org', merge(base, { strength: 'moderate', orgId: owners[0].id }));
     }
 
     // 6. An official domain used as the start of a different site: chase.com.account-verify.net
+    // A country form of the same name (amazon.com.au) is not this trick; the label rules judge it.
     var dotted = '.' + host + '.';
     for (var s = 0; s < store.orgs.length; s++) {
-      var sd = (store.orgs[s].officialDomains || []).find(function (d) {
+      var sd = (store.orgs[s].officialDomains || []).filter(function (d) {
+        if (countryForm(host, d)) return false;
         return dotted.indexOf('.' + d + '.') >= 0 || ('.' + host).indexOf('.' + d + '-') >= 0;
       });
       if (sd) return make('CONTRADICTS', 'official_domain_as_subdomain', base, { strength: 'strong', orgId: store.orgs[s].id, lookalikeOf: sd });
@@ -320,6 +322,39 @@
     return make('UNKNOWN', 'no_claimed_identity', base);
   }
 
+  function countryForm(host, domain) {
+    var tail = ('.' + host).slice(-(domain.length + 4));
+    return tail.slice(0, domain.length + 1) === '.' + domain && /^\.[a-z]{2}$/.test(tail.slice(domain.length + 1));
+  }
+
+  /* A record supports a contact only after a person has reviewed it: humanReview names the
+     reviewer and the date. An automated check alone leaves the contact unresolved, so an
+     unreviewed list fails closed (no Details Match) instead of open. Conflicts are unaffected. */
+  function humanReviewed(org) {
+    var review = org && org.humanReview;
+    return Boolean(review && typeof review.reviewer === 'string' && review.reviewer.trim() && reviewDate(review.date));
+  }
+
+  // A real calendar date (no 2026-02-30), not in the future, and not before this project existed.
+  function reviewDate(value) {
+    var m = typeof value === 'string' && value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return false;
+    var y = +m[1], mo = +m[2], d = +m[3], time = Date.UTC(y, mo - 1, d), day = new Date(time);
+    if (day.getUTCFullYear() !== y || day.getUTCMonth() !== mo - 1 || day.getUTCDate() !== d) return false;
+    return y >= 2020 && time <= Date.now();
+  }
+
+  function supported(org, code, extra) {
+    return humanReviewed(org) ? make('SUPPORTS', code, extra) : make('UNKNOWN', 'reference_needs_review', extra);
+  }
+
+  function merge(a, b) {
+    var out = {};
+    for (var k in a) if (a.hasOwnProperty(k)) out[k] = a[k];
+    for (var k2 in b) if (b.hasOwnProperty(k2)) out[k2] = b[k2];
+    return out;
+  }
+
   // Phone numbers written in the text. Absence from a sparse list is never a contradiction.
   function checkPhone(target, ctx) {
     var store = ctx.store, claim = ctx.claimOrg;
@@ -330,6 +365,11 @@
     }
     var owner = store.orgs.find(function (o) { return (o.officialPhones || []).indexOf(target.e164) >= 0; });
     if (owner) return make('SUPPORTS', 'phone_official', base, { orgId: owner.id, implicit: true });
+      if ((claim.officialPhones || []).indexOf(target.e164) >= 0) return supported(claim, 'phone_official', merge(base, { orgId: claim.id }));
+      return make('UNKNOWN', 'phone_not_on_file', merge(base, { orgId: claim.id }));
+    }
+    var owner = store.orgs.filter(function (o) { return (o.officialPhones || []).indexOf(target.e164) >= 0; })[0];
+    if (owner) return supported(owner, 'phone_official', merge(base, { orgId: owner.id, implicit: true }));
     return make('UNKNOWN', 'phone_not_on_file', base);
   }
 
@@ -343,4 +383,5 @@
   T.orgById = orgById;
   T.checkHost = checkHost;
   T.checkPhone = checkPhone;
+  T.humanReviewed = humanReviewed;
 })(typeof window !== 'undefined' ? window : globalThis);

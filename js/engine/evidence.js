@@ -3,7 +3,25 @@
 (function (root) {
   'use strict';
   var T = root.TFS = root.TFS || {};
-  var TIER1 = ['T1-GIFT', 'T1-WIRE', 'T1-REMOTE'];
+  var TIER1 = root.TfsAssessment.TIER1_RULES;
+  // Address tricks with no innocent reading, whatever the list misses: text before @ in a link,
+  // an official domain glued to another site, and letters swapped for lookalikes.
+  var DOMAIN_TRICKS = ['userinfo_trick', 'official_domain_as_subdomain', 'homoglyph'];
+  // Words that turn a brand-named address into a sign-in or payment lure. Measured against real
+  // brand domains missing from the list (wellsfargoemail.com, facebookmail.com): none qualify.
+  var LURE = /^(?:secure|security|login|signin|verify|verification|account|accounts|update|alert|alerts|support|helpdesk|billing|payment|payments|refund|unlock|locked|suspended|confirm|recovery|restore|reset|fraud|toll|tolls|redelivery|tracking|parcel|reward|rewards|prize|wallet)$/;
+
+  // A brand name and a lure word as separate parts of one address: chase-secure-login.net.
+  function brandLure(check) {
+    var host = check.target && check.target.host;
+    if (check.code !== 'brand_in_foreign_domain' || !host || !check.brandWord) return false;
+    var parts = host.split('.').slice(0, -1).join('.').split(/[-_.]+/);
+    return parts.indexOf(check.brandWord) >= 0 && parts.some(function (p) { return LURE.test(p); });
+  }
+
+  function domainTier1(check) {
+    return check.strength === 'strong' && (DOMAIN_TRICKS.indexOf(check.code) >= 0 || brandLure(check));
+  }
 
   function normalizeEvidence(checks, sender, inferred, signals, incomplete) {
     var uncertainty = [];
@@ -27,8 +45,9 @@
       }
       if (check.code === 'link_unreadable') uncertainty.push('extraction_failed:' + index);
       if (check.status === 'CONTRADICTS') {
-        // Legacy conflicts lack the reviewed closed scope required for T1-DOMAIN.
-        finding('legacy_contact:' + check.code, 2, 'established', null, check);
+        // Other conflicts stay Tier 2: real brand domains missing from the list produce them.
+        if (domainTier1(check)) finding('T1-DOMAIN', 1, 'established', null, check);
+        else finding('legacy_contact:' + check.code, 2, 'established', null, check);
       }
     });
     signals.established.forEach(function (rule) {
