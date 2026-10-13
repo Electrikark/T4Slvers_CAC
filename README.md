@@ -53,6 +53,23 @@ The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, 
 `validateResult` checks the assessment enum, evidence shape, display/evidence consistency, and the same gate's output. It is a wiring check, not independent proof of policy. U1–U14 have hand-written expected assessments and trace codes. E1 runs the real engine and already establishes T1-GIFT; it must remain Suspicious.
 
 `src/assessment.js` is the gate: the supplied logic, now indented and commented, plus the closed Tier 1 list. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. The classic-script browser artifact is checked for freshness by `npm test`; stale output fails instead of silently using old policy. No packages are required. Both browser and Node load the same detector and adapter. There is no separate browser-only grounding path here; the broader frozen-spec grounding port is still open work.
+`src/assessment.js` holds the assessment rules. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. This creates `js/assessment-gate.js` for the browser. `npm test` rejects an outdated generated file. Both browser and Node use the same detector and adapter; the broader frozen-spec grounding port is still open work.
+
+## How one check works
+
+Start reading at `analyze()` in `js/engine/aggregate.js`. It calls the other files in this order:
+
+1. `normalize.js` cleans the text and caps its length.
+2. `extract.js` finds contacts and masks them before looking for a sender name. A name inside a link must not count as the sender.
+3. `domain.js` compares contacts with `data/store.js`. The first matching rule decides each contact check.
+4. `risk.js` checks what the message asks the person to do. It distinguishes a direct request from negation or quoted advice.
+5. `evidence.js` groups the contact checks, risk findings, and uncertainty.
+6. `src/assessment.js` chooses one result. Established Tier 1 risk wins; otherwise a match needs an explicit sender, matching contacts, and no risk or uncertainty. Everything else is insufficient evidence.
+7. `copy.js` writes the explanations. `app.js` displays them and handles the form, examples, focus, and reset.
+
+Contacts use cleaned text, but risk quotes use the original text so their positions stay accurate. This is why extraction runs twice. `validateResult()` also rebuilds the evidence and repeats the assessment to check that the displayed result agrees with its evidence. These repeated steps serve different purposes.
+
+In the JavaScript, `find()` returns the first match, `some()` asks whether any item matches, and `every()` asks whether all items match. In `domain.js`, `{ ...base, ...extra }` copies the shared contact fields and adds the fields for that rule.
 
 ## Main files
 
