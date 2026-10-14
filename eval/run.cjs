@@ -58,7 +58,7 @@ function main() {
 
   const out = ['# Field evaluation', '',
     `Input: \`${path.basename(input)}\` · ${messages.length} messages · engine ${loaded.engine.version} · reference list ${loaded.store.version}`,
-    `Human-reviewed organization records: ${loaded.reviewedOrgs} of ${loaded.store.orgs.length}` +
+    `Organizations with a trusted contact (reviewed by a person, in date, complete): ${loaded.reviewedOrgs} of ${loaded.store.orgs.length}` +
       (loaded.reviewedOrgs ? '' : ' — Details Match cannot occur on the real list until records are reviewed.'), ''];
   const sections = only === 'all'
     ? [['Test split (report this one)', all.filter(r => r.split === 'test')], ['Dev split (tune rules on this one)', all.filter(r => r.split === 'dev')], ['All messages', all]]
