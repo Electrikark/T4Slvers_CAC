@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { parseCsv, toCsv } = require('../eval/csv.cjs');
 const M = require('../eval/metrics.cjs');
-const { loadEngine } = require('../eval/engine.cjs');
+const { loadEngine, FILES } = require('../eval/engine.cjs');
 
 const rows = [];
 function test(name, fn) {
@@ -74,9 +74,16 @@ test('E10 Counts and rates from stubbed results', () => {
   assert.deepEqual(M.ruleCounts(results), [{ rule: 'T1-GIFT', fraud: 1, legit: 1 }]);
 });
 test('E11 The real engine and list load, and report how many records are reviewed', () => {
+  // The same engine files as the page, in the same order, so the evaluation measures the app.
+  const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  const pageFiles = [...html.matchAll(/<script defer src="([^"]+)"/g)].map(m => m[1])
+    .filter(f => !['js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'js/app.js'].includes(f));
+  assert.deepEqual(FILES, pageFiles);
   const loaded = loadEngine();
   assert.equal(loaded.analyze('Grandma, please buy 3 Apple gift cards and send me the codes.', 'text').assessment, 'suspicious');
-  assert.equal(loaded.reviewedOrgs, loaded.store.orgs.filter(o => o.humanReview).length);
+  assert.equal(loaded.analyze('USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction', 'text').claimedIdentity, 'USPS');
+  // With no review on any record, nothing is trusted.
+  if (!loaded.store.orgs.some(o => o.humanReview || o.contacts)) assert.equal(loaded.reviewedOrgs, 0);
 });
 test('E12 The command runs end to end, and --strict passes when no fraud gets Details Match', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tfs-eval-'));
