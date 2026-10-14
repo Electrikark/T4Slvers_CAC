@@ -1,0 +1,5021 @@
+{
+  "evaluation_date": "2026-10-12",
+  "rows": [
+    {
+      "id": "WF-GC-dot-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers.  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-dot-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers.  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-dot-rejected",
+      "context": "WF",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Beware of hackers.  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-dot-expired",
+      "context": "WF",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Beware of hackers.  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-semi-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers;  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-semi-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers;  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-colon-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers:  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-colon-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers:  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-dash-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers,  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-dash-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers,  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-excl-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers!  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-excl-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers!  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-none-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-none-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers  We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-lf-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-lf-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-blank-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n\n We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-blank-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n\n We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-crlf-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\r\n We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-crlf-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\r\n We ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-wrap-lf-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-wrap-lf-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-wrap-crlf-none",
+      "context": "WF",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\r\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-GC-wrap-crlf-approved",
+      "context": "WF",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\r\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-dot-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers.  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-dot-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers.  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-dot-rejected",
+      "context": "WF",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Beware of hackers.  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-dot-expired",
+      "context": "WF",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Beware of hackers.  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-semi-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers;  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-semi-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers;  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-colon-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers:  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-colon-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers:  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-dash-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers,  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-dash-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers,  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-excl-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers!  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-excl-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers!  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-none-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-none-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers  We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-lf-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-lf-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-blank-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n\n We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-blank-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n\n We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-crlf-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\r\n We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-crlf-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\r\n We ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-wrap-lf-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-wrap-lf-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-wrap-crlf-none",
+      "context": "WF",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\r\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-CD-wrap-crlf-approved",
+      "context": "WF",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\r\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-dot-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers.  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-dot-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers.  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-dot-rejected",
+      "context": "WF",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Beware of hackers.  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-dot-expired",
+      "context": "WF",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Beware of hackers.  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-semi-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers;  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-semi-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers;  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-colon-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers:  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-colon-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers:  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-dash-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers,  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-dash-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers,  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-excl-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers!  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-excl-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers!  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-none-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-none-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers  We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-lf-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-lf-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-blank-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n\n We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-blank-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n\n We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-crlf-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\r\n We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-crlf-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\r\n We ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-wrap-lf-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-wrap-lf-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-wrap-crlf-none",
+      "context": "WF",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\r\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-WT-wrap-crlf-approved",
+      "context": "WF",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\r\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-dot-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers.  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-dot-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers.  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-dot-rejected",
+      "context": "WF",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Beware of hackers.  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-dot-expired",
+      "context": "WF",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Beware of hackers.  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-semi-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers;  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-semi-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers;  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-colon-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers:  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-colon-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers:  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-dash-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers,  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-dash-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers,  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-excl-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers!  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-excl-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers!  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-none-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-none-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers  We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-lf-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-lf-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-blank-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\n\n We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-blank-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\n\n We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-crlf-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers\r\n We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-crlf-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers\r\n We ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-wrap-lf-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-wrap-lf-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-wrap-crlf-none",
+      "context": "WF",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Beware of hackers. We ask you to\r\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "WF-RA-wrap-crlf-approved",
+      "context": "WF",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Beware of hackers. We ask you to\r\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-dot-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters.  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-dot-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters.  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-dot-rejected",
+      "context": "PC",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: To avoid fraudsters.  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-dot-expired",
+      "context": "PC",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: To avoid fraudsters.  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-semi-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters;  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-semi-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters;  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-colon-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters:  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-colon-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters:  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-dash-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters,  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-dash-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters,  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-excl-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters!  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-excl-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters!  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-none-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-none-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters  we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-lf-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-lf-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-blank-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-blank-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-crlf-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-crlf-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-wrap-lf-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-wrap-lf-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-wrap-crlf-none",
+      "context": "PC",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-GC-wrap-crlf-approved",
+      "context": "PC",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-dot-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters.  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-dot-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters.  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-dot-rejected",
+      "context": "PC",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: To avoid fraudsters.  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-dot-expired",
+      "context": "PC",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: To avoid fraudsters.  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-semi-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters;  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-semi-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters;  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-colon-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters:  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-colon-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters:  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-dash-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters,  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-dash-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters,  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-excl-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters!  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-excl-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters!  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-none-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-none-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters  we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-lf-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-lf-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-blank-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-blank-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-crlf-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-crlf-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-wrap-lf-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-wrap-lf-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-wrap-crlf-none",
+      "context": "PC",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-CD-wrap-crlf-approved",
+      "context": "PC",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-dot-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters.  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-dot-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters.  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-dot-rejected",
+      "context": "PC",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: To avoid fraudsters.  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-dot-expired",
+      "context": "PC",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: To avoid fraudsters.  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-semi-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters;  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-semi-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters;  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-colon-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters:  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-colon-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters:  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-dash-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters,  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-dash-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters,  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-excl-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters!  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-excl-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters!  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-none-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-none-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters  we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-lf-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-lf-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-blank-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-blank-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-crlf-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-crlf-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-wrap-lf-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-wrap-lf-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-wrap-crlf-none",
+      "context": "PC",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-WT-wrap-crlf-approved",
+      "context": "PC",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-dot-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters.  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-dot-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters.  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-dot-rejected",
+      "context": "PC",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: To avoid fraudsters.  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-dot-expired",
+      "context": "PC",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: To avoid fraudsters.  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-semi-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters;  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-semi-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters;  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-colon-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters:  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-colon-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters:  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-dash-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters,  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-dash-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters,  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-excl-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters!  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-excl-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters!  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-none-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-none-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters  we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-lf-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-lf-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-blank-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-blank-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\n\n we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-crlf-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-crlf-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters\r\n we ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-wrap-lf-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-wrap-lf-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-wrap-crlf-none",
+      "context": "PC",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "PC-RA-wrap-crlf-approved",
+      "context": "PC",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: To avoid fraudsters. we ask you to\r\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-dot-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-dot-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-dot-rejected",
+      "context": "RD",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-dot-expired",
+      "context": "RD",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-semi-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-semi-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-colon-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-colon-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-dash-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-dash-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-excl-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-excl-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-none-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-none-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-lf-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-lf-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-blank-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-blank-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-crlf-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-crlf-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to pay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-wrap-lf-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-wrap-lf-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-wrap-crlf-none",
+      "context": "RD",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-GC-wrap-crlf-approved",
+      "context": "RD",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\npay with gift cards today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-dot-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-dot-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-dot-rejected",
+      "context": "RD",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-dot-expired",
+      "context": "RD",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-semi-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-semi-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-colon-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-colon-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-dash-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-dash-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-excl-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-excl-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-none-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-none-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-lf-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-lf-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-blank-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-blank-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-crlf-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-crlf-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to read us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-wrap-lf-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-wrap-lf-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-wrap-crlf-none",
+      "context": "RD",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-CD-wrap-crlf-approved",
+      "context": "RD",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\nread us your verification code today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-dot-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-dot-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-dot-rejected",
+      "context": "RD",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-dot-expired",
+      "context": "RD",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-semi-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-semi-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-colon-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-colon-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-dash-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-dash-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-excl-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-excl-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-none-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-none-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-lf-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-lf-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-blank-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-blank-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-crlf-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-crlf-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to send money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-wrap-lf-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-wrap-lf-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-wrap-crlf-none",
+      "context": "RD",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-WT-wrap-crlf-approved",
+      "context": "RD",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\nsend money by wire transfer today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-dot-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-dot-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-dot-rejected",
+      "context": "RD",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-dot-expired",
+      "context": "RD",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: Fraud warning.  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-semi-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-semi-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning;  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-colon-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-colon-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning:  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-dash-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-dash-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning,  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-excl-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-excl-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning!  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-none-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-none-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning  Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-lf-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-lf-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-blank-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-blank-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\n\n Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-crlf-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-crlf-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning\r\n Fraudsters may ask you to install remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-wrap-lf-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-wrap-lf-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-wrap-crlf-none",
+      "context": "RD",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "RD-RA-wrap-crlf-approved",
+      "context": "RD",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: Fraud warning. Fraudsters may ask you to\r\ninstall remote access software today. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-dot-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-dot-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-dot-rejected",
+      "context": "TW",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: We ask you to pay with gift cards today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-dot-expired",
+      "context": "TW",
+      "family": "GC",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: We ask you to pay with gift cards today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-semi-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-semi-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-colon-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-colon-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-dash-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-dash-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-excl-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-excl-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-none-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-none-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-lf-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-lf-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-blank-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-blank-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-crlf-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to pay with gift cards today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-crlf-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to pay with gift cards today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-wrap-lf-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\npay with gift cards today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-wrap-lf-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\npay with gift cards today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-wrap-crlf-none",
+      "context": "TW",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\r\npay with gift cards today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-GC-wrap-crlf-approved",
+      "context": "TW",
+      "family": "GC",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\r\npay with gift cards today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-dot-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-dot-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-dot-rejected",
+      "context": "TW",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: We ask you to read us your verification code today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-dot-expired",
+      "context": "TW",
+      "family": "CD",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: We ask you to read us your verification code today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-semi-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-semi-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-colon-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-colon-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-dash-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-dash-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-excl-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-excl-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-none-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-none-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-lf-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-lf-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-blank-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-blank-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-crlf-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to read us your verification code today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-crlf-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to read us your verification code today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-wrap-lf-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\nread us your verification code today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-wrap-lf-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\nread us your verification code today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-wrap-crlf-none",
+      "context": "TW",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\r\nread us your verification code today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-CD-wrap-crlf-approved",
+      "context": "TW",
+      "family": "CD",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\r\nread us your verification code today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-dot-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-dot-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-dot-rejected",
+      "context": "TW",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: We ask you to send money by wire transfer today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-dot-expired",
+      "context": "TW",
+      "family": "WT",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: We ask you to send money by wire transfer today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-semi-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-semi-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-colon-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-colon-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-dash-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-dash-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-excl-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-excl-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-none-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-none-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-lf-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-lf-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-blank-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-blank-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-crlf-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to send money by wire transfer today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-crlf-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to send money by wire transfer today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-wrap-lf-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\nsend money by wire transfer today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-wrap-lf-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\nsend money by wire transfer today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-wrap-crlf-none",
+      "context": "TW",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\r\nsend money by wire transfer today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-WT-wrap-crlf-approved",
+      "context": "TW",
+      "family": "WT",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\r\nsend money by wire transfer today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-dot-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-dot-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-dot-rejected",
+      "context": "TW",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "rejected",
+      "text": "Chase: We ask you to install remote access software today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-dot-expired",
+      "context": "TW",
+      "family": "RA",
+      "variant": "dot",
+      "record_state": "expired",
+      "text": "Chase: We ask you to install remote access software today.  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-semi-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-semi-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "semi",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today;  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-colon-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-colon-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "colon",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today:  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-dash-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-dash-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "dash",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today,  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-excl-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-excl-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "excl",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today!  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-none-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-none-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "none",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today  Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-lf-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-lf-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-blank-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-blank-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "blank",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today\n\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-crlf-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to install remote access software today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-crlf-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to install remote access software today\r\n Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-wrap-lf-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\ninstall remote access software today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-wrap-lf-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "wrap-lf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\ninstall remote access software today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-wrap-crlf-none",
+      "context": "TW",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "none",
+      "text": "Chase: We ask you to\r\ninstall remote access software today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "TW-RA-wrap-crlf-approved",
+      "context": "TW",
+      "family": "RA",
+      "variant": "wrap-crlf",
+      "record_state": "approved",
+      "text": "Chase: We ask you to\r\ninstall remote access software today. Beware of hackers. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    }
+  ],
+  "hand_rows": [
+    {
+      "id": "OWN1",
+      "context": "OWN",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "We ask you to pay with gift cards.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "OWN2",
+      "context": "OWN",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "We need you to pay with gift cards.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "OWN3",
+      "context": "OWN",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Chase requests that you pay with gift cards.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "OWN4",
+      "context": "OWN",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "We ask you to please pay with gift cards.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "OWN5",
+      "context": "OWN",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Due to fraudsters we ask you to pay with gift cards today.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "OWN6",
+      "context": "OWN",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Fraudsters are active and Chase asks you to send the fee by wire transfer today.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "OWN7",
+      "context": "OWN",
+      "family": "CD",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "We ask you to read us your verification code.",
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "OWN8",
+      "context": "OWN",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "We need you to install remote access software today.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "known_limitation": null
+    },
+    {
+      "id": "W1",
+      "context": "W",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Scammers posing as Chase may ask you to pay with gift cards.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "W2",
+      "context": "W",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Fraudsters pretending to be the IRS may demand a wire transfer.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "W3",
+      "context": "W",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Scam callers may ask you to install remote access software.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "W4",
+      "context": "W",
+      "family": "CD",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Criminals often ask victims to read back verification codes.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "LEGIT-GC",
+      "context": "LEGIT",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Target: Gift cards are 20% off this weekend.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "LEGIT-CD",
+      "context": "LEGIT",
+      "family": "CD",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Chase: Your code is 482193. Don’t share it with anyone.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "LEGIT-WT",
+      "context": "LEGIT",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Chase: Your wire transfer of $500 was completed.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "LEGIT-RA",
+      "context": "LEGIT",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Chase will never ask you to install remote access software.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "NEG-REPORT",
+      "context": "LEGIT",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "Fraudsters may ask you to pay with gift cards.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "NEG-ASK",
+      "context": "LEGIT",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "none",
+      "text": "We never ask you to pay with gift cards.",
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    }
+  ]
+}
