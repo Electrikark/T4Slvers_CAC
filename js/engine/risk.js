@@ -16,10 +16,15 @@
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?)\b/i;
   const SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
-  const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|western union|moneygram)\b/i;
+  const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|by wire|western union|moneygram)\b/i;
   const REMOTE = /\b(?:anydesk|teamviewer|logmein|ultraviewer|supremo|quick ?assist|remote (?:access|control|desktop|session)|screen[ -]?shar(?:e|ing)|(?:your|the|my) screen)\b/i;
   const PURPOSE = /\b(?:payment|pay|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?|(?:restore|release|unlock)(?:\s+\w+){0,3}\s+account)\b/i;
   const REPORT = /\b(?:scam{2}ers?|fraudsters?|criminals?|an example scam|example (?:message|scam)|beware of|watch (?:out )?for|never ask you to|will not ask you to)\b/i;
+  // The cue must name the asker, not just occur earlier in the clause. Allow only
+  // a short, closed list of modifiers; "fraudsters ... we ask" is our own request.
+  const REPORT_SUBJECT = /\b(?:scam{2}ers?|fraudsters?|criminals?|(?:an )?example (?:message|scam)|(?:beware of|watch (?:out )?for)\s+(?:texts?|messages?))(?:\s+who\s+(?:calls?|texts?))?(?:\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)){0,3}\s*$/i;
+  // "Ask you to", "tell you that you must", "demand that you", or "request: ...".
+  const ASKING = /\b(?:ask(?:s|ing)?|tell(?:s|ing)?|demand(?:s|ing)?|request(?:s|ing)?|instruct(?:s|ing)?|urg(?:e|es|ing)|pressur(?:e|es|ing)|want(?:s|ing)?)\b(?:\s+(?:(?:you|us|me|them)\s+)?to\s+|\s+(?:(?:you\s+)?that\s+)?you\s+(?:(?:must|should|need to|have to)\s+)?|\s*:\s*)/gi;
   const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
   const PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
   const URGENT = /\b(?:urgent(?:ly)?|right now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
@@ -91,8 +96,33 @@
     return clauses;
   }
 
-  const reported = text => REPORT.test(text) || /\b(?:says?|said|reads?|example|quoted|warning)[^.!?]{0,40}["“]/i.test(text);
-  const skip = clause => !clause || clause.inReport || reported(clause.text);
+  const skip = clause => !clause || clause.inReport;
+
+  // A cue must be the subject of an asking verb whose complement contains this demand.
+  // Commas and a new instruction end that reach; a warning after the demand cannot hide it.
+  function reportedAt(clauseText, demandIndex) {
+    // inReport covers later clauses of a quoted example. Its first clause can start
+    // before the opening quote, so preserve that quoted span here as well.
+    for (const quote of clauseText.matchAll(/["“][^"”]*(?:["”]|$)/g)) {
+      if (demandIndex <= quote.index || demandIndex >= quote.index + quote[0].length) continue;
+      const before = clauseText.slice(0, quote.index);
+      if (REPORT.test(before) || /\b(?:says?|said|reads?|example|quoted|warning)[^.!?]{0,40}$/i.test(before)) return true;
+    }
+    const prefix = clauseText.slice(0, demandIndex);
+    const segment = prefix.split(/[,;.!?\n]|\b(?:so|because|since|but|however|instead)\b/i).pop();
+    for (const asking of segment.matchAll(ASKING)) {
+      if (/\b(?:you must|you need to|you have to|you should)\b/i.test(segment.slice(asking.index + asking[0].length))) continue;
+      if (REPORT_SUBJECT.test(segment.slice(0, asking.index)) || isNegated(segment, asking.index)) return true;
+    }
+    return false;
+  }
+
+  // Context and antecedents need the same scope check at their own position.
+  function unreportedMatch(clause, pattern) {
+    if (skip(clause)) return null;
+    return [...clause.text.matchAll(new RegExp(pattern.source, 'gi'))]
+      .find(hit => !reportedAt(clause.text, hit.index)) || null;
+  }
 
   // Is the verb after `prefix` an instruction to the reader? "Please send", "Chase: Send",
   // "You must send", "To fix it, send". priorDemand also allows "... and send" after an earlier demand.
@@ -100,8 +130,9 @@
     if (NEGATION.test(prefix) || /["“][^"”]*$/.test(prefix)) return false;
     const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
     if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
-    if (/^\s*(?:to|in order to|before|so)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
+    if (/^\s*(?:to|in order to|before|so|due to|because of|after)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
+    if (/,\s*so\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:do not|don['’]t|dont|never)\s+(?:delay|wait|tell(?:\s+\w+){1,3}|hang up)\s*,\s*$/i.test(rest)) return true;
     return priorDemand && /(?:\band|\bthen|,)\s*(?:please\s+)?$/i.test(rest);
   }
@@ -117,19 +148,19 @@
     const own = clauses[index];
     const casual = text => /\b(?:meeting|lunch|birthday|weather)\b/i.test(text);
     if (!skip(own)) {
-      let pressure = own.text.match(PRESSURE);
+      let pressure = unreportedMatch(own, PRESSURE);
       if (pressure && SECRET.test(own.text.slice(pressure.index + pressure[0].length))) pressure = null;
-      const hit = pressure || own.text.match(URGENT) || own.text.match(THREAT);
+      const hit = pressure || unreportedMatch(own, URGENT) || unreportedMatch(own, THREAT);
       if (hit && !casual(own.text)) return spanOf(raw, own, hit);
     }
     for (const other of [clauses[index - 1], clauses[index + 1]]) {
       if (skip(other)) continue;
       const text = other.text.trim();
       // Secrecy counts only in the demand's own clause or the clause right after it.
-      let hit = other === clauses[index + 1] ? other.text.match(PRESSURE) : null;
+      let hit = other === clauses[index + 1] ? unreportedMatch(other, PRESSURE) : null;
       if (hit && !SECRET.test(other.text) && text.length < 100 &&
           /^(?:(?:please|and)\s+)?(?:(?:do not|don['’]t|dont) tell|keep (?:this|it)|(?:do not|don['’]t|dont) hang up|stay on the line)/i.test(text)) return spanOf(raw, other, hit);
-      hit = other.text.match(URGENT) || other.text.match(THREAT);
+      hit = unreportedMatch(other, URGENT) || unreportedMatch(other, THREAT);
       if (hit && !casual(text) && /^(?:urgent\b|(?:do (?:it|this|that)|this is|you must act|otherwise|or\b|your account|you will be arrested|your device|your computer|to avoid)\b)/i.test(text)) return spanOf(raw, other, hit);
     }
     return null;
@@ -171,10 +202,10 @@
     if (!hit) return false;
     const code = spanOf(s.raw, d.clause, hit, d.after);
     // The gift card can be named in this clause or the one before.
-    let cardClause = d.clause, card = d.clause.text.match(GIFT);
+    let cardClause = d.clause, card = unreportedMatch(d.clause, GIFT);
     if (!card && !skip(s.clauses[d.index - 1])) {
       cardClause = s.clauses[d.index - 1];
-      card = cardClause.text.match(GIFT);
+      card = unreportedMatch(cardClause, GIFT);
     }
     const toRequester = /\b(?:me|us|to me|to us|back to me|back to us|to (?:the )?(?:requester|caller))\b/i.test(d.tail.slice(0, 65));
     // An OTP or credit card nearby makes it unclear which code is meant.
@@ -217,7 +248,7 @@
     let alarm = null;
     for (const clause of s.clauses) {
       if (skip(clause)) continue;
-      const found = clause.text.match(DEVICE_ALARM);
+      const found = unreportedMatch(clause, DEVICE_ALARM);
       if (found) { alarm = spanOf(s.raw, clause, found); break; }
     }
     if (!alarm) return;
@@ -271,6 +302,7 @@
       if (skip(clause)) return;
       let priorDemand = false;
       for (const m of clause.text.matchAll(new RegExp(ACTIONS.source, 'gi'))) {
+        if (reportedAt(clause.text, m.index)) continue;
         if (!directAction(clause.text.slice(0, m.index), priorDemand)) continue;
         priorDemand = true;
         const tail = clause.text.slice(m.index + m[0].length);
@@ -388,7 +420,7 @@
       for (const pattern of flag.patterns) {
         const hit = [...text.matchAll(new RegExp(pattern.source, 'gi'))].find(m => {
           const clause = s.clauses.find(c => m.index >= c.start && m.index < c.end);
-          if (clause && (clause.inReport || reported(clause.text))) return false;
+          if (clause && (clause.inReport || reportedAt(clause.text, m.index - clause.start))) return false;
           if (flag.negatable && isNegated(text, m.index)) return false;
           return !flag.accept || !clause || flag.accept(text, m, clause);
         });
