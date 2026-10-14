@@ -21,10 +21,15 @@
   const PURPOSE = /\b(?:payment|pay|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?|(?:restore|release|unlock)(?:\s+\w+){0,3}\s+account)\b/i;
   const REPORT = /\b(?:scam{2}ers?|fraudsters?|criminals?|an example scam|example (?:message|scam)|beware of|watch (?:out )?for|never ask you to|will not ask you to)\b/i;
   // The cue must name the asker, not just occur earlier in the clause. Allow only
-  // a short, closed list of modifiers; "fraudsters ... we ask" is our own request.
-  const REPORT_SUBJECT = /\b(?:scam{2}ers?|fraudsters?|criminals?|(?:an )?example (?:message|scam)|(?:beware of|watch (?:out )?for)\s+(?:texts?|messages?))(?:\s+who\s+(?:calls?|texts?))?(?:\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)){0,3}\s*$/i;
+  // bounded descriptions and a closed list of modifiers; a new asker breaks the link.
+  const REPORT_SUBJECT = /\b(?:scam{2}ers?|fraudsters?|criminals?|scam (?:callers?|texts?|emails?|messages?)|(?:an )?example (?:message|scam)|(?:beware of|watch (?:out )?for)\s+(?:texts?|messages?))(?:\s+(?:posing as|pretending to be|claiming to be|impersonating)\s+(?:the\s+)?(?!(?:we|our|and|who)\b)[a-z][\w-]*(?:\s+(?!(?:we|our|and|who|may|might|will|could|can|would|often|sometimes|usually|also|typically)\b)[a-z][\w-]*){0,2})?(?:\s+who\s+(?:calls?|texts?))?(?:\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)){0,3}\s*$/i;
   // "Ask you to", "tell you that you must", "demand that you", or "request: ...".
-  const ASKING = /\b(?:ask(?:s|ing)?|tell(?:s|ing)?|demand(?:s|ing)?|request(?:s|ing)?|instruct(?:s|ing)?|urg(?:e|es|ing)|pressur(?:e|es|ing)|want(?:s|ing)?)\b(?:\s+(?:(?:you|us|me|them)\s+)?to\s+|\s+(?:(?:you\s+)?that\s+)?you\s+(?:(?:must|should|need to|have to)\s+)?|\s*:\s*)/gi;
+  const ASKING = /\b(?:ask(?:s|ing)?|tell(?:s|ing)?|demand(?:s|ing)?|request(?:s|ing)?|instruct(?:s|ing)?|urg(?:e|es|ing)|pressur(?:e|es|ing)|want(?:s|ing)?)\b(?:\s+(?:(?:you|us|me|them|victims|seniors|customers)\s+)?to\s+|\s+(?:(?:you\s+)?that\s+)?you\s+(?:(?:must|should|need to|have to)\s+)?|\s*:\s*)/gi;
+  const OWN_NEED = /\b(?:we|i)\s+need\s+you\s+to\s*(?:please\s*)?$/i;
+
+  function askingBefore(prefix) {
+    return [...prefix.matchAll(ASKING)].find(m => /^\s*(?:please\s*)?$/i.test(prefix.slice(m.index + m[0].length)));
+  }
   const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
   const PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
   const URGENT = /\b(?:urgent(?:ly)?|right now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
@@ -38,6 +43,9 @@
   // T1-CALLBACK: a device alarm paired with a demand to call. Real security warnings
   // from Microsoft and other vendors do not include a phone number to call.
   const DEVICE_ALARM = /\b(?:(?:device|computer|pc|laptop|mac|system|windows|browser|iphone|phone)\b[^.!?\n]{0,25}\b(?:is|has been|was|are|have been|may be)\s+(?:locked|infected|hacked|compromised|blocked|disabled|at risk)|infected with (?:a |an )?(?:virus|viruses|malware|trojan|spyware)|(?:virus|viruses|malware|trojan|spyware|ransomware)\s+(?:detected|found|alert|warning|infection)|(?:hackers?|someone) (?:has |have )?(?:accessed|hacked|breached) your (?:computer|device|pc|laptop|phone))\b/i;
+  // "Fraudsters may say your computer is infected and ask ..." retains its
+  // subject. Limit coordination to this alarm form; "and we ask" cannot match.
+  const ALARM_COORDINATION = /\bsay\s+(?:your|the)\s+(?:computer|device|pc|laptop|phone|system)\s+is\s+(?:locked|infected|hacked|compromised|blocked)\s+and\s*$/i;
   const CALL_OBJECT = /^\s+(?:us\b|me\b|them\b|(?:this|the|our|that) (?:toll[- ]free )?(?:number|helpline|hotline)\b|(?:the |a )?(?:microsoft|windows|apple|google|norton|mcafee|geek squad)?\s*(?:tech(?:nical)? |customer |security )?(?:support|helpline|help desk|helpdesk|technicians?)\b|(?:on |at )?\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b|(?:\w+\s+){0,3}(?:at|on)\s+\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b)/i;
   // Calling a number you already trust is the advice, not the trick.
   const TRUSTED_CALL = /\b(?:back of your card|you (?:already )?(?:trust|know)|on your (?:statement|bill)|official (?:website|site|app))\b/i;
@@ -88,6 +96,9 @@
     while ((m = cuts.exec(text)) !== null) {
       // "$4.15" is a number, not the end of a sentence.
       if (m[0] === '.' && /\d/.test(text.charAt(m.index - 1)) && /\d/.test(text.charAt(m.index + 1))) continue;
+      // An SMS wrap after an unfinished asking complement is not a new demand.
+      // Keep original positions and line breaks for source spans.
+      if (m[0] === '\n' && (askingBefore(text.slice(start, m.index + 1)) || OWN_NEED.test(text.slice(start, m.index + 1)))) continue;
       if (text.slice(start, m.index).trim()) clauses.push({ start, end: m.index, text: text.slice(start, m.index) });
       start = m.index + m[0].length;
     }
@@ -97,6 +108,11 @@
   }
 
   const skip = clause => !clause || clause.inReport;
+
+  function reportingSubject(prefix) {
+    const coordination = prefix.match(ALARM_COORDINATION);
+    return REPORT_SUBJECT.test(coordination ? prefix.slice(0, coordination.index) : prefix);
+  }
 
   // A cue must be the subject of an asking verb whose complement contains this demand.
   // Commas and a new instruction end that reach; a warning after the demand cannot hide it.
@@ -108,11 +124,11 @@
       const before = clauseText.slice(0, quote.index);
       if (REPORT.test(before) || /\b(?:says?|said|reads?|example|quoted|warning)[^.!?]{0,40}$/i.test(before)) return true;
     }
-    const prefix = clauseText.slice(0, demandIndex);
+    const prefix = clauseText.slice(0, demandIndex).replace(/\r?\n/g, ' ');
     const segment = prefix.split(/[,;.!?\n]|\b(?:so|because|since|but|however|instead)\b/i).pop();
     for (const asking of segment.matchAll(ASKING)) {
       if (/\b(?:you must|you need to|you have to|you should)\b/i.test(segment.slice(asking.index + asking[0].length))) continue;
-      if (REPORT_SUBJECT.test(segment.slice(0, asking.index)) || isNegated(segment, asking.index)) return true;
+      if (reportingSubject(segment.slice(0, asking.index)) || isNegated(segment, asking.index)) return true;
     }
     return false;
   }
@@ -129,6 +145,9 @@
   function directAction(prefix, priorDemand) {
     if (NEGATION.test(prefix) || /["“][^"”]*$/.test(prefix)) return false;
     const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
+    const asking = askingBefore(prefix);
+    if (asking && !isNegated(prefix, asking.index)) return true;
+    if (OWN_NEED.test(prefix)) return true;
     if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/^\s*(?:to|in order to|before|so|due to|because of|after)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
