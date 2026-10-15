@@ -87,8 +87,12 @@
       case 'request_personal_data':
         return flagged(['credential_request']);
       case 'request_payment_gift_card':
-        return established(['T1-GIFT']) || flagged(['gift_card_payment', 'gift_card_disclosure']) ||
+        var gift = established(['T1-GIFT']) || flagged(['gift_card_disclosure']) ||
           unresolved(['unclear_gift_payment_purpose', 'competing_card_code_antecedent']);
+        if (gift) return gift;
+        // A purchase-only Tier 2 warning does not prove a forbidden payment.
+        var purchase = flagged(['gift_card_payment']);
+        return purchase ? { status: 'unresolved', span: purchase.span } : null;
       case 'request_payment_wire_crypto':
         return established(['T1-WIRE']) || flagged(['crypto_or_wire']);
       case 'request_remote_access':
