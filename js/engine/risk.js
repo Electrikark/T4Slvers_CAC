@@ -126,6 +126,13 @@
       const hit = pressure || own.text.match(URGENT) || own.text.match(THREAT);
       if (hit && !casual(own.text)) return spanOf(raw, own, hit);
     }
+    for (var d = -1; d <= 1; d += 2) {
+      var other = clauses[index + d];
+      if (!other || other.inReport || reported(other.text)) continue;
+      var text = other.text.trim();
+      // Secrecy counts only in the demand's own clause or the clause right after it.
+      hit = d === 1 ? other.text.match(PRESSURE) : null;
+      if (hit && !SECRET.test(other.text) && /^(?:(?:please|and)\s+)?(?:(?:do not|don['’]t|dont) tell|keep (?:this|it)|(?:do not|don['’]t|dont) hang up|stay on the line)/i.test(text) && text.length < 100) return matchedSpan(raw, other, hit);
     for (const other of [clauses[index - 1], clauses[index + 1]]) {
       if (skip(other)) continue;
       const text = other.text.trim();
