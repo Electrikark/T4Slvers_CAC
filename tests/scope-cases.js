@@ -140,8 +140,9 @@ window.TFS_PHASE2.add('Reporting scope', function (t) {
       check({ text: 'Fraudsters ' + modifier + ' ask you to please pay with gift cards.',
         flags: [], rules: [], assessment: 'insufficient_evidence' });
     });
+    // Revised contract: an unknown asking subject is not the sender, even with "please".
     check({ text: 'Fraudsters appear to ask you to please pay with gift cards.',
-      flags: ['gift_card_payment'], rules: ['T1-GIFT'], assessment: 'suspicious' });
+      flags: [], rules: [], assessment: 'insufficient_evidence' });
   });
   t.test('RS26 Existing warning and negation examples remain quiet', function () {
     ['Fraudsters may ask you to pay with gift cards.',
@@ -190,5 +191,22 @@ window.TFS_PHASE2.add('Reporting scope', function (t) {
       flags: ['device_alarm'], rules: [], assessment: 'insufficient_evidence' });
     check({ text: 'Fraudsters may say your computer is infected and we ask you to call us at (888) 555-0199.',
       flags: ['tech_support_call', 'device_alarm', 'callback_now'], rules: ['T1-CALLBACK'], assessment: 'suspicious' });
+  });
+  t.test('RS37 Only recognized sender subjects establish indirect requests', function () {
+    ['I ask you to', 'Our team requests that you', 'Chase asks you to',
+      'Local Credit Union: Local Credit Union requests that you'].forEach(function (lead) {
+      check({ text: lead + ' pay with gift cards.',
+        flags: ['gift_card_payment'], rules: ['T1-GIFT'], assessment: 'suspicious' });
+    });
+    ['Someone asks you to', 'Imposters may ask you to',
+      'Scammers posing as our team ask you to',
+      'Chase: Scammers posing as Chase ask you to',
+      'Local Credit Union: Scammers posing as Local Credit Union ask you to',
+      'If we ask you to', 'If anyone asks you to'].forEach(function (lead) {
+      check({ text: lead + ' please pay with gift cards.',
+        flags: [], rules: [], assessment: 'insufficient_evidence' });
+    });
+    check({ text: 'If anyone asks you to pay with gift cards, hang up. Pay with gift cards today.',
+      flags: ['gift_card_payment'], rules: ['T1-GIFT'], assessment: 'suspicious' });
   });
 });
