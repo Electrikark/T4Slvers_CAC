@@ -1,0 +1,5424 @@
+{
+  "metric": "suite pass rate",
+  "evaluation_date": "2026-10-12",
+  "fixture_sha256": "5a3b0cf5308af9138a9b6e0a383632a8d5fd7c16271183af21184b75d842f76c",
+  "engine_sha256": "f1a7ee021c0f8839460687c6846361659ae693db752cca48e6233bde52ff6ec7",
+  "passed": 489,
+  "total": 792,
+  "counts": {
+    "asking-WF-GC": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-WF-CD": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-WF-WT": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-WF-RA": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-PC-GC": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-PC-CD": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-PC-WT": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-PC-RA": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-RD-GC": {
+      "passed": 20,
+      "total": 24
+    },
+    "asking-RD-CD": {
+      "passed": 20,
+      "total": 24
+    },
+    "asking-RD-WT": {
+      "passed": 20,
+      "total": 24
+    },
+    "asking-RD-RA": {
+      "passed": 20,
+      "total": 24
+    },
+    "asking-TW-GC": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-TW-CD": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-TW-WT": {
+      "passed": 4,
+      "total": 24
+    },
+    "asking-TW-RA": {
+      "passed": 4,
+      "total": 24
+    },
+    "bare-WF-GC": {
+      "passed": 18,
+      "total": 24
+    },
+    "bare-WF-CD": {
+      "passed": 18,
+      "total": 24
+    },
+    "bare-WF-WT": {
+      "passed": 18,
+      "total": 24
+    },
+    "bare-WF-RA": {
+      "passed": 18,
+      "total": 24
+    },
+    "bare-PC-GC": {
+      "passed": 20,
+      "total": 24
+    },
+    "bare-PC-CD": {
+      "passed": 20,
+      "total": 24
+    },
+    "bare-PC-WT": {
+      "passed": 20,
+      "total": 24
+    },
+    "bare-PC-RA": {
+      "passed": 20,
+      "total": 24
+    },
+    "bare-RD-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "OWN": {
+      "passed": 1,
+      "total": 8
+    },
+    "W": {
+      "passed": 10,
+      "total": 10
+    },
+    "LEGIT": {
+      "passed": 6,
+      "total": 6
+    }
+  },
+  "failures": [
+    {
+      "id": "WF-GC-asking-dot-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-dot-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-dot-rejected",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-dot-expired",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-semi-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-semi-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-colon-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-colon-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-comma-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-comma-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-excl-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-excl-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-none-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-none-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-lf-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-lf-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-blank-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-blank-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-crlf-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-asking-crlf-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-dot-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-dot-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-dot-rejected",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-dot-expired",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-semi-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-semi-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-colon-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-colon-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-comma-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-comma-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-excl-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-excl-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-none-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-none-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-lf-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-lf-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-blank-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-blank-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-crlf-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-asking-crlf-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-dot-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-dot-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-dot-rejected",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-dot-expired",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-semi-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-semi-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-colon-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-colon-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-comma-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-comma-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-excl-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-excl-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-none-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-none-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-lf-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-lf-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-blank-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-blank-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-crlf-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-asking-crlf-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-dot-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-dot-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-dot-rejected",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-dot-expired",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-semi-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-semi-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-colon-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-colon-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-comma-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-comma-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-excl-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-excl-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-none-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-none-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-lf-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-lf-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-blank-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-blank-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-crlf-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-asking-crlf-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-dot-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-dot-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-dot-rejected",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-dot-expired",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-semi-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-semi-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-colon-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-colon-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-comma-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-comma-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-excl-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-excl-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-none-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-none-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-lf-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-lf-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-blank-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-blank-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-crlf-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-asking-crlf-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-dot-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-dot-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-dot-rejected",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-dot-expired",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-semi-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-semi-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-colon-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-colon-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-comma-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-comma-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-excl-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-excl-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-none-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-none-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-lf-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-lf-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-blank-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-blank-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-crlf-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-asking-crlf-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-dot-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-dot-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-dot-rejected",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-dot-expired",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-semi-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-semi-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-colon-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-colon-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-comma-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-comma-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-excl-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-excl-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-none-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-none-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-lf-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-lf-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-blank-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-blank-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-crlf-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-asking-crlf-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-dot-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-dot-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-dot-rejected",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-dot-expired",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-semi-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-semi-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-colon-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-colon-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-comma-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-comma-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-excl-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-excl-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-none-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-none-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-lf-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-lf-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-blank-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-blank-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-crlf-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-asking-crlf-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "RD-GC-asking-wrap-lf-none",
+      "context": "RD",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "gift_card_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-GC-asking-wrap-lf-approved",
+      "context": "RD",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "gift_card_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-GC-asking-wrap-crlf-none",
+      "context": "RD",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "gift_card_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-GC-asking-wrap-crlf-approved",
+      "context": "RD",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "gift_card_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-CD-asking-wrap-lf-none",
+      "context": "RD",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "code_request"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-CD-asking-wrap-lf-approved",
+      "context": "RD",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "code_request"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-CD-asking-wrap-crlf-none",
+      "context": "RD",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "code_request"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-CD-asking-wrap-crlf-approved",
+      "context": "RD",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "code_request"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-WT-asking-wrap-lf-none",
+      "context": "RD",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "wire_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-WT-asking-wrap-lf-approved",
+      "context": "RD",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "wire_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-WT-asking-wrap-crlf-none",
+      "context": "RD",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "wire_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-WT-asking-wrap-crlf-approved",
+      "context": "RD",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "wire_demand"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-RA-asking-wrap-lf-none",
+      "context": "RD",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "remote_access"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-RA-asking-wrap-lf-approved",
+      "context": "RD",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "remote_access"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-RA-asking-wrap-crlf-none",
+      "context": "RD",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [
+        "remote_access"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "RD-RA-asking-wrap-crlf-approved",
+      "context": "RD",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "actual_findings": [
+        "remote_access"
+      ],
+      "actual_verdict": "Suspicious",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-dot-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-dot-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-dot-rejected",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-dot-expired",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-semi-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-semi-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-colon-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-colon-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-comma-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-comma-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-excl-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-excl-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-none-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-none-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-lf-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-lf-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-blank-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-blank-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-crlf-none",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-GC-asking-crlf-approved",
+      "context": "TW",
+      "family": "GC",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-dot-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-dot-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-dot-rejected",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-dot-expired",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-semi-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-semi-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-colon-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-colon-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-comma-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-comma-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-excl-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-excl-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-none-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-none-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-lf-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-lf-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-blank-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-blank-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-crlf-none",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-CD-asking-crlf-approved",
+      "context": "TW",
+      "family": "CD",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-dot-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-dot-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-dot-rejected",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-dot-expired",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-semi-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-semi-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-colon-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-colon-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-comma-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-comma-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-excl-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-excl-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-none-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-none-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-lf-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-lf-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-blank-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-blank-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-crlf-none",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-WT-asking-crlf-approved",
+      "context": "TW",
+      "family": "WT",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-dot-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-dot-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-dot-rejected",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-dot-expired",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-semi-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-semi-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-colon-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-colon-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-comma-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-comma-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-excl-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-excl-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-none-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-none-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-lf-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-lf-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-blank-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-blank-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-crlf-none",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "TW-RA-asking-crlf-approved",
+      "context": "TW",
+      "family": "RA",
+      "demand_form": "asking",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-bare-colon-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-bare-colon-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-bare-comma-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-bare-comma-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-GC-bare-none-none",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-GC-bare-none-approved",
+      "context": "WF",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-bare-colon-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-bare-colon-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-bare-comma-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-bare-comma-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-CD-bare-none-none",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-CD-bare-none-approved",
+      "context": "WF",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-bare-colon-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-bare-colon-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-bare-comma-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-bare-comma-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-WT-bare-none-none",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-WT-bare-none-approved",
+      "context": "WF",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-bare-colon-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-bare-colon-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-bare-comma-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-bare-comma-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "WF-RA-bare-none-none",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "WF-RA-bare-none-approved",
+      "context": "WF",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-bare-colon-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-bare-colon-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-GC-bare-none-none",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-GC-bare-none-approved",
+      "context": "PC",
+      "family": "GC",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-bare-colon-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-bare-colon-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-CD-bare-none-none",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-CD-bare-none-approved",
+      "context": "PC",
+      "family": "CD",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-bare-colon-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-bare-colon-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-WT-bare-none-none",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-WT-bare-none-approved",
+      "context": "PC",
+      "family": "WT",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-bare-colon-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-bare-colon-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "PC-RA-bare-none-none",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "PC-RA-bare-none-approved",
+      "context": "PC",
+      "family": "RA",
+      "demand_form": "bare",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "OWN1",
+      "context": "OWN",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "OWN2",
+      "context": "OWN",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "OWN3",
+      "context": "OWN",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "OWN5",
+      "context": "OWN",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "OWN6",
+      "context": "OWN",
+      "family": "WT",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "OWN7",
+      "context": "OWN",
+      "family": "CD",
+      "passed": false,
+      "expected_findings": [
+        "code_request"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "OWN8",
+      "context": "OWN",
+      "family": "RA",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Suspicious",
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    }
+  ]
+}
