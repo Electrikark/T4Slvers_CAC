@@ -1,31 +1,26 @@
 # Task 3: instruction recognition matrix
 
-The checked-in reporting-scope fixture contains these hand-decided rows in
-addition to the 384 generated cases. Every hand row uses record state `none`
-and the shared frozen evaluation date 2026-10-12. Findings below use the
-[documented family IDs](../decisions/reporting-scope.md#frozen-three-layer-matrix).
-Expected results are specification decisions, never engine-generated labels.
+All hand rows use record state `none` and the frozen date 2026-10-12. Their
+expectations are hand-decided, not read from app output. They accompany 768
+generated rows (32 sentence templates in 11 surface variants plus record states).
 
 ## Sender's own requests
 
 | Row | Message | Expected finding | Verdict |
 | --- | --- | --- | --- |
-| OWN1 | We ask you to pay with gift cards. | `gift_card_demand` | Suspicious |
-| OWN2 | We need you to pay with gift cards. | `gift_card_demand` | Suspicious |
-| OWN3 | Chase requests that you pay with gift cards. | `gift_card_demand` | Suspicious |
-| OWN4 | We ask you to please pay with gift cards. | `gift_card_demand` | Suspicious |
-| OWN5 | Due to fraudsters we ask you to pay with gift cards today. | `gift_card_demand` | Suspicious |
-| OWN6 | Fraudsters are active and Chase asks you to send the fee by wire transfer today. | `wire_demand` | Suspicious |
-| OWN7 | We ask you to read us your verification code. | `code_request` | Suspicious |
-| OWN8 | We need you to install remote access software today. | `remote_access` | Suspicious |
+| OWN1 | We ask you to pay with gift cards. | gift_card_demand | Suspicious |
+| OWN2 | We need you to pay with gift cards. | gift_card_demand | Suspicious |
+| OWN3 | Chase requests that you pay with gift cards. | gift_card_demand | Suspicious |
+| OWN4 | We ask you to please pay with gift cards. | gift_card_demand | Suspicious |
+| OWN5 | Due to fraudsters we ask you to pay with gift cards today. | gift_card_demand | Suspicious |
+| OWN6 | Fraudsters are active and Chase asks you to send the fee by wire transfer today. | wire_demand | Suspicious |
+| OWN7 | We ask you to read us your verification code. | code_request | Suspicious |
+| OWN8 | We need you to install remote access software today. | remote_access | Suspicious |
 
-OWN7–8 previously held quiet reporting and negation controls. Those exact texts
-and quiet expectations are preserved below as NEG-REPORT and NEG-ASK: neither
-is a sender demand. OWN7–8 now supply genuine code and remote-access requests,
-so all eight OWN rows have the requested positive meaning. No old expectation
-was changed to follow observed output.
+OWN7–8's former quiet texts remain below as NEG-REPORT/NEG-ASK. Their replacement
+texts are genuine sender requests; the old expectations were preserved.
 
-## Real warning controls
+## Warning controls
 
 | Row | Message | Expected finding | Verdict |
 | --- | --- | --- | --- |
@@ -33,14 +28,20 @@ was changed to follow observed output.
 | W2 | Fraudsters pretending to be the IRS may demand a wire transfer. | None | Insufficient Evidence |
 | W3 | Scam callers may ask you to install remote access software. | None | Insufficient Evidence |
 | W4 | Criminals often ask victims to read back verification codes. | None | Insufficient Evidence |
+| W5 | If someone asks you to pay with gift cards, hang up. | None | Insufficient Evidence |
+| W6 | Anyone who asks you to pay with gift cards is a scammer. | None | Insufficient Evidence |
+| W7 | Hang up if anyone asks you to read your verification code. | None | Insufficient Evidence |
+| W8 | Never trust a text that asks you to read a code. | None | Insufficient Evidence |
+| W9 | Imposters may ask you to pay with gift cards. | None | Insufficient Evidence |
+| W10 | Scammers posing as Chase Bank fraud team may ask you to pay with gift cards. | None | Insufficient Evidence |
 
-W1–W4 retain the requested wording verbatim. Quiet does not authenticate a
-sender; without supporting contact evidence, these remain Insufficient Evidence.
-The separate RS34 guard also tests described subjects and noun recipients with
-“please,” including the earlier gift-card warning forms. RS35 ensures a
-subject description cannot swallow a new asker.
+W5–W10 all failed before the sender allowlist and now pass. W10 completes the
+reviewer's ellipsis with “pay with gift cards.” Quiet does not verify a sender.
+RS37 additionally tests I, our team, Chase, a named sender label, unknown subjects
+with “please,” and an independent demand following a warning. RS25's unfamiliar
+asking subject is now quiet under the revised contract; its reason is documented.
 
-## Legitimate and negation controls
+## Legitimate, reporting and negation controls
 
 | Row | Message | Expected finding | Verdict |
 | --- | --- | --- | --- |
@@ -51,18 +52,12 @@ subject description cannot swallow a new asker.
 | NEG-REPORT | Fraudsters may ask you to pay with gift cards. | None | Insufficient Evidence |
 | NEG-ASK | We never ask you to pay with gift cards. | None | Insufficient Evidence |
 
-The four family controls retain the requested wording verbatim. NEG-REPORT and
-NEG-ASK preserve the former OWN7–8 expectations.
+## Evidence and execution
 
-## Execution and results
-
-The required order is subject recognition first, then widening `directAction`.
-The baseline was captured with the unchanged release engine before using the
-new recognition logic. The completed suite checks both findings and verdicts;
-any failing W or legitimate control is a regression, with no expected-failure
-exemptions. No sender-attribution, trusted-reference or policy data was changed.
-
-Run `node scripts/run-reporting-scope.cjs` for the **suite pass rate** by cell and
-hand-row group, and `npm test` for all shared checks, parity, boundary and eval
-checks. The execution checklist, 16 decisions, limitations and saved baseline
-and final results are in the [reporting-scope decision](../decisions/reporting-scope.md).
+Subject recognition precedes widening request recognition. Tests read the
+checked-in fixture and compare both findings and verdicts. W and legitimate
+failures are regressions, never expected failures. See the [decision and
+checklist](../decisions/reporting-scope.md) and [results](reporting-scope-results/README.md).
+The results separate the original scope repair from sender-request recognition
+and the new short-preface recognition; the old OWN-heavy table does not prove
+that the original scope bug was fixed. Sender attribution remains unchanged.

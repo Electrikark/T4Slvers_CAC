@@ -35,14 +35,14 @@
     for (const finding of result.evidence.findings) {
       if (finding.span && row.text.slice(finding.span.start, finding.span.end) !== finding.span.quote) problems.push('source span differs');
     }
-    return { id: row.id, context: row.context, family: row.family, passed: problems.length === 0,
+    return { id: row.id, context: row.context, family: row.family, demand_form: row.demand_form, passed: problems.length === 0,
       expected_findings: row.expected_findings, expected_verdict: row.expected_verdict,
       actual_findings: findings, actual_verdict: verdicts[result.assessment], problems };
   }
   function evaluate(engine, fixture) {
     return fixture.rows.concat(fixture.hand_rows).map(row => {
       try { return observe(engine, row, fixture.evaluation_date); }
-      catch (error) { return { id: row.id, context: row.context, family: row.family, passed: false,
+      catch (error) { return { id: row.id, context: row.context, family: row.family, demand_form: row.demand_form, passed: false,
         expected_findings: row.expected_findings, expected_verdict: row.expected_verdict, problems: [error.message] }; }
     });
   }

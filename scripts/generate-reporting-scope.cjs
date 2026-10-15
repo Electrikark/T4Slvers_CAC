@@ -9,10 +9,10 @@ const handRows = require('../tests/reporting-scope/hand-cases.cjs');
 const rows = [];
 assert.equal(decisions.length, 16);
 assert.equal(new Set(decisions.map(d => d.context + '-' + d.family)).size, 16);
-for (const decision of decisions) {
+for (const form of ['asking', 'bare']) for (const decision of decisions) {
   assert.equal(decision.senderDemand, SPEC[decision.context]);
   assert.ok(FINDING[decision.family] && decision.reason);
-  const template = templates[decision.context + '-' + decision.family];
+  const template = templates[form][decision.context + '-' + decision.family];
   for (const token of ['{B}', '{W}', '{LINK}']) assert.ok(template.includes(token));
   if (decision.context === 'WF') assert.match(template, /Beware of hackers/);
   const variants = Object.entries(boundaries).map(([variant, B]) => ({ variant, B, W: ' ' }))
@@ -22,14 +22,14 @@ for (const decision of decisions) {
     for (const recordState of states) {
       const text = template.replace('{B}', B).replace('{W}', W).replace('{LINK}', link);
       assert.ok(!/\{[A-Z]+\}/.test(text));
-      rows.push({ id: `${decision.context}-${decision.family}-${variant}-${recordState}`,
-        context: decision.context, family: decision.family, variant, record_state: recordState, text,
+      rows.push({ id: `${decision.context}-${decision.family}-${form}-${variant}-${recordState}`,
+        context: decision.context, family: decision.family, demand_form: form, variant, record_state: recordState, text,
         ...expectation(decision, recordState), known_limitation: null });
     }
   }
 }
-assert.equal(rows.length, 384);
-assert.equal(new Set(rows.map(r => r.id)).size, 384);
+assert.equal(rows.length, 768);
+assert.equal(new Set(rows.map(r => r.id)).size, 768);
 const fixture = { evaluation_date: evaluationDate, rows, hand_rows: handRows };
 const destination = path.join(__dirname, '../tests/reporting-scope/fixture.json');
 const content = JSON.stringify(fixture, null, 2) + '\n';
