@@ -15,7 +15,7 @@ path is skipped: typing its bare domain would exceed the reviewed scope.
 
 If no eligible website exists, the website line is:
 
-> If you need their website, type an address you already know instead of tapping a link.
+> If you need their website, type a website address you already know, or use their official app.
 
 The existing “card, bill or statement” line is unchanged. The choice of reviewed
 website is independent of the verdict: a scam can copy a real address, so its
@@ -38,7 +38,7 @@ Inside `nextSteps()`, after the unchanged trusted-number line:
 const domain = trustedDomain(ctx, org);
 steps.push(domain
   ? `If you need their website, type ${domain} yourself instead of tapping a link.`
-  : 'If you need their website, type an address you already know instead of tapping a link.');
+  : 'If you need their website, type a website address you already know, or use their official app.');
 ```
 
 ## Tests and expectation changes
