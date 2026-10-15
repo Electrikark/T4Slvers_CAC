@@ -231,7 +231,7 @@
       const domain = trustedDomain(ctx, org);
       steps.push(domain
         ? `If you need their website, type ${domain} yourself instead of tapping a link.`
-        : 'If you need their website, type an address you already know instead of tapping a link.');
+        : 'If you need their website, type a website address you already know, or use their official app.');
     } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number')) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
