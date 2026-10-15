@@ -1,0 +1,42 @@
+{
+  "evaluation_date": "2026-10-12",
+  "description": "Open diagnostics, excluded from the passing regression suite. Expectations describe required behavior, not current output.",
+  "rows": [
+    {
+      "id": "KNOWN-DEPOSIT",
+      "context": "KNOWN_FALSE_ALARM",
+      "family": "WT",
+      "record_state": "approved",
+      "text": "Chase: Deposit received: $500 by wire transfer. Visit https://chase.com.",
+      "expected_findings": [],
+      "expected_verdict": "Details Match",
+      "passed": false,
+      "actual_findings": [
+        "wire_demand"
+      ],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    },
+    {
+      "id": "FOLLOWUP-GRANDPARENT",
+      "context": "FOLLOWUP",
+      "family": "GC",
+      "record_state": "none",
+      "text": "Grandma, buy me gift cards for my birthday and text me the codes",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Suspicious",
+      "passed": false,
+      "actual_findings": [],
+      "actual_verdict": "Insufficient Evidence",
+      "problems": [
+        "findings differ",
+        "verdict differs"
+      ]
+    }
+  ]
+}
