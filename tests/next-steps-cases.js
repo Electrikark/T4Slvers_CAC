@@ -5,7 +5,7 @@ window.TFS_PHASE2.add('Reviewed next-step advice', function (t) {
   var MESSAGE = 'Chase: Your statement is ready. Visit https://chase.com.';
   var CARD = 'Contact Chase using a number you already trust, such as the one on your card, bill or statement.';
   var WEBSITE = 'If you need their website, type chase.com yourself instead of tapping a link.';
-  var FALLBACK = 'If you need their website, type an address you already know instead of tapping a link.';
+  var FALLBACK = 'If you need their website, type a website address you already know, or use their official app.';
 
   function analyze(store, text) {
     var r = engine.analyze(text || MESSAGE, store, { declaredChannel: 'text', today: DAY });
