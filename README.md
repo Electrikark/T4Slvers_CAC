@@ -12,7 +12,7 @@ Open `index.html` in a modern browser, or serve this folder locally:
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Visit `http://localhost:8000`. Open `tests/run.html` for browser test results. With Node installed:
+Visit `http://localhost:8000`. Visit `/tests/run.html` on that server for browser test results; the page fetches the checked-in JSON fixture over HTTP. With Node installed:
 
 ```sh
 npm test
@@ -21,7 +21,7 @@ node scripts/build-assessment.cjs --check
 node tests/run-node.cjs
 ```
 
-Phase 2 adds 58 shared checks in five groups (trusted view A1-A11, sender attribution B1-B11, tier rules C13-C22 with N1, S1-S3, L1-L2, policy records D1-D11, annotations E1-E9), for 299 shared checks in all, plus a Node-only boundary group: no engine file reads a raw record file, and no file that draws results uses `innerHTML`. Before Phase 2, the recorded eac1229 baseline passed all 111 checks, and there were 241 shared checks, including 14 for the self-check step (S1–S14), 38 for login requests (L1–L38) and 3 for review status (I18–I20): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 42 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), and one unresolved card-number case. The Node runner also runs the 36 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
+Phase 2 adds 58 shared checks in five groups (trusted view A1-A11, sender attribution B1-B11, tier rules C13-C22 with N1, S1-S3, L1-L2, policy records D1-D11, annotations E1-E9), for 301 shared checks. Reporting-scope checks (RS1–RS37), 768 generated matrix rows and 42 hand-written rows, plus seven Tier 2/policy guards, plus eight [reviewed next-step advice checks](docs/decisions/reviewed-next-steps.md), bring the total to 1163; see the [reporting-scope decision and execution checklist](docs/decisions/reporting-scope.md). The matrix covers 32 sentence templates in 11 surface variants plus record states, not 768 independent messages. It reads its checked-in JSON; it never generates expectations during tests. Run `node scripts/run-reporting-scope.cjs` for the suite pass rate by context, family and hand-row group. The Node runner also checks all 47 app element IDs against index.html before running the engine suite. There is also a Node-only boundary group: no engine file reads a raw record file, and no file that draws results uses `innerHTML`. Before Phase 2, the recorded eac1229 baseline passed all 111 checks, and there were 243 shared checks, including 14 for the self-check step (S1–S14), 38 for login requests (L1–L38) and 3 for review status (I18–I20): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 44 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), one unresolved card-number case, and two checks that a real website cannot outweigh a Tier 1 request in the same message. The Node runner also runs the 36 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
 
 ## Field evaluation
 
@@ -56,7 +56,6 @@ The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, 
 
 `validateResult` checks the assessment enum, evidence shape, display/evidence consistency, and the same gate's output. It is a wiring check, not independent proof of policy. U1–U14 have hand-written expected assessments and trace codes. E1 runs the real engine and already establishes T1-GIFT; it must remain Suspicious.
 
-`src/assessment.js` is the gate: the supplied logic, now indented and commented, plus the closed Tier 1 list. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. The classic-script browser artifact is checked for freshness by `npm test`; stale output fails instead of silently using old policy. No packages are required. Both browser and Node load the same detector and adapter. There is no separate browser-only grounding path here; the broader frozen-spec grounding port is still open work.
 `src/assessment.js` holds the assessment rules. Run `npm run build:gate` (or `node scripts/build-assessment.cjs`) after editing it. This creates `js/assessment-gate.js` for the browser. `npm test` rejects an outdated generated file. Both browser and Node use the same detector and adapter; the broader frozen-spec grounding port is still open work.
 
 ## How one check works
@@ -64,16 +63,17 @@ The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, 
 Start reading at `analyze()` in `js/engine/aggregate.js`. It calls the other files in this order:
 
 1. `normalize.js` cleans the text and caps its length.
-2. `extract.js` finds contacts and masks them before looking for a sender name. A name inside a link must not count as the sender.
-3. `domain.js` compares contacts with `data/store.js`. The first matching rule decides each contact check.
+2. `extract.js` finds contacts and masks them before `sender.js` looks for a sender name. A name inside a link must not count as the sender.
+3. `domain.js` compares contacts with `data/store.js`. The first matching rule decides each contact check, and only the trusted view from `trusted.js` can turn a listed contact into support.
 4. `risk.js` checks what the message asks the person to do. It distinguishes a direct request from negation or quoted advice.
-5. `evidence.js` groups the contact checks, risk findings, and uncertainty.
-6. `src/assessment.js` chooses one result. Established Tier 1 risk wins; otherwise a match needs an explicit sender, matching contacts, and no risk or uncertainty. Everything else is insufficient evidence.
-7. `copy.js` writes the explanations. `app.js` displays them and handles the form, examples, focus, and reset.
+5. `policy.js` checks reviewed organization policies (T1-POLICY). Drafts never reach it.
+6. `evidence.js` groups the contact checks, risk and policy findings, and uncertainty.
+7. `src/assessment.js` chooses one result. Established Tier 1 risk wins; otherwise a match needs an explicit sender, matching contacts, and no risk or uncertainty. Everything else is insufficient evidence.
+8. `copy.js` writes the explanations. `app.js` displays them, with `annotate.js` marking the findings in the pasted message, and handles the form, examples, focus, and reset.
 
-Contacts use cleaned text, but risk quotes use the original text so their positions stay accurate. This is why extraction runs twice. `validateResult()` also rebuilds the evidence and repeats the assessment to check that the displayed result agrees with its evidence. These repeated steps serve different purposes.
+Contacts use cleaned text, but the request rules read the original text through `riskView`, so every quote points at the exact characters the person pasted. `validateResult()` also rebuilds the evidence and repeats the assessment to check that the displayed result agrees with its evidence. This repeat is a wiring check, not a second policy.
 
-In the JavaScript, `find()` returns the first match, `some()` asks whether any item matches, and `every()` asks whether all items match. In `domain.js`, `{ ...base, ...extra }` copies the shared contact fields and adds the fields for that rule.
+In the JavaScript, `find()` returns the first match, `some()` asks whether any item matches, and `every()` asks whether all items match. In `domain.js`, `check(status, code, extra)` builds `{ status, code, ...extra }`: the shared fields plus the fields for that rule.
 
 ## Main files
 
@@ -81,38 +81,25 @@ In the order a message passes through them:
 
 | File | What it does |
 | --- | --- |
-| `index.html`, `css/styles.css` | Text input, required channel, responsive result view |
-| `js/app.js` | Validation, rendering, focus, reset |
-| `js/selfCheck.js` | "I checked it myself" outcomes; records the person's own check and never changes the assessment |
-| `js/mockData.js` | Seven text examples; each runs through the real engine |
-| `js/engine/risk.js` | Contextual gift-card, wire/crypto, remote-access rules and caution flags (including the "new number" family opening) |
-| `src/assessment.js`, `scripts/build-assessment.cjs` | Sole assessment gate and generated browser wrapper |
-| `js/engine/evidence.js` | Legacy evidence adapter; no verdict logic |
-| `js/engine/aggregate.js` | Public analysis boundary and result validation |
-| `js/engine/copy.js` | Evidence explanations and shared protective advice |
-| `js/engine/normalize.js`, `extract.js`, `domain.js` | Legacy contact paths still being brought into conformance |
-| `data/store.js` | Legacy records: 46 organizations and 61 website names |
-| `tests/step1-cases.js`, `tests/suite.js` | Focused step-1 checks and shared invariants |
-| `js/engine/trusted.js` | Trusted reference view: only reviewed, unexpired, complete, unambiguous, conflict-free records can support a contact |
-| `js/engine/sender.js` | Sender attribution from labels, direct statements, affirmative "from" and sign-offs |
-| `js/engine/policy.js`, `data/policies.js` | Policy view and `TFS.evaluatePolicies` (T1-POLICY); the one record is a draft |
-| `js/annotate.js` | The pasted message with each finding marked, labeled and explained by a numbered note |
-| `tests/phase2-harness.js`, `tests/*-cases.js` | Phase 2 groups: trusted, sender, tier, policy, annotate |
-| `eval/` | Field evaluation on real messages (`npm run eval`); `tests/eval-tests.cjs` checks the tool itself |
 | `index.html`, `css/styles.css` | The page: message box, Text / Email / Not sure, result view |
 | `js/app.js` | Reads the form, shows the result, runs the "I checked it myself" step; decides nothing |
 | `js/engine/normalize.js` | Cleans the text; `riskView` keeps a map back to the original so quotes stay exact |
-| `js/engine/extract.js` | Finds links, email addresses and phone numbers, and the sender the message names |
+| `js/engine/extract.js` | Finds links, email addresses and phone numbers; asks `sender.js` who the message names |
+| `js/engine/sender.js` | Sender attribution from labels, direct statements, affirmative "from" and sign-offs |
+| `js/engine/trusted.js` | Trusted reference view: only reviewed, unexpired, complete, unambiguous, conflict-free records can support a contact |
 | `js/engine/domain.js` | Checks each address against the organization list (a fixed rule table, first match wins) |
 | `js/engine/risk.js` | What the message asks for: one function per Tier 1 rule, then the Tier 2 wording flags |
-| `js/engine/evidence.js` | Puts both readings into one standard form; sorts conflicts into T1-DOMAIN or Tier 2 |
+| `js/engine/policy.js`, `data/policies.js` | Policy view and `TFS.evaluatePolicies` (T1-POLICY); the one record is a draft |
+| `js/engine/evidence.js` | Puts all readings into one standard form; sorts conflicts into T1-DOMAIN or Tier 2 |
 | `src/assessment.js` | **The only place a result is decided**; `js/assessment-gate.js` is its generated browser copy |
 | `js/engine/aggregate.js` | Runs every stage (`analyze`) and refuses inconsistent results (`validateResult`) |
 | `js/engine/copy.js` | Every sentence the person reads |
+| `js/annotate.js` | The pasted message with each finding marked, labeled and explained by a numbered note |
 | `js/selfCheck.js` | "I checked it myself" outcomes; never changes the result |
 | `data/store.js` | The organization list: 46 organizations, none human-reviewed yet |
 | `js/mockData.js` | The seven demo examples |
 | `tests/` | `npm test` runs everything here; `tests/run.html` shows the same checks in a browser |
+| `eval/` | Field evaluation on real messages (`npm run eval`); `tests/eval-tests.cjs` checks the tool itself |
 
 ## I checked it myself
 
@@ -132,7 +119,7 @@ No screenshot controls or scripted image results remain. Demo examples state a c
 
 Phase 2 (sections A to E) is described under "Phase 2" below. Before it, this checkpoint covered Step 1 only. The earlier channel controls and screenshot removal are preserved; it does not finish the broader frozen-spec implementation.
 
-The app has not passed full v1.2 conformance or locked field evaluation. No legacy record is reviewed by a person yet, so none can support a contact; phone lists are empty. Legacy contact normalization and sender-role checks remain open work. T1-DOMAIN depends on the list naming each organization's main domains; the lure-word list was checked against a hand-built sample, not a field corpus. The parser uses a limited suffix list and character map.
+The app has not passed full v1.2 conformance or locked field evaluation. No record in the real list is reviewed by a person yet, so none can support a contact and the real list cannot produce Details Match; phone lists are empty. Legacy contact normalization and sender-role checks remain open work. T1-DOMAIN depends on the list naming each organization's main domains; the lure-word list was checked against a hand-built sample, not a field corpus. The parser uses a limited suffix list and character map.
 
 Policy evaluation is built, but no sourced organization policy is active yet: the USPS record stays a draft until two people review it against the live page. Targeted first-contact questions are not built; a policy with a mandatory predicate stays quiet until an answer exists. The no-link USPS tracking policy must be independent of initiation. Follow-up answers may satisfy policy context but never verify who contacted the person. Reputation lookup and OCR remain outside v1. The Python package is a logic/test reference for a Node port, not a dependency.
 

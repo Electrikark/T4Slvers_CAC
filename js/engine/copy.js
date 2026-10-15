@@ -1,6 +1,5 @@
 /* All the plain-language wording the person reads.
    For every string: short sentences, no jargon, and never "safe", "verified" or "legitimate". */
-// Turn contact checks and risk flags into text for the result page.
 (function (root) {
   'use strict';
   const T = root.TFS = root.TFS || {};
@@ -122,7 +121,7 @@
   };
 
   // What each policy action means, for notes about a broken organization policy.
-  var POLICY_ACTIONS = {
+  const POLICY_ACTIONS = {
     link_present: 'include a link',
     request_code_disclosure: 'ask for a code this way',
     request_personal_data: 'ask for personal or account details this way',
@@ -136,16 +135,12 @@
 
   // Fixed template per policy finding: the organization's own words, then what this message does.
   function policyNote(finding, store) {
-    var org = T.orgById(store, finding.orgId);
-    var name = org ? org.displayName : 'This organization';
-    if (finding.action === 'link_present' && finding.serviceLabel) return name + ' says its ' + finding.serviceLabel + ' never contain a link. This one does.';
-    return name + ' says it will never ' + (POLICY_ACTIONS[finding.action] || 'send a message like this') + '. This message does.';
+    const org = T.orgById(store, finding.orgId);
+    const name = org ? org.displayName : 'This organization';
+    if (finding.action === 'link_present' && finding.serviceLabel) return `${name} says its ${finding.serviceLabel} never contain a link. This one does.`;
+    return `${name} says it will never ${POLICY_ACTIONS[finding.action] || 'send a message like this'}. This message does.`;
   }
 
-  function joinPhrases(list) {
-    if (list.length < 2) return list.join('');
-    return list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
-  }
   const joinPhrases = list => list.length < 2 ? list.join('') : list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
   const conflicts = result => result.checks.filter(c => c.status === 'CONTRADICTS');
 
@@ -199,34 +194,32 @@
   }
 
   // The warnings, most important first: the first one is shown right under the result.
-  function warnings(result) {
+  function warnings(result, ctx) {
     const list = [];
     const flagAdvice = result.requestRisk.flags.map(f => FLAGS[f.id].advice);
     const matched = result.assessment === 'details_match';
     if (!matched) list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the person or organization using a website, app, statement, or number you already trust.");
-  function warnings(result) {
-    var list = [];
-    var flagWarnings = result.requestRisk.flags.map(function (f) { return FLAG_WARNINGS[f.id]; });
-    if (result.assessment !== 'details_match') list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the person or organization using a website, app, statement, or number you already trust.");
     // Name each lookalike address so the person knows exactly what not to open.
-    conflicts(result).forEach(function (c) {
-      if (c.strength === 'strong' && c.target) list.push('Do not open or reply to ' + c.target + '. It looks like a known address but is not on our list for that organization.');
-    });
-    if (result.assessment !== 'details_match' && result.checks.some(function (c) { return c.code === 'nothing_to_check'; }) && (flagWarnings.length || result.requestRisk.unresolved.length)) list.push('Do not act on this request until you check independently.');
-    (result.policy ? result.policy.findings : []).forEach(function (f) {
-      if (f.status === 'established') list.push(policyNote(f, ctx.store) + ' Do not use anything in it.');
-    });
-    list = list.concat(flagWarnings);
-    if (result.assessment === 'details_match' && !flagWarnings.length) list.push('Even when details match, never share passwords or codes.');
     for (const c of conflicts(result)) {
       if (c.strength === 'strong' && c.target) list.push(`Do not open or reply to ${c.target}. It looks like a known address but is not on our list for that organization.`);
     }
     if (!matched && result.checks.some(c => c.code === 'nothing_to_check') && (flagAdvice.length || result.requestRisk.unresolved.length)) {
       list.push('Do not act on this request until you check independently.');
     }
+    for (const f of result.policy ? result.policy.findings : []) {
+      if (f.status === 'established') list.push(policyNote(f, ctx.store) + ' Do not use anything in it.');
+    }
     list.push(...flagAdvice);
     if (matched && !flagAdvice.length) list.push('Even when details match, never share passwords or codes.');
     return list;
+  }
+
+  // Recommend only this organization's reviewed website, without widening a path scope.
+  function trustedDomain(ctx, org) {
+    const record = ctx.trusted && ctx.trusted.trusted.find(r =>
+      r.orgId === org.id && r.kind === 'domain' && typeof r.value === 'string' && r.value.trim() &&
+      (!r.scope.pathPrefix || r.scope.pathPrefix === '/'));
+    return record ? record.value : null;
   }
 
   function nextSteps(result, ctx) {
@@ -235,7 +228,10 @@
     if (result.checks.some(c => c.code === 'shortener_unresolvable')) steps.push('Do not tap the short link. Ask a trusted person to help, or contact the organization directly.');
     if (org) {
       steps.push(`Contact ${org.displayName} using a number you already trust, such as the one on your card, bill or statement.`);
-      steps.push(`If you need their website, type ${org.officialDomains && org.officialDomains[0]} yourself instead of tapping a link.`);
+      const domain = trustedDomain(ctx, org);
+      steps.push(domain
+        ? `If you need their website, type ${domain} yourself instead of tapping a link.`
+        : 'If you need their website, type a website address you already know, or use their official app.');
     } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number')) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
@@ -255,18 +251,5 @@
     return parts.length ? parts.join(', ') + ' in a message' : 'Message text with no links or numbers';
   }
 
-  T.copy = {
-    shown: shown,
-    checkDetail: checkDetail,
-    checkSource: checkSource,
-    describe: describe,
-    warnings: warnings,
-    nextSteps: nextSteps,
-    channel: channel,
-    policyNote: policyNote,
-    RULE_ASKS: RULE_ASKS,
-    FLAG_WARNINGS: FLAG_WARNINGS,
-    FLAG_LABELS: FLAG_LABELS
-  };
-  T.copy = { shown, checkDetail, checkSource, describe, warnings, nextSteps, channel, FLAGS };
+  T.copy = { shown, checkDetail, checkSource, describe, warnings, nextSteps, channel, policyNote, FLAGS };
 })(typeof window !== 'undefined' ? window : globalThis);

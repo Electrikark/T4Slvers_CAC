@@ -4,12 +4,14 @@ const path = require('node:path');
 const vm = require('node:vm');
 const context = vm.createContext({ URL, performance, console });
 context.window = context;
+context.TFS_SCOPE_FIXTURE = JSON.parse(fs.readFileSync(path.join(__dirname, 'reporting-scope/fixture.json'), 'utf8'));
 const files = [
   'js/engine/normalize.js', 'js/engine/extract.js', 'js/engine/sender.js', 'js/engine/domain.js', 'js/engine/trusted.js',
   'js/engine/risk.js', 'js/engine/policy.js', 'js/assessment-gate.js', 'js/engine/evidence.js', 'js/engine/aggregate.js', 'js/engine/copy.js',
   'data/store.js', 'data/policies.js', 'js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'tests/cases.js', 'tests/real-store-cases.js',
   'tests/regression-cases.js', 'tests/step1-cases.js', 'tests/assessment-cases.js', 'tests/self-check-cases.js',
-  'tests/phase2-harness.js', 'tests/trusted-cases.js', 'tests/sender-cases.js', 'tests/tier-cases.js', 'tests/policy-cases.js', 'tests/annotate-cases.js', 'tests/suite.js'
+  'tests/phase2-harness.js', 'tests/trusted-cases.js', 'tests/sender-cases.js', 'tests/tier-cases.js', 'tests/scope-cases.js',
+  'tests/reporting-scope/setup.js', 'tests/reporting-scope/matrix-cases.js', 'tests/next-steps-cases.js', 'tests/policy-cases.js', 'tests/annotate-cases.js', 'tests/suite.js'
 ];
 for (const file of files) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });

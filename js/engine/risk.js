@@ -12,14 +12,42 @@
 
   /* ---------- Shared patterns ---------- */
 
-  const ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
+  const ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|move|deposit|convert|put|withdraw|go|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?)\b/i;
   const SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
-  const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|western union|moneygram)\b/i;
+  const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|by wire|western union|moneygram)\b/i;
   const REMOTE = /\b(?:anydesk|teamviewer|logmein|ultraviewer|supremo|quick ?assist|remote (?:access|control|desktop|session)|screen[ -]?shar(?:e|ing)|(?:your|the|my) screen)\b/i;
   const PURPOSE = /\b(?:payment|pay|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?|(?:restore|release|unlock)(?:\s+\w+){0,3}\s+account)\b/i;
   const REPORT = /\b(?:scam{2}ers?|fraudsters?|criminals?|an example scam|example (?:message|scam)|beware of|watch (?:out )?for|never ask you to|will not ask you to)\b/i;
+  // The cue must name the asker, not just occur earlier in the clause. Allow only
+  // bounded descriptions and a closed list of modifiers; a new asker breaks the link.
+  const REPORT_SUBJECT = /\b(?:scam{2}ers?|fraudsters?|criminals?|scam (?:callers?|texts?|emails?|messages?)|(?:an )?example (?:message|scam)|(?:beware of|watch (?:out )?for)\s+(?:texts?|messages?))(?:\s+(?:posing as|pretending to be|claiming to be|impersonating)\s+(?:the\s+)?(?!(?:we|our|and|who)\b)[a-z][\w-]*(?:\s+(?!(?:we|our|and|who|may|might|will|could|can|would|often|sometimes|usually|also|typically)\b)[a-z][\w-]*){0,2})?(?:\s+who\s+(?:calls?|texts?))?(?:\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)){0,3}\s*$/i;
+  // "Ask you to", "tell you that you must", "demand that you", or "request: ...".
+  const ASKING = /\b(?:ask(?:s|ing)?|tell(?:s|ing)?|demand(?:s|ing)?|request(?:s|ing)?|instruct(?:s|ing)?|urg(?:e|es|ing)|pressur(?:e|es|ing)|want(?:s|ing)?)\b(?:\s+(?:(?:you|us|me|them|victims|seniors|customers)\s+)?to\s+|\s+(?:(?:you\s+)?that\s+)?you\s+(?:(?:must|should|need to|have to)\s+)?|\s*:\s*)/gi;
+  const OWN_NEED = /\b(?:we|i|(?:our|the|your)\s+(?:[a-z][\w-]*\s+){0,2}(?:technician|team|agent|representative|specialist|support team|manager))\s+(?:(?:will|may)\s+)?need(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
+  const NEED_COMPLEMENT = /\bneed(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
+
+  function ownNeedBefore(prefix) {
+    const need = prefix.match(OWN_NEED);
+    return !!need && !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(prefix.slice(0, need.index));
+  }
+
+  function askingBefore(prefix) {
+    return [...prefix.matchAll(ASKING)].find(m => /^\s*(?:please\s*)?$/i.test(prefix.slice(m.index + m[0].length)));
+  }
+
+  // Recognize the sender positively. An unfamiliar asker is not evidence that
+  // the sender made this request. A named subject must begin a statement.
+  function senderAsker(prefix, senderLabel) {
+    const modifiers = /\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)\s*$/i;
+    let subject = prefix.trim();
+    for (let i = 0; i < 3 && modifiers.test(subject); i++) subject = subject.replace(modifiers, '').trim();
+    const personal = subject.match(/\b(?:we|i|our team)$/i);
+    if (personal) return !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(subject.slice(0, personal.index));
+    const statement = subject.split(/[:,;.!?\n]|\b(?:and|but|however|instead|so)\b/i).pop().trim().toLowerCase();
+    return statement === 'chase' || !!senderLabel && statement === senderLabel.toLowerCase();
+  }
   const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
   const PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
   const URGENT = /\b(?:urgent(?:ly)?|right now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
@@ -33,6 +61,9 @@
   // T1-CALLBACK: a device alarm paired with a demand to call. Real security warnings
   // from Microsoft and other vendors do not include a phone number to call.
   const DEVICE_ALARM = /\b(?:(?:device|computer|pc|laptop|mac|system|windows|browser|iphone|phone)\b[^.!?\n]{0,25}\b(?:is|has been|was|are|have been|may be)\s+(?:locked|infected|hacked|compromised|blocked|disabled|at risk)|infected with (?:a |an )?(?:virus|viruses|malware|trojan|spyware)|(?:virus|viruses|malware|trojan|spyware|ransomware)\s+(?:detected|found|alert|warning|infection)|(?:hackers?|someone) (?:has |have )?(?:accessed|hacked|breached) your (?:computer|device|pc|laptop|phone))\b/i;
+  // "Fraudsters may say your computer is infected and ask ..." retains its
+  // subject. Limit coordination to this alarm form; "and we ask" cannot match.
+  const ALARM_COORDINATION = /\bsay\s+(?:your|the)\s+(?:computer|device|pc|laptop|phone|system)\s+is\s+(?:locked|infected|hacked|compromised|blocked)\s+and\s*$/i;
   const CALL_OBJECT = /^\s+(?:us\b|me\b|them\b|(?:this|the|our|that) (?:toll[- ]free )?(?:number|helpline|hotline)\b|(?:the |a )?(?:microsoft|windows|apple|google|norton|mcafee|geek squad)?\s*(?:tech(?:nical)? |customer |security )?(?:support|helpline|help desk|helpdesk|technicians?)\b|(?:on |at )?\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b|(?:\w+\s+){0,3}(?:at|on)\s+\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b)/i;
   // Calling a number you already trust is the advice, not the trick.
   const TRUSTED_CALL = /\b(?:back of your card|you (?:already )?(?:trust|know)|on your (?:statement|bill)|official (?:website|site|app))\b/i;
@@ -83,6 +114,9 @@
     while ((m = cuts.exec(text)) !== null) {
       // "$4.15" is a number, not the end of a sentence.
       if (m[0] === '.' && /\d/.test(text.charAt(m.index - 1)) && /\d/.test(text.charAt(m.index + 1))) continue;
+      // An SMS wrap after an unfinished asking complement is not a new demand.
+      // Keep original positions and line breaks for source spans.
+      if (m[0] === '\n' && (askingBefore(text.slice(start, m.index + 1)) || NEED_COMPLEMENT.test(text.slice(start, m.index + 1)))) continue;
       if (text.slice(start, m.index).trim()) clauses.push({ start, end: m.index, text: text.slice(start, m.index) });
       start = m.index + m[0].length;
     }
@@ -91,17 +125,56 @@
     return clauses;
   }
 
-  const reported = text => REPORT.test(text) || /\b(?:says?|said|reads?|example|quoted|warning)[^.!?]{0,40}["“]/i.test(text);
-  const skip = clause => !clause || clause.inReport || reported(clause.text);
+  const skip = clause => !clause || clause.inReport;
+
+  function reportingSubject(prefix) {
+    const coordination = prefix.match(ALARM_COORDINATION);
+    return REPORT_SUBJECT.test(coordination ? prefix.slice(0, coordination.index) : prefix);
+  }
+
+  // A cue must be the subject of an asking verb whose complement contains this demand.
+  // Commas and a new instruction end that reach; a warning after the demand cannot hide it.
+  function reportedAt(clauseText, demandIndex) {
+    // inReport covers later clauses of a quoted example. Its first clause can start
+    // before the opening quote, so preserve that quoted span here as well.
+    for (const quote of clauseText.matchAll(/["“][^"”]*(?:["”]|$)/g)) {
+      if (demandIndex <= quote.index || demandIndex >= quote.index + quote[0].length) continue;
+      const before = clauseText.slice(0, quote.index);
+      if (REPORT.test(before) || /\b(?:says?|said|reads?|example|quoted|warning)[^.!?]{0,40}$/i.test(before)) return true;
+    }
+    const prefix = clauseText.slice(0, demandIndex).replace(/\r?\n/g, ' ');
+    const segment = prefix.split(/[,;.!?\n]|\b(?:so|because|since|but|however|instead)\b/i).pop();
+    for (const asking of segment.matchAll(ASKING)) {
+      if (/\b(?:you must|you need to|you have to|you should)\b/i.test(segment.slice(asking.index + asking[0].length))) continue;
+      if (reportingSubject(segment.slice(0, asking.index)) || isNegated(segment, asking.index)) return true;
+    }
+    return false;
+  }
+
+  // Context and antecedents need the same scope check at their own position.
+  function unreportedMatch(clause, pattern) {
+    if (skip(clause)) return null;
+    return [...clause.text.matchAll(new RegExp(pattern.source, 'gi'))]
+      .find(hit => !reportedAt(clause.text, hit.index)) || null;
+  }
 
   // Is the verb after `prefix` an instruction to the reader? "Please send", "Chase: Send",
   // "You must send", "To fix it, send". priorDemand also allows "... and send" after an earlier demand.
-  function directAction(prefix, priorDemand) {
+  function directAction(prefix, priorDemand, senderLabel) {
     if (NEGATION.test(prefix) || /["“][^"”]*$/.test(prefix)) return false;
     const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
+    const asking = askingBefore(prefix);
+    if (asking) return senderAsker(prefix.slice(0, asking.index), senderLabel) && !isNegated(prefix, asking.index);
+    // Seeing "need you to" does not identify the sender. Unknown subjects stay
+    // quiet even with "please" or an SMS wrap before the action.
+    if (NEED_COMPLEMENT.test(prefix)) return ownNeedBefore(prefix);
     if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
-    if (/^\s*(?:to|in order to|before|so)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
+    // A short warning/purpose preface does not turn the following imperative
+    // into reported speech, even when its comma is omitted in a text message.
+    if (/^\s*(?:beware of|to avoid)\s+(?:hackers?|fraudsters?|scam{2}ers?|criminals?|scams?)\s*[:,]?\s*(?:please\s*)?$/i.test(rest)) return true;
+    if (/^\s*(?:to|in order to|before|so|due to|because of|after)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
+    if (/,\s*so\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:do not|don['’]t|dont|never)\s+(?:delay|wait|tell(?:\s+\w+){1,3}|hang up)\s*,\s*$/i.test(rest)) return true;
     return priorDemand && /(?:\band|\bthen|,)\s*(?:please\s+)?$/i.test(rest);
   }
@@ -117,29 +190,19 @@
     const own = clauses[index];
     const casual = text => /\b(?:meeting|lunch|birthday|weather)\b/i.test(text);
     if (!skip(own)) {
-      let pressure = own.text.match(PRESSURE);
-  function tiedContext(clauses, index, raw) {
-    var own = clauses[index], hit;
-    if (!own.inReport && !reported(own.text)) {
-      var pressure = own.text.match(PRESSURE);
+      let pressure = unreportedMatch(own, PRESSURE);
       if (pressure && SECRET.test(own.text.slice(pressure.index + pressure[0].length))) pressure = null;
-      const hit = pressure || own.text.match(URGENT) || own.text.match(THREAT);
+      const hit = pressure || unreportedMatch(own, URGENT) || unreportedMatch(own, THREAT);
       if (hit && !casual(own.text)) return spanOf(raw, own, hit);
     }
-    for (var d = -1; d <= 1; d += 2) {
-      var other = clauses[index + d];
-      if (!other || other.inReport || reported(other.text)) continue;
-      var text = other.text.trim();
-      // Secrecy counts only in the demand's own clause or the clause right after it.
-      hit = d === 1 ? other.text.match(PRESSURE) : null;
-      if (hit && !SECRET.test(other.text) && /^(?:(?:please|and)\s+)?(?:(?:do not|don['’]t|dont) tell|keep (?:this|it)|(?:do not|don['’]t|dont) hang up|stay on the line)/i.test(text) && text.length < 100) return matchedSpan(raw, other, hit);
     for (const other of [clauses[index - 1], clauses[index + 1]]) {
       if (skip(other)) continue;
       const text = other.text.trim();
-      let hit = other.text.match(PRESSURE);
+      // Secrecy counts only in the demand's own clause or the clause right after it.
+      let hit = other === clauses[index + 1] ? unreportedMatch(other, PRESSURE) : null;
       if (hit && !SECRET.test(other.text) && text.length < 100 &&
           /^(?:(?:please|and)\s+)?(?:(?:do not|don['’]t|dont) tell|keep (?:this|it)|(?:do not|don['’]t|dont) hang up|stay on the line)/i.test(text)) return spanOf(raw, other, hit);
-      hit = other.text.match(URGENT) || other.text.match(THREAT);
+      hit = unreportedMatch(other, URGENT) || unreportedMatch(other, THREAT);
       if (hit && !casual(text) && /^(?:urgent\b|(?:do (?:it|this|that)|this is|you must act|otherwise|or\b|your account|you will be arrested|your device|your computer|to avoid)\b)/i.test(text)) return spanOf(raw, other, hit);
     }
     return null;
@@ -166,8 +229,9 @@
     const offset = gift.end - d.clause.start;
     const purpose = d.clause.text.slice(offset).match(/^\s+(?:to (?:pay|cover|settle)\b|(?:as|for)\s+(?:(?:a|the|this|your)\s+)?(?:payment|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?)\b|to (?:restore|release|unlock)(?:\s+\w+){0,3}\s+account\b)/i);
     const context = purpose ? spanOf(s.raw, d.clause, purpose, offset) : null;
+    // A birthday purpose cannot cancel a purchase instruction's Tier 2 warning.
+    s.flag('gift_card_payment', d.action.start, gift.end);
     if (d.verb === 'pay' || context) {
-      s.flag('gift_card_payment', d.action.start, gift.end);
       s.tier1('T1-GIFT', d, gift, context);
     } else if (PURPOSE.test(d.clause.text)) {
       // "Buy gift cards ... and pay for lunch": a payment nearby, but not clearly for the cards.
@@ -181,14 +245,10 @@
     if (!hit) return false;
     const code = spanOf(s.raw, d.clause, hit, d.after);
     // The gift card can be named in this clause or the one before.
-    let cardClause = d.clause, card = d.clause.text.match(GIFT);
+    let cardClause = d.clause, card = unreportedMatch(d.clause, GIFT);
     if (!card && !skip(s.clauses[d.index - 1])) {
       cardClause = s.clauses[d.index - 1];
-      card = cardClause.text.match(GIFT);
-  function contextualSignals(text, raw) {
-    var clauses = clausesOf(text), flags = [], established = [], unresolved = [];
-    function flag(id, start, end) {
-      if (!flags.some(function (f) { return f.id === id; })) flags.push({ id: id, level: 'high', words: raw.slice(start, end), start: start, end: end });
+      card = unreportedMatch(cardClause, GIFT);
     }
     const toRequester = /\b(?:me|us|to me|to us|back to me|back to us|to (?:the )?(?:requester|caller))\b/i.test(d.tail.slice(0, 65));
     // An OTP or credit card nearby makes it unclear which code is meant.
@@ -202,14 +262,37 @@
     return false;
   }
 
+  // Find an unreported wire/crypto object on either side of an action, within
+  // the same sentence segment. Do not borrow it across commas or connectors.
+  function wireInSegment(d, raw) {
+    const text = d.clause.text, actionIndex = d.action.start - d.clause.start;
+    let start = 0, end = text.length;
+    for (const cut of text.matchAll(/[,;.!?\n]|\b(?:so|because|since|but|however|instead)\b/gi)) {
+      // Thousands separators and decimal points are part of the amount.
+      if (/^[,.]$/.test(cut[0]) && /\d/.test(text[cut.index - 1]) && /\d/.test(text[cut.index + 1])) continue;
+      if (cut.index < actionIndex) start = cut.index + cut[0].length;
+      else { end = cut.index; break; }
+    }
+    for (const hit of text.slice(start, end).matchAll(new RegExp(WIRE.source, 'gi'))) {
+      if (!reportedAt(text, start + hit.index)) return spanOf(raw, d.clause, hit, start);
+    }
+    return null;
+  }
+
   // T1-WIRE: crypto or a wire transfer, with pressure tied to it.
   function wireTransfer(d, s) {
+    if (!/^(?:pay|send|transfer|wire|move|deposit|convert|put)$/.test(d.verb)) return;
+    let object;
+    if (/^(?:deposit|put|move)$/.test(d.verb)) object = wireInSegment(d, s.raw);
+    else {
+      let hit = d.near.match(WIRE);
+      if (!hit && d.verb === 'wire') hit = d.near.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
+      if (hit) object = spanOf(s.raw, d.clause, hit, d.after);
+    }
+    if (!object) return;
+    s.flag('crypto_or_wire', Math.min(d.action.start, object.start), Math.max(d.action.end, object.end));
+    // The added movement verbs establish a warning, not new Tier 1 proof.
     if (!/^(?:pay|send|transfer|wire)$/.test(d.verb)) return;
-    let hit = d.near.match(WIRE);
-    if (!hit && d.verb === 'wire') hit = d.near.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
-    if (!hit) return;
-    const object = spanOf(s.raw, d.clause, hit, d.after);
-    s.flag('crypto_or_wire', d.action.start, object.end);
     const context = tiedPressure(s.clauses, d.index, s.raw);
     if (context) s.tier1('T1-WIRE', d, object, context);
   }
@@ -231,7 +314,7 @@
     let alarm = null;
     for (const clause of s.clauses) {
       if (skip(clause)) continue;
-      const found = clause.text.match(DEVICE_ALARM);
+      const found = unreportedMatch(clause, DEVICE_ALARM);
       if (found) { alarm = spanOf(s.raw, clause, found); break; }
     }
     if (!alarm) return;
@@ -269,6 +352,9 @@
   // Finds every direct demand and runs the Tier 1 rules on it, in this order.
   function tier1Signals(text, raw) {
     const clauses = clausesOf(text);
+    // A label is a claimed sender, not proof of identity or a trusted record.
+    const label = text.match(/^\s*([a-z][a-z0-9 &'’-]{0,59}):/i);
+    const senderLabel = label ? label[1].trim() : null;
     const s = {
       raw, clauses, flags: [], established: [], unresolved: [],
       clauseSpan: clause => span(raw, clause.start, clause.end),
@@ -285,7 +371,8 @@
       if (skip(clause)) return;
       let priorDemand = false;
       for (const m of clause.text.matchAll(new RegExp(ACTIONS.source, 'gi'))) {
-        if (!directAction(clause.text.slice(0, m.index), priorDemand)) continue;
+        if (reportedAt(clause.text, m.index)) continue;
+        if (!directAction(clause.text.slice(0, m.index), priorDemand, senderLabel)) continue;
         priorDemand = true;
         const tail = clause.text.slice(m.index + m[0].length);
         const d = { verb: m[0].toLowerCase(), clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };
@@ -295,85 +382,6 @@
         remoteAccess(d, s);
         techSupportCall(d, s);
         if (!giftCodeFound) shareSecret(d, s);
-        var verb = m[0].toLowerCase(), tail = clause.text.slice(m.index + m[0].length), giftDisclosed = false;
-        var windowText = tail.slice(0, 40), action = matchedSpan(raw, clause, m), hit;
-        if (/^(?:buy|purchase|pay)$/.test(verb) && (hit = windowText.match(GIFT))) {
-          var gift = matchedSpan(raw, clause, hit, m.index + m[0].length);
-          var paymentContext = giftPaymentContext(clause, gift, raw);
-          if (verb === 'pay' || paymentContext) {
-            flag('gift_card_payment', action.start, gift.end);
-            tier1('T1-GIFT', action, clause, gift, paymentContext);
-          } else if (PURPOSE.test(clause.text)) {
-            unresolved.push({ id: 'unclear_gift_payment_purpose', action: action, clause: span(raw, clause.start, clause.end), object: gift });
-          }
-        }
-        if (/^(?:send|read|give|tell|text|share|provide|reply with)$/.test(verb) && (hit = windowText.match(CODE))) {
-          var code = matchedSpan(raw, clause, hit, m.index + m[0].length);
-          var giftHit = clause.text.match(GIFT), giftClause = clause;
-          if (!giftHit && clauses[index - 1] && !clauses[index - 1].inReport && !reported(clauses[index - 1].text)) {
-            giftClause = clauses[index - 1]; giftHit = giftClause.text.match(GIFT);
-          }
-          var recipient = /\b(?:me|us|to me|to us|back to me|back to us|to (?:the )?(?:requester|caller))\b/i.test(tail.slice(0, 65));
-          var competing = /\b(?:otp|one[ -]time|authorization|verification|password|credit card|debit card)\b/i.test(clause.text + ' ' + (giftClause === clause ? '' : giftClause.text));
-          if (giftHit && recipient && !competing && !/\b(?:checkout|retailer|redeem at)\b/i.test(clause.text)) {
-            var antecedent = matchedSpan(raw, giftClause, giftHit);
-            flag('gift_card_disclosure', action.start, code.end);
-            tier1('T1-GIFT', action, clause, code, null, antecedent);
-            giftDisclosed = true;
-          } else if (giftHit && recipient && competing) {
-            unresolved.push({ id: 'competing_card_code_antecedent', action: action, clause: span(raw, clause.start, clause.end) });
-          }
-        }
-        if (/^(?:pay|send|transfer|wire)$/.test(verb)) {
-          hit = windowText.match(WIRE);
-          if (!hit && verb === 'wire') hit = windowText.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
-          if (hit) {
-            var wire = matchedSpan(raw, clause, hit, m.index + m[0].length);
-            flag('crypto_or_wire', action.start, wire.end);
-            var wireContext = tiedContext(clauses, index, raw);
-            if (wireContext) tier1('T1-WIRE', action, clause, wire, wireContext);
-          }
-        }
-        if (/^(?:install|download|run|start|allow|grant|share)$/.test(verb) && (hit = windowText.match(REMOTE))) {
-          var remote = matchedSpan(raw, clause, hit, m.index + m[0].length);
-          flag('remote_access', action.start, remote.end);
-          var remoteContext = tiedContext(clauses, index, raw);
-          if (remoteContext) tier1('T1-REMOTE', action, clause, remote, remoteContext);
-        }
-        if (/^(?:call|dial|contact)$/.test(verb) && (hit = tail.match(CALL_OBJECT)) && !TRUSTED_CALL.test(tail.slice(0, 80))) {
-          var alarm = null;
-          for (var a = 0; a < clauses.length && !alarm; a++) {
-            if (clauses[a].inReport || reported(clauses[a].text)) continue;
-            var found = clauses[a].text.match(DEVICE_ALARM);
-            if (found) alarm = matchedSpan(raw, clauses[a], found);
-          }
-          if (alarm) {
-            var number = matchedSpan(raw, clause, hit, m.index + m[0].length);
-            flag('tech_support_call', clause, action.start, number.end);
-            tier1('T1-CALLBACK', action, clause, number, alarm);
-          }
-        }
-        // "Read it back to me" after "we sent you a verification code": the pronoun takes the code.
-        if (!giftDisclosed && /^(?:send|read|give|tell|text|share|provide)$/.test(verb) && (hit = windowText.match(/^\s+(?:it|them)\b/i)) && REQUESTER.test(tail.slice(hit[0].length, 65)) && !IN_PERSON.test(clause.text)) {
-          var named = secretBefore(clause.text.slice(0, m.index)) || (clauses[index - 1] && !clauses[index - 1].inReport && secretBefore(clauses[index - 1].text));
-          if (named) {
-            var pronoun = matchedSpan(raw, clause, hit, m.index + m[0].length);
-            flag('share_code', clause, action.start, pronoun.end);
-            tier1('T1-CODE', action, clause, pronoun, null);
-            continue;
-          }
-        }
-        // No context is needed: no organization asks for a sign-in code, PIN or password this way.
-        if (!giftDisclosed && /^(?:send|read|give|tell|text|share|provide|reply with)$/.test(verb) && (hit = windowText.match(SECRET_OBJECT))) {
-          var gap = windowText.slice(0, hit.index);
-          var toRequester = /^(?:read|give|tell|reply with)$/.test(verb) || REQUESTER.test(tail.slice(0, 65));
-          var household = HOUSEHOLD.test(gap) || HOUSEHOLD_AFTER.test(windowText.slice(hit.index + hit[0].length) + tail.slice(40, 70));
-          if (OBJECT_GAP.test(gap) && !NOT_SECRET.test(gap) && !household && toRequester && !IN_PERSON.test(clause.text)) {
-            var secret = matchedSpan(raw, clause, hit, m.index + m[0].length);
-            flag('share_code', clause, action.start, secret.end);
-            tier1('T1-CODE', action, clause, secret, null);
-          }
-        }
       }
     });
     return s;
@@ -481,34 +489,10 @@
       for (const pattern of flag.patterns) {
         const hit = [...text.matchAll(new RegExp(pattern.source, 'gi'))].find(m => {
           const clause = s.clauses.find(c => m.index >= c.start && m.index < c.end);
-          if (clause && (clause.inReport || reported(clause.text))) return false;
+          if (clause && (clause.inReport || reportedAt(clause.text, m.index - clause.start))) return false;
           if (flag.negatable && isNegated(text, m.index)) return false;
           return !flag.accept || !clause || flag.accept(text, m, clause);
         });
-  function requestSignals(text, source) {
-    var raw = typeof source === 'string' ? source : text;
-    var contextual = contextualSignals(text, raw);
-    var flags = contextual.flags;
-    FLAGS.forEach(function (flag) {
-      // A contextual rule already reported this signal with its exact action.
-      if (flags.some(function (f) { return f.id === flag.id; })) return;
-      for (var p = 0; p < flag.patterns.length; p++) {
-        var pattern = new RegExp(flag.patterns[p].source, 'gi');
-        var hit = null, m;
-        while ((m = pattern.exec(text)) !== null) {
-          var clause = contextual.clauses.find(function (c) { return m.index >= c.start && m.index < c.end; });
-          if (clause && (clause.inReport || reported(clause.text))) continue;
-          if (flag.negatable && isNegated(text, m.index)) continue;
-          if (flag.id === 'login_request' && clause && (!loginDemand(text.slice(clause.start, m.index), m[0]) ||
-              LOGIN_NOTICE.test(text.slice(m.index + m[0].length, m.index + m[0].length + 30)) ||
-              SAFE_ROUTE.test(text.slice(m.index + m[0].length, m.index + m[0].length + 60)) ||
-              IN_PERSON_SIGN_IN.test(text.slice(m.index + m[0].length, m.index + m[0].length + 60)))) continue;
-          if (flag.id === 'share_code' && clause && !directAction(text.slice(clause.start, m.index), /\b(?:please|call|read|send|share)\b/i.test(text.slice(clause.start, m.index)))) continue;
-          // Advice to protect a code is not a demand to hide a payment or conversation.
-          if (flag.id === 'secrecy' && /^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length))) continue;
-          hit = m;
-          break;
-        }
         if (!hit) continue;
         flags.push({ id: flag.id, level: flag.level, words: raw.slice(hit.index, hit.index + hit[0].length), start: hit.index, end: hit.index + hit[0].length });
         break;
@@ -516,18 +500,15 @@
     }
     // A plain code request inside a gift-card code request is the same signal.
     flags = flags.filter(f => f.id !== 'share_code' || !flags.some(g => g.id === 'gift_card_disclosure' && f.start >= g.start && f.end <= g.end));
+    // A purchase-only warning is already represented when that same card is
+    // the antecedent of a proved disclosure. Keep independently proved payments.
+    flags = flags.filter(f => f.id !== 'gift_card_payment' ||
+      s.established.some(e => e.ruleId === 'T1-GIFT' && e.action.start === f.start && !e.antecedent) ||
+      !s.established.some(e => e.ruleId === 'T1-GIFT' && e.antecedent && e.antecedent.end === f.end));
     const highs = flags.filter(f => f.level === 'high').length;
     const mediums = flags.filter(f => f.level === 'medium').length;
     const level = highs > 0 || mediums >= 3 ? 'high' : mediums > 0 ? 'elevated' : 'none';
     return { level, flags, established: s.established, unresolved: s.unresolved };
-    });
-    flags = flags.filter(function (f) {
-      return f.id !== 'share_code' || !flags.some(function (gift) { return gift.id === 'gift_card_disclosure' && f.start >= gift.start && f.end <= gift.end; });
-    });
-    var hasHigh = flags.some(function (f) { return f.level === 'high'; });
-    var mediums = flags.filter(function (f) { return f.level === 'medium'; }).length;
-    var level = hasHigh || mediums >= 3 ? 'high' : mediums > 0 ? 'elevated' : 'none';
-    return { level: level, flags: flags, established: contextual.established, unresolved: contextual.unresolved };
   }
 
   // The rules read a cleaned-up view (T.riskView); every span is then moved back to the original text.

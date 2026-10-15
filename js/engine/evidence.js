@@ -25,9 +25,6 @@
   const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check));
 
   function normalizeEvidence(checks, sender, inferred, signals, incomplete, policyFindings) {
-    var uncertainty = [];
-    var findings = [];
-  function normalizeEvidence(checks, sender, inferred, signals, incomplete) {
     const contacts = [], findings = [], uncertainty = [];
     function finding(ruleId, tier, status, span, support) {
       // Contact checks carry no position in the original text, and none is guessed.
@@ -60,11 +57,10 @@
       finding(flag.id, 2, 'established', span, { id: flag.id, level: flag.level, words: flag.words, start: flag.start, end: flag.end });
     });
     // A reviewed policy the message breaks (policy.js). Unresolved when its detector is unsure.
-    (policyFindings || []).forEach(function (p) {
+    for (const p of policyFindings || []) {
       finding('T1-POLICY', 1, p.status, p.spans.action, p);
       if (p.status !== 'established') uncertainty.push('policy_unresolved:' + p.policyId);
-    });
-    return { sender: sender, contacts: contacts, findings: findings, uncertainty: uncertainty };
+    }
     return { sender, contacts, findings, uncertainty };
   }
 

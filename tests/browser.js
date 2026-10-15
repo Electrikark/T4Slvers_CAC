@@ -1,5 +1,9 @@
 /* Render the same suite used by the terminal runner. */
+(async function () {
 try {
+  const response = await fetch('reporting-scope/fixture.json');
+  if (!response.ok) throw new Error('Reporting-scope fixture HTTP ' + response.status);
+  window.TFS_SCOPE_FIXTURE = await response.json();
   const suite = window.runEngineTests();
   const targets = ['rows', 'real', 'step1', 'inv', 'gate', 'self'];
   let passed = 0;
@@ -40,3 +44,4 @@ try {
 } catch (error) {
   document.getElementById('overview').textContent = `Tests could not run: ${error.message}`;
 }
+})();
