@@ -10650,6 +10650,45 @@
       "expected_findings": [],
       "expected_verdict": "Insufficient Evidence",
       "known_limitation": null
+    },
+    {
+      "id": "GAP1",
+      "context": "GAP",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase Fraud Dept: we need you to purchase gift cards to secure your account. Visit https://chase.com",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "GAP2",
+      "context": "GAP",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Scammers are watching your account, so you must move your money into Bitcoin now. https://chase.com",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "GAP3",
+      "context": "GAP",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Our technician will need you to install AnyDesk so we can fix your account. https://chase.com",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
     }
   ]
 }

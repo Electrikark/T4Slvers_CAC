@@ -33,4 +33,13 @@ function row([id, family, text, finding], group) {
   return { id, context: group, family, variant: 'hand', record_state: 'none', text,
     expected_findings: finding ? [finding] : [], expected_verdict: finding ? 'Suspicious' : 'Insufficient Evidence', known_limitation: null };
 }
-module.exports = own.map(c => row(c, 'OWN')).concat(warnings.map(c => row(c, 'W')), controls.map(c => row(c, 'LEGIT')));
+const gaps = [
+  ['GAP1', 'GC', 'Chase Fraud Dept: we need you to purchase gift cards to secure your account. Visit https://chase.com', 'gift_card_demand'],
+  ['GAP2', 'WT', 'Chase: Scammers are watching your account, so you must move your money into Bitcoin now. https://chase.com', 'wire_demand'],
+  ['GAP3', 'RA', 'Chase: Our technician will need you to install AnyDesk so we can fix your account. https://chase.com', 'remote_access']
+];
+function gapRow([id, family, text, finding]) {
+  return { id, context: 'GAP', family, variant: 'hand', record_state: 'approved', text,
+    expected_findings: [finding], expected_verdict: 'Insufficient Evidence', known_limitation: null };
+}
+module.exports = own.map(c => row(c, 'OWN')).concat(warnings.map(c => row(c, 'W')), controls.map(c => row(c, 'LEGIT')), gaps.map(gapRow));

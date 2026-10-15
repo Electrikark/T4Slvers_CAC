@@ -2,6 +2,8 @@
 
 Primary metric: **suite pass rate**. Frozen evaluation date: **2026-10-12**.
 
+Tier 2 follow-up: GAP1–3 add approved-record warnings (795/795 fixture rows; 1,138 shared checks), changing all three from Details Match to Insufficient Evidence; see [before](tier2-gaps-before.json) and [after](tier2-gaps-after.json), with earlier tables retained as historical results.
+
 ## What these rows represent
 
 The original 384 rows were **16 sentence templates**, each expanded into 11
