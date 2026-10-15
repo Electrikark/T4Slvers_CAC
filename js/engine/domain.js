@@ -149,6 +149,17 @@
   const squash = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
   const orgById = (store, id) => store.orgs.find(org => org.id === id) || null;
   function orgById(store, id) {
+    for (var k = 0; k < store.orgs.length; k++) if (store.orgs[k].id === id) return store.orgs[k];
+    return null;
+  }
+
+  // Raw ownership from the full list. It can name a conflict or a pending record; only the
+  // trusted view (TFS.trustedMatches) can turn ownership into support.
+  function officialOrgsFor(store, host) {
+    return store.orgs.filter(function (org) {
+      var domains = (org.officialDomains || []).concat((org.contacts || []).filter(function (c) { return c.kind === 'domain'; }).map(function (c) { return c.value; }));
+      return domains.some(function (d) { return hostMatches(host, d); });
+    });
     return store.orgs.find(function (org) { return org.id === id; }) || null;
   }
 
@@ -254,8 +265,8 @@
         return hostMatches(host, source.domain) && /^needs review/i.test(source.check || '');
       });
       if (pendingSource) return make('UNKNOWN', 'reference_needs_review', merge(base, { orgId: listedOwner.id }));
-      if (!claim) return supported(owners[0], 'domain_official', merge(base, { orgId: owners[0].id, implicit: true }));
-      if (owners.some(function (o) { return o.id === claim.id; })) return supported(claim, 'domain_official', merge(base, { orgId: claim.id }));
+      if (!claim) return supported(ctx, owners[0], target, 'domain_official', merge(base, { orgId: owners[0].id, implicit: true }));
+      if (owners.some(function (o) { return o.id === claim.id; })) return supported(ctx, claim, target, 'domain_official', merge(base, { orgId: claim.id }));
       return make('CONTRADICTS', 'domain_belongs_to_other_org', merge(base, { strength: 'moderate', orgId: owners[0].id }));
     }
 
@@ -374,25 +385,13 @@
     return tail.slice(0, domain.length + 1) === '.' + domain && /^\.[a-z]{2}$/.test(tail.slice(domain.length + 1));
   }
 
-  /* A record supports a contact only after a person has reviewed it: humanReview names the
-     reviewer and the date. An automated check alone leaves the contact unresolved, so an
-     unreviewed list fails closed (no Details Match) instead of open. Conflicts are unaffected. */
-  function humanReviewed(org) {
-    var review = org && org.humanReview;
-    return Boolean(review && typeof review.reviewer === 'string' && review.reviewer.trim() && reviewDate(review.date));
-  }
-
-  // A real calendar date (no 2026-02-30), not in the future, and not before this project existed.
-  function reviewDate(value) {
-    var m = typeof value === 'string' && value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (!m) return false;
-    var y = +m[1], mo = +m[2], d = +m[3], time = Date.UTC(y, mo - 1, d), day = new Date(time);
-    if (day.getUTCFullYear() !== y || day.getUTCMonth() !== mo - 1 || day.getUTCDate() !== d) return false;
-    return y >= 2020 && time <= Date.now();
-  }
-
-  function supported(org, code, extra) {
-    return humanReviewed(org) ? make('SUPPORTS', code, extra) : make('UNKNOWN', 'reference_needs_review', extra);
+  /* A contact is supported only by a record in the trusted view: reviewed, unexpired,
+     complete, unambiguous and conflict-free (see trusted.js). Anything else leaves the
+     contact unresolved, so an unreviewed list fails closed (no Details Match). */
+  function supported(ctx, org, target, code, extra) {
+    var view = ctx.trusted || T.buildTrustedView({ orgs: [] });
+    return T.trustedMatches(view, target, org.id).length
+      ? make('SUPPORTS', code, extra) : make('UNKNOWN', 'reference_needs_review', extra);
   }
 
   function merge(a, b) {
@@ -404,6 +403,29 @@
 
   // Phone numbers. Missing from a sparse list is never a conflict.
   function checkPhone(target, ctx) {
+    var store = ctx.store, claim = ctx.claimOrg;
+    var base = { target: target };
+    var listed = T.listedFor(store, target);
+    if (claim) {
+      if (listed.some(function (o) { return o.id === claim.id; })) return supported(ctx, claim, target, 'phone_official', merge(base, { orgId: claim.id }));
+      return make('UNKNOWN', 'phone_not_on_file', merge(base, { orgId: claim.id }));
+    }
+    var matches = T.trustedMatches(ctx.trusted, target);
+    if (matches.length) return make('SUPPORTS', 'phone_official', merge(base, { orgId: matches[0].orgId, implicit: true }));
+    if (listed.length) return make('UNKNOWN', 'reference_needs_review', merge(base, { orgId: listed[0].id }));
+    return make('UNKNOWN', 'phone_not_on_file', base);
+  }
+
+  T.decodeLabel = decodeLabel;
+  T.toUnicodeHost = toUnicodeHost;
+  T.registrable = registrable;
+  T.hostMatches = hostMatches;
+  T.skeleton = skeleton;
+  T.editDistance = editDistance;
+  T.isIp = isIp;
+  T.orgById = orgById;
+  T.checkHost = checkHost;
+  T.checkPhone = checkPhone;
     const claim = ctx.claimOrg;
     const listsNumber = org => (org.officialPhones || []).includes(target.e164);
     if (claim) {
