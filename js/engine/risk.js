@@ -12,7 +12,7 @@
 
   /* ---------- Shared patterns ---------- */
 
-  const ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
+  const ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|move|deposit|convert|put|withdraw|go|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?)\b/i;
   const SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
@@ -25,7 +25,13 @@
   const REPORT_SUBJECT = /\b(?:scam{2}ers?|fraudsters?|criminals?|scam (?:callers?|texts?|emails?|messages?)|(?:an )?example (?:message|scam)|(?:beware of|watch (?:out )?for)\s+(?:texts?|messages?))(?:\s+(?:posing as|pretending to be|claiming to be|impersonating)\s+(?:the\s+)?(?!(?:we|our|and|who)\b)[a-z][\w-]*(?:\s+(?!(?:we|our|and|who|may|might|will|could|can|would|often|sometimes|usually|also|typically)\b)[a-z][\w-]*){0,2})?(?:\s+who\s+(?:calls?|texts?))?(?:\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)){0,3}\s*$/i;
   // "Ask you to", "tell you that you must", "demand that you", or "request: ...".
   const ASKING = /\b(?:ask(?:s|ing)?|tell(?:s|ing)?|demand(?:s|ing)?|request(?:s|ing)?|instruct(?:s|ing)?|urg(?:e|es|ing)|pressur(?:e|es|ing)|want(?:s|ing)?)\b(?:\s+(?:(?:you|us|me|them|victims|seniors|customers)\s+)?to\s+|\s+(?:(?:you\s+)?that\s+)?you\s+(?:(?:must|should|need to|have to)\s+)?|\s*:\s*)/gi;
-  const OWN_NEED = /\b(?:we|i)\s+need\s+you\s+to\s*(?:please\s*)?$/i;
+  const OWN_NEED = /\b(?:we|i|(?:our|the|your)\s+(?:[a-z][\w-]*\s+){0,2}(?:technician|team|agent|representative|specialist|support team|manager))\s+(?:(?:will|may)\s+)?need(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
+  const NEED_COMPLEMENT = /\bneed(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
+
+  function ownNeedBefore(prefix) {
+    const need = prefix.match(OWN_NEED);
+    return !!need && !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(prefix.slice(0, need.index));
+  }
 
   function askingBefore(prefix) {
     return [...prefix.matchAll(ASKING)].find(m => /^\s*(?:please\s*)?$/i.test(prefix.slice(m.index + m[0].length)));
@@ -110,7 +116,7 @@
       if (m[0] === '.' && /\d/.test(text.charAt(m.index - 1)) && /\d/.test(text.charAt(m.index + 1))) continue;
       // An SMS wrap after an unfinished asking complement is not a new demand.
       // Keep original positions and line breaks for source spans.
-      if (m[0] === '\n' && (askingBefore(text.slice(start, m.index + 1)) || OWN_NEED.test(text.slice(start, m.index + 1)))) continue;
+      if (m[0] === '\n' && (askingBefore(text.slice(start, m.index + 1)) || NEED_COMPLEMENT.test(text.slice(start, m.index + 1)))) continue;
       if (text.slice(start, m.index).trim()) clauses.push({ start, end: m.index, text: text.slice(start, m.index) });
       start = m.index + m[0].length;
     }
@@ -159,7 +165,9 @@
     const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
     const asking = askingBefore(prefix);
     if (asking) return senderAsker(prefix.slice(0, asking.index), senderLabel) && !isNegated(prefix, asking.index);
-    if (OWN_NEED.test(prefix)) return true;
+    // Seeing "need you to" does not identify the sender. Unknown subjects stay
+    // quiet even with "please" or an SMS wrap before the action.
+    if (NEED_COMPLEMENT.test(prefix)) return ownNeedBefore(prefix);
     if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
     // A short warning/purpose preface does not turn the following imperative
     // into reported speech, even when its comma is omitted in a text message.
@@ -221,8 +229,9 @@
     const offset = gift.end - d.clause.start;
     const purpose = d.clause.text.slice(offset).match(/^\s+(?:to (?:pay|cover|settle)\b|(?:as|for)\s+(?:(?:a|the|this|your)\s+)?(?:payment|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?)\b|to (?:restore|release|unlock)(?:\s+\w+){0,3}\s+account\b)/i);
     const context = purpose ? spanOf(s.raw, d.clause, purpose, offset) : null;
+    // A birthday purpose cannot cancel a purchase instruction's Tier 2 warning.
+    s.flag('gift_card_payment', d.action.start, gift.end);
     if (d.verb === 'pay' || context) {
-      s.flag('gift_card_payment', d.action.start, gift.end);
       s.tier1('T1-GIFT', d, gift, context);
     } else if (PURPOSE.test(d.clause.text)) {
       // "Buy gift cards ... and pay for lunch": a payment nearby, but not clearly for the cards.
@@ -253,14 +262,37 @@
     return false;
   }
 
+  // Find an unreported wire/crypto object on either side of an action, within
+  // the same sentence segment. Do not borrow it across commas or connectors.
+  function wireInSegment(d, raw) {
+    const text = d.clause.text, actionIndex = d.action.start - d.clause.start;
+    let start = 0, end = text.length;
+    for (const cut of text.matchAll(/[,;.!?\n]|\b(?:so|because|since|but|however|instead)\b/gi)) {
+      // Thousands separators and decimal points are part of the amount.
+      if (/^[,.]$/.test(cut[0]) && /\d/.test(text[cut.index - 1]) && /\d/.test(text[cut.index + 1])) continue;
+      if (cut.index < actionIndex) start = cut.index + cut[0].length;
+      else { end = cut.index; break; }
+    }
+    for (const hit of text.slice(start, end).matchAll(new RegExp(WIRE.source, 'gi'))) {
+      if (!reportedAt(text, start + hit.index)) return spanOf(raw, d.clause, hit, start);
+    }
+    return null;
+  }
+
   // T1-WIRE: crypto or a wire transfer, with pressure tied to it.
   function wireTransfer(d, s) {
+    if (!/^(?:pay|send|transfer|wire|move|deposit|convert|put)$/.test(d.verb)) return;
+    let object;
+    if (/^(?:deposit|put|move)$/.test(d.verb)) object = wireInSegment(d, s.raw);
+    else {
+      let hit = d.near.match(WIRE);
+      if (!hit && d.verb === 'wire') hit = d.near.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
+      if (hit) object = spanOf(s.raw, d.clause, hit, d.after);
+    }
+    if (!object) return;
+    s.flag('crypto_or_wire', Math.min(d.action.start, object.start), Math.max(d.action.end, object.end));
+    // The added movement verbs establish a warning, not new Tier 1 proof.
     if (!/^(?:pay|send|transfer|wire)$/.test(d.verb)) return;
-    let hit = d.near.match(WIRE);
-    if (!hit && d.verb === 'wire') hit = d.near.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
-    if (!hit) return;
-    const object = spanOf(s.raw, d.clause, hit, d.after);
-    s.flag('crypto_or_wire', d.action.start, object.end);
     const context = tiedPressure(s.clauses, d.index, s.raw);
     if (context) s.tier1('T1-WIRE', d, object, context);
   }
@@ -468,6 +500,11 @@
     }
     // A plain code request inside a gift-card code request is the same signal.
     flags = flags.filter(f => f.id !== 'share_code' || !flags.some(g => g.id === 'gift_card_disclosure' && f.start >= g.start && f.end <= g.end));
+    // A purchase-only warning is already represented when that same card is
+    // the antecedent of a proved disclosure. Keep independently proved payments.
+    flags = flags.filter(f => f.id !== 'gift_card_payment' ||
+      s.established.some(e => e.ruleId === 'T1-GIFT' && e.action.start === f.start && !e.antecedent) ||
+      !s.established.some(e => e.ruleId === 'T1-GIFT' && e.antecedent && e.antecedent.end === f.end));
     const highs = flags.filter(f => f.level === 'high').length;
     const mediums = flags.filter(f => f.level === 'medium').length;
     const level = highs > 0 || mediums >= 3 ? 'high' : mediums > 0 ? 'elevated' : 'none';
