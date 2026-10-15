@@ -1,0 +1,5 @@
+id,label,channel,category,source,collected,split,notes,text
+example-1,fraud,text,gift_card,FICTIONAL example - delete this row,2026-10-13,,Shows the format only,"Grandma, I'm in trouble. Please buy 3 Apple gift cards and send me the codes."
+example-2,legit,text,delivery,FICTIONAL example - delete this row,2026-10-13,,Shows the format only,USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction
+example-3,fraud,email,bank_login,FICTIONAL example - delete this row,2026-10-13,,A message with a line break must be inside quotes,"Chase: Your account has been locked.
+Sign in at chase-secure-login.net to restore access."
