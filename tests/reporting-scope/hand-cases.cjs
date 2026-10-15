@@ -13,7 +13,13 @@ const warnings = [
   ['W1', 'GC', 'Scammers posing as Chase may ask you to pay with gift cards.'],
   ['W2', 'WT', 'Fraudsters pretending to be the IRS may demand a wire transfer.'],
   ['W3', 'RA', 'Scam callers may ask you to install remote access software.'],
-  ['W4', 'CD', 'Criminals often ask victims to read back verification codes.']
+  ['W4', 'CD', 'Criminals often ask victims to read back verification codes.'],
+  ['W5', 'GC', 'If someone asks you to pay with gift cards, hang up.'],
+  ['W6', 'GC', 'Anyone who asks you to pay with gift cards is a scammer.'],
+  ['W7', 'CD', 'Hang up if anyone asks you to read your verification code.'],
+  ['W8', 'CD', 'Never trust a text that asks you to read a code.'],
+  ['W9', 'GC', 'Imposters may ask you to pay with gift cards.'],
+  ['W10', 'GC', 'Scammers posing as Chase Bank fraud team may ask you to pay with gift cards.']
 ];
 const controls = [
   ['LEGIT-GC', 'GC', 'Target: Gift cards are 20% off this weekend.'],
