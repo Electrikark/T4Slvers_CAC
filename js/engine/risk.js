@@ -30,6 +30,18 @@
   function askingBefore(prefix) {
     return [...prefix.matchAll(ASKING)].find(m => /^\s*(?:please\s*)?$/i.test(prefix.slice(m.index + m[0].length)));
   }
+
+  // Recognize the sender positively. An unfamiliar asker is not evidence that
+  // the sender made this request. A named subject must begin a statement.
+  function senderAsker(prefix, senderLabel) {
+    const modifiers = /\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)\s*$/i;
+    let subject = prefix.trim();
+    for (let i = 0; i < 3 && modifiers.test(subject); i++) subject = subject.replace(modifiers, '').trim();
+    const personal = subject.match(/\b(?:we|i|our team)$/i);
+    if (personal) return !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(subject.slice(0, personal.index));
+    const statement = subject.split(/[:,;.!?\n]|\b(?:and|but|however|instead|so)\b/i).pop().trim().toLowerCase();
+    return statement === 'chase' || !!senderLabel && statement === senderLabel.toLowerCase();
+  }
   const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
   const PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
   const URGENT = /\b(?:urgent(?:ly)?|right now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
@@ -142,13 +154,16 @@
 
   // Is the verb after `prefix` an instruction to the reader? "Please send", "Chase: Send",
   // "You must send", "To fix it, send". priorDemand also allows "... and send" after an earlier demand.
-  function directAction(prefix, priorDemand) {
+  function directAction(prefix, priorDemand, senderLabel) {
     if (NEGATION.test(prefix) || /["“][^"”]*$/.test(prefix)) return false;
     const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
     const asking = askingBefore(prefix);
-    if (asking && !isNegated(prefix, asking.index)) return true;
+    if (asking) return senderAsker(prefix.slice(0, asking.index), senderLabel) && !isNegated(prefix, asking.index);
     if (OWN_NEED.test(prefix)) return true;
     if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
+    // A short warning/purpose preface does not turn the following imperative
+    // into reported speech, even when its comma is omitted in a text message.
+    if (/^\s*(?:beware of|to avoid)\s+(?:hackers?|fraudsters?|scam{2}ers?|criminals?|scams?)\s*[:,]?\s*(?:please\s*)?$/i.test(rest)) return true;
     if (/^\s*(?:to|in order to|before|so|due to|because of|after)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
     if (/,\s*so\s+(?:please\s+)?$/i.test(rest)) return true;
@@ -305,6 +320,9 @@
   // Finds every direct demand and runs the Tier 1 rules on it, in this order.
   function tier1Signals(text, raw) {
     const clauses = clausesOf(text);
+    // A label is a claimed sender, not proof of identity or a trusted record.
+    const label = text.match(/^\s*([a-z][a-z0-9 &'’-]{0,59}):/i);
+    const senderLabel = label ? label[1].trim() : null;
     const s = {
       raw, clauses, flags: [], established: [], unresolved: [],
       clauseSpan: clause => span(raw, clause.start, clause.end),
@@ -322,7 +340,7 @@
       let priorDemand = false;
       for (const m of clause.text.matchAll(new RegExp(ACTIONS.source, 'gi'))) {
         if (reportedAt(clause.text, m.index)) continue;
-        if (!directAction(clause.text.slice(0, m.index), priorDemand)) continue;
+        if (!directAction(clause.text.slice(0, m.index), priorDemand, senderLabel)) continue;
         priorDemand = true;
         const tail = clause.text.slice(m.index + m[0].length);
         const d = { verb: m[0].toLowerCase(), clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };

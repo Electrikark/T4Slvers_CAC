@@ -1,163 +1,65 @@
 # Reporting scope
 
-## Failure
+## Failure and repair
 
-`risk.js` treated an entire clause as reported whenever it contained a reporting
-cue. A real demand could disappear because “fraudsters” appeared in its purpose
-phrase or in a warning after it. At the `release-v1` baseline (`af93e3e`), both
-“To avoid fraudsters, pay with gift cards” and “Pay with gift cards today, beware
-of fraudsters” lost their findings. The first example did **not** already work on
-that baseline. Adding the initial regression tests reproduced nine failures.
+At `af93e3e`, `risk.js` treated an entire clause as reported when a reporting
+cue occurred anywhere in it. Thus “To avoid fraudsters, pay with gift cards”
+and “Pay with gift cards today, beware of fraudsters” could lose their findings.
+The repair in `745f577` introduced `reportedAt(clauseText, demandIndex)` so
+reporting is checked at each demand and at supporting pressure/antecedents.
 
-## Decision
+The later asking expansion introduced a separate regression: it treated any
+unrecognized asker as the sender. W5–W10 reproduce ordinary safety warnings
+that became Suspicious. Their quiet expectations were written first, and every
+failure was saved before the sender-subject change.
 
-For unquoted demands, the reporting cue must be the **subject of the asking
-verb**, not merely a word somewhere before it. Asking verbs are **ask, tell,
-demand, request, instruct, urge, pressure, want**, including their `-s` and
-`-ing` forms. Between the subject and verb, allow an optional “who calls/texts”
-(including “who call/text”) and at most three modifiers from this closed list:
-**may, might, will, could, can, would, often, sometimes, usually, also, typically**.
-Task 3 also accepts “scam callers/texts/emails/messages,” and the bounded
-descriptions “posing as,” “pretending to be,” “claiming to be” or “impersonating,”
-followed by an optional “the” and a name of one to three words. A new subject
-such as “we,” “Chase” or “our team” still breaks the link. Recipients can include
-“victims,” “seniors” and “customers” as well as pronouns.
+## Current decision: recognize the sender positively
 
-The existing coordinated warning “Fraudsters may say your computer is infected
-and ask…” retains the same asker. This exception is limited to a short device
-alarm statement followed immediately by “and”; “and we ask…” breaks the link.
-The alarm itself remains an existing Tier 2 flag because it is said, not asked;
-the reported callback does not establish T1-CALLBACK.
+An indirect asking complement establishes a sender demand only if its subject
+is **we, I, our team, Chase, or the organization label at the start of the
+message**. A label is a claimed identity, not proof of authenticity. Named
+subjects must begin a statement; “Scammers posing as Chase ask…” does not make
+Chase the asker. Conditional first-person subjects and descriptions such as
+“posing as our team” are excluded. An unfamiliar asker stays quiet, including
+when “please” is inside that asking complement. A separately stated direct
+instruction is still evaluated normally.
 
-Thus “Due to the holiday we ask you to please pay with gift cards today” and
-the same sentence with “fraudsters” in place of “the holiday” both establish
-`T1-GIFT`. “Fraudsters are active and Chase asks you to please send the fee by
-wire transfer today” establishes `T1-WIRE`: Chase is asking, and “today” supplies
-pressure. “Fraudsters may ask…” and “Scammers often ask…” remain reported.
+`askingBefore` identifies an asking complement immediately before an action:
+“ask you to,” “tell you that you must,” “demand that you,” or “request:”. It
+recognizes ask, tell, demand, request, instruct, urge, pressure and want, their
+-s/-ing forms, pronouns and the recipient nouns victims/seniors/customers.
+It locates syntax; it no longer establishes sender ownership by itself.
+`OWN_NEED` separately recognizes “we/I need you to,” which is not an asking verb.
 
-`reportedAt(clauseText, demandIndex)` checks the prefix at each demand. It
-recognizes asking complements such as “ask you to,” “tell you that you must,”
-“demand that you,” and “request:”. A comma, sentence boundary, or connector such
-as “so,” “because,” “but,” “however” or “instead” ends the reach. A fresh “you
-must/need to/have to/should” after that complement also starts a new instruction.
-A cue after the demand cannot explain it as reported. Negated asking, including
-“never ask you to,” remains quiet.
+Existing reporting-subject patterns remain for reporting scope and supporting
+evidence. The cue must be the **subject of the asking verb**, not just an earlier
+word. Bounded descriptions, optional “who calls/texts,” and a closed set of
+modals/adverbs are supported. Unknown subjects no longer require expanding that
+list to avoid becoming sender demands. `ALARM_COORDINATION` preserves the
+existing “Fraudsters may say your computer is infected and ask…” warning; a new
+“and we ask…” subject breaks the link. The alarm remains an existing Tier 2
+flag, while the reported callback does not establish T1-CALLBACK.
 
-The same positional check applies to wording flags and to supporting pressure,
-gift-card antecedents and device alarms. Otherwise a removed clause-wide check
-could accidentally promote reported context into evidence for a separate
-demand. Original source spans are preserved. The existing `inReport` handling
-for quoted examples is unchanged; the opening clause of a quotation still gets
-a quote-specific check, limited to the quoted span.
+Commas and connectors such as “so,” “because,” “since,” “but,” “however” and
+“instead” end the reach of an unquoted report. A fresh “you must/need to/have
+to/should” after the complement starts a new instruction. A trailing warning
+cannot retroactively explain away a demand. Negated asking remains quiet.
+The existing `inReport` quote handling is unchanged.
 
-The exact “Criminals are active, so send the fee by wire” regression also needs
-the imperative after “, so” and the payment wording “by wire” recognized. This
-does not change the tier threshold: a wire demand without tied pressure stays
-Tier 2; pressure such as “today” can establish `T1-WIRE`.
+The newline exception preserves an unfinished asking complement across LF or
+CRLF, so “Fraudsters may ask you to\npay…” does not turn into a bare command.
+Original source offsets remain intact. Other sentence boundaries still split
+clauses. Bare requests after short “Beware of…” or “To avoid…” prefaces now
+accept comma, colon or no punctuation; this additional instruction-recognition
+change is counted separately from the original scope repair.
 
-The introductory-phrase matcher also accepts “Due to X,” “Because of X,” and
-“After X,” before a direct demand, just as it accepts “To avoid X,”. Both
-“Chase: Due to fraudsters, pay with gift cards” and its “Due to delays” control
-establish `T1-GIFT`. The subject check was implemented and tested before widening
-this matcher. Negation still takes precedence.
+## Sixteen hand-decided decisions
 
-## Eight core cases
+Layer 1 is `tests/reporting-scope/spec.cjs`; layer 2 is wording in
+`templates.cjs`; layer 3 is `scripts/generate-reporting-scope.cjs`. None of these
+loads the app or obtains expected values from observed results.
 
-“Quiet” means no request-risk finding. It does not mean the message is authentic.
-These inputs contain no supporting contact, so their quiet verdict is
-**Insufficient Evidence**.
-
-| Message | Expected finding | Verdict |
-| --- | --- | --- |
-| Fraudsters may ask you to pay with gift cards. | None | Insufficient Evidence |
-| Watch for texts telling you to wire money. | None | Insufficient Evidence |
-| To avoid fraudsters, pay with gift cards. | `gift_card_payment`, `T1-GIFT` | Suspicious |
-| Criminals are active, so send the fee by wire. | `crypto_or_wire` (Tier 2) | Insufficient Evidence |
-| Beware of scams. Pay with gift cards today. | `gift_card_payment`, `T1-GIFT` | Suspicious |
-| Pay with gift cards today, beware of fraudsters. | `gift_card_payment`, `T1-GIFT` | Suspicious |
-| To avoid fraudsters, pay by wire transfer. | `crypto_or_wire` (Tier 2) | Insufficient Evidence |
-| Pay by wire transfer today, beware of fraudsters. | `crypto_or_wire`, `T1-WIRE` | Suspicious |
-
-The Chase example also returns **Suspicious / T1-GIFT**, despite its listed URL.
-
-## Detection bias and why it matters for seniors
-
-An explicit risky instruction should survive nearby safety language. Requiring
-a recognizable reporting link favors detection when that link is unclear; it
-can flag unusually phrased educational text. Suppressing everything near a
-warning word would instead make that word an easy way to hide a demand.
-
-For a workshop intended for seniors, the explanation must stay tied to the
-specific request being evaluated. “Fraudsters may ask…” describes someone
-else's request. “To avoid fraudsters, pay…” asks the reader to act. Giving these
-different readings avoids treating familiar safety wording as reassurance,
-without assuming anything about an individual reader's abilities.
-
-## Limitations and scope
-
-This is a bounded English pattern rule, not a full grammar parser. Nested
-speech, modifiers outside the closed list, or an unusual asking complement can
-still be misread. Commas intentionally terminate an unquoted reporting link,
-so a parenthetical interruption in legitimate advice can produce a finding.
-
-The [task 3 matrix](../testing/task-3-matrix.md) now tests first- and third-person
-requests without “please.” `directAction` accepts an asking complement immediately
-before the action, and “we/I need you to.” Negation and reporting scope still run
-before a demand becomes evidence. This does not cover every English request form.
-A newline after an unfinished asking complement is treated as SMS wrapping,
-preserving the original source offsets; other clause boundaries remain in place.
-
-`sender.js` still rejects a sender name when a reporting cue occurs anywhere in
-the name's clause. That separate weakness can hide a genuine sender claim in
-mixed warning/request text. It is unchanged here. No organization facts,
-trusted-list entries, or policy requirements were added.
-
-## Validation and expectations
-
-`tests/scope-cases.js` registers eight core cases plus 28 guards in both the
-Node and browser runners. The guards cover asking forms, negation, quoted
-examples, multiple demands, source spans, pressure, antecedents and the Chase
-example, plus asking subjects and introductory phrases. Existing test
-expectations are unchanged. The wire cases explicitly
-distinguish a Tier 2 finding from a pressure-qualified Tier 1 finding.
-
-Run `npm test` for the shared tests, generated-gate freshness, boundary checks,
-source-gate parity and evaluation harness. Open `tests/run.html` in a browser
-over HTTP for the same 739 shared checks, including the matrix below. These
-checks establish rule behavior; their metric is **suite pass rate**.
-
-## Technical challenge video
-
-The narrated segment is distributed separately from the repository. An
-unlisted YouTube link is pending upload; the transcript remains here for review.
-
-Transcript:
-
-> The technical challenge was deciding what a warning actually describes. The
-> old rule skipped a whole clause whenever it saw a word like fraudsters. That
-> could hide a real payment demand.
->
-> In “Fraudsters may ask you to pay with gift cards,” the cue reaches the demand
-> through “ask you to.” This describes somebody else's request, so the risk
-> detector stays quiet. Quiet does not mean authentic.
->
-> In “To avoid fraudsters, pay with gift cards,” there is no asking verb linking
-> the warning to the payment. The comma introduces a direct instruction to the
-> reader. The result is Suspicious, with T1-GIFT.
->
-> The fix checks each demand at its own position. A warning after a demand
-> cannot erase it. Negated asking and quoted examples stay quiet. Wire demands
-> still need pressure to become Tier 1.
->
-> The regression cases check both findings and verdicts in Node and the browser.
-> Existing expectations stay unchanged. This is a limited English rule, not a
-> claim that the sender has been verified.
-
-## Frozen three-layer matrix
-
-The 16 decisions below are hand-decided in `tests/reporting-scope/spec.cjs`. Wording lives in `templates.cjs`; `scripts/generate-reporting-scope.cjs` only expands those templates and copies the decisions. Neither layer imports or runs the app.
-
-| Context | Family | Sender’s own demand? | Reason |
+| Context | Family | Sender's own demand? | Reason |
 | --- | --- | --- | --- |
 | WF | GC | Yes | A warning before the sender asks for gift-card payment does not report that payment. |
 | WF | CD | Yes | A warning before the sender asks for a verification code does not report that disclosure. |
@@ -167,24 +69,19 @@ The 16 decisions below are hand-decided in `tests/reporting-scope/spec.cjs`. Wor
 | PC | CD | Yes | Avoiding fraudsters is background; the sender still asks the reader to disclose a code. |
 | PC | WT | Yes | The purpose phrase does not change who asks for the wire transfer today. |
 | PC | RA | Yes | The purpose phrase does not change who asks for remote-access installation today. |
-| RD | GC | No | Fraudsters are the subject of the reported gift-card request; the sender makes no demand. |
-| RD | CD | No | Fraudsters are the subject of the reported code request; the sender makes no demand. |
-| RD | WT | No | The wire transfer and its timing are both inside the reported request, not the sender’s demand. |
-| RD | RA | No | The installation and its timing are both inside the reported request, not the sender’s demand. |
+| RD | GC | No | The sender describes or quotes fraudsters’ gift-card request, rather than making that demand. |
+| RD | CD | No | The sender describes or quotes fraudsters’ code request, rather than making that demand. |
+| RD | WT | No | The transfer and its timing are inside a reported or quoted request, not the sender’s demand. |
+| RD | RA | No | The installation and timing are inside a reported or quoted request, not the sender’s demand. |
 | TW | GC | Yes | A warning after the sender’s gift-card request cannot retroactively report it. |
 | TW | CD | Yes | A warning after the sender’s disclosure request cannot retroactively report it. |
 | TW | WT | Yes | A trailing warning cannot erase the sender’s pressured wire-transfer demand. |
 | TW | RA | Yes | A trailing warning cannot erase the sender’s pressured remote-access demand. |
 
-WF means warning first, PC means purpose clause, RD means reported demand, and
-TW means trailing warning. The frozen contract is
-`SPEC = { WF: true, PC: true, RD: false, TW: true }`. Its verdict precedence is:
-
-1. A sender demand produces exactly its family finding and **Suspicious**,
-   regardless of record state. An approved record must never erase that demand.
-2. No sender demand plus an approved record produces no findings and **Details Match**.
-3. No sender demand with any other record state produces no findings and
-   **Insufficient Evidence**.
+WF = warning first; PC = purpose clause; RD = reported demand; TW = trailing
+warning. The frozen contract is `{ WF: true, PC: true, RD: false, TW: true }`.
+The asking RD form describes fraudsters asking; the bare RD form quotes their
+imperative as an example. Neither is the sender's own demand.
 
 | Family | Fixture finding ID | Existing engine representations |
 | --- | --- | --- |
@@ -193,76 +90,113 @@ TW means trailing warning. The frozen contract is
 | WT | `wire_demand` | `T1-WIRE`, `crypto_or_wire` |
 | RA | `remote_access` | `T1-REMOTE`, `remote_access` |
 
-The fixture uses the requested family IDs. The shared setup maps the engine's
-existing IDs to those names and deduplicates Tier 1 evidence and its display
-flag. It retains unexpected families, unknown IDs and unresolved evidence, so
-they fail the exact finding comparison. Verdicts are checked independently:
-a wire flag without Tier 1 pressure cannot satisfy a Suspicious expectation.
-Every generated demand includes “today”; the wire/remote-access tier threshold
-has not changed. The setup uses fictional reference records and no policies.
+Verdict precedence is fixed:
 
-### Generation and records
+1. A sender demand produces exactly its family finding and **Suspicious**,
+   regardless of record state. An approved record must never erase it.
+2. No sender demand with an approved record produces no findings and **Details Match**.
+3. No sender demand with any other record state produces no findings and
+   **Insufficient Evidence**.
 
-`tests/reporting-scope/fixture.json` contains `rows` (384 generated cases) and
-`hand_rows` (18 authored cases). Generated IDs are
-`${context}-${family}-${variant}-${record_state}`. Hand rows retain their review
-IDs, such as OWN1 and W1. Every row has explicit findings, verdict and
-`known_limitation: null`; none are skipped or treated as expected failures.
+The shared adapter maps existing engine IDs to the fixture's family names and
+deduplicates Tier 1 evidence and its display flag. Unexpected families, unknown
+IDs and unresolved evidence remain visible and fail the comparison. Verdicts
+are asserted independently. Generated demands include “today” so wire and
+remote-access cases qualify for Tier 1. The existing wire case “Criminals are
+active, so send the fee by wire” has no pressure: its Tier 2 finding and
+Insufficient Evidence expectation remain unchanged.
 
-For each of the 16 cells, nine boundary variants and two wrap variants run with
-both `none` and `approved` records. Only the dot variant adds `rejected` and
-`expired`: `(9 + 2) × 2 + 2 = 24` rows per cell, or **384** total. Boundary values
-are dot `. `, semi `; `, colon `: `, dash `, `, excl `! `, none ` `, LF, blank
-line and CRLF. Boundary rows set `{W}` to a space; wrap rows set `{B}` to `.` and
-`{W}` to LF or CRLF. A space in each template after `{B}` prevents words from
-joining into accidental domains. Every template includes Chase and the same
-`https://chase.com` link placeholder. Each family uses separate vocabulary.
-WF includes the literal cue “Beware of hackers”; an alarm alone is not a cue.
+## Fixture shape and variety
 
-The fixture supplies the frozen evaluation date **2026-10-12** to the shared
-Node/browser setup. The approved record expires on 2026-12-31; the expired
-record expired on 2026-10-11; the rejected record is explicitly rejected and
-`none` has no contact record. Host clocks cannot change these outcomes.
+The original 384 rows represented **16 sentences × 11 surface variants**, with
+record states providing repeated wording and different verdict eligibility.
+The expanded fixture uses **32 sentences**: asking and bare forms for each of
+16 decisions. Each gets nine boundaries and two wraps with none/approved
+records, plus rejected/expired only for dot: `32 × ((11 × 2) + 2) = 768` rows.
+There are another 24 hand rows: OWN1–8, W1–10, four legitimate controls and two
+negation/reporting controls. All are read from one checked-in JSON fixture.
 
-Run the offline generator only when deliberately reviewing spec or wording
-changes:
+Generated IDs include form: `context-family-form-variant-record_state`.
+All rows retain explicit expectations and `known_limitation: null`; none are
+skipped. Boundaries are dot, semi, colon, **comma**, excl, none, LF, blank and
+CRLF. The old name “dash” for a comma was incorrect and has been renamed;
+there is no em-dash variant in this matrix.
 
-```sh
-node scripts/generate-reporting-scope.cjs
-node scripts/generate-reporting-scope.cjs --check
-```
+All templates contain `{B}`, `{W}`, Chase and the same `{LINK}` substitution,
+`https://chase.com`. Family vocabulary stays separate. Every WF template
+contains the literal cue “Beware of hackers.” For boundary variants W is a
+space; for wrap variants B is a dot and W is LF/CRLF. W precedes the action
+verb: after the complement in asking forms, at the start of the imperative in
+bare forms. These do not test wrapping inside an object phrase. A literal space
+after B prevents accidental bare domains such as `today.Beware`.
 
-Neither test runner imports the spec, templates or generator. Node reads the
-checked-in JSON; the browser fetches that same file. Tests do not regenerate it.
-The engine is checked against the frozen spec; a disagreement fails the test.
-Never relabel a row from observed engine output.
+Shared setup requires the frozen date **2026-10-12**. The approved fictional
+record expires on 2026-12-31, the expired one on 2026-10-11, the rejected one
+is explicitly rejected, and none has no contact record. No policies are loaded.
+Node reads the JSON; the browser fetches it over HTTP. Neither regenerates it.
+The spec wins over the engine: disagreements are test failures, not relabeling.
 
-### Execution checklist and evidence
+## Expectations, bias and limits
 
-- [x] Write 16 decisions and reasons, templates, generator and checked-in JSON.
-- [x] Inspect 20 randomly selected rows for meaning changes; correct wording,
-  not expectations. See [manual review](../testing/reporting-scope-results/manual-review.md).
-- [x] Record every failure before engine changes in
-  [baseline.json](../testing/reporting-scope-results/baseline.json).
-- [x] Correct accidental joined words in wrap templates and complete OWN7–8;
-  record [the corrected-template baseline](../testing/reporting-scope-results/baseline-corrected-templates.json)
-  against unchanged release engine `f66029b` (139/402).
-- [x] Widen `directAction` after the subject check; retain negation, quoted
-  examples and pressure thresholds. Preserve the existing coordinated warning.
-- [x] Verify OWN1–8, W1–4, legitimate controls and earlier regressions.
-- [x] Report counts for all 16 cells and each hand-row group in
-  [final.json](../testing/reporting-scope-results/final.json).
+One existing guard expectation changed: RS25's “Fraudsters appear to ask you
+to please pay…” now stays quiet because an unrecognized asking subject is not
+positive evidence of a sender demand. This follows the revised contract, not
+an attempt to fit observed output. All generated expectations remain frozen.
+The old quiet OWN7–8 texts remain NEG-REPORT/NEG-ASK; their replacement OWN texts
+are genuine code and remote-access requests. W10 completes the reviewer's
+ellipsis with “pay with gift cards.”
 
-The corrected baseline contains all 263 failures, fixture and engine hashes,
-the frozen date and per-group counts. The initial baseline is retained as well:
-it had 400 rows before the template correction and two additional positive OWN
-cases. No existing expectation was changed; the old OWN7–8 texts remain quiet
-as NEG-REPORT and NEG-ASK. Their IDs moved because they describe a reported or
-negated request, whereas the OWN group is now reserved for sender demands.
+Direct risky instructions survive nearby safety language. Indirect requests
+need a recognized sender subject. This balances detecting demands with avoiding
+false alarms on ordinary bank warnings—an especially important distinction
+when seniors use the tool to understand advice they receive. Quiet still does
+not mean authentic. The allowlist can miss indirect demands from unrecognized
+senders; that tradeoff is deliberate and requires real-message evaluation.
 
-All templates share one author and a small set of wording patterns. The variants
-are correlated, not independent samples of real messages. A perfect **384/384
-suite pass rate** does not replace real-message collection (**Task 11**) or
-estimate performance on messages from the public. The matrix isolates reporting
-scope; it does not cover sender attribution, all policies, all English grammar,
-or every possible location of an SMS wrap. The `sender.js` weakness above remains.
+This is bounded English pattern matching. Nested speech, uncommon descriptions,
+parenthetical commas and other wrap positions can still be misread. All
+**templates share one author** and surface variants are correlated. A perfect
+**768/768 suite pass rate** does not replace real-message collection in **Task 11**.
+`sender.js` still rejects some sender claims when a reporting cue occurs in
+the same clause; it remains unchanged. No organization facts, policy records
+or trusted-reference data were added.
+
+## Execution checklist
+
+- [x] Write W5–W10 quiet expectations and save all six pre-fix failures.
+- [x] Require a sender subject for indirect asking; rerun the existing suite.
+- [x] Add bare forms, rename comma, regenerate offline and inspect wording.
+- [x] Save full baselines against unchanged `af93e3e` and `f66029b` using the
+  same expanded fixture; distinguish scope gains from OWN and preface gains.
+- [x] Save the 40 new bare-preface failures before fixing recognition.
+- [x] Keep all fixture expectations fixed and document the single RS25 change.
+- [x] Record counts by form × context × family and each hand group in the
+  [results report](../testing/reporting-scope-results/README.md).
+- [x] Pass 1,130 shared checks on Node 22, Node 24 and Chromium, plus Node-only
+  parity, boundary and evaluation checks before merging into release-v1.
+
+Run `npm test` and serve `tests/run.html` over HTTP for the shared suite.
+Run `node scripts/run-reporting-scope.cjs` for the suite pass rate. The offline
+`node scripts/generate-reporting-scope.cjs --check` checks the committed fixture
+separately from tests. See the [hand-row matrix](../testing/task-3-matrix.md).
+
+## Technical challenge video: revised narration
+
+The video stays outside Git. The earlier recording should not be presented as
+covering this revision; an updated recording and unlisted upload remain pending.
+Use this corrected narration rather than the old OWN-heavy before/after claim:
+
+> “Fraudsters may ask you to pay with gift cards” describes someone else's
+> request. “To avoid fraudsters, pay with gift cards” directly asks you to act.
+> The repair checks each demand instead of ignoring a whole clause containing
+> a warning word. We also learned that an unfamiliar asker must not automatically
+> count as the sender: ordinary advice like “If someone asks you to pay, hang up”
+> needs to stay quiet.
+>
+> We tested 32 sentence templates in 11 surface forms and repeated them across
+> record states. That produces 768 generated rows, not 768 independently written
+> messages. On the bare-imperative subset, the pre-repair engine passed 312 of
+> 384; the original scope repair passed 344. Recognizing short warning prefaces
+> brought it to 384. The asking subset separately checks sender-request and
+> line-wrap behavior. These are suite pass rates, not real-world success rates;
+> we still need real messages for Task 11.
