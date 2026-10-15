@@ -1,0 +1,87 @@
+{
+  "metric": "suite pass rate",
+  "evaluation_date": "2026-10-12",
+  "fixture_sha256": "ca41949a03f024607783fd4cb6cda2a2ae806284c2a27de1ac91cb412ed40718",
+  "engine_sha256": "37a5baf2002bcf849e3b4b15b59bbd99d2afc8df924e44afc388824051aa7a5f",
+  "passed": 402,
+  "total": 402,
+  "counts": {
+    "WF-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "WF-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "WF-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "WF-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "PC-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "PC-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "PC-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "PC-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "RD-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "RD-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "RD-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "RD-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "TW-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "TW-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "TW-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "TW-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "OWN": {
+      "passed": 8,
+      "total": 8
+    },
+    "W": {
+      "passed": 4,
+      "total": 4
+    },
+    "LEGIT": {
+      "passed": 6,
+      "total": 6
+    }
+  },
+  "failures": []
+}
