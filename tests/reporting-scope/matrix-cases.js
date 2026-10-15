@@ -4,10 +4,10 @@ for (const context of ['WF', 'PC', 'RD', 'TW', 'OWN', 'W', 'LEGIT']) {
   for (const family of families) {
     window.TFS_PHASE2.add('Scope matrix ' + context + (family ? ' × ' + family : ''), function (t) {
       const fixture = window.TFS_SCOPE_FIXTURE;
-      t.assert(fixture && fixture.rows.length === 384, 'checked-in fixture not loaded or row count differs');
-      t.assert(new Set(fixture.rows.map(r => r.id)).size === 384, 'duplicate fixture IDs');
+      t.assert(fixture && fixture.rows.length === 768, 'checked-in fixture not loaded or row count differs');
+      t.assert(new Set(fixture.rows.map(r => r.id)).size === 768, 'duplicate fixture IDs');
       const rows = fixture.rows.concat(fixture.hand_rows).filter(r => r.context === context && (!family || r.family === family));
-      const expectedCount = family ? 24 : { OWN: 8, W: 4, LEGIT: 6 }[context];
+      const expectedCount = family ? 48 : { OWN: 8, W: 10, LEGIT: 6 }[context];
       t.assert(rows.length === expectedCount, 'missing or extra rows in matrix group');
       for (const row of rows) t.test(row.id, function () {
         const result = window.TFS_SCOPE_SETUP.observe(window.TfsEngine, row, fixture.evaluation_date);
