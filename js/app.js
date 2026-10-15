@@ -1,245 +1,404 @@
-/* The page: reads the form, shows results, and runs the "I checked it myself" step.
-   The engine decides everything; this file only displays it.
-   Nothing typed here is stored or sent anywhere. */
-const byId = id => document.getElementById(id);
-const CHANNELS = ['text', 'email', 'unknown'];
-const MAX_CHARS = window.TFS.MAX_CHARS;
+// app.js - Frontend logic for the checker tool
+// TODO: clean up some of these helpers later when we refactor into modules, but works for now
 
-let chosenChannel = null;
-let shownResult = null;
+const getElem = (id) => document.getElementById(id);
 
-const RESULT_STYLES = {
+const myForm = getElem('submission-form');
+const checkBtn = getElem('check-button');
+const charLimit = window.TFS.MAX_CHARS;
+const possibleChannels = ['text', 'email', 'unknown'];
+
+let selectedChannel = null;
+let currentRev = 0;
+let lastResult = null; // Storing this so we can access it in the self-check stuff
+
+function analyzeSubmission(text, channel) {
+  // calling the engine - hope this doesn't fail lol
+  const res = window.TfsEngine.analyze(text, window.TFS_STORE, { declaredChannel: channel });
+  if (!window.TfsEngine.validateResult(res)) {
+    throw new Error('Invalid result shape');
+  }
+  return res;
+}
+
+function showScreen(screenName) {
+  // Hide/show screens... probably a better way to do this with CSS classes but whatever
+  ['home', 'checking', 'result'].forEach(id => {
+    getElem(id).hidden = (id !== screenName);
+  });
+  
+  getElem('demo-tools').hidden = (screenName === 'checking');
+  
+  const headingMap = { home: 'home-title', checking: 'checking-title', result: 'result-title' };
+  const targetHeading = headingMap[screenName];
+  if (targetHeading) {
+    getElem(targetHeading).focus();
+  }
+}
+
+function clearError() {
+  getElem('error').textContent = '';
+  getElem('message').removeAttribute('aria-invalid');
+  getElem('channel-question').removeAttribute('aria-invalid');
+  possibleChannels.forEach(c => {
+    getElem(`channel-${c}`).removeAttribute('aria-invalid');
+  });
+}
+
+function showError(msg, fieldToFocus) {
+  getElem('error').textContent = msg;
+  if (fieldToFocus) {
+    fieldToFocus.setAttribute('aria-invalid', 'true');
+    fieldToFocus.focus();
+  }
+}
+
+function clearExample() {
+  const ex = getElem('example-loaded');
+  ex.textContent = '';
+  ex.hidden = true;
+}
+
+function updateCount() {
+  const currentLen = getElem('message').value.length;
+  const countDisplay = getElem('character-count');
+  countDisplay.textContent = `${currentLen.toLocaleString()} / ${charLimit.toLocaleString()} characters`;
+  
+  if (currentLen > charLimit) {
+    countDisplay.classList.add('over-limit');
+  } else {
+    countDisplay.classList.remove('over-limit');
+  }
+}
+
+function selectChannel(ch) {
+  selectedChannel = ch;
+  possibleChannels.forEach(opt => {
+    const el = getElem(`channel-${opt}`);
+    el.setAttribute('aria-pressed', String(opt === ch));
+    if (opt === ch) {
+      el.classList.add('active');
+    } else {
+      el.classList.remove('active');
+    }
+  });
+  clearError();
+}
+
+function clearResult() {
+  // Clearing out old result data from the DOM
+  const idsToClear = [
+    'result-title', 'result-description', 'identity', 'channel', 
+    'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead'
+  ];
+  
+  idsToClear.forEach(id => {
+    getElem(id).replaceChildren();
+  });
+  
+  lastResult = null;
+  resetSelfCheck();
+}
+
+// "I checked it myself": records the person's own check. It never changes the assessment.
+function choiceButton(label, hint, onChoose) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'self-check-option';
+  btn.setAttribute('aria-pressed', 'false');
+  
+  btn.append(textElement('span', label, 'choice-label'));
+  if (hint) {
+    btn.append(textElement('span', hint, 'choice-hint'));
+  }
+  
+  btn.addEventListener('click', (e) => {
+    // Just loop through siblings to toggle pressed state
+    const parent = btn.parentElement;
+    for (const child of parent.children) {
+      child.setAttribute('aria-pressed', String(child === btn));
+    }
+    onChoose();
+  });
+  
+  return btn;
+}
+
+function showOutcome(outcome) {
+  getElem('outcome-title').textContent = outcome.title;
+  
+  const linesContainer = getElem('outcome-lines');
+  linesContainer.replaceChildren(...outcome.lines.map(l => textElement('li', l)));
+  
+  const outcomeBox = getElem('self-check-outcome');
+  outcomeBox.className = `self-check-outcome ${outcome.kind}`;
+  outcomeBox.hidden = false;
+  
+  getElem('outcome-title').focus();
+}
+
+function chooseMethod(methodKey) {
+  getElem('self-check-outcome').hidden = true;
+  const isDone = !window.TfsSelfCheck.METHODS[methodKey].independent;
+  
+  getElem('answer-step').hidden = isDone;
+  if (isDone) {
+    showOutcome(window.TfsSelfCheck.outcome(methodKey, null, lastResult));
+    return;
+  }
+  
+  const answerOpts = getElem('answer-options');
+  const answerEntries = Object.entries(window.TfsSelfCheck.ANSWERS);
+  
+  answerOpts.replaceChildren(
+    ...answerEntries.map(([ansKey, ansLabel]) => 
+      choiceButton(ansLabel, '', () => {
+        showOutcome(window.TfsSelfCheck.outcome(methodKey, ansKey, lastResult));
+      })
+    )
+  );
+  
+  getElem('answer-title').focus();
+}
+
+function resetSelfCheck() {
+  const methodOpts = getElem('method-options');
+  const availableMethods = window.TfsSelfCheck.methodsFor(lastResult);
+  
+  methodOpts.replaceChildren(
+    ...availableMethods.map(m => choiceButton(m.label, m.hint, () => chooseMethod(m.id)))
+  );
+  
+  getElem('answer-options').replaceChildren();
+  getElem('answer-step').hidden = true;
+  getElem('self-check-outcome').hidden = true;
+  getElem('outcome-title').replaceChildren();
+  getElem('outcome-lines').replaceChildren();
+}
+
+function resetApp() {
+  currentRev++;
+  myForm.reset();
+  checkBtn.disabled = false;
+  clearResult();
+  selectChannel(null);
+  clearExample();
+  updateCount();
+  getElem('demo-tools').open = false;
+  showScreen('home');
+}
+
+function loadScenario(scenarioId) {
+  resetApp();
+  const scenario = window.demoScenarios[scenarioId];
+  getElem('message').value = scenario.input;
+  updateCount();
+  
+  const exLoaded = getElem('example-loaded');
+  exLoaded.textContent = `Loaded: ${scenario.label}. Example channel: ${scenario.channelLabel}. Choose that channel before checking.`;
+  exLoaded.hidden = false;
+  
+  checkBtn.focus();
+}
+
+const assessmentDetails = {
   suspicious: { css: 'mismatch', title: 'Suspicious', label: 'PAUSE BEFORE ACTING', symbol: '!' },
   details_match: { css: 'match', title: 'Details Match', label: 'CONTACT DETAILS ONLY', symbol: '=' },
   insufficient_evidence: { css: 'unknown', title: 'Insufficient Evidence', label: 'UNRESOLVED · PAUSE BEFORE ACTING', symbol: '?' }
 };
-const CHECK_LABELS = { SUPPORTS: 'On our list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
 
-function textElement(tag, text, className) {
-  const element = document.createElement(tag);
-  element.textContent = text;
-  if (className) element.className = className;
-  return element;
-}
-
-// Shows one screen and moves keyboard and screen-reader focus to its heading.
-function showScreen(name) {
-  byId('home').hidden = name !== 'home';
-  byId('result').hidden = name !== 'result';
-  byId(name === 'home' ? 'home-title' : 'result-title').focus();
-}
-
-/* ---------- The form ---------- */
-
-function showError(text, field) {
-  byId('error').textContent = text;
-  field.setAttribute('aria-invalid', 'true');
-  field.focus();
-}
-
-function clearError() {
-  byId('error').textContent = '';
-  for (const id of ['message', 'channel-question', ...CHANNELS.map(c => `channel-${c}`)]) byId(id).removeAttribute('aria-invalid');
-}
-
-function updateCount() {
-  const count = byId('message').value.length;
-  byId('character-count').textContent = `${count.toLocaleString()} / ${MAX_CHARS.toLocaleString()} characters`;
-  byId('character-count').classList.toggle('over-limit', count > MAX_CHARS);
-}
-
-function chooseChannel(channel) {
-  chosenChannel = channel;
-  for (const option of CHANNELS) {
-    byId(`channel-${option}`).setAttribute('aria-pressed', String(option === channel));
-    byId(`channel-${option}`).classList.toggle('active', option === channel);
+function textElement(tag, txt, className) {
+  const el = document.createElement(tag);
+  el.textContent = txt;
+  if (className) {
+    el.className = className;
   }
-  clearError();
+  return el;
 }
 
-function clearExampleNote() {
-  byId('example-loaded').textContent = '';
-  byId('example-loaded').hidden = true;
-}
-
-function checkMessage(event) {
-  event.preventDefault();
-  clearError();
-  const text = byId('message').value;
-  if (!text.trim()) return showError('Paste a message or link first.', byId('message'));
-  if (text.length > MAX_CHARS) {
-    return showError(`This is too long to check fully. Paste ${MAX_CHARS.toLocaleString()} characters or fewer, or one complete link.`, byId('message'));
+function renderResult(result) {
+  const info = assessmentDetails[result.assessment];
+  const riskFlags = result.requestRisk.flags;
+  const isRisky = result.requestRisk.level !== 'none';
+  const isHighRisk = result.requestRisk.level === 'high';
+  
+  const banner = getElem('result-banner');
+  banner.className = `result-banner ${info.css}${isRisky ? ' risky' : ''}`;
+  
+  getElem('state-symbol').textContent = info.symbol;
+  getElem('state-label').textContent = isHighRisk ? `${info.label} · ACTION WARNING` : info.label;
+  getElem('result-title').textContent = info.title;
+  getElem('result-description').textContent = result.description;
+  
+  // Quick mapping to populate text fields
+  const fieldsToFill = {
+    identity: 'claimedIdentity', 
+    channel: 'channel', 
+    inspected: 'inspected', 
+    meaning: 'meaning'
+  };
+  
+  for (const [domId, propName] of Object.entries(fieldsToFill)) {
+    getElem(domId).textContent = result[propName];
   }
-  if (!chosenChannel) {
-    byId('channel-question').setAttribute('aria-invalid', 'true');
-    return showError('Choose Text, Email, or Not sure before checking.', byId('channel-text'));
+
+  const primaryLead = result.actionWarnings[0];
+  getElem('action-lead').textContent = primaryLead;
+  
+  const actionNote = getElem('action-note');
+  if (isHighRisk) {
+    actionNote.classList.add('high-risk');
+  } else {
+    actionNote.classList.remove('high-risk');
   }
-  try {
-    const result = window.TfsEngine.analyze(text, window.TFS_STORE, { declaredChannel: chosenChannel, policies: window.TFS_POLICIES });
-    // Never show a result whose parts disagree; fail with a plain message instead.
-    if (!window.TfsEngine.validateResult(result)) throw new Error('Invalid result');
-    showResult(result, text);
-  } catch {
-    showScreen('home');
-    showError('The check could not finish. Your input is still here. Please try again.', byId('message'));
-  }
-}
+  
+  const checksContainer = getElem('checks');
+  checksContainer.replaceChildren();
+  
+  const checkLabels = { SUPPORTS: 'On our list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
+  
+  result.checks.forEach(chk => {
+    const item = document.createElement('li');
+    item.className = `check-item ${chk.status.toLowerCase()}`;
+    
+    const detailsTag = document.createElement('details');
+    detailsTag.className = 'check-source';
+    detailsTag.append(
+      textElement('summary', 'About this check'), 
+      textElement('p', chk.source, 'source')
+    );
+    
+    item.append(
+      textElement('span', checkLabels[chk.status], 'check-label'), 
+      textElement('p', chk.detail), 
+      detailsTag
+    );
+    checksContainer.append(item);
+  });
 
-// Clears everything the last person entered or saw, for a shared workshop device.
-function startOver() {
-  byId('submission-form').reset();
-  clearResult();
-  chooseChannel(null);
-  clearExampleNote();
-  updateCount();
-  byId('demo-tools').open = false;
-  showScreen('home');
-}
-
-function loadExample(id) {
-  startOver();
-  const example = window.demoScenarios[id];
-  byId('message').value = example.input;
-  updateCount();
-  byId('example-loaded').textContent = `Loaded: ${example.label}. Example channel: ${example.channelLabel}. Choose that channel before checking.`;
-  byId('example-loaded').hidden = false;
-  byId('check-button').focus();
-}
-
-/* ---------- The result ---------- */
-
-function checkItem(check) {
-  const item = byId('check-template').content.firstElementChild.cloneNode(true);
-  item.classList.add(check.status.toLowerCase());
-  item.querySelector('.check-label').textContent = CHECK_LABELS[check.status];
-  item.querySelector('.check-detail').textContent = check.detail;
-  item.querySelector('.source').textContent = check.source;
-  return item;
-}
-
-function signalItem(flag, result) {
-  const item = document.createElement('li');
-  item.append(textElement('span', flag.label, 'check-label'), textElement('p', `“${flag.words}”`, 'quote'));
-  // For gift-card codes, name the card the request refers to.
-  const rule = result.requestRisk.established.find(e => e.antecedent && e.action.start === flag.start);
-  if (rule) item.append(textElement('p', `The request refers to “${rule.antecedent.quote}” in this message.`, 'source'));
-  return item;
-}
-
-// The person's own message with each finding marked. Text nodes only: pasted markup stays text.
-function showAnnotations(text, result) {
-  const model = window.TFS.annotate(text, result, window.TFS_STORE);
-  window.TFS.renderAnnotations(document, model, byId('annotated'), byId('annotation-notes'));
-  const advice = model.notes.length && result.assessment !== 'details_match' ? result.actionWarnings[0] : '';
-  byId('annotated-advice').textContent = advice;
-  byId('annotated-advice').hidden = !advice;
-  byId('annotated-section').hidden = model.notes.length === 0;
-}
-
-function showResult(result, text) {
-  const style = RESULT_STYLES[result.assessment];
-  const risk = result.requestRisk.level;
-  byId('result-banner').className = `result-banner ${style.css}${risk !== 'none' ? ' risky' : ''}`;
-  byId('state-symbol').textContent = style.symbol;
-  byId('state-label').textContent = risk === 'high' ? `${style.label} · ACTION WARNING` : style.label;
-  byId('result-title').textContent = style.title;
-  byId('result-description').textContent = result.description;
-  byId('identity').textContent = result.claimedIdentity;
-  byId('channel').textContent = result.channel;
-  byId('inspected').textContent = result.inspected;
-  byId('meaning').textContent = result.meaning;
-
-  // The most important warning sits right under the result, also on small screens.
-  const [lead, ...otherWarnings] = result.actionWarnings;
-  byId('action-lead').textContent = lead;
-  byId('action-note').classList.toggle('high-risk', risk === 'high');
-
-  byId('checks').replaceChildren(...result.checks.map(checkItem));
-  byId('asks-section').hidden = result.requestRisk.flags.length === 0;
-  byId('asks').replaceChildren(...result.requestRisk.flags.map(flag => signalItem(flag, result)));
-  byId('warnings').replaceChildren(...otherWarnings.map(warning => textElement('p', warning, 'warning')));
-  byId('next-list').replaceChildren(...result.nextSteps.map(step => textElement('li', step)));
-  showAnnotations(text, result);
-
-  shownResult = result;
+  const asksSec = getElem('asks-section');
+  asksSec.hidden = (riskFlags.length === 0);
+  
+  const asksContainer = getElem('asks');
+  asksContainer.replaceChildren();
+  
+  riskFlags.forEach(flag => {
+    const item = document.createElement('li');
+    item.append(
+      textElement('span', flag.label, 'check-label'), 
+      textElement('p', `“${flag.words}”`, 'quote')
+    );
+    
+    const matchingEvidence = result.requestRisk.established.find(e => e.antecedent && e.action.start === flag.start);
+    if (matchingEvidence) {
+      item.append(textElement('p', `The request refers to “${matchingEvidence.antecedent.quote}” in this message.`, 'source'));
+    }
+    asksContainer.append(item);
+  });
+  
+  const warningsContainer = getElem('warnings');
+  warningsContainer.replaceChildren();
+  
+  result.actionWarnings.forEach(wText => {
+    if (wText !== primaryLead) {
+      warningsContainer.append(textElement('p', wText, 'warning'));
+    }
+  });
+  
+  const nextList = getElem('next-list');
+  nextList.replaceChildren();
+  result.nextSteps.forEach(step => {
+    nextList.append(textElement('li', step));
+  });
+  
+  getElem('paste-link').hidden = !result.offerPaste;
+  
+  lastResult = result;
   resetSelfCheck();
   showScreen('result');
 }
 
-function clearResult() {
-  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotated-advice', 'annotation-notes']) {
-    byId(id).replaceChildren();
-  }
-  byId('annotated-section').hidden = true;
-  shownResult = null;
-  resetSelfCheck();
-}
+// Event Listeners setup loop
+possibleChannels.forEach(c => {
+  getElem(`channel-${c}`).addEventListener('click', () => selectChannel(c));
+});
 
-/* ---------- "I checked it myself" (never changes the result) ---------- */
-
-function choiceButton(label, hint, onChoose) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'self-check-option';
-  button.setAttribute('aria-pressed', 'false');
-  button.append(textElement('span', label, 'choice-label'));
-  if (hint) button.append(textElement('span', hint, 'choice-hint'));
-  button.addEventListener('click', () => {
-    for (const other of button.parentElement.children) other.setAttribute('aria-pressed', String(other === button));
-    onChoose();
-  });
-  return button;
-}
-
-function showOutcome(outcome) {
-  byId('outcome-title').textContent = outcome.title;
-  byId('outcome-lines').replaceChildren(...outcome.lines.map(line => textElement('li', line)));
-  byId('self-check-outcome').className = `self-check-outcome ${outcome.kind}`;
-  byId('self-check-outcome').hidden = false;
-  byId('outcome-title').focus();
-}
-
-function chooseMethod(method) {
-  const check = window.TfsSelfCheck;
-  byId('self-check-outcome').hidden = true;
-  // A check that was not independent ends here; there is nothing to ask about it.
-  const finished = !check.METHODS[method].independent;
-  byId('answer-step').hidden = finished;
-  if (finished) return showOutcome(check.outcome(method, null, shownResult));
-  byId('answer-options').replaceChildren(...Object.entries(check.ANSWERS).map(([answer, label]) =>
-    choiceButton(label, '', () => showOutcome(check.outcome(method, answer, shownResult)))));
-  byId('answer-title').focus();
-}
-
-function resetSelfCheck() {
-  byId('method-options').replaceChildren(...window.TfsSelfCheck.methodsFor(shownResult).map(m =>
-    choiceButton(m.label, m.hint, () => chooseMethod(m.id))));
-  for (const id of ['answer-options', 'outcome-title', 'outcome-lines']) byId(id).replaceChildren();
-  byId('answer-step').hidden = true;
-  byId('self-check-outcome').hidden = true;
-}
-
-/* ---------- Wiring ---------- */
-
-for (const channel of CHANNELS) byId(`channel-${channel}`).addEventListener('click', () => chooseChannel(channel));
-byId('message').addEventListener('input', () => {
-  clearExampleNote();
+getElem('message').addEventListener('input', () => {
+  clearExample();
   clearError();
   updateCount();
 });
-byId('submission-form').addEventListener('submit', checkMessage);
-byId('back').addEventListener('click', () => {
-  showScreen('home');
-  byId('message').focus();
+
+myForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (checkBtn.disabled) return;
+  
+  clearError();
+  const textVal = getElem('message').value;
+  let validationError = '';
+  
+  if (!textVal.trim()) {
+    validationError = 'Paste a message or link first.';
+  } else if (textVal.length > charLimit) {
+    validationError = `This is too long to check fully. Paste ${charLimit.toLocaleString()} characters or fewer, or one complete link.`;
+  }
+  
+  if (validationError) {
+    showError(validationError, getElem('message'));
+    return;
+  }
+  
+  if (!selectedChannel) {
+    getElem('channel-question').setAttribute('aria-invalid', 'true');
+    showError('Choose Text, Email, or Not sure before checking.', getElem('channel-text'));
+    return;
+  }
+
+  const thisRevision = ++currentRev;
+  checkBtn.disabled = true;
+  showScreen('checking');
+  
+  try {
+    const analysisResult = await analyzeSubmission(textVal, selectedChannel);
+    if (thisRevision === currentRev) {
+      renderResult(analysisResult);
+    }
+  } catch (err) {
+    // console.log("Error during analysis:", err);
+    if (thisRevision === currentRev) {
+      showScreen('home');
+      showError('The check could not finish. Your input is still here. Please try again.', getElem('message'));
+    }
+  } finally {
+    if (thisRevision === currentRev) {
+      checkBtn.disabled = false;
+    }
+  }
 });
-byId('start-again').addEventListener('click', startOver);
-byId('reset').addEventListener('click', startOver);
-for (const [id, example] of Object.entries(window.demoScenarios)) {
-  const button = textElement('button', example.label);
-  button.type = 'button';
-  button.addEventListener('click', () => loadExample(id));
-  byId('scenario-buttons').append(button);
+
+// Setup scenario buttons dynamically
+for (const [scenarioKey, scenarioObj] of Object.entries(window.demoScenarios)) {
+  const scenarioBtn = textElement('button', scenarioObj.label);
+  scenarioBtn.type = 'button';
+  scenarioBtn.addEventListener('click', () => loadScenario(scenarioKey));
+  getElem('scenario-buttons').append(scenarioBtn);
 }
-byId('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations · Website list ${window.TFS_STORE.version}`;
+
+// Bottom action bindings
+getElem('back').addEventListener('click', () => {
+  showScreen('home');
+  getElem('message').focus();
+});
+
+getElem('start-again').addEventListener('click', resetApp);
+getElem('reset').addEventListener('click', resetApp);
+
+getElem('paste-link').addEventListener('click', () => {
+  resetApp();
+  getElem('message').focus();
+});
+
+// Init calls
 resetSelfCheck();
+getElem('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations · Website list ${window.TFS_STORE.version}`;
 updateCount();
