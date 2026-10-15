@@ -200,3 +200,62 @@ Use this corrected narration rather than the old OWN-heavy before/after claim:
 > brought it to 384. The asking subset separately checks sender-request and
 > line-wrap behavior. These are suite pass rates, not real-world success rates;
 > we still need real messages for Task 11.
+
+## Tier 2 follow-up: three missing warnings
+
+GAP1–3 previously reached Details Match with approved records: purchasing gift
+cards to secure an account lacked a payment purpose recognized by Tier 1;
+“move your money into Bitcoin” used an unrecognized action verb; and “our
+technician will need you to” did not match the sender-need pattern. All three
+now emit their family flag and return **Insufficient Evidence**, with no Tier 1
+promotion. Their exact expectations were added before changing the engine.
+
+The action scanner and wire detector now include `move`, `deposit`, `convert`
+and `put`; an explicit guard keeps Tier 1 restricted to its original verbs:
+
+```js
+s.flag('crypto_or_wire', d.action.start, object.end);
+if (!/^(?:pay|send|transfer|wire)$/.test(d.verb)) return;
+```
+
+Gift-card purchase requests now add `gift_card_payment` before the existing
+Tier 1 purpose check. An explicit birthday-gift purpose remains quiet, as the
+existing controls require. A fallback purchase warning is deduplicated when
+that same card already supports a proved disclosure. A purchase-only warning
+cannot establish a gift-payment policy violation: `policy.js` treats that
+payment purpose as unresolved, preserving the existing D11 behavior.
+
+The bounded sender pattern and new helper are:
+
+```js
+const OWN_NEED = /\b(?:we|i|our (?:technician|team|agent|representative|specialist|support team))\s+(?:(?:will|may)\s+)?need\s+you\s+to\s*(?:please\s*)?$/i;
+const NEED_COMPLEMENT = /\bneed\s+you\s+to\s*(?:please\s*)?$/i;
+
+function ownNeedBefore(prefix) {
+  const need = prefix.match(OWN_NEED);
+  return !!need && !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(prefix.slice(0, need.index));
+}
+```
+
+`directAction` returns this helper's result whenever it sees a need complement;
+unknown subjects cannot fall through to the “please” shortcut. Clause reading
+keeps an unfinished need complement across LF/CRLF even for unknown subjects,
+so wrapping cannot turn “Scammers will need you to” into a fresh imperative.
+
+Remaining gaps: unlisted roles, “needs” and other unrecognized request forms
+can still be missed. Object-distance limits and unusual wrapping remain. The
+new movement verbs deliberately stay Tier 2 even with pressure, and “secure /
+protect / verify / keep safe” were not added to the Tier 1 purpose list. Generic
+purchase warnings may also flag benign purchases outside the narrow birthday
+exception; they indicate caution, not established scam proof. Existing control
+messages and expectations were not changed. The 16-decision matrix remains
+frozen; these three GAP rows explicitly test the separate Tier 2 threshold.
+
+Execution checklist:
+
+- [x] Add GAP1–3 and regenerate the checked-in fixture offline.
+- [x] Confirm all three fail as Details Match and save every failure.
+- [x] Add Tier 2 purchase/movement warnings and bounded staff-need recognition.
+- [x] Preserve birthday, negation, reporting, disclosure and policy controls.
+- [x] Verify GAP 3/3, OWN 8/8, W 10/10, LEGIT 6/6 and the unchanged 768 matrix rows.
+- [x] Run the full Node 22/24 and Chromium suites, and save final fixture results.
