@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build:gate": "node scripts/build-assessment.cjs",
-    "test": "node scripts/build-assessment.cjs --check && node tests/run-node.cjs && node tests/eval-tests.cjs",
+    "test": "node scripts/build-assessment.cjs --check && node tests/app-elements.cjs && node tests/run-node.cjs && node tests/eval-tests.cjs",
     "eval": "node eval/run.cjs"
   }
 }
