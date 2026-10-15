@@ -31,6 +31,9 @@
       target.hostUnicode = T.toUnicodeHost(target.host);
       // Text before an @ in a link ("paypal.com@evil.example") is a known trick; keep it for checking.
       target.userinfo = url.username ? decodeSafe(url.username) + (url.password ? ':' + decodeSafe(url.password) : '') : '';
+      target.scheme = url.protocol.replace(':', '');
+      target.path = url.pathname || '/';
+      // Do not silently turn malformed separators into a partial, trusted host.
       // Never turn malformed separators into a partial host that looks trustworthy.
       if (/[|\\^]/.test(raw)) target.error = 'unreadable';
     } catch (err) {
@@ -80,6 +83,49 @@
         spans.push([start, start + token.length]);
         continue;
       }
+      var start = m.index;
+      var lead = token.match(LEAD_PUNCT);
+      if (lead) { token = token.slice(lead[0].length); start += lead[0].length; }
+      token = token.replace(TRAIL_PUNCT, '');
+      if (!token) continue;
+      var target = null;
+      if (/^(?:https?|ftp):\/\//i.test(token)) {
+        target = parseLink(token, token);
+      } else if (EMAIL_RE.test(token)) {
+        var em = token.match(EMAIL_RE);
+        var domain = em[2].toLowerCase();
+        target = { kind: 'email', raw: token.replace(/^mailto:/i, ''), host: domain, userinfo: '' };
+        try {
+          target.host = new URL('http://' + domain).hostname;
+        } catch (err) {
+          target.error = 'unreadable';
+        }
+        target.hostUnicode = T.toUnicodeHost(target.host || '');
+      } else if (/^www\./i.test(token)) {
+        target = parseLink(token, 'http://' + token);
+      } else if (token.indexOf('@') < 0) {
+        var bm = token.match(BARE_HOST_RE);
+        if (bm) {
+          var tld = bm[2].toLowerCase();
+          // Host names ignore case. Unfamiliar endings must not vanish from a check.
+          if (!FILE_ENDINGS.test(tld)) {
+            target = parseLink(token, 'http://' + token);
+          }
+        }
+      }
+      if (!target && /[.|\\^@]/.test(token) && /(?:https?:|www\.)/i.test(token)) {
+        target = { kind: 'link', raw: token, error: 'unreadable' };
+      }
+      if (target) {
+        // Offsets into the text given to extractTargets (see sourceTargets for the person's text).
+        target.at = [start, start + token.length];
+        spans.push([start, start + token.length]);
+        var key = target.kind + ':' + (target.error ? target.raw : target.host || target.raw) + ':' + (target.userinfo || '');
+        if (!seen[key]) {
+          seen[key] = 1;
+          if (targets.length < MAX_TARGETS) targets.push(target);
+          else incomplete = true;
+        }
       const lead = token.match(LEAD_PUNCT);
       if (lead) {
         token = token.slice(lead[0].length);
@@ -97,6 +143,18 @@
     for (const [from, to] of spans) chars.fill(' ', from, to);
     const masked = spans.length ? chars.join('') : text;
 
+    PHONE_RE.lastIndex = 0;
+    var p;
+    while ((p = PHONE_RE.exec(masked)) !== null) {
+      var e164 = '+1' + p[1] + p[2] + p[3];
+      if (!seen['phone:' + e164]) {
+        seen['phone:' + e164] = 1;
+        if (targets.length < MAX_TARGETS) {
+          var lead = p[0].length - p[0].replace(/^\s+/, '').length;
+          var phoneText = p[0].trim();
+          targets.push({ kind: 'phone', raw: phoneText, e164: e164, display: '(' + p[1] + ') ' + p[2] + '-' + p[3], at: [p.index + lead, p.index + lead + phoneText.length] });
+        } else incomplete = true;
+      }
     for (const p of masked.matchAll(PHONE_RE)) {
       const e164 = '+1' + p[1] + p[2] + p[3];
       add('phone:' + e164, { kind: 'phone', raw: p[0].trim(), e164, display: `(${p[1]}) ${p[2]}-${p[3]}` });
@@ -104,6 +162,8 @@
     return { targets, masked, incomplete };
   }
 
+  /* ---------- Claim ---------- */
+  var GENERIC_CLAIMS = [
   /* ---------- The claimed sender ---------- */
   var compiledCache = new WeakMap();
 
@@ -144,6 +204,46 @@
     { re: /\b(?:toll|tolls)\b/i, label: 'A toll service (not named)' }
   ];
 
+  // The claimed sender comes only from TFS.attributeSender (sender.js); an address is never a claim.
+  function findClaim(masked, store) {
+    var orgs = store.orgs || [];
+    var attribution = T.attributeSender(masked, orgs);
+    var org = attribution.orgId ? orgs.filter(function (o) { return o.id === attribution.orgId; })[0] : null;
+    var others = T.senderMentions(masked, orgs).filter(function (o) { return !org || o.id !== org.id; })
+      .map(function (o) { return o.displayName; });
+    if (org) return { org: org, words: attribution.alias, generic: null, otherMentions: others, attribution: attribution };
+    for (var g = 0; g < GENERIC_CLAIMS.length; g++) {
+      if (GENERIC_CLAIMS[g].re.test(masked)) return { org: null, generic: GENERIC_CLAIMS[g].label, otherMentions: [], attribution: attribution };
+    }
+    return { org: null, generic: null, otherMentions: [], attribution: attribution };
+  }
+
+  /* Contacts with spans in the person's own text: the same extraction as the risk rules use,
+     moved back to source offsets. Every occurrence is listed, repeats included. */
+  function sourceTargets(source) {
+    var raw = source == null ? '' : String(source);
+    var view = T.riskView(raw);
+    var found = [], seen = {};
+    extractTargets(view.text).targets.forEach(function (target) {
+      var moved = T.sourceSpan(view, raw, target.at[0], target.at[1]);
+      found.push({ target: target, start: moved.start, end: moved.end, quote: raw.slice(moved.start, moved.end) });
+      seen[target.kind + ':' + target.at[0]] = 1;
+    });
+    // extractTargets keeps the first copy of a repeated contact; find the later copies too.
+    found.slice().forEach(function (item) {
+      var text = view.text, needle = text.slice(item.target.at[0], item.target.at[1]), from = item.target.at[1], k;
+      while (needle && (k = text.indexOf(needle, from)) >= 0) {
+        from = k + needle.length;
+        var before = text.charAt(k - 1), after = text.charAt(from);
+        if (/[\w.@\/-]/.test(before) || /[\w@\/-]/.test(after)) continue;
+        if (seen[item.target.kind + ':' + k]) continue;
+        seen[item.target.kind + ':' + k] = 1;
+        var moved = T.sourceSpan(view, raw, k, from);
+        found.push({ target: item.target, start: moved.start, end: moved.end, quote: raw.slice(moved.start, moved.end) });
+      }
+    });
+    found.sort(function (a, b) { return a.start - b.start; });
+    return found;
   const SENDER_AFTER = /^\s*(?::|-|\u2013|alert|security|support|team|customer|fraud|account|notice|services?|bank|credit union)/i;
   const SENDER_BEFORE = /(?:\bfrom|\bthis is|\bwe are|\byour)\s+(?:the\s+)?$/i;
 
@@ -175,5 +275,6 @@
   }
 
   T.extractTargets = extractTargets;
+  T.sourceTargets = sourceTargets;
   T.findClaim = findClaim;
 })(typeof window !== 'undefined' ? window : globalThis);

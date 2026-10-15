@@ -8,7 +8,7 @@ window.TFS_FIXTURE_STORE = {
   "orgs": [
     {
       "id": "chase",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "Chase",
       "aliases": ["chase", "chase bank"],
       "officialDomains": ["chase.com"],
@@ -17,7 +17,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "paypal",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "PayPal",
       "aliases": ["paypal"],
       "officialDomains": ["paypal.com"],
@@ -26,7 +26,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "amazon",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "Amazon",
       "aliases": ["amazon"],
       "officialDomains": ["amazon.com"],
@@ -35,7 +35,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "usps",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "USPS",
       "aliases": ["usps", "postal service"],
       "officialDomains": ["usps.com"],
@@ -44,7 +44,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "ups",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "UPS",
       "aliases": ["ups"],
       "officialDomains": ["ups.com"],
@@ -53,7 +53,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "microsoft",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "Microsoft",
       "aliases": ["microsoft"],
       "officialDomains": ["microsoft.com"],
@@ -62,7 +62,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "google",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "Google",
       "aliases": ["google"],
       "officialDomains": ["google.com"],
@@ -71,7 +71,7 @@ window.TFS_FIXTURE_STORE = {
     },
     {
       "id": "examplebank",
-      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12" },
+      "humanReview": { "reviewer": "Test fixture (fictional record)", "date": "2026-10-12", "reviewDue": "2099-12-31", "sourceUrl": "https://example.invalid/fixture-record" },
       "displayName": "Example Bank (fictional)",
       "aliases": ["example bank"],
       "officialDomains": ["examplebank.test"],

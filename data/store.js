@@ -3,7 +3,17 @@
    of ownership, sender identity, or human review. Review is still pending.
    Entries marked 'needs review' cannot produce a positive address match.
    officialPhones stays empty until numbers have a reviewed primary source.
-   Plain script supports opening the app directly from disk. */
+   Plain script supports opening the app directly from disk.
+   Trusted view (js/engine/trusted.js): only reviewed, unexpired, complete, conflict-free
+   records can support a contact. To mark an organization's listed domains and phones as
+   reviewed, a person adds
+     "humanReview": { "reviewer": "<name>", "date": "YYYY-MM-DD",
+                      "reviewDue": "YYYY-MM-DD", "sourceUrl": "<primary source>" }
+   (reviewDue is 90 days after the review). To review contacts one at a time instead, list
+   them in "contacts": [{ "kind": "domain" | "phone", "value", "scope": { "type":
+   "registrable" | "host", "pathPrefix"? }, "status": "reviewed" | "draft", "sourceUrl",
+   "checkedOn", "reviewDue", "reviewedBy" }]. No record below has either yet, so every record
+   is excluded as not_reviewed and none can support a match. */
 window.TFS_STORE = {
   "version": "2026-10-03",
   "schemaVersion": 1,
