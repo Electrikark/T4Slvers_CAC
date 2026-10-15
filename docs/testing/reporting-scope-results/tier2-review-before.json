@@ -1,0 +1,398 @@
+{
+  "metric": "suite pass rate",
+  "evaluation_date": "2026-10-12",
+  "fixture_sha256": "f3d51361c4b67a1191bf026711c90994be238cf596104d1dc4bbd288c3277446",
+  "engine_sha256": "230017f131ca660f263865d205ad72b495e07cf8431f29199b1789555113d5f7",
+  "passed": 796,
+  "total": 810,
+  "counts": {
+    "asking-WF-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-WF-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-WF-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-WF-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "OWN": {
+      "passed": 8,
+      "total": 8
+    },
+    "W": {
+      "passed": 10,
+      "total": 10
+    },
+    "LEGIT": {
+      "passed": 6,
+      "total": 6
+    },
+    "GAP": {
+      "passed": 3,
+      "total": 3
+    },
+    "T2_REVIEW": {
+      "passed": 1,
+      "total": 15
+    }
+  },
+  "failures": [
+    {
+      "id": "STAFF1",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "STAFF2",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "STAFF3",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "STAFF4",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "STAFF5",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "passed": false,
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "ATM1",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "ATM2",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "ATM3",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "ATM4",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "passed": false,
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "BIRTH1",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "BIRTH2",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "BIRTH3",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "BIRTH4",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    },
+    {
+      "id": "BIRTH5",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "passed": false,
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "actual_findings": [],
+      "actual_verdict": "Details Match",
+      "problems": [
+        "findings differ",
+        "verdict differs",
+        "approved record erased demand"
+      ]
+    }
+  ]
+}
