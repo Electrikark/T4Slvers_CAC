@@ -131,4 +131,49 @@ window.TFS_PHASE2.add('Tier 1 and Tier 2 rules', function (t) {
     t.same(r.assessment, 'insufficient_evidence', 'assessment');
     t.same(r.trace.blockedBy, ['RISK_SIGNAL'], 'only the login blocks');
   });
+  t.test('T2-GIFT Purchase warnings preserve birthday gifts, negation and reports', function () {
+    ['Buy gift cards.', 'We need you to purchase gift cards to secure your account.'].forEach(function (text) {
+      var r = run(text);
+      t.same(flags(r), ['gift_card_payment'], 'purchase warning');
+      t.same(tier1(r), [], 'purchase alone is not Tier 1');
+      t.same(r.assessment, 'insufficient_evidence', 'purchase warning blocks a match');
+    });
+    ['Never buy gift cards.', 'Fraudsters may ask you to buy gift cards.',
+      'Buy a gift card for her birthday.', 'Gift cards are 20% off this weekend.'].forEach(quiet);
+    has(run('Pay with gift cards for her birthday.'), 'T1-GIFT', 'explicit payment');
+  });
+  t.test('T2-WIRE New movement verbs warn without expanding Tier 1', function () {
+    ['Move your money into Bitcoin today.', 'Deposit money by wire transfer today.',
+      'Convert your savings to Bitcoin today.', 'Put your money into Bitcoin today.'].forEach(function (text) {
+      var r = run(text);
+      t.same(flags(r), ['crypto_or_wire'], 'movement warning');
+      t.same(tier1(r), [], 'new movement verbs stay Tier 2 even with pressure');
+      t.same(r.assessment, 'insufficient_evidence', 'movement warning blocks a match');
+      quiet('Never ' + text);
+      quiet('Scammers may ask you to ' + text);
+    });
+  });
+  t.test('T2-STAFF Only the bounded sender staff list establishes a need request', function () {
+    ['technician', 'team', 'agent', 'representative', 'specialist', 'support team'].forEach(function (staff) {
+      ['', 'will ', 'may '].forEach(function (modal) {
+        var r = run('Our ' + staff + ' ' + modal + 'need you to install AnyDesk.');
+        t.same(flags(r), ['remote_access'], staff + ' ' + modal);
+        t.same(tier1(r), [], 'no pressure supplied');
+        t.same(r.assessment, 'insufficient_evidence', 'staff warning blocks a match');
+      });
+    });
+  });
+  t.test('T2-NEED Unknown, conditional and negated need subjects stay quiet across wraps', function () {
+    ['Scammers will need you to', 'Someone may need you to',
+      'Our technician will not need you to', 'Our technician never need you to',
+      'If our technician will need you to', 'Scammers posing as our technician will need you to'].forEach(function (lead) {
+      [' ', '\n', '\r\n'].forEach(function (wrap) {
+        quiet(lead + wrap + 'install AnyDesk.');
+        quiet(lead + wrap + 'please install AnyDesk.');
+      });
+    });
+    var r = run('Our technician will need you to\r\ninstall AnyDesk.');
+    t.same(flags(r), ['remote_access'], 'sender need survives wrapping');
+    t.same(r.assessment, 'insufficient_evidence', 'wrapped request warns');
+  });
 });
