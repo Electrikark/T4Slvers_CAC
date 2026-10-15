@@ -214,13 +214,24 @@
     return list;
   }
 
+  // Recommend only this organization's reviewed website, without widening a path scope.
+  function trustedDomain(ctx, org) {
+    const record = ctx.trusted && ctx.trusted.trusted.find(r =>
+      r.orgId === org.id && r.kind === 'domain' && typeof r.value === 'string' && r.value.trim() &&
+      (!r.scope.pathPrefix || r.scope.pathPrefix === '/'));
+    return record ? record.value : null;
+  }
+
   function nextSteps(result, ctx) {
     const org = ctx.claimOrg || ctx.implicitOrg;
     const steps = [];
     if (result.checks.some(c => c.code === 'shortener_unresolvable')) steps.push('Do not tap the short link. Ask a trusted person to help, or contact the organization directly.');
     if (org) {
       steps.push(`Contact ${org.displayName} using a number you already trust, such as the one on your card, bill or statement.`);
-      steps.push(`If you need their website, type ${org.officialDomains && org.officialDomains[0]} yourself instead of tapping a link.`);
+      const domain = trustedDomain(ctx, org);
+      steps.push(domain
+        ? `If you need their website, type ${domain} yourself instead of tapping a link.`
+        : 'If you need their website, type an address you already know instead of tapping a link.');
     } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number')) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
