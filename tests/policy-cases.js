@@ -175,4 +175,14 @@ window.TFS_PHASE2.add('Policy records', function (t) {
     t.assert(r.evidence.uncertainty.indexOf('policy_unresolved:EXAMPLE-BANK-GIFT-001') >= 0, 'uncertainty');
     t.same(r.assessment, 'insufficient_evidence', 'an unresolved policy blocks without deciding');
   });
+  t.test('D12 A purchase warning cannot establish a gift-card payment policy violation', function () {
+    var gift = { version: 'gift', records: [copy(bankCode, { id: 'EXAMPLE-BANK-GIFT-001', forbidden_action: 'request_payment_gift_card', reviewed_by: REVIEW.reviewed_by, second_reviewer: REVIEW.second_reviewer, status: 'reviewed' })] };
+    var r = engine.analyze('Example Bank: Buy gift cards to secure your account.', store, { declaredChannel: 'text', policies: gift, today: DAY });
+    t.same(r.requestRisk.flags.map(function (f) { return f.id; }), ['gift_card_payment'], 'purchase warns');
+    t.same(r.policy.trace, [{ policyId: 'EXAMPLE-BANK-GIFT-001', outcome: 'unresolved', reason: 'request_payment_gift_card' }], 'payment remains unproved');
+    t.same(r.assessment, 'insufficient_evidence', 'no accidental Tier 1 promotion');
+    var payment = engine.analyze('Example Bank: Pay with gift cards.', store, { declaredChannel: 'text', policies: gift, today: DAY });
+    t.same(payment.policy.trace, [{ policyId: 'EXAMPLE-BANK-GIFT-001', outcome: 'fired', reason: 'request_payment_gift_card' }], 'proved payments still fire');
+    t.same(payment.assessment, 'suspicious', 'proved payment stays Tier 1');
+  });
 });
