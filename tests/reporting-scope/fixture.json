@@ -10650,6 +10650,240 @@
       "expected_findings": [],
       "expected_verdict": "Insufficient Evidence",
       "known_limitation": null
+    },
+    {
+      "id": "GAP1",
+      "context": "GAP",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase Fraud Dept: we need you to purchase gift cards to secure your account. Visit https://chase.com",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "GAP2",
+      "context": "GAP",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Scammers are watching your account, so you must move your money into Bitcoin now. https://chase.com",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "GAP3",
+      "context": "GAP",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Our technician will need you to install AnyDesk so we can fix your account. https://chase.com",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "STAFF1",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Our technician needs you to install AnyDesk. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "STAFF2",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Our security team will need you to download TeamViewer. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "STAFF3",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Our fraud specialist will need you to install AnyDesk. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "STAFF4",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: The technician needed you to install AnyDesk. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "STAFF5",
+      "context": "T2_REVIEW",
+      "family": "RA",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Your account manager needs you to install AnyDesk. Visit https://chase.com.",
+      "expected_findings": [
+        "remote_access"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "ATM1",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Go to a Bitcoin ATM and deposit $2,000 right now to secure your account. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "ATM2",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Go to a Bitcoin ATM and put $2,000 into the machine. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "ATM3",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Go to a Bitcoin ATM and move your cash into the machine. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "ATM4",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Withdraw $3,000 and put it in a crypto wallet. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "ATM5",
+      "context": "T2_REVIEW",
+      "family": "WT",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Deposit $2,000 into a Bitcoin ATM. Visit https://chase.com.",
+      "expected_findings": [
+        "wire_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "BIRTH1",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Please buy gift cards for your birthday. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "BIRTH2",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Please buy a gift card for her birthday. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "BIRTH3",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Please purchase gift cards for his birthday. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "BIRTH4",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: We need you to buy gift cards for their birthday. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
+    },
+    {
+      "id": "BIRTH5",
+      "context": "T2_REVIEW",
+      "family": "GC",
+      "variant": "hand",
+      "record_state": "approved",
+      "text": "Chase: Buy two Google Play cards for my birthday. Visit https://chase.com.",
+      "expected_findings": [
+        "gift_card_demand"
+      ],
+      "expected_verdict": "Insufficient Evidence",
+      "known_limitation": null
     }
   ]
 }
