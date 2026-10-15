@@ -42,4 +42,26 @@ function gapRow([id, family, text, finding]) {
   return { id, context: 'GAP', family, variant: 'hand', record_state: 'approved', text,
     expected_findings: [finding], expected_verdict: 'Insufficient Evidence', known_limitation: null };
 }
-module.exports = own.map(c => row(c, 'OWN')).concat(warnings.map(c => row(c, 'W')), controls.map(c => row(c, 'LEGIT')), gaps.map(gapRow));
+// Five wording variations per repair, with one fixed approved contact.
+const reviewCases = [
+  ['STAFF1', 'RA', 'Chase: Our technician needs you to install AnyDesk.', 'remote_access'],
+  ['STAFF2', 'RA', 'Chase: Our security team will need you to download TeamViewer.', 'remote_access'],
+  ['STAFF3', 'RA', 'Chase: Our fraud specialist will need you to install AnyDesk.', 'remote_access'],
+  ['STAFF4', 'RA', 'Chase: The technician needed you to install AnyDesk.', 'remote_access'],
+  ['STAFF5', 'RA', 'Chase: Your account manager needs you to install AnyDesk.', 'remote_access'],
+  ['ATM1', 'WT', 'Chase: Go to a Bitcoin ATM and deposit $2,000 right now to secure your account.', 'wire_demand'],
+  ['ATM2', 'WT', 'Chase: Go to a Bitcoin ATM and put $2,000 into the machine.', 'wire_demand'],
+  ['ATM3', 'WT', 'Chase: Go to a Bitcoin ATM and move your cash into the machine.', 'wire_demand'],
+  ['ATM4', 'WT', 'Chase: Withdraw $3,000 and put it in a crypto wallet.', 'wire_demand'],
+  ['ATM5', 'WT', 'Chase: Deposit $2,000 into a Bitcoin ATM.', 'wire_demand'],
+  ['BIRTH1', 'GC', 'Chase: Please buy gift cards for your birthday.', 'gift_card_demand'],
+  ['BIRTH2', 'GC', 'Chase: Please buy a gift card for her birthday.', 'gift_card_demand'],
+  ['BIRTH3', 'GC', 'Chase: Please purchase gift cards for his birthday.', 'gift_card_demand'],
+  ['BIRTH4', 'GC', 'Chase: We need you to buy gift cards for their birthday.', 'gift_card_demand'],
+  ['BIRTH5', 'GC', 'Chase: Buy two Google Play cards for my birthday.', 'gift_card_demand']
+];
+function reviewRow([id, family, text, finding]) {
+  return { id, context: 'T2_REVIEW', family, variant: 'hand', record_state: 'approved', text: text + ' Visit https://chase.com.',
+    expected_findings: [finding], expected_verdict: 'Insufficient Evidence', known_limitation: null };
+}
+module.exports = own.map(c => row(c, 'OWN')).concat(warnings.map(c => row(c, 'W')), controls.map(c => row(c, 'LEGIT')), gaps.map(gapRow), reviewCases.map(reviewRow));

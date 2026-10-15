@@ -214,13 +214,13 @@ The action scanner and wire detector now include `move`, `deposit`, `convert`
 and `put`; an explicit guard keeps Tier 1 restricted to its original verbs:
 
 ```js
-s.flag('crypto_or_wire', d.action.start, object.end);
+s.flag('crypto_or_wire', Math.min(d.action.start, object.start), Math.max(d.action.end, object.end));
 if (!/^(?:pay|send|transfer|wire)$/.test(d.verb)) return;
 ```
 
 Gift-card purchase requests now add `gift_card_payment` before the existing
-Tier 1 purpose check. An explicit birthday-gift purpose remains quiet, as the
-existing controls require. A fallback purchase warning is deduplicated when
+Tier 1 purpose check. A birthday purpose also receives this warning; it cannot
+justify Details Match for a bank-labelled purchase instruction. A fallback purchase warning is deduplicated when
 that same card already supports a proved disclosure. A purchase-only warning
 cannot establish a gift-payment policy violation: `policy.js` treats that
 payment purpose as unresolved, preserving the existing D11 behavior.
@@ -228,8 +228,8 @@ payment purpose as unresolved, preserving the existing D11 behavior.
 The bounded sender pattern and new helper are:
 
 ```js
-const OWN_NEED = /\b(?:we|i|our (?:technician|team|agent|representative|specialist|support team))\s+(?:(?:will|may)\s+)?need\s+you\s+to\s*(?:please\s*)?$/i;
-const NEED_COMPLEMENT = /\bneed\s+you\s+to\s*(?:please\s*)?$/i;
+const OWN_NEED = /\b(?:we|i|(?:our|the|your)\s+(?:[a-z][\w-]*\s+){0,2}(?:technician|team|agent|representative|specialist|support team|manager))\s+(?:(?:will|may)\s+)?need(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
+const NEED_COMPLEMENT = /\bneed(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
 
 function ownNeedBefore(prefix) {
   const need = prefix.match(OWN_NEED);
@@ -242,20 +242,77 @@ unknown subjects cannot fall through to the “please” shortcut. Clause readin
 keeps an unfinished need complement across LF/CRLF even for unknown subjects,
 so wrapping cannot turn “Scammers will need you to” into a fresh imperative.
 
-Remaining gaps: unlisted roles, “needs” and other unrecognized request forms
-can still be missed. Object-distance limits and unusual wrapping remain. The
-new movement verbs deliberately stay Tier 2 even with pressure, and “secure /
+Remaining gaps: unlisted roles, more than two modifiers before a staff role,
+object-distance limits and unusual wrapping can still be missed. The new
+movement verbs deliberately stay Tier 2 even with pressure, and “secure /
 protect / verify / keep safe” were not added to the Tier 1 purpose list. Generic
-purchase warnings may also flag benign purchases outside the narrow birthday
-exception; they indicate caution, not established scam proof. Existing control
-messages and expectations were not changed. The 16-decision matrix remains
-frozen; these three GAP rows explicitly test the separate Tier 2 threshold.
+purchase warnings can also flag benign purchases; they indicate caution, not
+established scam proof. The 16-decision matrix remains frozen; GAP rows test
+the separate Tier 2 threshold.
 
 Execution checklist:
 
 - [x] Add GAP1–3 and regenerate the checked-in fixture offline.
 - [x] Confirm all three fail as Details Match and save every failure.
 - [x] Add Tier 2 purchase/movement warnings and bounded staff-need recognition.
-- [x] Preserve birthday, negation, reporting, disclosure and policy controls.
+- [x] Preserve negation, reporting, disclosure and policy controls; revise the
+  birthday expectation for the reason below.
 - [x] Verify GAP 3/3, OWN 8/8, W 10/10, LEGIT 6/6 and the unchanged 768 matrix rows.
 - [x] Run the full Node 22/24 and Chromium suites, and save final fixture results.
+
+## Tier 2 review: wording variations
+
+The initial fix missed staff inflections and descriptions, crypto named before
+the action, and birthday purchases. Five variations per fix were written first
+(STAFF1–5, ATM1–5, BIRTH1–5), with explicit approved-record expectations: exactly
+one family finding and Insufficient Evidence. The saved baseline passed only
+1/15 (ATM5); all 14 failures reached Details Match. These are variations of the
+review examples supplied, not a claim to reproduce all 24 unseen messages.
+
+Staff recognition now accepts `need`, `needs` and `needed`, with `our`, `the`
+or `your`, up to two modifier words, and a closed staff-role list. `manager`
+supports “your account manager”. Conditional, impersonation and negated forms
+remain quiet, including LF/CRLF wrapping; an unknown subject cannot fall through
+to the “please” shortcut.
+
+For `deposit`, `put` and `move`, `wireInSegment` searches both sides of the action
+for an unreported crypto/wire object. Commas, sentence boundaries and causal
+connectors bound the search; commas/decimal points inside amounts do not.
+`and` retains the instruction chain. `withdraw` and `go` were added to `ACTIONS`
+so both “Withdraw … and put …” and “Go to … and deposit …” establish that chain.
+Neither creates a warning alone or expands Tier 1. Source spans cover the
+object and action correctly when the object comes first.
+
+C14-birthday and its two duplicate tier assertions now expect a Tier 2 warning:
+a birthday purpose does not justify Details Match for a gift-card purchase request.
+Their message text is unchanged; the birthday exception was removed instead of
+changing the spec to preserve it. Other existing expectations remain unchanged.
+
+There is **one known false alarm**: “Chase: Deposit received: $500 by wire
+transfer.” with an approved official link produces `crypto_or_wire` and
+Insufficient Evidence; it should have no finding and Details Match. `Deposit`
+is a noun here. A future fix can recognize notice continuations such as
+`received`, `completed`, `confirmed` or `of`, with negative controls first.
+It is recorded as a failed diagnostic, not counted as a passing regression.
+
+The old “Grandma, buy me gift cards for my birthday and text me the codes”
+miss is a separate [next task](../testing/grandparent-opener-task.md).
+Both open diagnostics and their unchanged desired outcomes are saved in
+[tier2-review-known-gaps.json](../testing/reporting-scope-results/tier2-review-known-gaps.json).
+The regression fixture passes 810/810 overall; these two open
+diagnostics remain failures outside that metric. Synthetic variants share one
+author and do not replace real-message collection (Task 11).
+
+Execution checklist:
+
+- [x] Write five variations per fix and quiet controls before changing code.
+- [x] Save all failures in [the baseline](../testing/reporting-scope-results/tier2-review-before.json).
+- [x] Expand staff recognition and crypto instruction chains; remove the birthday exception.
+- [x] Regenerate offline, retaining all 768 generated expectations and 27 prior hand rows.
+- [x] Verify 15/15 review rows, OWN 8/8, W 10/10, LEGIT 6/6 and GAP 3/3.
+- [x] Check Node 22/24, Chromium and fixture reproducibility; save the final results.
+- [x] Log the false alarm and create the grandparent follow-up separately.
+
+For future detection changes, write 3–5 wording variations plus quiet controls
+before implementation: vary inflection, modifiers, word order and opener where
+relevant. Explain each changed expectation rather than preserving a bad rule.

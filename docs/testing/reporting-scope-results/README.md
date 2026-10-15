@@ -4,6 +4,48 @@ Primary metric: **suite pass rate**. Frozen evaluation date: **2026-10-12**.
 
 Tier 2 follow-up: GAP1–3 add approved-record warnings (795/795 fixture rows; 1,138 shared checks), changing all three from Details Match to Insufficient Evidence; see [before](tier2-gaps-before.json) and [after](tier2-gaps-after.json), with earlier tables retained as historical results.
 
+Tier 2 review: 15 new variations improve from 1/15 to 15/15, bringing the fixture suite pass rate to 810/810; see [before](tier2-review-before.json), [after](tier2-review-after.json) and [two open diagnostics](tier2-review-known-gaps.json).
+
+## Current Tier 2 review
+
+Five staff-request, five crypto-instruction and five birthday-purchase variations
+were written before the engine changes. The baseline preserves all 14 failures;
+only the crypto-after-action control ATM5 already passed. All 15 now produce
+their single family finding and Insufficient Evidence with an approved record.
+C14's message is unchanged, but its expectation and two duplicate tier assertions
+now require a warning: a birthday purpose cannot justify Details Match for a
+gift-card purchase request. No other existing expectations were changed.
+
+| Group | Before this review | After |
+| --- | --- | --- |
+| STAFF1–5 | 0/5 | 5/5 |
+| ATM1–5 | 1/5 | 5/5 |
+| BIRTH1–5 | 0/5 | 5/5 |
+| Each form × context × family cell (32 cells) | 24/24 | 24/24 |
+| OWN | 8/8 | 8/8 |
+| W | 10/10 | 10/10 |
+| LEGIT | 6/6 | 6/6 |
+| GAP | 3/3 | 3/3 |
+| Overall suite pass rate | 796/810 | 810/810 |
+
+The two snapshots use identical fixture hashes and the frozen date above.
+There are now 42 hand rows alongside the unchanged 768 generated rows.
+Node 22 and 24 and Chromium passed **1,155/1,155 shared checks**. Node also
+passed 36 parity, 2 boundary and 12 evaluation checks. The offline generator
+check passed; runtime tests read the checked-in fixture.
+
+Separately, **one known false alarm remains**: “Deposit received: $500 by wire
+transfer” produces a wire warning and Insufficient Evidence instead of Details
+Match with an approved official link. The older “Grandma, buy…” miss also
+remains. Both are recorded as failed diagnostics with desired expectations,
+outside the 810 passing rows; neither is silently counted as a pass. The latter
+has a [separate follow-up task](../grandparent-opener-task.md).
+
+Only examples supplied in the review and the listed variations were checked;
+the reviewer's complete 24-message set was not provided. Synthetic tests do
+not replace real-message collection. The sections below retain historical
+counts and baselines from the earlier reporting-scope work.
+
 ## What these rows represent
 
 The original 384 rows were **16 sentence templates**, each expanded into 11
