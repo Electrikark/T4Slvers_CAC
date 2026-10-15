@@ -1,60 +1,63 @@
 # Task 3: instruction recognition matrix
 
-## Sender's own request — open
+All hand rows use record state `none` and the frozen date 2026-10-12. Their
+expectations are hand-decided, not read from app output. They accompany 768
+generated rows (32 sentence templates in 11 surface variants plus record states).
 
-`directAction` currently misses first- and third-person requests unless a
-recognized instruction such as “please” immediately precedes the action.
-These are follow-up acceptance targets, not passing-test claims. They must
-be fixed separately from reporting scope.
+## Sender's own requests
 
-| Row | Message | Current behavior | Required finding and verdict |
+| Row | Message | Expected finding | Verdict |
 | --- | --- | --- | --- |
-| OWN1 | We ask you to pay with gift cards. | No flags; Insufficient Evidence | `gift_card_payment`, `T1-GIFT`; Suspicious |
-| OWN2 | We need you to pay with gift cards. | No flags; Insufficient Evidence | `gift_card_payment`, `T1-GIFT`; Suspicious |
-| OWN3 | Chase requests that you pay with gift cards. | No flags; Insufficient Evidence | `gift_card_payment`, `T1-GIFT`; Suspicious |
-| OWN4 | We ask you to please pay with gift cards. | `T1-GIFT`; Suspicious | Preserve `gift_card_payment`, `T1-GIFT`; Suspicious |
-| OWN5 | Due to fraudsters we ask you to pay with gift cards today. | No flags; Insufficient Evidence | `gift_card_payment`, `T1-GIFT`; Suspicious |
-| OWN6 | Fraudsters are active and Chase asks you to send the fee by wire transfer today. | No flags; Insufficient Evidence | `crypto_or_wire`, `T1-WIRE`; Suspicious |
-| OWN7 | Fraudsters may ask you to pay with gift cards. | No flags; Insufficient Evidence | Preserve no findings; Insufficient Evidence |
-| OWN8 | We never ask you to pay with gift cards. | No flags; Insufficient Evidence | Preserve no findings; Insufficient Evidence |
+| OWN1 | We ask you to pay with gift cards. | gift_card_demand | Suspicious |
+| OWN2 | We need you to pay with gift cards. | gift_card_demand | Suspicious |
+| OWN3 | Chase requests that you pay with gift cards. | gift_card_demand | Suspicious |
+| OWN4 | We ask you to please pay with gift cards. | gift_card_demand | Suspicious |
+| OWN5 | Due to fraudsters we ask you to pay with gift cards today. | gift_card_demand | Suspicious |
+| OWN6 | Fraudsters are active and Chase asks you to send the fee by wire transfer today. | wire_demand | Suspicious |
+| OWN7 | We ask you to read us your verification code. | code_request | Suspicious |
+| OWN8 | We need you to install remote access software today. | remote_access | Suspicious |
 
-Implement and test reporting subjects first, then expand recognition of the
-sender's own request. The reporting-scope repair supplies that prerequisite.
-Add failing tests for OWN1–OWN3 and OWN5–OWN6 before changing `directAction`;
-retain OWN4, OWN7 and OWN8 as controls. Test both findings and verdicts in the
-shared Node/browser harness, and retain the existing wire-pressure threshold.
+OWN7–8's former quiet texts remain below as NEG-REPORT/NEG-ASK. Their replacement
+texts are genuine sender requests; the old expectations were preserved.
 
-## Real warning wording — required controls
+## Warning controls
 
-W1–W4 must stay quiet when task 3 widens instruction recognition. Today the
-plain versions produce no flags because `directAction` does not recognize the
-embedded request. Adding “please” immediately before “pay” exposes the separate
-reporting weakness: all four then produce `gift_card_payment`, `T1-GIFT` and
-Suspicious. Current quiet behavior is therefore not evidence that reporting
-scope recognizes these warnings.
+| Row | Message | Expected finding | Verdict |
+| --- | --- | --- | --- |
+| W1 | Scammers posing as Chase may ask you to pay with gift cards. | None | Insufficient Evidence |
+| W2 | Fraudsters pretending to be the IRS may demand a wire transfer. | None | Insufficient Evidence |
+| W3 | Scam callers may ask you to install remote access software. | None | Insufficient Evidence |
+| W4 | Criminals often ask victims to read back verification codes. | None | Insufficient Evidence |
+| W5 | If someone asks you to pay with gift cards, hang up. | None | Insufficient Evidence |
+| W6 | Anyone who asks you to pay with gift cards is a scammer. | None | Insufficient Evidence |
+| W7 | Hang up if anyone asks you to read your verification code. | None | Insufficient Evidence |
+| W8 | Never trust a text that asks you to read a code. | None | Insufficient Evidence |
+| W9 | Imposters may ask you to pay with gift cards. | None | Insufficient Evidence |
+| W10 | Scammers posing as Chase Bank fraud team may ask you to pay with gift cards. | None | Insufficient Evidence |
 
-| Row | Message | Required finding and verdict |
-| --- | --- | --- |
-| W1 | Scammers posing as Chase may ask you to pay with gift cards. | No request-risk findings; Insufficient Evidence |
-| W2 | Fraudsters pretending to be the IRS may demand that you pay with gift cards. | No request-risk findings; Insufficient Evidence |
-| W3 | Scam callers may ask you to pay with gift cards. | No request-risk findings; Insufficient Evidence |
-| W4 | Criminals often ask victims to pay with gift cards. | No request-risk findings; Insufficient Evidence |
+W5–W10 all failed before the sender allowlist and now pass. W10 completes the
+reviewer's ellipsis with “pay with gift cards.” Quiet does not verify a sender.
+RS37 additionally tests I, our team, Chase, a named sender label, unknown subjects
+with “please,” and an independent demand following a warning. RS25's unfamiliar
+asking subject is now quiet under the revised contract; its reason is documented.
 
-Add failing controls for the versions with “please,” as well as the plain
-versions, before widening `directAction`. Task 3 cannot ship until both forms
-of W1–W4 stay quiet and the OWN rows reach their required results in the shared
-Node/browser harness. Quiet does not authenticate a sender; these messages
-have no supporting contact and therefore remain Insufficient Evidence.
+## Legitimate, reporting and negation controls
 
-Likely reporting changes to investigate first:
+| Row | Message | Expected finding | Verdict |
+| --- | --- | --- | --- |
+| LEGIT-GC | Target: Gift cards are 20% off this weekend. | None | Insufficient Evidence |
+| LEGIT-CD | Chase: Your code is 482193. Don’t share it with anyone. | None | Insufficient Evidence |
+| LEGIT-WT | Chase: Your wire transfer of $500 was completed. | None | Insufficient Evidence |
+| LEGIT-RA | Chase will never ask you to install remote access software. | None | Insufficient Evidence |
+| NEG-REPORT | Fraudsters may ask you to pay with gift cards. | None | Insufficient Evidence |
+| NEG-ASK | We never ask you to pay with gift cards. | None | Insufficient Evidence |
 
-- Allow a bounded description of the reporting subject: “posing as,”
-  “pretending to be,” “claiming to be,” or “impersonating,” followed by a short
-  name. Keep the existing new-subject regressions: the description must not
-  swallow “and we,” “Chase asks,” or another independent asker.
-- Recognize “scam callers/texts/emails/messages” as reporting subjects.
-- Accept a small set of recipient nouns in `ASKING`, including “victims,”
-  “seniors,” and “customers.”
+## Evidence and execution
 
-No sender-attribution, trusted-reference or organization-policy changes are
-part of these row families.
+Subject recognition precedes widening request recognition. Tests read the
+checked-in fixture and compare both findings and verdicts. W and legitimate
+failures are regressions, never expected failures. See the [decision and
+checklist](../decisions/reporting-scope.md) and [results](reporting-scope-results/README.md).
+The results separate the original scope repair from sender-request recognition
+and the new short-preface recognition; the old OWN-heavy table does not prove
+that the original scope bug was fixed. Sender attribution remains unchanged.
