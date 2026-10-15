@@ -11,6 +11,15 @@ const Assessment = Object.freeze({
 });
 
 // The closed set of Tier 1 rules. A Tier 1 finding outside it is a wiring error, not a verdict.
+const TIER1_RULES = Object.freeze([
+'T1-GIFT',
+'T1-WIRE',
+'T1-REMOTE',
+'T1-DOMAIN',
+'T1-CODE',
+'T1-CALLBACK',
+'T1-POLICY',
+]);
 const TIER1_RULES = Object.freeze(['T1-GIFT', 'T1-WIRE', 'T1-REMOTE', 'T1-DOMAIN', 'T1-CODE', 'T1-CALLBACK']);
 
 function assertFindings(findings) {
