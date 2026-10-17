@@ -15,6 +15,7 @@
   const ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|move|deposit|convert|put|withdraw|go|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?)\b/i;
+  const BACK_PHOTO = /\b(?:photos?|pictures?|pics?|images?|screenshots?)\s+of\s+(?:the\s+|each\s+|both\s+|all\s+)?backs?\b/i;
   const SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
   const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|by wire|western union|moneygram)\b/i;
   const REMOTE = /\b(?:anydesk|teamviewer|logmein|ultraviewer|supremo|quick ?assist|remote (?:access|control|desktop|session)|screen[ -]?shar(?:e|ing)|(?:your|the|my) screen)\b/i;
@@ -241,7 +242,8 @@
 
   // T1-GIFT: "buy gift cards ... send me the codes". Returns true when it fires.
   function giftCodes(d, s) {
-    const hit = /^(?:send|read|give|tell|text|share|provide|reply with)$/.test(d.verb) && d.near.match(CODE);
+    const hit = /^(?:send|read|give|tell|text|share|provide|reply with)$/.test(d.verb) &&
+                (d.near.match(CODE) || d.near.match(BACK_PHOTO));
     if (!hit) return false;
     const code = spanOf(s.raw, d.clause, hit, d.after);
     // The gift card can be named in this clause or the one before.
