@@ -206,4 +206,29 @@ window.TFS_PHASE2.add('Tier 1 and Tier 2 rules', function (t) {
       'Bitcoin is mentioned\ndeposit cash.',
       'Scammers ask you to name Bitcoin and we ask you to deposit cash.'].forEach(quiet);
   });
+  t.test('T1-GIFT A request for photos of a gift card\'s back is a code request', function () {
+    var text = 'Buy two Apple gift cards and send me photos of the backs';
+    var r = run(text);
+    has(r, 'T1-GIFT', text);
+    var rule = r.requestRisk.established.filter(function (e) { return e.ruleId === 'T1-GIFT' && e.antecedent; })[0];
+    t.assert(rule, 'no T1-GIFT entry with an antecedent');
+    t.same(rule.object.quote, 'photos of the backs', 'disclosed object');
+    t.same(r.assessment, 'suspicious', 'assessment');
+    ['Buy two Apple gift cards. Send me a picture of the back of each card.',
+      'Send me photos of the backs of the gift cards you bought',
+      'Send me a clear picture of the back of the gift card',
+      'Buy gift cards and text me pics of the back.'].forEach(function (text) {
+      var r = run(text);
+      has(r, 'T1-GIFT', text);
+      t.same(r.assessment, 'suspicious', 'assessment for "' + text + '"');
+    });
+  });
+  t.test('T1-GIFT Back photos still need a card, a requester and an unreported demand', function () {
+    ['Buy gift cards for the office party and send me photos of the receipts',
+      'Buy a gift card for her birthday,'].forEach(function (text) { lacks(run(text), 'T1-GIFT', text); });
+    ['Send me a photo of the back of the house',
+      'Never send photos of the back of a gift card to anyone.',
+      'Sca' + 'm'.repeat(2) + 'ers may ask you to send photos of the back of gift cards.',
+      "I bought you a gift card for your birthday, here's a photo of the back"].forEach(quiet);
+  });
 });
