@@ -1,7 +1,7 @@
 {
-  "referenceDate": "2026-10-17",
+  "referenceDate": "2026-10-18",
   "timezone": "America/Los_Angeles",
-  "expiresAfter": "2027-01-15",
+  "expiresAfter": "2027-01-16",
   "expirySemantics": "reviewDue is the last eligible date; excluded the following day",
   "scenarioOnly": true,
   "checks": 36,
@@ -11,162 +11,612 @@
     {
       "organization": "Chase",
       "state": "Approved and current",
+      "message": "Chase: Information is available at https://chase.com.",
       "assessment": "details_match",
+      "trace": {
+        "rules": [
+          "DM_ALL_CONDITIONS"
+        ],
+        "blockedBy": []
+      },
       "eligibleContacts": 2,
       "websiteShown": true,
+      "nextSteps": [
+        "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type chase.com yourself instead of tapping a link."
+      ],
       "passed": true
     },
     {
       "organization": "Chase",
       "state": "Expired",
+      "message": "Chase: Information is available at https://chase.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Chase",
       "state": "Rejected",
+      "message": "Chase: Information is available at https://chase.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Chase",
       "state": "Draft",
+      "message": "Chase: Information is available at https://chase.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Wells Fargo",
       "state": "Approved and current",
+      "message": "Wells Fargo: Information is available at https://wellsfargo.com.",
       "assessment": "details_match",
+      "trace": {
+        "rules": [
+          "DM_ALL_CONDITIONS"
+        ],
+        "blockedBy": []
+      },
       "eligibleContacts": 2,
       "websiteShown": true,
+      "nextSteps": [
+        "Contact Wells Fargo using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type wellsfargo.com yourself instead of tapping a link."
+      ],
       "passed": true
     },
     {
       "organization": "Wells Fargo",
       "state": "Expired",
+      "message": "Wells Fargo: Information is available at https://wellsfargo.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Wells Fargo using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Wells Fargo",
       "state": "Rejected",
+      "message": "Wells Fargo: Information is available at https://wellsfargo.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Wells Fargo using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Wells Fargo",
       "state": "Draft",
+      "message": "Wells Fargo: Information is available at https://wellsfargo.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Wells Fargo using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "USPS",
       "state": "Approved and current",
+      "message": "USPS: Information is available at https://usps.com.",
       "assessment": "details_match",
+      "trace": {
+        "rules": [
+          "DM_ALL_CONDITIONS"
+        ],
+        "blockedBy": []
+      },
       "eligibleContacts": 2,
       "websiteShown": true,
+      "nextSteps": [
+        "Contact USPS using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type usps.com yourself instead of tapping a link."
+      ],
       "passed": true
     },
     {
       "organization": "USPS",
       "state": "Expired",
+      "message": "USPS: Information is available at https://usps.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact USPS using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "USPS",
       "state": "Rejected",
+      "message": "USPS: Information is available at https://usps.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact USPS using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "USPS",
       "state": "Draft",
+      "message": "USPS: Information is available at https://usps.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact USPS using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Amazon",
       "state": "Approved and current",
+      "message": "Amazon: Information is available at https://amazon.com.",
       "assessment": "details_match",
+      "trace": {
+        "rules": [
+          "DM_ALL_CONDITIONS"
+        ],
+        "blockedBy": []
+      },
       "eligibleContacts": 1,
       "websiteShown": true,
+      "nextSteps": [
+        "Open the Amazon app or type amazon.com yourself."
+      ],
       "passed": true
     },
     {
       "organization": "Amazon",
       "state": "Expired",
+      "message": "Amazon: Information is available at https://amazon.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Amazon using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Amazon",
       "state": "Rejected",
+      "message": "Amazon: Information is available at https://amazon.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Amazon using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Amazon",
       "state": "Draft",
+      "message": "Amazon: Information is available at https://amazon.com.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Amazon using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Social Security",
       "state": "Approved and current",
+      "message": "Social Security: Information is available at https://ssa.gov.",
       "assessment": "details_match",
+      "trace": {
+        "rules": [
+          "DM_ALL_CONDITIONS"
+        ],
+        "blockedBy": []
+      },
       "eligibleContacts": 2,
       "websiteShown": true,
+      "nextSteps": [
+        "Contact Social Security Administration using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type ssa.gov yourself instead of tapping a link."
+      ],
       "passed": true
     },
     {
       "organization": "Social Security",
       "state": "Expired",
+      "message": "Social Security: Information is available at https://ssa.gov.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Social Security Administration using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Social Security",
       "state": "Rejected",
+      "message": "Social Security: Information is available at https://ssa.gov.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Social Security Administration using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     },
     {
       "organization": "Social Security",
       "state": "Draft",
+      "message": "Social Security: Information is available at https://ssa.gov.",
       "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
       "eligibleContacts": 0,
       "websiteShown": false,
+      "nextSteps": [
+        "Contact Social Security Administration using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ],
       "passed": true
     }
-  ]
+  ],
+  "checkResults": [
+    {
+      "id": "chase:Approved and current",
+      "passed": true
+    },
+    {
+      "id": "chase:Expired",
+      "passed": true
+    },
+    {
+      "id": "chase:Rejected",
+      "passed": true
+    },
+    {
+      "id": "chase:Draft",
+      "passed": true
+    },
+    {
+      "id": "chase:risk-overrides-match",
+      "passed": true
+    },
+    {
+      "id": "chase:expiry-boundary",
+      "passed": true
+    },
+    {
+      "id": "chase:missing-source",
+      "passed": true
+    },
+    {
+      "id": "wellsfargo:Approved and current",
+      "passed": true
+    },
+    {
+      "id": "wellsfargo:Expired",
+      "passed": true
+    },
+    {
+      "id": "wellsfargo:Rejected",
+      "passed": true
+    },
+    {
+      "id": "wellsfargo:Draft",
+      "passed": true
+    },
+    {
+      "id": "wellsfargo:risk-overrides-match",
+      "passed": true
+    },
+    {
+      "id": "wellsfargo:expiry-boundary",
+      "passed": true
+    },
+    {
+      "id": "wellsfargo:missing-source",
+      "passed": true
+    },
+    {
+      "id": "usps:Approved and current",
+      "passed": true
+    },
+    {
+      "id": "usps:Expired",
+      "passed": true
+    },
+    {
+      "id": "usps:Rejected",
+      "passed": true
+    },
+    {
+      "id": "usps:Draft",
+      "passed": true
+    },
+    {
+      "id": "usps:risk-overrides-match",
+      "passed": true
+    },
+    {
+      "id": "usps:expiry-boundary",
+      "passed": true
+    },
+    {
+      "id": "usps:missing-source",
+      "passed": true
+    },
+    {
+      "id": "amazon:Approved and current",
+      "passed": true
+    },
+    {
+      "id": "amazon:Expired",
+      "passed": true
+    },
+    {
+      "id": "amazon:Rejected",
+      "passed": true
+    },
+    {
+      "id": "amazon:Draft",
+      "passed": true
+    },
+    {
+      "id": "amazon:risk-overrides-match",
+      "passed": true
+    },
+    {
+      "id": "amazon:expiry-boundary",
+      "passed": true
+    },
+    {
+      "id": "amazon:missing-source",
+      "passed": true
+    },
+    {
+      "id": "ssa:Approved and current",
+      "passed": true
+    },
+    {
+      "id": "ssa:Expired",
+      "passed": true
+    },
+    {
+      "id": "ssa:Rejected",
+      "passed": true
+    },
+    {
+      "id": "ssa:Draft",
+      "passed": true
+    },
+    {
+      "id": "ssa:risk-overrides-match",
+      "passed": true
+    },
+    {
+      "id": "ssa:expiry-boundary",
+      "passed": true
+    },
+    {
+      "id": "ssa:missing-source",
+      "passed": true
+    },
+    {
+      "id": "actual-store-remains-draft",
+      "passed": true
+    }
+  ],
+  "chase": {
+    "approvedScenario": {
+      "organization": "Chase",
+      "state": "Approved and current",
+      "message": "Chase: Information is available at https://chase.com.",
+      "assessment": "details_match",
+      "trace": {
+        "rules": [
+          "DM_ALL_CONDITIONS"
+        ],
+        "blockedBy": []
+      },
+      "eligibleContacts": 2,
+      "websiteShown": true,
+      "nextSteps": [
+        "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type chase.com yourself instead of tapping a link."
+      ],
+      "passed": true
+    },
+    "suspiciousWithOfficialLink": {
+      "message": "Chase: Pay with gift cards today. Visit https://chase.com.",
+      "assessment": "suspicious",
+      "trace": {
+        "rules": [
+          "T1-GIFT"
+        ],
+        "blockedBy": []
+      },
+      "checks": [
+        {
+          "status": "SUPPORTS",
+          "code": "domain_official",
+          "detail": "chase.com matches a website address on file for Chase. The page, redirects, and sender have not been checked.",
+          "source": "Local list: Chase → chase.com (list version 2026-10-18-five-org-draft). Review status: Human review pending",
+          "target": "chase.com"
+        }
+      ],
+      "nextSteps": [
+        "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type chase.com yourself instead of tapping a link.",
+        "If you already shared information or paid, call your bank right away and ask a trusted person for help."
+      ],
+      "meaning": "A contact detail matches our stored list, but that cannot cancel this warning. Real addresses can be copied into a fake message. Check independently before acting."
+    },
+    "actualStore": {
+      "message": "Chase: Information is available at https://chase.com.",
+      "assessment": "insufficient_evidence",
+      "trace": {
+        "rules": [],
+        "blockedBy": [
+          "NO_VERIFIED_CONTACT",
+          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
+        ]
+      },
+      "checks": [
+        {
+          "status": "UNKNOWN",
+          "code": "reference_needs_review",
+          "detail": "chase.com is listed for Chase, but its source record still needs review. We cannot count it as a match.",
+          "source": "Local list: Chase → chase.com (list version 2026-10-18-five-org-draft). Review status: Human review pending",
+          "target": "chase.com"
+        }
+      ],
+      "nextSteps": [
+        "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
+        "If you need their website, type a website address you already know, or use their official app."
+      ]
+    }
+  }
 }
