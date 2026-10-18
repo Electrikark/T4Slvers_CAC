@@ -12,10 +12,12 @@
    (reviewDue is 90 days after the review). To review contacts one at a time instead, list
    them in "contacts": [{ "kind": "domain" | "phone", "value", "scope": { "type":
    "registrable" | "host", "pathPrefix"? }, "status": "reviewed" | "draft", "sourceUrl",
-   "checkedOn", "reviewDue", "reviewedBy" }]. No record below has either yet, so every record
-   is excluded as not_reviewed and none can support a match. */
+   "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations now have source-documented draft contacts. AI-assisted research
+   is not human approval. All contacts remain excluded as not_reviewed until approved.
+   securityNotes and publishedEmailSenderDomains document evidence only; they do not
+   enable policy rules or authenticate a sender. */
 window.TFS_STORE = {
-  "version": "2026-10-03",
+  "version": "2026-10-17-five-org-draft",
   "schemaVersion": 1,
   "shorteners": [
     "bit.ly",
@@ -65,20 +67,75 @@ window.TFS_STORE = {
       "id": "chase",
       "displayName": "Chase",
       "category": "bank",
-      "aliases": ["chase bank", "jpmorgan chase", "jp morgan chase"],
-      "strictAliases": ["chase"],
-      "officialDomains": ["chase.com"],
+      "aliases": [
+        "chase bank",
+        "jpmorgan chase",
+        "jp morgan chase"
+      ],
+      "strictAliases": [
+        "chase"
+      ],
+      "officialDomains": [
+        "chase.com"
+      ],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-935-9935"
+      ],
       "sources": [
         {
           "domain": "chase.com",
-          "url": "https://www.chase.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "url": "https://www.chase.com/digital/resources/privacy-security",
+          "retrieved": "2026-10-17",
+          "check": "AI-assisted official-source review; human approval pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "chase.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.chase.com/digital/resources/privacy-security",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)"
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-935-9935",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.chase.com/digital/customer-service",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+          "purpose": "Personal Banking Customer Service:"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": "ChatGPT (AI-assisted source review; human approval pending)",
+        "date": "2026-10-17",
+        "reviewDue": "2027-01-15",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval without search results or ads. Interactive browser failed. No human or independent second review is claimed.",
+        "notes": "Sender-domain field blank: no explicit legitimate sender-domain list found in checked pages. A phishing-report mailbox is not proof of a sending domain. Security quote concerns moving money to resolve fraud; it is not a general ban on bank transfers. Only the main domain and the listed US personal-banking number are included."
+      },
+      "securityNotes": {
+        "quote": "Legitimate banks will never ask you to move money to resolve a fraud issue.",
+        "sourceUrl": "https://www.chase.com/digital/resources/privacy-security/security/scam-stories",
+        "status": "draft"
+      },
+      "contactInstruction": {
+        "text": "call Chase using the phone number on the back of your card or on your account statement.",
+        "sourceUrl": "https://www.chase.com/digital/resources/privacy-security/security/self-service-text-messages"
+      }
     },
     {
       "id": "bankofamerica",
@@ -103,20 +160,78 @@ window.TFS_STORE = {
       "id": "wellsfargo",
       "displayName": "Wells Fargo",
       "category": "bank",
-      "aliases": ["wells fargo"],
-      "officialDomains": ["wellsfargo.com"],
+      "aliases": [
+        "wells fargo"
+      ],
+      "officialDomains": [
+        "wellsfargo.com"
+      ],
       "strictAliases": [],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-869-3557"
+      ],
       "sources": [
         {
           "domain": "wellsfargo.com",
           "url": "https://www.wellsfargo.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "retrieved": "2026-10-17",
+          "check": "AI-assisted official-source review; human approval pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "wellsfargo.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.wellsfargo.com/",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)"
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-869-3557",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/report/",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+          "purpose": "Checking or savings account, debit, or ATM card fraud"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": "ChatGPT (AI-assisted source review; human approval pending)",
+        "date": "2026-10-17",
+        "reviewDue": "2027-01-15",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval without search results or ads. Interactive browser failed. No human or independent second review is claimed.",
+        "notes": "Email source explicitly identifies wellsfargo.com in legitimate email addresses; this does not authenticate an email, and a string containing that text is not sufficient. Security quote refers to screen-sharing/remote-access tools. Other business, wire-fraud and card-claim numbers are outside this narrow review. Card instruction applies when reporting suspected fraud or unauthorized transactions and filing a claim."
+      },
+      "securityNotes": {
+        "quote": "Wells Fargo will never ask you to download this type of software or ask you to screen share with them.",
+        "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/bank-scams/bank-imposter/",
+        "status": "draft"
+      },
+      "contactInstruction": {
+        "text": "calling the number on the back of your credit or debit card.",
+        "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/report/"
+      },
+      "publishedEmailSenderDomains": [
+        {
+          "value": "wellsfargo.com",
+          "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/bank-scams/bank-imposter/",
+          "status": "draft"
+        }
+      ]
     },
     {
       "id": "citi",
@@ -343,20 +458,53 @@ window.TFS_STORE = {
       "id": "amazon",
       "displayName": "Amazon",
       "category": "retail",
-      "aliases": ["amazon", "amazon prime"],
-      "officialDomains": ["amazon.com"],
+      "aliases": [
+        "amazon",
+        "amazon prime"
+      ],
+      "officialDomains": [
+        "amazon.com"
+      ],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
         {
           "domain": "amazon.com",
-          "url": "https://www.amazon.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "url": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+          "retrieved": "2026-10-17",
+          "check": "AI-assisted official-source review; human approval pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "amazon.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": "ChatGPT (AI-assisted source review; human approval pending)",
+        "date": "2026-10-17",
+        "reviewDue": "2027-01-15",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval without search results or ads. Interactive browser failed. No human or independent second review is claimed.",
+        "notes": "Phone and purpose blank: the official contact flow returned 503 and the accessible security article publishes no customer-service phone number. Use the app or website contact flow: https://www.amazon.com/hz/contact-us/foresight/hubgateway . Sender domain blank: reportascam@amazon.com is an inbound reporting address, not an explicit list of outbound senders. Gift-card quote is an exact excerpt. About Amazon is used as Amazon's own publication; no additional customer-contact domain is added."
+      },
+      "securityNotes": {
+        "quote": "We will never ask you to purchase a gift card",
+        "sourceUrl": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+        "status": "draft"
+      }
     },
     {
       "id": "apple",
@@ -764,20 +912,70 @@ window.TFS_STORE = {
       "id": "usps",
       "displayName": "USPS",
       "category": "delivery",
-      "aliases": ["usps", "postal service", "u.s. postal service", "us postal service"],
-      "officialDomains": ["usps.com"],
+      "aliases": [
+        "usps",
+        "postal service",
+        "u.s. postal service",
+        "us postal service"
+      ],
+      "officialDomains": [
+        "usps.com"
+      ],
       "strictAliases": [],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-275-8777"
+      ],
       "sources": [
         {
           "domain": "usps.com",
           "url": "https://www.usps.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "retrieved": "2026-10-17",
+          "check": "AI-assisted official-source review; human approval pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "usps.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.usps.com/",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)"
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-275-8777",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.usps.com/help/contact-us.htm",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+          "purpose": "Customer Care Center"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": "ChatGPT (AI-assisted source review; human approval pending)",
+        "date": "2026-10-17",
+        "reviewDue": "2027-01-15",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval without search results or ads. Interactive browser failed. No human or independent second review is claimed.",
+        "notes": "Exact security excerpt: its antecedent is customer-requested package-tracking text messages or emails. USPS's own tracking FAQ links to the Postal Inspection Service as Postal Inspectors: https://www.usps.com/text-tracking/welcome.htm . This supports USPIS as an official source, not a general sender-domain allowlist. Do not generalize this into a rule that all USPS communications never contain links. Sender domain and card-style instruction are blank because not established. The documented 28777 text-tracking short code is not added as a callable phone; this engine's phone records require ten digits."
+      },
+      "securityNotes": {
+        "quote": "and it will NOT contain a link.",
+        "sourceUrl": "https://www.uspis.gov/news/scam-article/smishing-package-tracking-text-scams",
+        "status": "draft"
+      }
     },
     {
       "id": "ups",
@@ -859,20 +1057,70 @@ window.TFS_STORE = {
       "id": "ssa",
       "displayName": "Social Security Administration",
       "category": "government",
-      "aliases": ["social security", "social security administration"],
-      "strictAliases": ["ssa"],
-      "officialDomains": ["ssa.gov"],
+      "aliases": [
+        "social security",
+        "social security administration"
+      ],
+      "strictAliases": [
+        "ssa"
+      ],
+      "officialDomains": [
+        "ssa.gov"
+      ],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-772-1213"
+      ],
       "sources": [
         {
           "domain": "ssa.gov",
           "url": "https://www.ssa.gov/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads (retried by hand)"
+          "retrieved": "2026-10-17",
+          "check": "AI-assisted official-source review; human approval pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "ssa.gov",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.ssa.gov/",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)"
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-772-1213",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.ssa.gov/agency/contact/phone.html",
+          "checkedOn": "2026-10-17",
+          "reviewDue": "2027-01-15",
+          "reviewedBy": "ChatGPT (AI-assisted source review; human approval pending)",
+          "purpose": "National 800 Number"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": "ChatGPT (AI-assisted source review; human approval pending)",
+        "date": "2026-10-17",
+        "reviewDue": "2027-01-15",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval without search results or ads. Interactive browser failed. No human or independent second review is claimed.",
+        "notes": "Sender domain blank: no explicit outbound sender-domain statement found in checked pages. Card-style instruction is not applicable. National phone support is distinct from local offices; the quoted prohibition is scoped to social media, email and text, not every phone interaction."
+      },
+      "securityNotes": {
+        "quote": "Social Security will never ask for sensitive or personal information through social media, email, or text message.",
+        "sourceUrl": "https://www.ssa.gov/scam/",
+        "status": "draft"
+      }
     },
     {
       "id": "medicare",
