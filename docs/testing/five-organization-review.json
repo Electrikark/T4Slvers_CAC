@@ -1,0 +1,61 @@
+{
+  "reviewDate": "2026-10-17",
+  "reviewTimezone": "America/Los_Angeles",
+  "reviewDue": "2027-01-15",
+  "reviewer": "ChatGPT (AI-assisted source review; human approval pending)",
+  "approvalStatus": "draft",
+  "method": "Direct official URL retrieval without search results or ads. Interactive browser failed. No human or independent second review is claimed.",
+  "organizations": [
+    {
+      "id": "chase", "name": "Chase", "officialAddress": "https://www.chase.com/", "domain": "chase.com",
+      "domainSource": "https://www.chase.com/digital/resources/privacy-security",
+      "phones": [{"value": "1-800-935-9935", "purpose": "Personal Banking Customer Service:", "sourceUrl": "https://www.chase.com/digital/customer-service"}],
+      "contactInstruction": "call Chase using the phone number on the back of your card or on your account statement.",
+      "instructionSource": "https://www.chase.com/digital/resources/privacy-security/security/self-service-text-messages",
+      "emailSenderDomain": null, "emailSource": null,
+      "neverAsks": "Legitimate banks will never ask you to move money to resolve a fraud issue.",
+      "securitySource": "https://www.chase.com/digital/resources/privacy-security/security/scam-stories",
+      "notes": "Sender-domain field blank: no explicit legitimate sender-domain list found in checked pages. A phishing-report mailbox is not proof of a sending domain. Security quote concerns moving money to resolve fraud; it is not a general ban on bank transfers. Only the main domain and the listed US personal-banking number are included."
+    },
+    {
+      "id": "wellsfargo", "name": "Wells Fargo", "officialAddress": "https://www.wellsfargo.com/", "domain": "wellsfargo.com",
+      "domainSource": "https://www.wellsfargo.com/",
+      "phones": [{"value": "1-800-869-3557", "purpose": "Checking or savings account, debit, or ATM card fraud", "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/report/"}],
+      "contactInstruction": "calling the number on the back of your credit or debit card.",
+      "instructionSource": "https://www.wellsfargo.com/privacy-security/fraud/report/",
+      "emailSenderDomain": "wellsfargo.com", "emailSource": "https://www.wellsfargo.com/privacy-security/fraud/bank-scams/bank-imposter/",
+      "neverAsks": "Wells Fargo will never ask you to download this type of software or ask you to screen share with them.",
+      "securitySource": "https://www.wellsfargo.com/privacy-security/fraud/bank-scams/bank-imposter/",
+      "notes": "Email source explicitly identifies wellsfargo.com in legitimate email addresses; this does not authenticate an email, and a string containing that text is not sufficient. Security quote refers to screen-sharing/remote-access tools. Other business, wire-fraud and card-claim numbers are outside this narrow review. Card instruction applies when reporting suspected fraud or unauthorized transactions and filing a claim."
+    },
+    {
+      "id": "usps", "name": "USPS", "officialAddress": "https://www.usps.com/", "domain": "usps.com",
+      "domainSource": "https://www.usps.com/",
+      "phones": [{"value": "1-800-275-8777", "purpose": "Customer Care Center", "sourceUrl": "https://www.usps.com/help/contact-us.htm"}],
+      "contactInstruction": null, "instructionSource": null,
+      "emailSenderDomain": null, "emailSource": null,
+      "neverAsks": "and it will NOT contain a link.",
+      "securitySource": "https://www.uspis.gov/news/scam-article/smishing-package-tracking-text-scams",
+      "notes": "Exact security excerpt: its antecedent is customer-requested package-tracking text messages or emails. USPS's own tracking FAQ links to the Postal Inspection Service as Postal Inspectors: https://www.usps.com/text-tracking/welcome.htm . This supports USPIS as an official source, not a general sender-domain allowlist. Do not generalize this into a rule that all USPS communications never contain links. Sender domain and card-style instruction are blank because not established. The documented 28777 text-tracking short code is not added as a callable phone; this engine's phone records require ten digits."
+    },
+    {
+      "id": "amazon", "name": "Amazon", "officialAddress": "https://www.amazon.com/", "domain": "amazon.com",
+      "domainSource": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+      "phones": [], "contactInstruction": null, "instructionSource": null,
+      "emailSenderDomain": null, "emailSource": null,
+      "neverAsks": "We will never ask you to purchase a gift card",
+      "securitySource": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+      "notes": "Phone and purpose blank: the official contact flow returned 503 and the accessible security article publishes no customer-service phone number. Use the app or website contact flow: https://www.amazon.com/hz/contact-us/foresight/hubgateway . Sender domain blank: reportascam@amazon.com is an inbound reporting address, not an explicit list of outbound senders. Gift-card quote is an exact excerpt. About Amazon is used as Amazon's own publication; no additional customer-contact domain is added."
+    },
+    {
+      "id": "ssa", "name": "Social Security", "officialAddress": "https://www.ssa.gov/", "domain": "ssa.gov",
+      "domainSource": "https://www.ssa.gov/",
+      "phones": [{"value": "1-800-772-1213", "purpose": "National 800 Number", "sourceUrl": "https://www.ssa.gov/agency/contact/phone.html"}],
+      "contactInstruction": null, "instructionSource": null,
+      "emailSenderDomain": null, "emailSource": null,
+      "neverAsks": "Social Security will never ask for sensitive or personal information through social media, email, or text message.",
+      "securitySource": "https://www.ssa.gov/scam/",
+      "notes": "Sender domain blank: no explicit outbound sender-domain statement found in checked pages. Card-style instruction is not applicable. National phone support is distinct from local offices; the quoted prohibition is scoped to social media, email and text, not every phone interaction."
+    }
+  ]
+}
