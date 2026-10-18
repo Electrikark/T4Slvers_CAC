@@ -1,0 +1,107 @@
+{
+  "runAt": "2026-10-18T21:52:22.761892+00:00",
+  "commitBefore": "acf26de5a293c38134410e35e7e08b1855e296ad",
+  "commitAfter": "acf26de5a293c38134410e35e7e08b1855e296ad",
+  "noNewCommit": true,
+  "originalCommittedWorkbookSha256": "baab19838cfb8b79c52895da32a6ca15923fb9b1edaf3f8ce1e96d93d8fa70cb",
+  "staleOutputWorkbookSha256": "2e2a42fce6e42c6f4a41e0686e49f43e2684a6a3e3e84235962d162017fced22",
+  "staleExportRejected": true,
+  "staleFailure": "Chase: stale workbook date",
+  "repoWorkbookSha256": "e5560505ab6fa9774e82de4d33d3fc461500e1f0add607ab867c9a3530ee10fd",
+  "exportWorkbookSha256": "e5560505ab6fa9774e82de4d33d3fc461500e1f0add607ab867c9a3530ee10fd",
+  "workbooks": [
+    {
+      "passed": true,
+      "workbook": "/Users/namanraichura/.codex/.chatgpt-projects/g-p-6ab2104216048191848ae7f86cdc348c/review-five-organizations/docs/testing/five-organization-review.xlsx",
+      "organizations": [
+        {
+          "organization": "Chase",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "Wells Fargo",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "USPS",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "Amazon",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "Social Security",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        }
+      ],
+      "expiryNote": "2027-01-17 is expired",
+      "eligibilityRows": 20
+    },
+    {
+      "passed": true,
+      "workbook": "/Users/namanraichura/.codex/.chatgpt-projects/g-p-6ab2104216048191848ae7f86cdc348c/outputs/five-org-review/five-organization-review.xlsx",
+      "organizations": [
+        {
+          "organization": "Chase",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "Wells Fargo",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "USPS",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "Amazon",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        },
+        {
+          "organization": "Social Security",
+          "K": "2026-10-18",
+          "L": "",
+          "N": "2027-01-16",
+          "O": "Draft"
+        }
+      ],
+      "expiryNote": "2027-01-17 is expired",
+      "eligibilityRows": 20
+    }
+  ],
+  "npmTest": {
+    "exitCode": 0,
+    "passed": 1252,
+    "total": 1252
+  },
+  "policy": "Two distinct trained human volunteers per contact before pilot approval; manual release gate. No human approval added.",
+  "uploadedReadback": [{"fileName":"five-organization-review.xlsx","version":"2","sizeBytes":9382,"verifiedReviewRows":5,"oldReviewDateAbsent":true,"oldReviewerAbsent":true,"correctExpiryNote":true,"twoVolunteerNote":true},{"fileName":"five-organization-review(2).xlsx","version":"1","sizeBytes":9382,"verifiedReviewRows":5,"oldReviewDateAbsent":true,"oldReviewerAbsent":true,"correctExpiryNote":true,"twoVolunteerNote":true}]
+}

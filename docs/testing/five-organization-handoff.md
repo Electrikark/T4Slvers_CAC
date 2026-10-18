@@ -4,6 +4,8 @@ Contacts for 5 organizations were checked against their official websites, with 
 
 Source verification date: **2026-10-18, America/Los_Angeles**. All five rows have **K = 2026-10-18, L blank, N = 2027-01-16, O = Draft**. There are nine sourced contact records: five domains and four phone numbers. The reviewer fields remain blank for the user's later review. No human approval or independent two-reviewer verification is claimed. After that review, record the actual reviewer and date and recalculate expiry before approving each contact. The due date is inclusive; January 17 is expired.
 
+**Reconciliation status:** Commit **acf26de** already existed before the user's commit hold. The repository workbook and the workbook bytes in that commit had the October 18 dates and blank reviewers. A separate local output copy still held the October 17 workbook. That stale export has been replaced from the repository workbook; subsequent edits add the two-volunteer release rule. The audit files capture the uncommitted reconciliation state. The user subsequently authorized a local commit on October 18, 2026. Nothing is pushed or merged, and no human contact approval is implied.
+
 ## Official-source verification
 
 The exact recorded numbers and security excerpts were located on the cited pages and their surrounding context checked. Only the organization's own publications were used. Phone purposes and scope were checked separately from the numbers. G, J and P retain the exact source URLs; unsupported cells remain blank.
@@ -22,7 +24,7 @@ Exact citations and excerpts are retained in [the source ledger](five-organizati
 
 **Amazon:** Keep the phone field blank until an official number is verified. An eligible domain alone can satisfy the contact requirement, provided every other assessment condition is met. When the trusted view supplies the unrestricted amazon.com record, the next-step card now says **“Open the Amazon app or type amazon.com yourself.”** Draft, expired, rejected, conflicting, incomplete or path-restricted records cannot supply that specific navigation advice. Existing generic fallback advice remains available.
 
-**USPS:** Keep the quote as documentation only and preserve the source conditions. `data/policies.js`, the detector, and the assessment gate were not changed. The existing USPS detection-policy draft remains inactive and still requires its separate two-reviewer process. Contact eligibility requires a human reviewer; it does not establish two-reviewer policy approval.
+**USPS:** Keep the quote as documentation only and preserve the source conditions. `data/policies.js`, the detector, and the assessment gate were not changed. The existing USPS detection-policy draft remains inactive and still requires its separate two-reviewer process. The new [release policy](../../RELEASE.md) also requires two distinct trained volunteers to independently review every contact before pilot approval. The contact engine currently checks one reviewer field, so this two-person release gate must be checked manually. Contact approval does not approve a detection policy.
 
 ## Audit and implementation
 
@@ -58,6 +60,14 @@ The exact clean message is **“Chase: Information is available at https://chase
 
 ## Verification limits
 
-The interactive browser failed, and a separate headless Chrome launch also failed. Direct official-URL retrieval and exact-text find were used for source verification; manual Cmd+F was not completed. The engine output was tested and `js/app.js` was inspected to confirm its `details_match` → “Details Match” label mapping. A live visual UI pass is not claimed.
+Browser startup initially failed, but later recovered and loaded Chase's official contact page. Local app UI verification remained blocked: the browser disallowed file URLs and the workspace could not bind a localhost server. Direct official-URL retrieval and exact-text find were used for the original source pass; manual Cmd+F was not completed. The engine output was tested and `js/app.js` was inspected to confirm its `details_match` → “Details Match” label mapping. A live visual UI pass is not claimed.
 
 The current workbook is the previously reconstructed review workbook; the original attached template had been unavailable. This pass edited that existing reconstruction, preserved its unrelated table cells and both tabs, rendered the changed views, and found no formula-error markers. Source limitations and pending human-review fields remain visible. The Cloud Environment skill was read, but no callable managed-environment status tool was exposed; all local implementation and Node checks used the current local workspace.
+
+## Reconciliation checks and pilot boundary
+
+The added `python3 tests/review-artifact-consistency.py` check compares the real store, source ledger, workbook K/L/N/O fields, security excerpts, expiry explanation, and all 20 Eligibility Results dates. It rejected the stale output workbook with `Chase: stale workbook date`, confirming that it catches this incident rather than merely repeating engine assertions. It must pass on both the repository workbook and the synchronized export; saved results are in `docs/testing/workbook-consistency.json`.
+
+The requested Git status, five-commit log, branch and store grep output are saved in `docs/testing/reconciliation-audit.txt`. The latest full engine run is saved in `docs/testing/reconciliation-npm-test.log`. The workbook's Eligibility Results tab is a reference, not a replacement for these executable checks.
+
+Before the October 19 pilot, both human volunteers must independently sign off on each contact and the exact selected build. Until then the real records stay Draft, and the clean Chase message correctly remains Insufficient Evidence. If the reviews are incomplete, pilot notes must say: **"Details Match was not evaluated with approved real-organization records; those records remained Draft."** Any simulated three-outcome usability work must be identified separately. No build has been newly tagged, released or deployed.
