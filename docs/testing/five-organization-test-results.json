@@ -1,0 +1,172 @@
+{
+  "referenceDate": "2026-10-17",
+  "timezone": "America/Los_Angeles",
+  "expiresAfter": "2027-01-15",
+  "expirySemantics": "reviewDue is the last eligible date; excluded the following day",
+  "scenarioOnly": true,
+  "checks": 36,
+  "passed": 36,
+  "failed": 0,
+  "rows": [
+    {
+      "organization": "Chase",
+      "state": "Approved and current",
+      "assessment": "details_match",
+      "eligibleContacts": 2,
+      "websiteShown": true,
+      "passed": true
+    },
+    {
+      "organization": "Chase",
+      "state": "Expired",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Chase",
+      "state": "Rejected",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Chase",
+      "state": "Draft",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Wells Fargo",
+      "state": "Approved and current",
+      "assessment": "details_match",
+      "eligibleContacts": 2,
+      "websiteShown": true,
+      "passed": true
+    },
+    {
+      "organization": "Wells Fargo",
+      "state": "Expired",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Wells Fargo",
+      "state": "Rejected",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Wells Fargo",
+      "state": "Draft",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "USPS",
+      "state": "Approved and current",
+      "assessment": "details_match",
+      "eligibleContacts": 2,
+      "websiteShown": true,
+      "passed": true
+    },
+    {
+      "organization": "USPS",
+      "state": "Expired",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "USPS",
+      "state": "Rejected",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "USPS",
+      "state": "Draft",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Amazon",
+      "state": "Approved and current",
+      "assessment": "details_match",
+      "eligibleContacts": 1,
+      "websiteShown": true,
+      "passed": true
+    },
+    {
+      "organization": "Amazon",
+      "state": "Expired",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Amazon",
+      "state": "Rejected",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Amazon",
+      "state": "Draft",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Social Security",
+      "state": "Approved and current",
+      "assessment": "details_match",
+      "eligibleContacts": 2,
+      "websiteShown": true,
+      "passed": true
+    },
+    {
+      "organization": "Social Security",
+      "state": "Expired",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Social Security",
+      "state": "Rejected",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    },
+    {
+      "organization": "Social Security",
+      "state": "Draft",
+      "assessment": "insufficient_evidence",
+      "eligibleContacts": 0,
+      "websiteShown": false,
+      "passed": true
+    }
+  ]
+}
