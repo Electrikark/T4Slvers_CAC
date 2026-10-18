@@ -227,11 +227,15 @@
     const steps = [];
     if (result.checks.some(c => c.code === 'shortener_unresolvable')) steps.push('Do not tap the short link. Ask a trusted person to help, or contact the organization directly.');
     if (org) {
-      steps.push(`Contact ${org.displayName} using a number you already trust, such as the one on your card, bill or statement.`);
       const domain = trustedDomain(ctx, org);
-      steps.push(domain
-        ? `If you need their website, type ${domain} yourself instead of tapping a link.`
-        : 'If you need their website, type a website address you already know, or use their official app.');
+      if (org.id === 'amazon' && domain === 'amazon.com') {
+        steps.push('Open the Amazon app or type amazon.com yourself.');
+      } else {
+        steps.push(`Contact ${org.displayName} using a number you already trust, such as the one on your card, bill or statement.`);
+        steps.push(domain
+          ? `If you need their website, type ${domain} yourself instead of tapping a link.`
+          : 'If you need their website, type a website address you already know, or use their official app.');
+      }
     } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number')) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {

@@ -14,6 +14,10 @@ for (const file of ['js/engine/normalize.js', 'js/engine/extract.js', 'js/engine
 const review = JSON.parse(fs.readFileSync(path.join(root, 'docs/testing/five-organization-review.json')));
 const day = review.reviewDate;
 const rows = [];
+const checkResults = [];
+const dayAfter = date => new Date(Date.parse(date) + 86400000).toISOString().slice(0, 10);
+const expiredDay = dayAfter(review.reviewDue);
+const chase = {};
 let passed = 0;
 const clone = value => JSON.parse(JSON.stringify(value));
 function run(text, store, today=day) {
@@ -21,7 +25,7 @@ function run(text, store, today=day) {
   assert.ok(context.TfsEngine.validateResult(result), 'invalid result');
   return result;
 }
-function check(id, fn) { fn(); passed++; }
+function check(id, fn) { fn(); passed++; checkResults.push({id, passed:true}); }
 function scenarioStore(id, state) {
   const store = clone(context.TFS_STORE);
   const org = store.orgs.find(o => o.id === id);
@@ -41,10 +45,16 @@ for (const row of review.organizations) {
       const eligible = state === 'Approved and current';
       const trusted = view.trusted.filter(r => r.orgId === row.id);
       assert.equal(trusted.length, eligible ? org.contacts.length : 0);
-      const result = run(row.name + ': Information is available at https://' + row.domain + '.', store);
+      const message = row.name + ': Information is available at https://' + row.domain + '.';
+      const result = run(message, store);
       assert.equal(result.assessment, eligible ? 'details_match' : 'insufficient_evidence');
-      const website = 'If you need their website, type ' + row.domain + ' yourself instead of tapping a link.';
+      const website = row.id === 'amazon' ? 'Open the Amazon app or type amazon.com yourself.'
+        : 'If you need their website, type ' + row.domain + ' yourself instead of tapping a link.';
       assert.equal(result.nextSteps.includes(website), eligible);
+      if (row.id === 'amazon') {
+        assert.equal(org.contacts.some(r => r.kind === 'phone'), false, 'no unsourced Amazon phone');
+        assert.equal(result.nextSteps.includes('Open the Amazon app or type amazon.com yourself.'), eligible);
+      }
       // Assert eligibility per contact as well as verdict and rendered next-step website.
       for (const record of org.contacts) {
         const target = context.TFS.extractTargets(record.kind === 'phone' ? record.value : 'https://' + record.value).targets[0];
@@ -54,8 +64,11 @@ for (const row of review.organizations) {
         assert.ok(result.checks.every(c => c.status !== 'SUPPORTS'));
         for (const record of org.contacts) assert.ok(!result.nextSteps.join(' ').includes(record.value));
       }
-      rows.push({organization:row.name, state, assessment:result.assessment,
-        eligibleContacts:trusted.length, websiteShown:result.nextSteps.includes(website), passed:true});
+      const outcome = {organization:row.name, state, message, assessment:result.assessment,
+        trace:result.trace, eligibleContacts:trusted.length, websiteShown:result.nextSteps.includes(website),
+        nextSteps:result.nextSteps, passed:true};
+      rows.push(outcome);
+      if (row.id === 'chase' && eligible) chase.approvedScenario = outcome;
     });
   }
   check(row.id + ':risk-overrides-match', () => {
@@ -64,13 +77,17 @@ for (const row of review.organizations) {
     assert.ok(result.checks.some(c => c.status === 'SUPPORTS'));
     assert.equal(result.assessment, 'suspicious');
     assert.ok(result.meaning.includes('cannot cancel this warning'));
+    if (row.id === 'chase') chase.suspiciousWithOfficialLink = {
+      message:row.name + ': Pay with gift cards today. Visit https://' + row.domain + '.',
+      assessment:result.assessment, trace:result.trace, checks:result.checks,
+      nextSteps:result.nextSteps, meaning:result.meaning};
   });
   check(row.id + ':expiry-boundary', () => {
     const store = scenarioStore(row.id, 'Approved and current');
     const message = row.name + ': Information is available at https://' + row.domain + '.';
     assert.equal(run(message, store, review.reviewDue).assessment, 'details_match');
-    assert.equal(run(message, store, '2027-01-16').assessment, 'insufficient_evidence');
-    assert.ok(!run(message, store, '2027-01-16').nextSteps.join(' ').includes(row.domain));
+    assert.equal(run(message, store, expiredDay).assessment, 'insufficient_evidence');
+    assert.ok(!run(message, store, expiredDay).nextSteps.join(' ').includes(row.domain));
   });
   check(row.id + ':missing-source', () => {
     const store = scenarioStore(row.id, 'Approved and current');
@@ -89,10 +106,15 @@ check('actual-store-remains-draft', () => {
     assert.equal(org.humanReview, undefined);
   }
   assert.equal((Date.parse(review.reviewDue) - Date.parse(day)) / 86400000, 90);
+  const message = 'Chase: Information is available at https://chase.com.';
+  const actual = run(message, context.TFS_STORE);
+  assert.equal(actual.assessment, 'insufficient_evidence', 'actual draft is not an approval');
+  chase.actualStore = {message, assessment:actual.assessment, trace:actual.trace,
+    checks:actual.checks, nextSteps:actual.nextSteps};
 });
 const report = {referenceDate:day, timezone:review.reviewTimezone, expiresAfter:review.reviewDue,
   expirySemantics:'reviewDue is the last eligible date; excluded the following day',
-  scenarioOnly:true, checks:passed, passed, failed:0, rows};
+  scenarioOnly:true, checks:passed, passed, failed:0, rows, checkResults, chase};
 if (process.argv.includes('--write-report')) {
   fs.writeFileSync(path.join(root, 'docs/testing/five-organization-test-results.json'), JSON.stringify(report, null, 2) + '\n');
 }
