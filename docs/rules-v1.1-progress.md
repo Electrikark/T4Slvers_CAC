@@ -10,7 +10,7 @@ The evaluator now selects the requested split **before** engine analysis. Its re
 | Baseline | N/A | N/A | Pass | unavailable | unavailable | unavailable | unavailable |
 | F1 | Failed as expected | 38/38 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F2 | Failed as expected | 27/27 | Pass | unavailable | unavailable | unavailable | unavailable |
-| F3 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
+| F3 | Failed as expected | 19/19 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F4 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
 | F5 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
 
@@ -27,3 +27,7 @@ Added pressure-free named-tool requests and nearby session/connection references
 ## F2
 
 Added explicit-number financial/account callbacks, including conditional instructions and amount-bearing payment notices. A stored number for the attributed brand leaves a Tier 2 blocker even when reviewed; a wrong-brand or second unknown callback number still qualifies. Added the user-supplied Chase number as unreviewed. No-charge notices, back-of-card advice and appointment messages remain excluded. Details Match gate logic is unchanged.
+
+## F3
+
+Added gift-card acquisition requests with nearby reimbursement, sender-use or inability-to-buy context. Birthday gifts, Apple/Amazon/Target credit-card bills and context-free “get some more gift cards?” remain outside Tier 1. No new gift-card payment interpretation is inferred from a brand name alone.

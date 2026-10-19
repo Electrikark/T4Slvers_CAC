@@ -203,7 +203,7 @@
     if (/^\s*(?:to|in order to|before|so|due to|because of|after)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/^\s*(?:please\s+)?(?:avoid|prevent|stop|resolve|settle|clear)\b[^.!?\n]{0,60}\bby\s*$/i.test(rest) && !/\b(?:ask|asks|asking|told|tell|tells|says|say|said|never|not)\b/i.test(rest)) return true;
     if (/^\s*to avoid (?:power|service|account) (?:shutoff|closure|disconnection|suspension)\s+(?:please\s+)?$/i.test(rest)) return true;
-    if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
+    if (/\b(?:please|you must|you need to|you have to|you should|can you|could you|would you|will you)\s*$/i.test(rest)) return true;
     if (/^\s*if [^,]{1,140},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/^\s*in [^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/,\s*so\s+(?:please\s+)?$/i.test(rest)) return true;
@@ -274,6 +274,17 @@
       // "Buy gift cards ... and pay for lunch": a payment nearby, but not clearly for the cards.
       s.unresolved.push({ id: 'unclear_gift_payment_purpose', action: d.action, clause: s.clauseSpan(d.clause), object: gift });
     }
+  }
+
+  function giftForSender(d, s) {
+    if (!/^(?:buy|purchase|get|pick up|cover)$/.test(d.verb)) return;
+    const hit = d.near.match(GIFT);
+    if (!hit) return;
+    const context = contextMatch(s, /\b(?:reimburse(?:ment)?|pay you back|put it on my tab|for (?:the|our|my) (?:team|project|clients)|for clients|in a meeting|can['’]?t (?:talk|leave)|cannot (?:talk|leave))\b/i, d.index);
+    if (!context) return;
+    const object = spanOf(s.raw, d.clause, hit, d.after);
+    s.flag('gift_card_purchase', d.action.start, object.end);
+    s.tier1('T1-GIFT', d, object, context);
   }
 
   // T1-GIFT: "buy gift cards ... send me the codes". Returns true when it fires.
@@ -464,6 +475,7 @@
         const verb = m[0].toLowerCase();
         const d = { verb: verb === 'purchasing' ? 'purchase' : verb === 'sending' ? 'send' : verb, clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };
         giftPayment(d, s);
+        giftForSender(d, s);
         const giftCodeFound = giftCodes(d, s);
         wireTransfer(d, s);
         remoteAccess(d, s);
