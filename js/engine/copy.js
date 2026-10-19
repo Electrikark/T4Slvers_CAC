@@ -88,6 +88,7 @@
 
   // Each wording warning: its short label, and the advice shown under "What to do next".
   const FLAGS = {
+    gift_card_purchase: { label: 'Buying gift cards for a requester', advice: 'Check with the person through a number you already trust before buying gift cards for them.' },
     gift_card_payment: { label: 'Payment with gift cards', advice: 'Do not send gift card numbers to someone demanding payment. Contact the organization independently.' },
     gift_card_disclosure: { label: 'Sending gift-card numbers or codes', advice: 'Do not send or read gift-card numbers, PINs, or codes to the requester. Check with the person through a number you already trust.' },
     crypto_or_wire: { label: 'Payment by crypto or wire transfer', advice: 'Requests to pay with cryptocurrency, a crypto ATM or a wire transfer are a frequent scam pattern.' },
@@ -112,7 +113,7 @@
 
   // Plain words for each Tier 1 rule, used to name the request itself.
   const RULE_ASKS = {
-    'T1-GIFT': 'asks you to pay with gift cards or share gift-card codes',
+    'T1-GIFT': 'asks you to pay with gift cards, share gift-card codes, or buy cards for the requester',
     'T1-WIRE': 'pressures you to send cryptocurrency or a wire transfer',
     'T1-REMOTE': 'asks you to let someone control your device',
     'T1-CODE': 'asks you to give a sign-in code, PIN or password to the sender',
