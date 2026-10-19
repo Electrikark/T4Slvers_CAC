@@ -27,7 +27,7 @@
     competing_card_code_antecedent: 'This asks for card numbers or codes, and it is not clear which card it means. Don’t send any card numbers or codes.'
   };
   // Tier 2 flags that only repeat a Tier 1 request already marked at the same place.
-  var COMPANION = { financial_callback: 'T1-CALLBACK', gift_card_payment: 'T1-GIFT', gift_card_disclosure: 'T1-GIFT', crypto_or_wire: 'T1-WIRE', remote_access: 'T1-REMOTE', share_code: 'T1-CODE', tech_support_call: 'T1-CALLBACK' };
+  var COMPANION = { gift_card_purchase: 'T1-GIFT', financial_callback: 'T1-CALLBACK', gift_card_payment: 'T1-GIFT', gift_card_disclosure: 'T1-GIFT', crypto_or_wire: 'T1-WIRE', remote_access: 'T1-REMOTE', share_code: 'T1-CODE', tech_support_call: 'T1-CALLBACK' };
 
   function valid(raw, s) {
     return s && Number.isInteger(s.start) && Number.isInteger(s.end) && s.start >= 0 && s.end > s.start && s.end <= raw.length;
