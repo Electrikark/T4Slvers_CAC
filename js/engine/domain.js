@@ -198,6 +198,40 @@
     const platform = store.orgs.find(org => on(org.userContentHosts));
     if (platform) return check('UNKNOWN', 'user_content_platform', { ...base, orgId: platform.id });
 
+    // 6. An official domain glued onto a different site: chase.com.account-verify.net
+    const dotted = '.' + host + '.';
+    for (const org of store.orgs) {
+      const glued = (org.officialDomains || []).find(d => !hostMatches(host, d) && !countryForm(host, d) &&
+        (dotted.includes('.' + d + '.') || ('.' + host).includes('.' + d + '-')));
+      if (glued) return check('CONTRADICTS', 'official_domain_as_subdomain', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: glued });
+    }
+
+    // F5: a whole brand name in a foreign link host plus a direct action request.
+    // All record statuses can raise caution. None of these records grant support here.
+    if (target.kind === 'link' && ctx.linkAction) {
+      const labels = host.split('.');
+      const suffixSize = MULTI_SUFFIX.has(labels.slice(-2).join('.')) ? 2 : 1;
+      const nameParts = labels.slice(0, -suffixSize).join('.').split(/[-_.]+/);
+      for (const org of store.orgs) {
+        const domains = (org.officialDomains || []).concat((org.contacts || [])
+          .filter(c => c.kind === 'domain').map(c => c.value));
+        if (!domains.length || domains.some(d => registrable(d.toLowerCase()) === reg)) continue;
+        const names = [org.displayName].concat(org.aliases || [], org.strictAliases || [],
+          domains.map(d => registrable(d).split('.')[0])).filter(Boolean);
+        for (const name of names) {
+          const words = name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+          const compact = words.join('');
+          if (compact.length < 3 || GENERIC_LABELS.has(compact)) continue;
+          const matched = nameParts.includes(compact) || nameParts.some((_, i) =>
+            words.every((word, j) => nameParts[i + j] === word));
+          if (matched) return check('CONTRADICTS', 'brand_in_foreign_domain', {
+            ...base, strength: 'strong', orgId: org.id, lookalikeOf: domains[0],
+            brandWord: compact, requestAction: ctx.linkAction
+          });
+        }
+      }
+    }
+
     // 4 and 5. Official for the named sender, or for someone else.
     // Raw ownership from the full list. It can name a conflict or a pending record; only the
     // trusted view (TFS.trustedMatches) can turn ownership into support.
@@ -211,14 +245,6 @@
       if (!claim) return supported(ctx, owners[0], target, 'domain_official', { ...base, orgId: owners[0].id, implicit: true });
       if (owners.some(o => o.id === claim.id)) return supported(ctx, claim, target, 'domain_official', { ...base, orgId: claim.id });
       return check('CONTRADICTS', 'domain_belongs_to_other_org', { ...base, strength: 'moderate', orgId: owners[0].id });
-    }
-
-    // 6. An official domain glued onto a different site: chase.com.account-verify.net
-    const dotted = '.' + host + '.';
-    for (const org of store.orgs) {
-      const glued = (org.officialDomains || []).find(d => !countryForm(host, d) &&
-        (dotted.includes('.' + d + '.') || ('.' + host).includes('.' + d + '-')));
-      if (glued) return check('CONTRADICTS', 'official_domain_as_subdomain', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: glued });
     }
 
     // 7 and 8. The main name compared with every organization's official names.

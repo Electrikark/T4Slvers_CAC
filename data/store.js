@@ -64,6 +64,91 @@ window.TFS_STORE = {
   ],
   "orgs": [
     {
+      "id": "hsbc",
+      "displayName": "HSBC",
+      "aliases": [
+        "hsbc"
+      ],
+      "strictAliases": [],
+      "officialDomains": [
+        "hsbc.com",
+        "hsbc.co.uk"
+      ],
+      "officialPhones": [],
+      "userContentHosts": [],
+      "status": "draft",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "hsbc.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        },
+        {
+          "kind": "domain",
+          "value": "hsbc.co.uk",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        }
+      ]
+    },
+    {
+      "id": "royalmail",
+      "displayName": "Royal Mail",
+      "aliases": [
+        "royal mail",
+        "royalmail"
+      ],
+      "strictAliases": [],
+      "officialDomains": [
+        "royalmail.com"
+      ],
+      "officialPhones": [],
+      "userContentHosts": [],
+      "status": "draft",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "royalmail.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        }
+      ]
+    },
+    {
+      "id": "ezpass",
+      "displayName": "E-ZPass",
+      "aliases": [
+        "e-zpass",
+        "ezpass",
+        "e zpass"
+      ],
+      "strictAliases": [],
+      "officialDomains": [
+        "e-zpassiag.com"
+      ],
+      "officialPhones": [],
+      "userContentHosts": [],
+      "status": "draft",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "e-zpassiag.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        }
+      ]
+    },
+
+    {
       "id": "chase",
       "displayName": "Chase",
       "category": "bank",

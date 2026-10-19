@@ -12,7 +12,7 @@ The evaluator now selects the requested split **before** engine analysis. Its re
 | F2 | Failed as expected | 27/27 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F3 | Failed as expected | 19/19 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F4 | Failed as expected | 12/12 | Pass | unavailable | unavailable | unavailable | unavailable |
-| F5 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
+| F5 | Failed as expected | 23/23 | Pass | unavailable | unavailable | unavailable | unavailable |
 
 For each completed stage, `npm run eval -- --split dev` was invoked and exited 2 because `eval/data/messages.csv` is absent. Unavailable is not zero. The meanings of D and E and the existing failure taxonomy must come from the supplied analysis script/spec; they are not guessed here. Logs are in `docs/rules-v1.1-logs/`.
 
@@ -35,3 +35,7 @@ Added gift-card acquisition requests with nearby reimbursement, sender-use or in
 ## F4
 
 Added T1-COMBO only for a money request with secrecy and emergency/urgency context. Surprise-party contributions, homework and cases missing any one predicate remain excluded. Registered T1-COMBO in the gate’s closed rule list; assessment decision logic is unchanged. Explanations, annotations and self-check advice retain all three predicates.
+
+## F5
+
+Added whole-brand host matching plus direct pay/verify/confirm/reschedule/click instructions, using all domain-record statuses only for caution. Added domain-only Draft records for HSBC, Royal Mail and E-ZPass. Real domains and their subdomains, paths/queries, embedded brand letters and reported/negated instructions remain excluded. Modern contact-only Draft records also work without legacy domain fields. Fixed display handling of those records.

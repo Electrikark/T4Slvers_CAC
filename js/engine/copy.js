@@ -77,7 +77,7 @@
     const version = ` (list version ${ctx.store.version || 'unknown'})`;
     if (ADDRESS_CODES.includes(check.code)) {
       const org = check.orgId ? T.orgById(ctx.store, check.orgId) : null;
-      const listed = org ? `Local list: ${org.displayName} → ${org.officialDomains.join(', ')}` : 'Reference list';
+      const listed = org ? `Local list: ${org.displayName} → ${[...new Set((org.officialDomains || []).concat((org.contacts || []).filter(c => c.kind === 'domain').map(c => c.value)))].join(', ')}` : 'Reference list';
       return listed + version + (org && org.verifiedBy ? '. Review status: ' + org.verifiedBy : '');
     }
     if (check.code === 'phone_official' || check.code === 'phone_not_on_file') return 'Reference list of official phone numbers' + version;
