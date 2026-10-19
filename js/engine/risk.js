@@ -12,12 +12,13 @@
 
   /* ---------- Shared patterns ---------- */
 
-  const ACTIONS = /\b(?:buy|purchase|pay|send|transfer|wire|move|deposit|convert|put|withdraw|go|read|give|tell|text|share|provide|reply with|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
-  const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?)\b/i;
-  const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?)\b/i;
+  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
+  const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?|apple (?:prepaid )?store[ -]value cards?|apple prepaid store cards?)\b/i;
+  const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?|redemption strings?|characters(?=[^.!?\n]{0,45}\bscratch panels?))\b/i;
   const BACK_PHOTO = /\b(?:photos?|pictures?|pics?|images?|screenshots?)\s+of\s+(?:the\s+|each\s+|both\s+|all\s+)?backs?\b/i;
+  const ACCOUNT_TEXT = /\b(?:login|sign[ -]in|authentication|one[ -]time)\s+(?:text|notice|codes?|passcodes?|otp)\b/i;
   const SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
-  const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|by wire|western union|moneygram)\b/i;
+  const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|bank wire|by wire|western union|moneygram)\b/i;
   const REMOTE = /\b(?:anydesk|teamviewer|logmein|ultraviewer|supremo|quick ?assist|remote (?:access|control|desktop|session)|screen[ -]?shar(?:e|ing)|(?:your|the|my) screen)\b/i;
   const PURPOSE = /\b(?:payment|pay|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?|(?:restore|release|unlock)(?:\s+\w+){0,3}\s+account)\b/i;
   const REPORT = /\b(?:scam{2}ers?|fraudsters?|criminals?|an example scam|example (?:message|scam)|beware of|watch (?:out )?for|never ask you to|will not ask you to)\b/i;
@@ -51,8 +52,8 @@
   }
   const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
   const PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
-  const URGENT = /\b(?:urgent(?:ly)?|right now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
-  const THREAT = /\b(?:arrest(?:ed)?|jail|fines?|account(?:\s+\w+){0,3}\s+(?:closed|closure|locked|loss)|lose (?:your )?(?:funds|money)|loss of (?:funds|money)|service disconnection|(?:device|computer)(?:\s+\w+){0,3}\s+locked)\b/i;
+  const URGENT = /\b(?:urgent(?:ly)?|right now|now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
+  const THREAT = /\b(?:arrest(?:ed)?|jail|fines?|account(?:\s+\w+){0,3}\s+(?:closed|closure|locked|loss|compromised|frozen)|(?:freeze|close|lock) (?:this|your) (?:bank )?account|registration (?:suspension|hold)|lose (?:your )?(?:funds|money)|loss of (?:funds|money)|service disconnection|(?:device|computer)(?:\s+\w+){0,3}\s+locked)\b/i;
 
   // T1-CODE: the secret must be the direct object, after at most a recipient and two modifiers.
   const SECRET_OBJECT = /\b(?:codes?|pins?|otps?|passcodes?|passwords?)\b/i;
@@ -174,6 +175,8 @@
     // into reported speech, even when its comma is omitted in a text message.
     if (/^\s*(?:beware of|to avoid)\s+(?:hackers?|fraudsters?|scam{2}ers?|criminals?|scams?)\s*[:,]?\s*(?:please\s*)?$/i.test(rest)) return true;
     if (/^\s*(?:to|in order to|before|so|due to|because of|after)\s[^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
+    if (/^\s*(?:please\s+)?(?:avoid|prevent|stop|resolve|settle|clear)\b[^.!?\n]{0,60}\bby\s*$/i.test(rest) && !/\b(?:ask|asks|asking|told|tell|tells|says|say|said|never|not)\b/i.test(rest)) return true;
+    if (/^\s*to avoid (?:power|service|account) (?:shutoff|closure|disconnection|suspension)\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
     if (/,\s*so\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:do not|don['’]t|dont|never)\s+(?:delay|wait|tell(?:\s+\w+){1,3}|hang up)\s*,\s*$/i.test(rest)) return true;
@@ -204,7 +207,7 @@
       if (hit && !SECRET.test(other.text) && text.length < 100 &&
           /^(?:(?:please|and)\s+)?(?:(?:do not|don['’]t|dont) tell|keep (?:this|it)|(?:do not|don['’]t|dont) hang up|stay on the line)/i.test(text)) return spanOf(raw, other, hit);
       hit = unreportedMatch(other, URGENT) || unreportedMatch(other, THREAT);
-      if (hit && !casual(text) && /^(?:urgent\b|(?:do (?:it|this|that)|this is|you must act|otherwise|or\b|your account|you will be arrested|your device|your computer|to avoid)\b)/i.test(text)) return spanOf(raw, other, hit);
+      if (hit && !casual(text) && /^(?:urgent\b|(?:do (?:it|this|that)|this is|you must act|otherwise|or\b|your (?:bank )?account|you will be arrested|your device|your computer|to avoid)\b)/i.test(text)) return spanOf(raw, other, hit);
     }
     return null;
   }
@@ -213,7 +216,7 @@
   function secretBefore(text) {
     const all = [...text.matchAll(new RegExp(SECRET_OBJECT.source, 'gi'))];
     const last = all[all.length - 1];
-    if (!last) return false;
+    if (!last) return ACCOUNT_TEXT.test(text);
     const before = text.slice(0, last.index);
     return !NOT_SECRET.test(before) && !HOUSEHOLD.test(before) && !HOUSEHOLD_AFTER.test(text.slice(last.index + last[0].length));
   }
@@ -224,8 +227,13 @@
 
   // T1-GIFT: "buy gift cards to pay the fine", "pay with gift cards".
   function giftPayment(d, s) {
-    const hit = /^(?:buy|purchase|pay)$/.test(d.verb) && d.near.match(GIFT);
+    let hit = /^(?:buy|purchase|pay)$/.test(d.verb) && d.near.match(GIFT);
+    if (!hit && d.verb === 'pay') {
+      const longer = d.tail.slice(0, 80).match(GIFT);
+      if (longer && /\b(?:with|using|in)\s+(?:[a-z]+\s+){0,3}$/i.test(d.tail.slice(0, longer.index))) hit = longer;
+    }
     if (!hit) return;
+    if (d.verb === 'pay' && /\b(?:buy|purchase)\b/i.test(d.tail.slice(0, hit.index))) return;
     const gift = spanOf(s.raw, d.clause, hit, d.after);
     const offset = gift.end - d.clause.start;
     const purpose = d.clause.text.slice(offset).match(/^\s+(?:to (?:pay|cover|settle)\b|(?:as|for)\s+(?:(?:a|the|this|your)\s+)?(?:payment|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?)\b|to (?:restore|release|unlock)(?:\s+\w+){0,3}\s+account\b)/i);
@@ -242,8 +250,9 @@
 
   // T1-GIFT: "buy gift cards ... send me the codes". Returns true when it fires.
   function giftCodes(d, s) {
-    const hit = /^(?:send|read|give|tell|text|share|provide|reply with)$/.test(d.verb) &&
-                (d.near.match(CODE) || d.near.match(BACK_PHOTO));
+    if (!/^(?:send|read|give|tell|text|share|provide|forward|disclose|reply with|photograph)$/.test(d.verb)) return false;
+    const hit = d.tail.slice(0, 100).match(CODE) || d.near.match(BACK_PHOTO) ||
+                (d.verb === 'photograph' && d.near.match(/\bbacks?\b/i));
     if (!hit) return false;
     const code = spanOf(s.raw, d.clause, hit, d.after);
     // The gift card can be named in this clause or the one before.
@@ -252,10 +261,12 @@
       cardClause = s.clauses[d.index - 1];
       card = unreportedMatch(cardClause, GIFT);
     }
-    const toRequester = /\b(?:me|us|to me|to us|back to me|back to us|to (?:the )?(?:requester|caller))\b/i.test(d.tail.slice(0, 65));
+    const explicitRequester = /\b(?:me|us|to me|to us|back to me|back to us|to (?:the )?(?:requester|caller))\b/i.test(d.tail.slice(0, 80));
+    const otherRecipient = /\b(?:to|with)\s+(?!(?:me|us|this (?:chat|thread)|the (?:requester|caller))\b)/i.test(d.tail.slice(0, 100));
+    const toRequester = explicitRequester || (d.verb !== 'photograph' && !otherRecipient);
     // An OTP or credit card nearby makes it unclear which code is meant.
     const competing = /\b(?:otp|one[ -]time|authorization|verification|password|credit card|debit card)\b/i.test(d.clause.text + ' ' + (cardClause === d.clause ? '' : cardClause.text));
-    if (card && toRequester && !competing && !/\b(?:checkout|retailer|redeem at)\b/i.test(d.clause.text)) {
+    if (card && toRequester && !competing && !/\b(?:checkout|retailer|redeem at)\b/i.test(d.tail)) {
       s.flag('gift_card_disclosure', d.action.start, code.end);
       s.tier1('T1-GIFT', d, code, null, spanOf(s.raw, cardClause, card));
       return true;
@@ -283,20 +294,32 @@
 
   // T1-WIRE: crypto or a wire transfer, with pressure tied to it.
   function wireTransfer(d, s) {
-    if (!/^(?:pay|send|transfer|wire|move|deposit|convert|put)$/.test(d.verb)) return;
+    if (!/^(?:pay|send|transfer|wire|use|make|move|deposit|convert|put)$/.test(d.verb)) return;
+    if (/^(?:use|make)$/.test(d.verb) && !/^\s+(?:(?:a|the|your)\s+)?(?:bank\s+)?wire\b/i.test(d.tail)) return;
+    if (d.verb === 'wire' && /^\s+(?:transfer|payment)\s+(?:confirmation|receipt|notice|status)\b/i.test(d.tail)) return;
     let object;
+    let antecedent = null;
     if (/^(?:deposit|put|move)$/.test(d.verb)) object = wireInSegment(d, s.raw);
     else {
       let hit = d.near.match(WIRE);
-      if (!hit && d.verb === 'wire') hit = d.near.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment)\b)/i);
+      if (!hit && d.verb === 'wire') hit = d.near.match(/(?:\$\s*\d[\d,.]*|\b(?:money|funds|payment|balance)\b)/i);
+      if (!hit && /^(?:send|transfer)$/.test(d.verb)) {
+        const previous = s.clauses[d.index - 1];
+        const pronoun = d.near.match(/^\s+(?:it|that payment|that amount)\b/i);
+        const priorWire = previous && unreportedMatch(previous, /\b(?:bank )?wire(?: (?:transfer|payment))?\b/i);
+        if (pronoun && priorWire && /\$\s*\d/.test(previous.text) && !/\b(?:receipt|confirmation|completed|sent|received)\b/i.test(previous.text)) {
+          hit = pronoun;
+          antecedent = spanOf(s.raw, previous, priorWire);
+        }
+      }
       if (hit) object = spanOf(s.raw, d.clause, hit, d.after);
     }
     if (!object) return;
     s.flag('crypto_or_wire', Math.min(d.action.start, object.start), Math.max(d.action.end, object.end));
     // The added movement verbs establish a warning, not new Tier 1 proof.
-    if (!/^(?:pay|send|transfer|wire)$/.test(d.verb)) return;
+    if (!/^(?:pay|send|transfer|wire|use|make)$/.test(d.verb)) return;
     const context = tiedPressure(s.clauses, d.index, s.raw);
-    if (context) s.tier1('T1-WIRE', d, object, context);
+    if (context) s.tier1('T1-WIRE', d, object, context, antecedent);
   }
 
   // T1-REMOTE: install or allow remote-control software, with pressure tied to it.
@@ -328,10 +351,15 @@
   // T1-CODE: give a sign-in code, PIN or password to the requester. No pressure is needed:
   // no organization asks for one this way. Also "read it back to me" after a named code.
   function shareSecret(d, s) {
-    if (!/^(?:send|read|give|tell|text|share|provide|reply with)$/.test(d.verb) || IN_PERSON.test(d.clause.text)) return;
+    if (!/^(?:send|read|give|tell|text|share|provide|forward|disclose|reply with|copy|type back)$/.test(d.verb)) return;
+    const previous = s.clauses[d.index - 1];
+    const giftContext = unreportedMatch(d.clause, GIFT) || (previous && unreportedMatch(previous, GIFT));
+    if (giftContext && !/\b(?:otp|one[ -]time|authorization|verification|password|credit card|debit card)\b/i.test(d.clause.text)) return;
+    const accountSecret = /\b(?:(?:bank|account|sign[- ]in|login)(?:\s+[\w-]+){0,2}\s+codes?|passwords?|pins?|otps?)\b/i.test(d.tail);
+    if (IN_PERSON.test(d.clause.text) && !accountSecret) return;
     const pronoun = d.verb !== 'reply with' && d.near.match(/^\s+(?:it|them)\b/i);
-    if (pronoun && REQUESTER.test(d.tail.slice(pronoun[0].length, 65))) {
-      const previous = s.clauses[d.index - 1];
+    const recipient = tail => REQUESTER.test(tail) || /\b(?:here|into this chat|into this thread)\b/i.test(tail);
+    if (pronoun && recipient(d.tail.slice(pronoun[0].length, 65))) {
       if (secretBefore(d.clause.text.slice(0, d.action.start - d.clause.start)) || (previous && !previous.inReport && secretBefore(previous.text))) {
         const object = spanOf(s.raw, d.clause, pronoun, d.after);
         s.flag('share_code', d.action.start, object.end);
@@ -339,10 +367,11 @@
         return;
       }
     }
-    const hit = d.near.match(SECRET_OBJECT);
+    const accountContext = ACCOUNT_TEXT.test(d.clause.text) || (previous && !skip(previous) && ACCOUNT_TEXT.test(previous.text));
+    const hit = d.near.match(SECRET_OBJECT) || (accountContext && d.near.match(/\b(?:six|6)(?:[ -](?:digit|number)|\s+digits?|\s+numbers?)\b/i));
     if (!hit) return;
     const gap = d.near.slice(0, hit.index);
-    const toRequester = /^(?:read|give|tell|reply with)$/.test(d.verb) || REQUESTER.test(d.tail.slice(0, 65));
+    const toRequester = /^(?:read|give|tell|reply with|type back)$/.test(d.verb) || recipient(d.tail.slice(0, 100));
     const household = HOUSEHOLD.test(gap) || HOUSEHOLD_AFTER.test(d.near.slice(hit.index + hit[0].length) + d.tail.slice(40, 70));
     if (OBJECT_GAP.test(gap) && !NOT_SECRET.test(gap) && !household && toRequester) {
       const object = spanOf(s.raw, d.clause, hit, d.after);
@@ -377,7 +406,8 @@
         if (!directAction(clause.text.slice(0, m.index), priorDemand, senderLabel)) continue;
         priorDemand = true;
         const tail = clause.text.slice(m.index + m[0].length);
-        const d = { verb: m[0].toLowerCase(), clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };
+        const verb = m[0].toLowerCase();
+        const d = { verb: verb === 'purchasing' ? 'purchase' : verb === 'sending' ? 'send' : verb, clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };
         giftPayment(d, s);
         const giftCodeFound = giftCodes(d, s);
         wireTransfer(d, s);
@@ -398,7 +428,18 @@
 
   // "Never share your code" is advice to protect a code, not a demand to keep something secret.
   function notCodeAdvice(text, m) {
-    return !/^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length));
+    if (/^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length))) return false;
+    const parts = text.slice(Math.max(0, m.index - 180), m.index).split(/[.!?;\n]/).filter(p => p.trim());
+    const before = parts[parts.length - 1] || '';
+    const prior = parts[parts.length - 2] || '';
+    const validity = /^\s*valid for \d+ minutes?\s*$/i.test(before) && SECRET_OBJECT.test(prior);
+    return !(/^keep (?:this|it) private$/i.test(m[0]) && (SECRET_OBJECT.test(before) || validity));
+  }
+
+  function feeWording(text, m, clause) {
+    const before = text.slice(clause.start, m.index);
+    const after = text.slice(m.index + m[0].length, clause.end);
+    return !/\b(?:no|without)\s+(?:(?:a|any|the)\s+)?$/i.test(before) && !/^\s+(?:is|will be)\s+(?:not|never)\s+(?:due|required|charged)\b/i.test(after);
   }
 
   // A login phrase counts only as a request: "Log in at", "please sign in", "click here to log in",
@@ -445,7 +486,7 @@
     { id: 'new_number', level: 'medium', patterns: [
       re("\\b(?:this is my new (?:phone |cell )?number|(?:i (?:got|have) a|my) new (?:phone|cell)? ?number|i (?:lost|dropped|broke) my (?:old )?phone|my (?:old )?phone (?:is )?(?:broken|broke|lost))\\b")
     ] },
-    { id: 'pay_fee', level: 'medium', patterns: [
+    { id: 'pay_fee', level: 'medium', accept: feeWording, patterns: [
       re('\\bpay\\b' + GAP + '\\b(?:fees?|fines?|deposit|penalty|penalties|tolls?|charges?)\\b'),
       re('\\b(?:processing|support|service|release|unlock|redelivery|delivery|customs|reactivation) fee\\b')
     ] },

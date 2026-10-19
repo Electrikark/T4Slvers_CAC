@@ -2,6 +2,7 @@
 eval/data/*
 !eval/data/.gitkeep
 eval/results/
+docs/testing/test-observations.md
 
 # macOS folder files
 .DS_Store
