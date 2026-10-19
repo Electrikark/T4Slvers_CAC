@@ -91,6 +91,7 @@
     gift_card_payment: { label: 'Payment with gift cards', advice: 'Do not send gift card numbers to someone demanding payment. Contact the organization independently.' },
     gift_card_disclosure: { label: 'Sending gift-card numbers or codes', advice: 'Do not send or read gift-card numbers, PINs, or codes to the requester. Check with the person through a number you already trust.' },
     crypto_or_wire: { label: 'Payment by crypto or wire transfer', advice: 'Requests to pay with cryptocurrency, a crypto ATM or a wire transfer are a frequent scam pattern.' },
+    financial_callback: { label: 'Calling about a payment or account alarm', advice: 'Check the alert through your official app or a number you already trust, even if this number is on our list.' },
     tech_support_call: { label: 'Calling a number about a device alarm', advice: 'Real device warnings do not ask you to call a phone number. Do not call it. Use a support contact you already trust.' },
     share_code: { label: 'Sharing a code or password', advice: 'Keep sign-in codes private. Do not read or send them to a caller, even if they say they work for your bank.' },
     remote_access: { label: 'Control of your device', advice: 'Do not let anyone you did not contact yourself control your computer or phone.' },
@@ -116,7 +117,7 @@
     'T1-REMOTE': 'asks you to let someone control your device',
     'T1-CODE': 'asks you to give a sign-in code, PIN or password to the sender',
     'T1-DOMAIN': 'uses a link or address built to imitate a known organization',
-    'T1-CALLBACK': 'warns about your device and pressures you to call a number',
+    'T1-CALLBACK': 'warns about your device, a payment or your account and asks you to call a number',
     'T1-POLICY': 'does something its claimed sender has said it never does'
   };
 

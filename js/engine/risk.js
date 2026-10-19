@@ -12,7 +12,7 @@
 
   /* ---------- Shared patterns ---------- */
 
-  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|open|add|approve|accept|run|start|allow|grant|call|dial|contact)\b/gi;
+  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|open|add|approve|accept|run|start|allow|grant|call|ring|phone|dial|contact)\b/gi;
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?|apple (?:prepaid )?store[ -]value cards?|apple prepaid store cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?|redemption strings?|characters(?=[^.!?\n]{0,45}\bscratch panels?))\b/i;
   const BACK_PHOTO = /\b(?:photos?|pictures?|pics?|images?|screenshots?)\s+of\s+(?:the\s+|each\s+|both\s+|all\s+)?backs?\b/i;
@@ -61,6 +61,31 @@
   const OBJECT_GAP = /^\s*(?:(?:me|us|them|him|her|back|to me|to us)\s+)?(?:(?:the|your|that|this|those|these|their|any)\s+)?(?:[\w-]+\s+){0,2}$/i;
   // Codes that are not secrets, or that T1-GIFT already judges.
   const NOT_SECRET = /\b(?:promo(?:tional)?|coupon|discount|zip|postal|area|qr|bar|referral|invite|invitation|gift[ -]?cards?|confirmation|tracking|reference|order|booking|pick-?up|voucher|redemption|rewards?|offer|country|dial)\s+$/i;
+  const FINANCIAL_ALARM = /\b(?:charges?|(?:payment|debit)\b[^!?\n]{0,60}\b(?:approved|attempted|queued|authorized)|(?:approved|attempted|queued|authorized)\b[^!?\n]{0,40}\b(?:payment|debit)|refunds?|disputes?|suspension|suspended|account(?:\s+\w+){0,3}\s+locked)\b/i;
+
+  function financialCallback(d, s) {
+    if (!/^(?:call|ring|phone|dial)$/.test(d.verb)) return;
+    const alarm = contextMatch(s, FINANCIAL_ALARM, d.index, s.clauses.length);
+    if (!alarm) return;
+    // Only a number being called qualifies, never an unrelated number elsewhere in the text.
+    let numbers = T.extractTargets(d.tail).targets.filter(t => t.kind === 'phone');
+    if (TRUSTED_CALL.test(d.tail.slice(0, numbers.length ? numbers[0].at[0] : 100))) return;
+    let offset = d.clause.start + d.after;
+    if (!numbers.length && /^\s+(?:us|me|this number|the number|that number|it)\b/i.test(d.tail)) {
+      numbers = T.extractTargets(s.raw).targets.filter(t => t.kind === 'phone' && s.clauses.some(c =>
+        t.at[0] >= c.start && t.at[0] < c.end && !skip(c) && !reportedAt(c.text, t.at[0] - c.start)));
+      offset = 0;
+    }
+    for (const phone of numbers) {
+      const object = span(s.raw, offset + phone.at[0], offset + phone.at[1]);
+      s.flag('financial_callback', d.action.start, d.action.end);
+      const org = s.options.claimOrg;
+      const listed = org && T.listedFor({ orgs: [org] }, phone).length;
+      // Retain the Tier 2 finding even for reviewed numbers: the message is not authenticated.
+      if (!listed) s.tier1('T1-CALLBACK', d, object, alarm);
+    }
+  }
+
   // T1-CALLBACK: a device alarm paired with a demand to call. Real security warnings
   // from Microsoft and other vendors do not include a phone number to call.
   const DEVICE_ALARM = /\b(?:(?:device|computer|pc|laptop|mac|system|windows|browser|iphone|phone)\b[^.!?\n]{0,25}\b(?:is|has been|was|are|have been|may be)\s+(?:locked|infected|hacked|compromised|blocked|disabled|at risk)|infected with (?:a |an )?(?:virus|viruses|malware|trojan|spyware)|(?:virus|viruses|malware|trojan|spyware|ransomware)\s+(?:detected|found|alert|warning|infection)|(?:hackers?|someone) (?:has |have )?(?:accessed|hacked|breached) your (?:computer|device|pc|laptop|phone))\b/i;
@@ -179,6 +204,7 @@
     if (/^\s*(?:please\s+)?(?:avoid|prevent|stop|resolve|settle|clear)\b[^.!?\n]{0,60}\bby\s*$/i.test(rest) && !/\b(?:ask|asks|asking|told|tell|tells|says|say|said|never|not)\b/i.test(rest)) return true;
     if (/^\s*to avoid (?:power|service|account) (?:shutoff|closure|disconnection|suspension)\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
+    if (/^\s*if [^,]{1,140},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/^\s*in [^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/,\s*so\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:do not|don['’]t|dont|never)\s+(?:delay|wait|tell(?:\s+\w+){1,3}|hang up)\s*,\s*$/i.test(rest)) return true;
@@ -352,7 +378,8 @@
   function contextMatch(s, pattern, index, radius = 1) {
     for (const clause of s.clauses.slice(Math.max(0, index - radius), index + radius + 1)) {
       const hit = unreportedMatch(clause, pattern);
-      if (hit && !isNegated(clause.text, hit.index)) return spanOf(s.raw, clause, hit);
+      if (hit && !isNegated(clause.text, hit.index) &&
+          !/\b(?:not|no)\s+(?:(?:a|an|any)\s+)?$/i.test(clause.text.slice(0, hit.index))) return spanOf(s.raw, clause, hit);
     }
     return null;
   }
@@ -370,7 +397,10 @@
     if (!alarm) return;
     const number = spanOf(s.raw, d.clause, hit, d.after);
     s.flag('tech_support_call', d.action.start, number.end);
-    s.tier1('T1-CALLBACK', d, number, alarm);
+    const phones = T.extractTargets(d.tail).targets.filter(t => t.kind === 'phone');
+    const listed = phones.length && s.options.claimOrg && phones.every(phone =>
+      T.listedFor({ orgs: [s.options.claimOrg] }, phone).length);
+    if (!listed) s.tier1('T1-CALLBACK', d, number, alarm);
   }
 
   // T1-CODE: give a sign-in code, PIN or password to the requester. No pressure is needed:
@@ -406,13 +436,13 @@
   }
 
   // Finds every direct demand and runs the Tier 1 rules on it, in this order.
-  function tier1Signals(text, raw) {
+  function tier1Signals(text, raw, options) {
     const clauses = clausesOf(text);
     // A label is a claimed sender, not proof of identity or a trusted record.
     const label = text.match(/^\s*([a-z][a-z0-9 &'’-]{0,59}):/i);
     const senderLabel = label ? label[1].trim() : null;
     const s = {
-      raw, clauses, flags: [], established: [], unresolved: [],
+      raw, clauses, options, flags: [], established: [], unresolved: [],
       clauseSpan: clause => span(raw, clause.start, clause.end),
       flag(id, start, end) {
         if (!this.flags.some(f => f.id === id)) this.flags.push({ id, level: 'high', words: raw.slice(start, end), start, end });
@@ -438,6 +468,7 @@
         wireTransfer(d, s);
         remoteAccess(d, s);
         techSupportCall(d, s);
+        financialCallback(d, s);
         if (!giftCodeFound) shareSecret(d, s);
       }
     });
@@ -548,8 +579,8 @@
   ];
 
   // Runs on text with contacts masked out; `raw` is the same text unmasked, for quotes.
-  function requestSignals(text, raw) {
-    const s = tier1Signals(text, raw);
+  function requestSignals(text, raw, options) {
+    const s = tier1Signals(text, raw, options);
     let flags = s.flags;
     for (const flag of WORDING_FLAGS) {
       // A Tier 1 rule already reported this signal with its exact action.
@@ -580,11 +611,11 @@
   }
 
   // The rules read a cleaned-up view (T.riskView); every span is then moved back to the original text.
-  function sourceSignals(source) {
+  function sourceSignals(source, options = {}) {
     const raw = source == null ? '' : String(source);
     const view = T.riskView(raw);
     const targets = T.extractTargets(view.text);
-    const signals = requestSignals(targets.masked, view.text);
+    const signals = requestSignals(targets.masked, view.text, options);
     signals.incomplete = targets.incomplete;
     if (view.identity) return signals;
     const move = s => {
