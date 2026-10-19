@@ -1,0 +1,22 @@
+Evaluation harness: 12/13
+E13 --split dev never sends held-out rows to the engine | FAIL | [eval]:6
+          if (text !== 'DEV_SENTINEL') throw new Error('Held-out row reached evaluator');
+                                       ^
+
+Error: Held-out row reached evaluator
+    at analyze ([eval]:6:46)
+    at /workspace/rules-v1.1/eval/metrics.cjs:72:15
+    at Array.map (<anonymous>)
+    at Object.judge (/workspace/rules-v1.1/eval/metrics.cjs:71:19)
+    at Object.main (/workspace/rules-v1.1/eval/run.cjs:56:17)
+    at [eval]:11:72
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+
+Node.js v24.19.0
+
+
+1 !== 0
+
