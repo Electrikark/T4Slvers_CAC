@@ -12,7 +12,7 @@
 
   /* ---------- Shared patterns ---------- */
 
-  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|run|start|allow|grant|call|dial|contact)\b/gi;
+  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|open|add|approve|accept|run|start|allow|grant|call|dial|contact)\b/gi;
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?|apple (?:prepaid )?store[ -]value cards?|apple prepaid store cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?|redemption strings?|characters(?=[^.!?\n]{0,45}\bscratch panels?))\b/i;
   const BACK_PHOTO = /\b(?:photos?|pictures?|pics?|images?|screenshots?)\s+of\s+(?:the\s+|each\s+|both\s+|all\s+)?backs?\b/i;
@@ -20,6 +20,7 @@
   const SECRET = /\b(?:code|pin|otp|passcode|password|verification number|security code)\b/i;
   const WIRE = /\b(?:bitcoin|btc|crypto(?:currency)?|usdt|tether|ethereum|wire (?:transfer|payment)|bank wire|by wire|western union|moneygram)\b/i;
   const REMOTE = /\b(?:anydesk|teamviewer|logmein|ultraviewer|supremo|quick ?assist|remote (?:access|control|desktop|session)|screen[ -]?shar(?:e|ing)|(?:your|the|my) screen)\b/i;
+  const REMOTE_TOOL = /\b(?:anydesk|teamviewer|quicksupport|logmein|screenconnect|rustdesk|ultraviewer)\b/i;
   const PURPOSE = /\b(?:payment|pay|fees?|fines?|bills?|debts?|tax(?:es)?|bail|tolls?|(?:restore|release|unlock)(?:\s+\w+){0,3}\s+account)\b/i;
   const REPORT = /\b(?:scam{2}ers?|fraudsters?|criminals?|an example scam|example (?:message|scam)|beware of|watch (?:out )?for|never ask you to|will not ask you to)\b/i;
   // The cue must name the asker, not just occur earlier in the clause. Allow only
@@ -178,6 +179,7 @@
     if (/^\s*(?:please\s+)?(?:avoid|prevent|stop|resolve|settle|clear)\b[^.!?\n]{0,60}\bby\s*$/i.test(rest) && !/\b(?:ask|asks|asking|told|tell|tells|says|say|said|never|not)\b/i.test(rest)) return true;
     if (/^\s*to avoid (?:power|service|account) (?:shutoff|closure|disconnection|suspension)\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:please|you must|you need to|you have to|you should|can you|could you)\s*$/i.test(rest)) return true;
+    if (/^\s*in [^,]{1,60},\s*(?:please\s+)?$/i.test(rest)) return true;
     if (/,\s*so\s+(?:please\s+)?$/i.test(rest)) return true;
     if (/\b(?:do not|don['’]t|dont|never)\s+(?:delay|wait|tell(?:\s+\w+){1,3}|hang up)\s*,\s*$/i.test(rest)) return true;
     return priorDemand && /(?:\band|\bthen|,)\s*(?:please\s+)?$/i.test(rest);
@@ -322,14 +324,37 @@
     if (context) s.tier1('T1-WIRE', d, object, context, antecedent);
   }
 
-  // T1-REMOTE: install or allow remote-control software, with pressure tied to it.
+  // T1-REMOTE: named tool requests need no pressure; generic remote access retains its pressure check.
   function remoteAccess(d, s) {
-    const hit = /^(?:install|download|run|start|allow|grant|share)$/.test(d.verb) && d.near.match(REMOTE);
+    if (!/^(?:install|download|open|add|approve|accept|run|start|allow|grant|share)$/.test(d.verb)) return;
+    const named = d.near.match(REMOTE_TOOL);
+    if (named && /\b(?:article|guide|documentation|about|website|page)\b/i.test(d.near.slice(0, named.index))) return;
+    let object = named && spanOf(s.raw, d.clause, named, d.after);
+    let antecedent = null;
+    if (!object && /^(?:approve|accept|share|allow|grant)$/.test(d.verb)) {
+      const session = d.near.match(/\b(?:session(?: id)?|connection(?: number)?|access|request|id|number)\b/i);
+      const tool = contextMatch(s, REMOTE_TOOL, d.index);
+      if (session && tool) { object = spanOf(s.raw, d.clause, session, d.after); antecedent = tool; }
+    }
+    if (object) {
+      s.flag('remote_access', d.action.start, object.end);
+      s.tier1('T1-REMOTE', d, object, null, antecedent);
+      return;
+    }
+    const hit = d.near.match(REMOTE);
     if (!hit) return;
-    const object = spanOf(s.raw, d.clause, hit, d.after);
+    object = spanOf(s.raw, d.clause, hit, d.after);
     s.flag('remote_access', d.action.start, object.end);
     const context = tiedPressure(s.clauses, d.index, s.raw);
     if (context) s.tier1('T1-REMOTE', d, object, context);
+  }
+
+  function contextMatch(s, pattern, index, radius = 1) {
+    for (const clause of s.clauses.slice(Math.max(0, index - radius), index + radius + 1)) {
+      const hit = unreportedMatch(clause, pattern);
+      if (hit && !isNegated(clause.text, hit.index)) return spanOf(s.raw, clause, hit);
+    }
+    return null;
   }
 
   // T1-CALLBACK: "call this number" anywhere in a message that raises a device alarm.
