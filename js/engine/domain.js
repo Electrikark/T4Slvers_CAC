@@ -155,6 +155,10 @@
     return [...new Set(words)].filter(t => t.length >= 3 && !GENERIC_LABELS.has(t));
   }
 
+  // New-format records may have contacts without the legacy officialDomains array.
+  const firstDomain = org => (org.officialDomains || [])[0] ||
+    ((org.contacts || []).find(c => c.kind === 'domain') || {}).value || org.displayName;
+
   const check = (status, code, extra) => ({ status, code, ...extra });
 
   /* A contact is supported only by a record in the trusted view: reviewed, unexpired,
@@ -190,7 +194,7 @@
       for (const org of store.orgs) {
         const domain = (org.officialDomains || []).find(d => info.includes(d));
         const token = brandTokens(org).find(t => t.length >= 4 && squash(info).includes(t));
-        if (domain || token) return check('CONTRADICTS', 'userinfo_trick', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: domain || org.officialDomains[0] });
+        if (domain || token) return check('CONTRADICTS', 'userinfo_trick', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: domain || firstDomain(org) });
       }
     }
 
@@ -289,7 +293,7 @@
             (token.length >= 6 && (lab.endsWith(token) || look.endsWith(tokenLook))) ||
             (token.length >= 7 && (lab.includes(token) || look.includes(tokenLook))));
           if (separate || inside) {
-            return check('CONTRADICTS', 'brand_in_foreign_domain', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: org.officialDomains[0], brandWord: token });
+            return check('CONTRADICTS', 'brand_in_foreign_domain', { ...base, strength: 'strong', orgId: org.id, lookalikeOf: firstDomain(org), brandWord: token });
           }
         }
       }

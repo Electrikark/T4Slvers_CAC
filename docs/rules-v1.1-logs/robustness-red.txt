@@ -1,0 +1,30 @@
+
+> tech-for-silvers@0.4.0 test
+> node scripts/build-assessment.cjs --check && node tests/run-node.cjs && node tests/eval-tests.cjs
+
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 119/119
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 16/16
+Reporting scope: 18/18
+Policy records: 11/11
+Annotations on pasted text: 9/9
+F1 rule fixes: 38/38
+F2 rule fixes: 27/27
+F3 rule fixes: 19/19
+F4 rule fixes: 12/12
+F5 rule fixes: 23/23
+Rule robustness: 5/11
+T1-REMOTE excludes: AnyDesk is a useful application. Please share your phone number. | FAIL | unexpected T1-REMOTE
+T1-REMOTE excludes: Scammers say 'Open AnyDesk. Please share your session ID.' | FAIL | unexpected T1-REMOTE
+T1-REMOTE excludes: Scammers say 'Don't delay. Install AnyDesk. Share your session ID.' | FAIL | unexpected T1-REMOTE
+T1-COMBO excludes: It is an emergency. Please send the document about money. Keep this between us. | FAIL | unexpected T1-COMBO
+T1-COMBO excludes: I need to save money. It is an emergency. Keep this between us. | FAIL | unexpected T1-COMBO
+Draft contact-only records do not crash unrelated legacy checks | FAIL | Cannot read properties of undefined (reading '0')
+Boundaries: 2/2
+Source gate parity: 36/36
