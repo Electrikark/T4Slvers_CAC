@@ -19,7 +19,7 @@
     'T1-WIRE': 'This message pressures you to send a wire transfer or cryptocurrency. That money is very hard to get back.',
     'T1-REMOTE': 'This message asks you to let someone control your device. Only let a helper you contacted yourself do that.',
     'T1-CODE': 'This message asks you to give a sign-in code, PIN or password to the sender. Real organizations never ask for these.',
-    'T1-CALLBACK': 'This message warns about your device and tells you to call a number. Real device warnings don’t include a number to call.',
+    'T1-CALLBACK': 'This message raises a device, payment or account alarm and asks you to call. Check through a contact you already trust.',
     'T1-DOMAIN': 'This address is built to look like a known organization’s address, but it goes somewhere else.'
   };
   var UNRESOLVED_NOTES = {
@@ -27,7 +27,7 @@
     competing_card_code_antecedent: 'This asks for card numbers or codes, and it is not clear which card it means. Don’t send any card numbers or codes.'
   };
   // Tier 2 flags that only repeat a Tier 1 request already marked at the same place.
-  var COMPANION = { gift_card_payment: 'T1-GIFT', gift_card_disclosure: 'T1-GIFT', crypto_or_wire: 'T1-WIRE', remote_access: 'T1-REMOTE', share_code: 'T1-CODE', tech_support_call: 'T1-CALLBACK' };
+  var COMPANION = { financial_callback: 'T1-CALLBACK', gift_card_payment: 'T1-GIFT', gift_card_disclosure: 'T1-GIFT', crypto_or_wire: 'T1-WIRE', remote_access: 'T1-REMOTE', share_code: 'T1-CODE', tech_support_call: 'T1-CALLBACK' };
 
   function valid(raw, s) {
     return s && Number.isInteger(s.start) && Number.isInteger(s.end) && s.start >= 0 && s.end > s.start && s.end <= raw.length;

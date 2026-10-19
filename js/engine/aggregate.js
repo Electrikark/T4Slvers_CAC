@@ -34,7 +34,7 @@
       target.kind === 'phone' ? T.checkPhone(target, ctx) : T.checkHost(target, ctx));
 
     // Reading 2: what the message asks for, read from the original text so quotes stay exact.
-    const signals = T.sourceSignals(bounded);
+    const signals = T.sourceSignals(bounded, ctx);
     const incomplete = norm.truncated || extracted.incomplete || signals.incomplete;
 
     if (!checks.length) checks.push({ status: 'UNKNOWN', code: 'nothing_to_check' });
