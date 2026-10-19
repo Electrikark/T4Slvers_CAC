@@ -9,7 +9,7 @@ The evaluator now selects the requested split **before** engine analysis. Its re
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Baseline | N/A | N/A | Pass | unavailable | unavailable | unavailable | unavailable |
 | F1 | Failed as expected | 38/38 | Pass | unavailable | unavailable | unavailable | unavailable |
-| F2 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
+| F2 | Failed as expected | 27/27 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F3 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
 | F4 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
 | F5 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
@@ -23,3 +23,7 @@ After the user's instruction to continue, implementation proceeds with construct
 ## F1
 
 Added pressure-free named-tool requests and nearby session/connection references. Negation, reported examples, the Wells Fargo advice and informational tool mentions remain excluded. Opening an article about AnyDesk or sharing a TeamViewer guide is also excluded. Generic remote access retains its existing pressure requirement. Updated prior expectations that explicitly required pressure for named tools.
+
+## F2
+
+Added explicit-number financial/account callbacks, including conditional instructions and amount-bearing payment notices. A stored number for the attributed brand leaves a Tier 2 blocker even when reviewed; a wrong-brand or second unknown callback number still qualifies. Added the user-supplied Chase number as unreviewed. No-charge notices, back-of-card advice and appointment messages remain excluded. Details Match gate logic is unchanged.

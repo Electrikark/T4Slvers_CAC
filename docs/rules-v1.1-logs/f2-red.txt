@@ -1,0 +1,38 @@
+
+> tech-for-silvers@0.4.0 test
+> node scripts/build-assessment.cjs --check && node tests/run-node.cjs && node tests/eval-tests.cjs
+
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 119/119
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 16/16
+Reporting scope: 18/18
+Policy records: 11/11
+Annotations on pasted text: 9/9
+F1 rule fixes: 38/38
+F2 rule fixes: 8/26
+T1-CALLBACK catches: A charge of $499 was approved. Call 888-555-0199 to cancel. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: A payment was attempted. Ring 888-555-0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Your debit is queued. Phone (888) 555-0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Your refund is ready. Dial +1 888 555 0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: To dispute the charge, call 888-555-0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Your account is locked. Call this number: 888-555-0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Account suspension notice. Call us at 888-555-0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Chase: A charge was approved. If you did not authorize it, call 888-555-0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Refund notice. Our number is 888-555-0199. Please call this number. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: A payment was approved. Please phone 888.555.0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Payment of $499.99 was approved. Call 888-555-0199. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Refund notice. Call 888-555-0199 or use the official app. | FAIL | missing T1-CALLBACK
+F2 draft Chase number stays Tier 2 | FAIL | missing Tier 2 blocker
+F2 reviewed Chase number stays Tier 2 | FAIL | must never be Details Match: got "details_match", expected "insufficient_evidence"
+F2 legacy Chase number stays Tier 2 | FAIL | missing Tier 2 blocker
+F2 device and account alarms cannot bypass the stored-number exception | FAIL | device branch bypassed exception
+F2 another brand’s number cannot downgrade the callback | FAIL | wrong-brand exception
+F2 a stored number cannot hide a second unknown callback number | FAIL | unknown second number lost
+Boundaries: 2/2
+Source gate parity: 36/36
