@@ -12,7 +12,7 @@
 
   /* ---------- Shared patterns ---------- */
 
-  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|open|add|approve|accept|run|start|allow|grant|call|ring|phone|dial|contact|need)\b/gi;
+  const ACTIONS = /\b(?:pick up|go get|grab|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|open|add|approve|accept|run|start|allow|grant|call|ring|phone|dial|contact|need)\b/gi;
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?|apple (?:prepaid )?store[ -]value cards?|apple prepaid store cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?|redemption strings?|characters(?=[^.!?\n]{0,45}\bscratch panels?))\b/i;
   const BACK_PHOTO = /\b(?:photos?|pictures?|pics?|images?|screenshots?)\s+of\s+(?:the\s+|each\s+|both\s+|all\s+)?backs?\b/i;
@@ -62,6 +62,19 @@
   // Codes that are not secrets, or that T1-GIFT already judges.
   const NOT_SECRET = /\b(?:promo(?:tional)?|coupon|discount|zip|postal|area|qr|bar|referral|invite|invitation|gift[ -]?cards?|confirmation|tracking|reference|order|booking|pick-?up|voucher|redemption|rewards?|offer|country|dial)\s+$/i;
 
+
+  // F2b: order, renewal and subscription charges need a denial or cancel cue next to the number.
+  const ORDER_ALARM = /\b(?:order\b[^.!?\n]{0,60}\b(?:placed|confirmed|processed)|renewal|renewed|auto-?renew\w*|subscriptions?|charged|billed|purchased?|transactions?)\b/i;
+  const DENIAL_CUE = /\b(?:if (?:you|this) (?:did not|didn['’]t|was not|wasn['’]t|do not|don['’]t)\b|not (?:you|yours|your (?:order|purchase|charge))\b|to cancel\b|cancel (?:this|the|your)\b|(?:did not|didn['’]t) (?:authorize|place|make|order)\b|unauthori[sz]ed\b)/i;
+  // F3b: why the sender cannot buy the cards, or who the cards are for.
+  const GIFT_EXCUSE = /\b(?:in a meeting|tied up|on a call|in surgery|busy right now|can['’]?t (?:talk|leave|step out|call)|cannot (?:talk|leave|step out|call))\b/i;
+  const GIFT_OUTSIDE = /\bfor (?:the |our |my |a |some )?(?:\w+ )?(?:team|project|clients?|customers?|staff|office|employees|patients|residents|vendors?)\b(?!\s+(?:party|parties|lunch|potluck|celebration|raffle|gift exchange|holiday))/i;
+  const GIFT_PAYBACK = /\b(?:reimburse(?:ment)?|pay you back|repay you|put it on my tab)\b/i;
+  const PERSONAL_OCCASION = /\b(?:birthday|christmas|hanukkah|holidays?|wedding|shower|graduation|anniversary|teacher|mother['’]s day|father['’]s day|valentine['’]?s?)\b/i;
+  // F4b: secrecy and emergency vocabulary shared by both money paths.
+  const COMBO_SECRECY = /\b(?:(?:don['’]?t|do not) tell (?:mom|dad|mother|father|anyone|anybody|your family|the family|my parents|your parents|my mom|my dad|grandpa|grandma)|keep (?:this|it) (?:between us|(?:a )?secret|private|quiet|to yourself)|keep (?:mom|dad|my parents|the family) out of (?:this|it))\b/i;
+  const COMBO_EMERGENCY = /\b(?:emergency|urgent(?:ly)?|right now|right away|immediately|asap|at once|in trouble|arrested|jail|bail|accident|hospital|stranded|within \d+ (?:minutes?|hours?)|please help|terrible mess|(?:in|into) (?:a |big |real )?mess|before tonight|can['’]?t talk)\b/i;
+  const NEED_MONEY = /\b(?:i|we)(?:['’]m|\s+am|\s+are)?\b([^.!?\n]{0,60}?)\bneeds?\s+(?:some\s+|the\s+|more\s+)?(?:bail money|money|funds|cash|bail|[$£€]\s*\d[\d,.]*)/i;
 
   const FINANCIAL_ALARM = /\b(?:charges?|(?:payment|debit)\b[^!?\n]{0,60}\b(?:approved|attempted|queued|authorized)|(?:approved|attempted|queued|authorized)\b[^!?\n]{0,40}\b(?:payment|debit)|refunds?|disputes?|suspension|suspended|account(?:\s+\w+){0,3}\s+locked)\b/i;
 
@@ -263,15 +276,89 @@
     }
   }
 
+  // An excuse or an outside purpose qualifies on its own. A pay-back promise
+  // qualifies only when no personal occasion (birthday, wedding, teacher) is named.
+  function giftSenderContext(s, index) {
+    const strong = contextMatch(s, GIFT_EXCUSE, index, 2) || contextMatch(s, GIFT_OUTSIDE, index, 1);
+    if (strong) return strong;
+    const payback = contextMatch(s, GIFT_PAYBACK, index, 1);
+    if (payback && !s.clauses.some(c => !skip(c) && PERSONAL_OCCASION.test(c.text))) return payback;
+    return null;
+  }
+
   function giftForSender(d, s) {
-    if (!/^(?:buy|purchase|get|pick up|cover)$/.test(d.verb)) return;
+    if (!/^(?:buy|purchase|get|go get|grab|pick up|cover)$/.test(d.verb)) return;
     const hit = d.near.match(GIFT);
     if (!hit) return;
-    const context = contextMatch(s, /\b(?:reimburse(?:ment)?|pay you back|put it on my tab|for (?:the|our|my) (?:team|project|clients)|for clients|in a meeting|can['’]?t (?:talk|leave)|cannot (?:talk|leave))\b/i, d.index);
+    const context = giftSenderContext(s, d.index);
     if (!context) return;
     const object = spanOf(s.raw, d.clause, hit, d.after);
     s.flag('gift_card_purchase', d.action.start, object.end);
     s.tier1('T1-GIFT', d, object, context);
+  }
+
+  // F3b: "I need help getting some Amazon gift cards" with an excuse or outside purpose.
+  function giftHelpRequest(s) {
+    s.clauses.forEach((clause, index) => {
+      if (skip(clause)) return;
+      for (const m of clause.text.matchAll(/\bneed (?:your |some )?help (?:getting|buying|picking up|purchasing|grabbing)\b/gi)) {
+        if (reportedAt(clause, m.index) || isNegated(clause.text, m.index)) continue;
+        const after = m.index + m[0].length, tail = clause.text.slice(after);
+        const hit = tail.slice(0, 40).match(GIFT);
+        if (!hit) continue;
+        const context = giftSenderContext(s, index);
+        if (!context) continue;
+        const d = { action: spanOf(s.raw, clause, m), clause, index };
+        const object = spanOf(s.raw, clause, hit, after);
+        s.flag('gift_card_purchase', d.action.start, object.end);
+        s.tier1('T1-GIFT', d, object, context);
+      }
+    });
+  }
+
+  // F4b: money the writer says they need ("I got arrested and need $3000"),
+  // with secrecy and an emergency nearby.
+  function neededMoney(s) {
+    s.clauses.forEach((clause, index) => {
+      if (skip(clause)) return;
+      const m = clause.text.match(NEED_MONEY);
+      if (!m || reportedAt(clause, m.index) || NEGATION.test(m[1]) || /\b(?:no longer|not)\s*$/i.test(m[1])) return;
+      if (s.established.some(f => f.ruleId === 'T1-COMBO')) return;
+      const secrecy = contextMatch(s, COMBO_SECRECY, index, 2);
+      const emergency = contextMatch(s, COMBO_EMERGENCY, index, 2);
+      if (!secrecy || !emergency) return;
+      const needAt = m.index + m[0].search(/\bneeds?\b/i);
+      const action = span(s.raw, clause.start + needAt, clause.start + needAt + 4);
+      const objectHit = m[0].slice(needAt - m.index).match(/(?:bail money|money|funds|cash|bail|[$£€]\s*\d[\d,.]*)$/i);
+      const objectStart = clause.start + m.index + m[0].length - objectHit[0].length;
+      const object = span(s.raw, objectStart, clause.start + m.index + m[0].length);
+      s.flag('secret_emergency_money', action.start, object.end);
+      s.tier1('T1-COMBO', { action, clause, index }, object, emergency, secrecy);
+    });
+  }
+
+  // F2b: an order, renewal or charge, a denial or cancel cue, and a number in the same clause:
+  // "If you did not place this order call 1-888-...", "Not yours, 866-...".
+  function denialCallback(s) {
+    const alarm = s.clauses.map(c => unreportedMatch(c, FINANCIAL_ALARM) || unreportedMatch(c, ORDER_ALARM) ? c : null).find(Boolean);
+    if (!alarm) return;
+    const alarmHit = unreportedMatch(alarm, FINANCIAL_ALARM) || unreportedMatch(alarm, ORDER_ALARM);
+    const context = spanOf(s.raw, alarm, alarmHit);
+    s.clauses.forEach((clause, index) => {
+      if (skip(clause) || TRUSTED_CALL.test(clause.text)) return;
+      const cue = unreportedMatch(clause, DENIAL_CUE);
+      if (!cue) return;
+      for (const phone of T.extractTargets(clause.text).targets.filter(t => t.kind === 'phone')) {
+        if (phone.at[0] < cue.index) continue;
+        const object = span(s.raw, clause.start + phone.at[0], clause.start + phone.at[1]);
+        if (s.established.some(f => f.ruleId === 'T1-CALLBACK' && f.object && f.object.start === object.start)) continue;
+        const org = s.options.claimOrg;
+        if (org && T.listedFor({ orgs: [org] }, phone).length) continue;
+        const action = spanOf(s.raw, clause, cue);
+        s.flag('financial_callback', action.start, action.end);
+        s.tier1('T1-CALLBACK', { action, clause, index }, object, context);
+      }
+    });
   }
 
   // T1-GIFT: "buy gift cards ... send me the codes". Returns true when it fires.
@@ -388,8 +475,8 @@
     if (!/^(?:send|give|transfer|wire|pay|need)$/.test(d.verb)) return;
     const hit = d.near.match(/(?:\b(?:money|funds|bail)\b|[$£€]\s*\d[\d,.]*)/i);
     if (!hit || !/^\s*(?:(?:me|us|him|her|them)\s+)?(?:(?:some|more|the|your|our|my|a little|a bit of)\s+)?$/i.test(d.near.slice(0, hit.index))) return;
-    const secrecy = contextMatch(s, /\b(?:(?:don['’]?t|do not) tell (?:mom|dad|mother|father|anyone|anybody|your family)|keep (?:this|it) (?:between us|secret|private))\b/i, d.index, 2);
-    const emergency = contextMatch(s, /\b(?:emergency|urgent(?:ly)?|right now|right away|immediately|asap|at once|in trouble|arrested|jail|bail|accident|hospital|stranded|within \d+ (?:minutes?|hours?))\b/i, d.index, 2);
+    const secrecy = contextMatch(s, COMBO_SECRECY, d.index, 2);
+    const emergency = contextMatch(s, COMBO_EMERGENCY, d.index, 2);
     if (!secrecy || !emergency) return;
     const object = spanOf(s.raw, d.clause, hit, d.after);
     s.flag('secret_emergency_money', d.action.start, object.end);
@@ -510,6 +597,9 @@
         if (!giftCodeFound) shareSecret(d, s);
       }
     });
+    giftHelpRequest(s);
+    neededMoney(s);
+    denialCallback(s);
     return s;
   }
 

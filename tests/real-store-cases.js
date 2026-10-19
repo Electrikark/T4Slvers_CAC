@@ -135,7 +135,7 @@ window.TFS_REAL_CASES = [
     "id": "R10",
     "text": "Hi Grandma, it's me. I'm in trouble and need $2,000. Please send it by Zelle and don't tell Mom.",
     "expect": {
-      "assessment": "insufficient_evidence",
+      "assessment": "suspicious" /* v1.1b: T1-COMBO (needed money + secrecy + emergency); was insufficient_evidence */,
       "codes": [
         "nothing_to_check"
       ],
@@ -146,7 +146,7 @@ window.TFS_REAL_CASES = [
         "peer_payment"
       ]
     },
-    "guards": "Grandparent scam; Zelle is a payment method here, not the sender"
+    "guards": "Grandparent scam; Zelle is a payment method here, not the sender. Now caught by T1-COMBO."
   },
   {
     "id": "R11",
