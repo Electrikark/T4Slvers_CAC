@@ -40,7 +40,7 @@ const gaps = [
 ];
 function gapRow([id, family, text, finding]) {
   return { id, context: 'GAP', family, variant: 'hand', record_state: 'approved', text,
-    expected_findings: [finding], expected_verdict: 'Insufficient Evidence', known_limitation: null };
+    expected_findings: [finding], expected_verdict: family === 'RA' ? 'Suspicious' : 'Insufficient Evidence', known_limitation: null };
 }
 // Five wording variations per repair, with one fixed approved contact.
 const reviewCases = [
@@ -62,6 +62,6 @@ const reviewCases = [
 ];
 function reviewRow([id, family, text, finding]) {
   return { id, context: 'T2_REVIEW', family, variant: 'hand', record_state: 'approved', text: text + ' Visit https://chase.com.',
-    expected_findings: [finding], expected_verdict: 'Insufficient Evidence', known_limitation: null };
+    expected_findings: [finding], expected_verdict: family === 'RA' ? 'Suspicious' : 'Insufficient Evidence', known_limitation: null };
 }
 module.exports = own.map(c => row(c, 'OWN')).concat(warnings.map(c => row(c, 'W')), controls.map(c => row(c, 'LEGIT')), gaps.map(gapRow), reviewCases.map(reviewRow));

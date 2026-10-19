@@ -10687,7 +10687,7 @@
       "expected_findings": [
         "remote_access"
       ],
-      "expected_verdict": "Insufficient Evidence",
+      "expected_verdict": "Suspicious",
       "known_limitation": null
     },
     {
@@ -10700,7 +10700,7 @@
       "expected_findings": [
         "remote_access"
       ],
-      "expected_verdict": "Insufficient Evidence",
+      "expected_verdict": "Suspicious",
       "known_limitation": null
     },
     {
@@ -10713,7 +10713,7 @@
       "expected_findings": [
         "remote_access"
       ],
-      "expected_verdict": "Insufficient Evidence",
+      "expected_verdict": "Suspicious",
       "known_limitation": null
     },
     {
@@ -10726,7 +10726,7 @@
       "expected_findings": [
         "remote_access"
       ],
-      "expected_verdict": "Insufficient Evidence",
+      "expected_verdict": "Suspicious",
       "known_limitation": null
     },
     {
@@ -10739,7 +10739,7 @@
       "expected_findings": [
         "remote_access"
       ],
-      "expected_verdict": "Insufficient Evidence",
+      "expected_verdict": "Suspicious",
       "known_limitation": null
     },
     {
@@ -10752,7 +10752,7 @@
       "expected_findings": [
         "remote_access"
       ],
-      "expected_verdict": "Insufficient Evidence",
+      "expected_verdict": "Suspicious",
       "known_limitation": null
     },
     {
