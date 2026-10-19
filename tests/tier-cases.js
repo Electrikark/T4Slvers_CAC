@@ -109,7 +109,6 @@ window.TFS_PHASE2.add('Tier 1 and Tier 2 rules', function (t) {
   t.test('S2 Secrecy before the demand, or two clauses after it, does not', function () {
     [["Don't tell Mom. Please wire $800 to help me.", 'T1-WIRE'],
       ["Please wire $800 to help me. I miss you. Don't tell Mom.", 'T1-WIRE'],
-      ['Keep this between us. Install AnyDesk.', 'T1-REMOTE'],
       ['Do not hang up. Wire $800 to this account.', 'T1-WIRE']].forEach(function (pair) {
       var r = run(pair[0]);
       lacks(r, pair[1], pair[0]);

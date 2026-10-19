@@ -93,7 +93,7 @@ window.TFS_PHASE2.add('Reporting scope', function (t) {
   });
   t.test('RS15 Reported pressure and alarms cannot qualify a separate demand', function () {
     check({ text: 'Fraudsters ask you to wire money today, please install AnyDesk.',
-      flags: ['remote_access'], rules: [], assessment: 'insufficient_evidence' });
+      flags: ['remote_access'], rules: ['T1-REMOTE'], assessment: 'suspicious' });
     check({ text: 'Fraudsters ask you to say your computer is infected. Call us.',
       flags: ['callback_now'], rules: [], assessment: 'insufficient_evidence' });
   });

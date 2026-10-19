@@ -11,7 +11,7 @@ const files = [
   'data/store.js', 'data/policies.js', 'js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'tests/cases.js', 'tests/real-store-cases.js',
   'tests/regression-cases.js', 'tests/step1-cases.js', 'tests/assessment-cases.js', 'tests/self-check-cases.js',
   'tests/phase2-harness.js', 'tests/trusted-cases.js', 'tests/sender-cases.js', 'tests/tier-cases.js', 'tests/scope-cases.js',
-  'tests/reporting-scope/setup.js', 'tests/reporting-scope/matrix-cases.js', 'tests/next-steps-cases.js', 'tests/policy-cases.js', 'tests/annotate-cases.js', 'tests/suite.js'
+  'tests/reporting-scope/setup.js', 'tests/reporting-scope/matrix-cases.js', 'tests/next-steps-cases.js', 'tests/policy-cases.js', 'tests/annotate-cases.js', 'tests/rules-f1-cases.js', 'tests/suite.js'
 ];
 for (const file of files) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });

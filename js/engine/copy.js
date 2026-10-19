@@ -113,7 +113,7 @@
   const RULE_ASKS = {
     'T1-GIFT': 'asks you to pay with gift cards or share gift-card codes',
     'T1-WIRE': 'pressures you to send cryptocurrency or a wire transfer',
-    'T1-REMOTE': 'pressures you to let someone control your device',
+    'T1-REMOTE': 'asks you to let someone control your device',
     'T1-CODE': 'asks you to give a sign-in code, PIN or password to the sender',
     'T1-DOMAIN': 'uses a link or address built to imitate a known organization',
     'T1-CALLBACK': 'warns about your device and pressures you to call a number',

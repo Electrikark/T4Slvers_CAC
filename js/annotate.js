@@ -17,7 +17,7 @@
   var TIER1_NOTES = {
     'T1-GIFT': 'This message asks for gift cards or gift card codes. Real businesses and government agencies don’t ask for payment this way.',
     'T1-WIRE': 'This message pressures you to send a wire transfer or cryptocurrency. That money is very hard to get back.',
-    'T1-REMOTE': 'This message pressures you to let someone control your device. Only let a helper you contacted yourself do that.',
+    'T1-REMOTE': 'This message asks you to let someone control your device. Only let a helper you contacted yourself do that.',
     'T1-CODE': 'This message asks you to give a sign-in code, PIN or password to the sender. Real organizations never ask for these.',
     'T1-CALLBACK': 'This message warns about your device and tells you to call a number. Real device warnings don’t include a number to call.',
     'T1-DOMAIN': 'This address is built to look like a known organization’s address, but it goes somewhere else.'
