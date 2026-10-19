@@ -61,42 +61,11 @@
   const OBJECT_GAP = /^\s*(?:(?:me|us|them|him|her|back|to me|to us)\s+)?(?:(?:the|your|that|this|those|these|their|any)\s+)?(?:[\w-]+\s+){0,2}$/i;
   // Codes that are not secrets, or that T1-GIFT already judges.
   const NOT_SECRET = /\b(?:promo(?:tional)?|coupon|discount|zip|postal|area|qr|bar|referral|invite|invitation|gift[ -]?cards?|confirmation|tracking|reference|order|booking|pick-?up|voucher|redemption|rewards?|offer|country|dial)\s+$/i;
-  function emergencyMoney(d, s) {
-    if (!/^(?:send|give|transfer|wire|pay|need)$/.test(d.verb)) return;
-    const hit = d.near.match(/(?:\b(?:money|funds|bail)\b|[$£€]\s*\d[\d,.]*)/i);
-    if (!hit) return;
-    const secrecy = contextMatch(s, /\b(?:(?:don['’]?t|do not) tell (?:mom|dad|mother|father|anyone|anybody|your family)|keep (?:this|it) (?:between us|secret|private))\b/i, d.index, 2);
-    const emergency = contextMatch(s, /\b(?:emergency|urgent(?:ly)?|right now|right away|immediately|asap|at once|in trouble|arrested|jail|bail|accident|hospital|stranded|within \d+ (?:minutes?|hours?))\b/i, d.index, 2);
-    if (!secrecy || !emergency) return;
-    const object = spanOf(s.raw, d.clause, hit, d.after);
-    s.flag('secret_emergency_money', d.action.start, object.end);
-    s.tier1('T1-COMBO', d, object, emergency, secrecy);
-  }
+
 
   const FINANCIAL_ALARM = /\b(?:charges?|(?:payment|debit)\b[^!?\n]{0,60}\b(?:approved|attempted|queued|authorized)|(?:approved|attempted|queued|authorized)\b[^!?\n]{0,40}\b(?:payment|debit)|refunds?|disputes?|suspension|suspended|account(?:\s+\w+){0,3}\s+locked)\b/i;
 
-  function financialCallback(d, s) {
-    if (!/^(?:call|ring|phone|dial)$/.test(d.verb)) return;
-    const alarm = contextMatch(s, FINANCIAL_ALARM, d.index, s.clauses.length);
-    if (!alarm) return;
-    // Only a number being called qualifies, never an unrelated number elsewhere in the text.
-    let numbers = T.extractTargets(d.tail).targets.filter(t => t.kind === 'phone');
-    if (TRUSTED_CALL.test(d.tail.slice(0, numbers.length ? numbers[0].at[0] : 100))) return;
-    let offset = d.clause.start + d.after;
-    if (!numbers.length && /^\s+(?:us|me|this number|the number|that number|it)\b/i.test(d.tail)) {
-      numbers = T.extractTargets(s.raw).targets.filter(t => t.kind === 'phone' && s.clauses.some(c =>
-        t.at[0] >= c.start && t.at[0] < c.end && !skip(c) && !reportedAt(c.text, t.at[0] - c.start)));
-      offset = 0;
-    }
-    for (const phone of numbers) {
-      const object = span(s.raw, offset + phone.at[0], offset + phone.at[1]);
-      s.flag('financial_callback', d.action.start, d.action.end);
-      const org = s.options.claimOrg;
-      const listed = org && T.listedFor({ orgs: [org] }, phone).length;
-      // Retain the Tier 2 finding even for reviewed numbers: the message is not authenticated.
-      if (!listed) s.tier1('T1-CALLBACK', d, object, alarm);
-    }
-  }
+
 
   // T1-CALLBACK: a device alarm paired with a demand to call. Real security warnings
   // from Microsoft and other vendors do not include a phone number to call.
@@ -142,7 +111,7 @@
   // Clauses inside a quoted example ("Fraudsters say: '...'") are marked inReport.
   function clausesOf(text) {
     const reports = [];
-    const quotes = /["“]([^"”]*)["”]/g;
+    const quotes = /["“][^"”]*["”]|(?<!\w)['‘][\s\S]*?['’](?!\w)/g;
     let q;
     while ((q = quotes.exec(text)) !== null) {
       const before = text.slice(Math.max(0, q.index - 120), q.index).split(/[.!?;\n]/).pop();
@@ -161,7 +130,11 @@
       start = m.index + m[0].length;
     }
     if (text.slice(start).trim()) clauses.push({ start, end: text.length, text: text.slice(start) });
-    for (const c of clauses) c.inReport = reports.some(r => c.start >= r.start && c.start < r.end);
+    for (const c of clauses) {
+      c.reportRanges = reports.filter(r => r.start < c.end && r.end > c.start)
+        .map(r => ({ start: Math.max(0, r.start - c.start), end: Math.min(c.text.length, r.end - c.start) }));
+      c.inReport = c.reportRanges.some(r => r.start === 0 && r.end === c.text.length);
+    }
     return clauses;
   }
 
@@ -174,7 +147,9 @@
 
   // A cue must be the subject of an asking verb whose complement contains this demand.
   // Commas and a new instruction end that reach; a warning after the demand cannot hide it.
-  function reportedAt(clauseText, demandIndex) {
+  function reportedAt(clause, demandIndex) {
+    if ((clause.reportRanges || []).some(r => demandIndex >= r.start && demandIndex < r.end)) return true;
+    const clauseText = clause.text;
     // inReport covers later clauses of a quoted example. Its first clause can start
     // before the opening quote, so preserve that quoted span here as well.
     for (const quote of clauseText.matchAll(/["“][^"”]*(?:["”]|$)/g)) {
@@ -195,7 +170,7 @@
   function unreportedMatch(clause, pattern) {
     if (skip(clause)) return null;
     return [...clause.text.matchAll(new RegExp(pattern.source, 'gi'))]
-      .find(hit => !reportedAt(clause.text, hit.index)) || null;
+      .find(hit => !reportedAt(clause, hit.index)) || null;
   }
 
   // Is the verb after `prefix` an instruction to the reader? "Please send", "Chase: Send",
@@ -338,7 +313,7 @@
       else { end = cut.index; break; }
     }
     for (const hit of text.slice(start, end).matchAll(new RegExp(WIRE.source, 'gi'))) {
-      if (!reportedAt(text, start + hit.index)) return spanOf(raw, d.clause, hit, start);
+      if (!reportedAt(d.clause, start + hit.index)) return spanOf(raw, d.clause, hit, start);
     }
     return null;
   }
@@ -380,8 +355,10 @@
     if (named && /\b(?:article|guide|documentation|about|website|page)\b/i.test(d.near.slice(0, named.index))) return;
     let object = named && spanOf(s.raw, d.clause, named, d.after);
     let antecedent = null;
+    const sessionObject = /\b(?:session(?: id| number)?|connection(?: id| number)?|access|request|id)\b/i;
+    if (d.verb === 'share' && !sessionObject.test(d.near)) return;
     if (!object && /^(?:approve|accept|share|allow|grant)$/.test(d.verb)) {
-      const session = d.near.match(/\b(?:session(?: id)?|connection(?: number)?|access|request|id|number)\b/i);
+      const session = d.near.match(sessionObject);
       const tool = contextMatch(s, REMOTE_TOOL, d.index);
       if (session && tool) { object = spanOf(s.raw, d.clause, session, d.after); antecedent = tool; }
     }
@@ -405,6 +382,41 @@
           !/\b(?:not|no)\s+(?:(?:a|an|any)\s+)?$/i.test(clause.text.slice(0, hit.index))) return spanOf(s.raw, clause, hit);
     }
     return null;
+  }
+
+  function emergencyMoney(d, s) {
+    if (!/^(?:send|give|transfer|wire|pay|need)$/.test(d.verb)) return;
+    const hit = d.near.match(/(?:\b(?:money|funds|bail)\b|[$£€]\s*\d[\d,.]*)/i);
+    if (!hit || !/^\s*(?:(?:me|us|him|her|them)\s+)?(?:(?:some|more|the|your|our|my|a little|a bit of)\s+)?$/i.test(d.near.slice(0, hit.index))) return;
+    const secrecy = contextMatch(s, /\b(?:(?:don['’]?t|do not) tell (?:mom|dad|mother|father|anyone|anybody|your family)|keep (?:this|it) (?:between us|secret|private))\b/i, d.index, 2);
+    const emergency = contextMatch(s, /\b(?:emergency|urgent(?:ly)?|right now|right away|immediately|asap|at once|in trouble|arrested|jail|bail|accident|hospital|stranded|within \d+ (?:minutes?|hours?))\b/i, d.index, 2);
+    if (!secrecy || !emergency) return;
+    const object = spanOf(s.raw, d.clause, hit, d.after);
+    s.flag('secret_emergency_money', d.action.start, object.end);
+    s.tier1('T1-COMBO', d, object, emergency, secrecy);
+  }
+
+  function financialCallback(d, s) {
+    if (!/^(?:call|ring|phone|dial)$/.test(d.verb)) return;
+    const alarm = contextMatch(s, FINANCIAL_ALARM, d.index, s.clauses.length);
+    if (!alarm) return;
+    // Only a number being called qualifies, never an unrelated number elsewhere in the text.
+    let numbers = T.extractTargets(d.tail).targets.filter(t => t.kind === 'phone');
+    if (TRUSTED_CALL.test(d.tail.slice(0, numbers.length ? numbers[0].at[0] : 100))) return;
+    let offset = d.clause.start + d.after;
+    if (!numbers.length && /^\s+(?:us|me|this number|the number|that number|it)\b/i.test(d.tail)) {
+      numbers = T.extractTargets(s.raw).targets.filter(t => t.kind === 'phone' && s.clauses.some(c =>
+        t.at[0] >= c.start && t.at[0] < c.end && !skip(c) && !reportedAt(c, t.at[0] - c.start)));
+      offset = 0;
+    }
+    for (const phone of numbers) {
+      const object = span(s.raw, offset + phone.at[0], offset + phone.at[1]);
+      s.flag('financial_callback', d.action.start, d.action.end);
+      const org = s.options.claimOrg;
+      const listed = org && T.listedFor({ orgs: [org] }, phone).length;
+      // Retain the Tier 2 finding even for reviewed numbers: the message is not authenticated.
+      if (!listed) s.tier1('T1-CALLBACK', d, object, alarm);
+    }
   }
 
   // T1-CALLBACK: "call this number" anywhere in a message that raises a device alarm.
@@ -480,7 +492,7 @@
       if (skip(clause)) return;
       let priorDemand = false;
       for (const m of clause.text.matchAll(new RegExp(ACTIONS.source, 'gi'))) {
-        if (reportedAt(clause.text, m.index)) continue;
+        if (reportedAt(clause, m.index)) continue;
         if (!directAction(clause.text.slice(0, m.index), priorDemand, senderLabel) &&
             !(m[0].toLowerCase() === 'need' && /^\s*(?:(?:grandma|grandpa|mom|dad),?\s*)?i\s*$/i.test(clause.text.slice(0, m.index)))) continue;
         priorDemand = true;
@@ -614,7 +626,7 @@
       for (const pattern of flag.patterns) {
         const hit = [...text.matchAll(new RegExp(pattern.source, 'gi'))].find(m => {
           const clause = s.clauses.find(c => m.index >= c.start && m.index < c.end);
-          if (clause && (clause.inReport || reportedAt(clause.text, m.index - clause.start))) return false;
+          if (clause && (clause.inReport || reportedAt(clause, m.index - clause.start))) return false;
           if (flag.negatable && isNegated(text, m.index)) return false;
           return !flag.accept || !clause || flag.accept(text, m, clause);
         });
@@ -665,7 +677,7 @@
     for (const clause of clausesOf(text)) {
       if (skip(clause)) continue;
       for (const hit of clause.text.matchAll(/\b(?:pay|verify|confirm|reschedule|click)\b/gi)) {
-        if (reportedAt(clause.text, hit.index) || !directAction(clause.text.slice(0, hit.index), true)) continue;
+        if (reportedAt(clause, hit.index) || !directAction(clause.text.slice(0, hit.index), true)) continue;
         const start = clause.start + hit.index, end = start + hit[0].length;
         const moved = T.sourceSpan(view, raw, start, end);
         return span(raw, moved.start, moved.end);
