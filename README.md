@@ -1,7 +1,6 @@
 # Tech for Silvers
 
-Rules v1.1 implements F1–F5 with tests-first stage logs. See [the progress and validation table](docs/rules-v1.1-progress.md). `--split dev` now filters before engine analysis. Field metrics remain unavailable until the locked corpus and original dev analyzer are supplied; no held-out corpus split has been run.
-
+Rules v1.1 implements F1–F5 with tests-first stage logs. See [the progress and validation table](docs/rules-v1.1-progress.md). `--split dev` filters before engine analysis. On the revised 194-row dev corpus, fraud labeled Suspicious rose from 36/95 to 57/95 with 0/99 legitimate messages Suspicious and 7 legitimate messages carrying a Tier 2 warning. The dev set was used while writing these rules, about half its rows are synthetic, and no held-out split has been run, so this is not a field accuracy result.
 
 A local text-only workshop prototype. Plain HTML, CSS, and JavaScript; no package install, build step, account, backend, analytics, or external request is needed. This is the active build base for frozen spec v1.2.
 

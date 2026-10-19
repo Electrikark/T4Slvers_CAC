@@ -1,0 +1,366 @@
+{
+  "pub_0002": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0041": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0043": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0044": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0056": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0059": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0060": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0065": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0066": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0068": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0074": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0075": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0076": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0078": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0080": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0086": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0070": {
+    "cause": "other",
+    "idea": "A general money appeal has no specified Tier 1 payment method; preserve the fraud label and pause."
+  },
+  "pub_0071": {
+    "cause": "other",
+    "idea": "A general money appeal has no specified Tier 1 payment method; preserve the fraud label and pause."
+  },
+  "syn_0039": {
+    "cause": "other",
+    "idea": "A general money appeal has no specified Tier 1 payment method; preserve the fraud label and pause."
+  },
+  "syn_0040": {
+    "cause": "other",
+    "idea": "A general money appeal has no specified Tier 1 payment method; preserve the fraud label and pause."
+  },
+  "pub_0090": {
+    "cause": "other",
+    "idea": "The supplied callback expectation lacks the device alarm required by the current Tier 1 contract."
+  },
+  "syn_0009": {
+    "cause": "other",
+    "idea": "The supplied callback expectation lacks the device alarm required by the current Tier 1 contract."
+  },
+  "syn_0010": {
+    "cause": "other",
+    "idea": "The supplied callback expectation lacks the device alarm required by the current Tier 1 contract."
+  },
+  "syn_0017": {
+    "cause": "other",
+    "idea": "The supplied callback expectation lacks the device alarm required by the current Tier 1 contract."
+  },
+  "syn_0018": {
+    "cause": "other",
+    "idea": "The supplied callback expectation lacks the device alarm required by the current Tier 1 contract."
+  },
+  "syn_0045": {
+    "cause": "other",
+    "idea": "The supplied callback expectation lacks the device alarm required by the current Tier 1 contract."
+  },
+  "syn_0046": {
+    "cause": "other",
+    "idea": "The supplied callback expectation lacks the device alarm required by the current Tier 1 contract."
+  },
+  "pub_0042": {
+    "cause": "other",
+    "idea": "A card purchase alone lacks a payment purpose or redemption-secret disclosure; retain pause."
+  },
+  "pub_0057": {
+    "cause": "other",
+    "idea": "A card purchase alone lacks a payment purpose or redemption-secret disclosure; retain pause."
+  },
+  "pub_0058": {
+    "cause": "other",
+    "idea": "A card purchase alone lacks a payment purpose or redemption-secret disclosure; retain pause."
+  },
+  "pub_0061": {
+    "cause": "other",
+    "idea": "A card purchase alone lacks a payment purpose or redemption-secret disclosure; retain pause."
+  },
+  "syn_0021": {
+    "cause": "other",
+    "idea": "A card purchase alone lacks a payment purpose or redemption-secret disclosure; retain pause."
+  },
+  "syn_0022": {
+    "cause": "other",
+    "idea": "A card purchase alone lacks a payment purpose or redemption-secret disclosure; retain pause."
+  },
+  "syn_0007": {
+    "cause": "other",
+    "idea": "The remote-access expectation lacks the qualifying pressure required by the current Tier 1 contract."
+  },
+  "syn_0008": {
+    "cause": "other",
+    "idea": "The remote-access expectation lacks the qualifying pressure required by the current Tier 1 contract."
+  },
+  "syn_0015": {
+    "cause": "other",
+    "idea": "The remote-access expectation lacks the qualifying pressure required by the current Tier 1 contract."
+  },
+  "syn_0016": {
+    "cause": "other",
+    "idea": "The remote-access expectation lacks the qualifying pressure required by the current Tier 1 contract."
+  },
+  "syn_0049": {
+    "cause": "other",
+    "idea": "The remote-access expectation lacks the qualifying pressure required by the current Tier 1 contract."
+  },
+  "syn_0050": {
+    "cause": "other",
+    "idea": "The remote-access expectation lacks the qualifying pressure required by the current Tier 1 contract."
+  },
+  "syn_0032": {
+    "cause": "other",
+    "idea": "An indirect third-party need is outside the positive sender-demand contract; review policy before expanding it."
+  },
+  "pub_0001": {
+    "cause": "other",
+    "idea": "The supplied domain expectation lacks the specific hostname-deception evidence required by the gate."
+  },
+  "pub_0081": {
+    "cause": "other",
+    "idea": "The supplied domain expectation lacks the specific hostname-deception evidence required by the gate."
+  },
+  "pub_0083": {
+    "cause": "other",
+    "idea": "The supplied domain expectation lacks the specific hostname-deception evidence required by the gate."
+  },
+  "syn_0001": {
+    "cause": "other",
+    "idea": "The foreign-brand host lacks a qualifying lure token under the current domain rule; retain Tier 2."
+  },
+  "syn_0002": {
+    "cause": "other",
+    "idea": "The foreign-brand host lacks a qualifying lure token under the current domain rule; retain Tier 2."
+  },
+  "pub_0027": {
+    "cause": "other",
+    "idea": "A login instruction intentionally remains Tier 2 because a legit source label does not authenticate this sender."
+  },
+  "pub_0048": {
+    "cause": "other",
+    "idea": "A login instruction intentionally remains Tier 2 because a legit source label does not authenticate this sender."
+  },
+  "syn_0064": {
+    "cause": "other",
+    "idea": "A login instruction intentionally remains Tier 2 because a legit source label does not authenticate this sender."
+  },
+  "pub_0064": {
+    "cause": "missing record",
+    "idea": "The sender reference is absent; volunteer verification of official contact facts is needed before adding it."
+  },
+  "pub_0079": {
+    "cause": "missing record",
+    "idea": "The sender reference is absent; volunteer verification of official contact facts is needed before adding it."
+  },
+  "pub_0089": {
+    "cause": "missing record",
+    "idea": "The sender reference is absent; volunteer verification of official contact facts is needed before adding it."
+  },
+  "pub_0093": {
+    "cause": "missing record",
+    "idea": "The sender reference is absent; volunteer verification of official contact facts is needed before adding it."
+  },
+  "syn_0041": {
+    "cause": "missing record",
+    "idea": "The sender reference is absent; volunteer verification of official contact facts is needed before adding it."
+  },
+  "syn_0042": {
+    "cause": "missing record",
+    "idea": "The sender reference is absent; volunteer verification of official contact facts is needed before adding it."
+  },
+  "syn_0004": {
+    "cause": "wording",
+    "idea": "Recognize account-text digit and copy requests with requester context and exact source spans."
+  },
+  "syn_0011": {
+    "cause": "wording",
+    "idea": "Recognize account-text digit and copy requests with requester context and exact source spans."
+  },
+  "syn_0012": {
+    "cause": "wording",
+    "idea": "Recognize account-text digit and copy requests with requester context and exact source spans."
+  },
+  "syn_0036": {
+    "cause": "wording",
+    "idea": "Recognize account-text digit and copy requests with requester context and exact source spans."
+  },
+  "syn_0023": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0024": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0025": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0026": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0027": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0028": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0029": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0030": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0033": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0034": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0043": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0044": {
+    "cause": "wording",
+    "idea": "Extend coordinated gift-card disclosure verbs and redemption objects while preserving ordinary gift controls."
+  },
+  "syn_0006": {
+    "cause": "wording",
+    "idea": "Bind wire action variants, monetary objects and antecedents to explicit pressure; keep receipt controls."
+  },
+  "syn_0013": {
+    "cause": "wording",
+    "idea": "Bind wire action variants, monetary objects and antecedents to explicit pressure; keep receipt controls."
+  },
+  "syn_0014": {
+    "cause": "wording",
+    "idea": "Bind wire action variants, monetary objects and antecedents to explicit pressure; keep receipt controls."
+  },
+  "syn_0047": {
+    "cause": "wording",
+    "idea": "Bind wire action variants, monetary objects and antecedents to explicit pressure; keep receipt controls."
+  },
+  "syn_0048": {
+    "cause": "wording",
+    "idea": "Bind wire action variants, monetary objects and antecedents to explicit pressure; keep receipt controls."
+  },
+  "pub_0087": {
+    "cause": "scope",
+    "idea": "Keep coordinated response actions inside the sender demand instead of discarding the later code request."
+  },
+  "syn_0055": {
+    "cause": "scope",
+    "idea": "Distinguish a completed wire receipt from an instruction to make a new payment."
+  },
+  "syn_0061": {
+    "cause": "scope",
+    "idea": "Read the local denial of a fee before treating the fee noun as a warning."
+  },
+  "syn_0082": {
+    "cause": "scope",
+    "idea": "Bind privacy advice to its authentication-code antecedent across a validity notice."
+  },
+  "pub_0023": {
+    "cause": "overly broad warning",
+    "idea": "Routine appointment callbacks trigger broad call vocabulary; a separate warning-scope repair remains open."
+  },
+  "syn_0073": {
+    "cause": "overly broad warning",
+    "idea": "Clinical urgency triggers broad pressure vocabulary; a separate warning-scope repair remains open."
+  },
+  "syn_0074": {
+    "cause": "overly broad warning",
+    "idea": "Clinical urgency triggers broad pressure vocabulary; a separate warning-scope repair remains open."
+  },
+  "syn_0097": {
+    "cause": "overly broad warning",
+    "idea": "Clinical urgency triggers broad pressure vocabulary; a separate warning-scope repair remains open."
+  },
+  "pub_0073": {
+    "cause": "other",
+    "idea": "A general money appeal has no specified Tier 1 payment method; preserve the fraud label and pause."
+  },
+  "pub_0092": {
+    "cause": "other",
+    "idea": "A general money appeal has no specified Tier 1 payment method; preserve the fraud label and pause."
+  },
+  "pub_0077": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0088": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0094": {
+    "cause": "other",
+    "idea": "The destination is replaced by a placeholder; the missing hostname cannot establish domain deception."
+  },
+  "pub_0082": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0085": {
+    "cause": "other",
+    "idea": "The isolated opener has no Tier 1 action or destination; keep pause and review the annotation contract."
+  },
+  "pub_0084": {
+    "cause": "missing record",
+    "idea": "No Maybank record exists, so the brand-in-foreign-host check has no official domain to compare; volunteer verification of official contact facts is needed before adding it."
+  }
+}

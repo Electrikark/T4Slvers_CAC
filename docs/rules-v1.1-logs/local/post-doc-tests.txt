@@ -1,0 +1,49 @@
+
+> tech-for-silvers@0.4.0 test
+> node scripts/build-assessment.cjs --check && node tests/app-elements.cjs && node tests/run-node.cjs && node tests/eval-tests.cjs && node tests/five-org-review.cjs
+
+App element contract: 1/1 (47 IDs checked)
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 119/119
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 36/36
+Reporting scope: 37/37
+Scope matrix WF × GC: 48/48
+Scope matrix WF × CD: 48/48
+Scope matrix WF × WT: 48/48
+Scope matrix WF × RA: 48/48
+Scope matrix PC × GC: 48/48
+Scope matrix PC × CD: 48/48
+Scope matrix PC × WT: 48/48
+Scope matrix PC × RA: 48/48
+Scope matrix RD × GC: 48/48
+Scope matrix RD × CD: 48/48
+Scope matrix RD × WT: 48/48
+Scope matrix RD × RA: 48/48
+Scope matrix TW × GC: 48/48
+Scope matrix TW × CD: 48/48
+Scope matrix TW × WT: 48/48
+Scope matrix TW × RA: 48/48
+Scope matrix OWN: 8/8
+Scope matrix W: 10/10
+Scope matrix LEGIT: 6/6
+Scope matrix GAP: 3/3
+Scope matrix T2_REVIEW: 15/15
+Reviewed next-step advice: 8/8
+Policy records: 12/12
+Annotations on pasted text: 9/9
+F1 rule fixes: 38/38
+F2 rule fixes: 27/27
+F3 rule fixes: 19/19
+F4 rule fixes: 12/12
+F5 rule fixes: 23/23
+Rule robustness: 11/11
+Boundaries: 2/2
+Source gate parity: 36/36
+Evaluation harness: 23/23
+Five-organization eligibility: 36/36 (20 organization/state scenarios plus 16 boundary and safety checks)

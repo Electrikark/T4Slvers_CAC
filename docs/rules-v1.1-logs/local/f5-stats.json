@@ -1,0 +1,18 @@
+{
+  "rows": 194,
+  "fraud": 95,
+  "legit": 99,
+  "caught": 57,
+  "kinds": {
+    "A": 0,
+    "B": 38,
+    "C": 0,
+    "D": 0,
+    "E": 7
+  },
+  "legitSuspicious": [],
+  "stage": "f5",
+  "input_sha256": "8f7788ce5f8d034b83cf3410dfec505bf5a89c76e13d3026c1581104699ccab3",
+  "reference_date": "2026-10-17",
+  "head": "56579005fd0c815a0154f108c28b5d9d22ff09a4"
+}
