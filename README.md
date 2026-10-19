@@ -1,5 +1,8 @@
 # Tech for Silvers
 
+Rules v1.1 implements F1–F5 with tests-first stage logs. See [the progress and validation table](docs/rules-v1.1-progress.md). `--split dev` now filters before engine analysis. Field metrics remain unavailable until the locked corpus and original dev analyzer are supplied; no held-out corpus split has been run.
+
+
 A local text-only workshop prototype. Plain HTML, CSS, and JavaScript; no package install, build step, account, backend, analytics, or external request is needed. This is the active build base for frozen spec v1.2.
 
 The app compares contacts with a stored list and checks fixed English risk patterns. It does not authenticate a sender, read images, follow links, or run AI extraction. Some legacy reference and parsing paths still need repair before release. Matching contact details do not establish that a message is real.
@@ -44,11 +47,14 @@ Missing or invalid channel choice is rejected. The form uses large Text / Email 
 
 **Review status (stopgap until the trusted reference view).** A reference record supports a contact only when it has `humanReview: { reviewer, date }`: a non-empty reviewer and a real calendar date (`YYYY-MM-DD`, from 2020 up to today; `2026-02-30` or a future date does not count). An automated check alone, which is what every record in `data/store.js` has today, gives `reference_needs_review` instead. Until records are reviewed by a person, Details Match cannot be reached on the real list; that is the intended safe failure. Conflicts and T1-DOMAIN still work, because they do not depend on a record supporting anything. Test fixtures are marked as reviewed by a fictional test fixture.
 
-The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, T1-REMOTE, T1-DOMAIN, T1-CODE and T1-CALLBACK. A Tier 1 finding with any other rule ID throws instead of winning.
+The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, T1-REMOTE, T1-DOMAIN, T1-CODE, T1-CALLBACK, T1-COMBO and T1-POLICY. A Tier 1 finding with any other rule ID throws instead of winning.
 
-- **T1-DOMAIN** covers address tricks with no innocent reading: text before `@` in a link, an official domain glued to another site (`usps.com-redelivery.top`), lookalike letters (`paypa1.com`, a Cyrillic `а`), and a brand name beside a lure word as separate parts of an address (`chase-secure-login.net`, `fastrak-ca-tolls.com`). Other conflicts stay Tier 2: a brand name alone, the same name with another ending, one-letter differences, and another listed organization's address. Measured against about 70 real domains that listed organizations use but the list lacks, those codes fired 128 times across runs with and without a named sender (`wellsfargoemail.com`, `paypal-prepaid.com`, `facebookmail.com`, `amazon.co.uk`, `uspis.gov`); the T1-DOMAIN subset fired zero times. Country forms such as `amazon.com.au` are no longer read as the glued-domain trick.
+- **T1-DOMAIN** retains userinfo, glued-domain, homoglyph and brand-plus-lure detection. It now also catches a whole brand name in a foreign link host with a direct pay/verify/confirm/reschedule/click instruction. Draft domains can raise this caution. Real domains and their subdomains, paths/queries and embedded letters such as “apple” inside “pineapple” do not establish the new rule. Earlier domain-only field measurements do not measure this broader rule.
 - **T1-CODE** covers a direct, unnegated, unreported demand to give a code, PIN, OTP, passcode or password to the requester, including "read it back to me" after a named code. Entering a code yourself, codes with no named requester, promo, confirmation, tracking and gift-card codes (T1-GIFT judges those), codes handed to a driver or cashier, and household codes such as the wifi password stay outside it.
-- **T1-CALLBACK** covers the tech-support pattern: a device alarm (infected, hacked, locked, "virus detected") anywhere outside a reporting frame, plus a direct demand to call a phone number, "us", or a named support line. Real security warnings do not include a number to call. A call request with no device alarm, a health "virus", and calling a number you already trust (the back of your card) stay outside it.
+- **T1-CALLBACK** adds direct requests to call/ring/phone/dial a written number about a charge, approved or attempted payment, queued debit, refund, dispute, suspension or locked account. A stored number for the attributed brand, including Draft, leaves a Tier 2 blocker: Insufficient Evidence, never Details Match. Independent Tier 1 rules still win. Existing device-alarm callbacks remain supported.
+- **T1-REMOTE** no longer needs pressure for direct requests involving AnyDesk, TeamViewer, QuickSupport, LogMeIn, ScreenConnect, RustDesk or UltraViewer. Reported, negated and informational mentions stay excluded; generic screen sharing retains its pressure requirement.
+- **T1-GIFT** also catches gift-card acquisition paired with nearby reimbursement, sender-use or inability-to-buy context. Ordinary birthday purchases and credit-card bills remain excluded.
+- **T1-COMBO** requires money as a requested object together with secrecy and nearby emergency/urgency context. A surprise-party contribution without emergency context does not qualify.
 
 `assessment` is the sole verdict. `trace` is returned unchanged by `assess(evidence)`; it holds winning rule IDs or blocker codes. There is no separate `state` or `decision` field. Only `js/app.js` maps canonical values to visible labels, symbols, and existing CSS classes. Risk severity can decorate advice but cannot change the label.
 
@@ -96,7 +102,7 @@ In the order a message passes through them:
 | `js/engine/copy.js` | Every sentence the person reads |
 | `js/annotate.js` | The pasted message with each finding marked, labeled and explained by a numbered note |
 | `js/selfCheck.js` | "I checked it myself" outcomes; never changes the result |
-| `data/store.js` | The organization list: 46 organizations, none human-reviewed yet |
+| `data/store.js` | The organization list: 49 organizations, none human-reviewed yet |
 | `js/mockData.js` | The seven demo examples |
 | `tests/` | `npm test` runs everything here; `tests/run.html` shows the same checks in a browser |
 | `eval/` | Field evaluation on real messages (`npm run eval`); `tests/eval-tests.cjs` checks the tool itself |
@@ -119,7 +125,7 @@ No screenshot controls or scripted image results remain. Demo examples state a c
 
 Phase 2 (sections A to E) is described under "Phase 2" below. Before it, this checkpoint covered Step 1 only. The earlier channel controls and screenshot removal are preserved; it does not finish the broader frozen-spec implementation.
 
-The app has not passed full v1.2 conformance or locked field evaluation. No record in the real list is reviewed by a person yet, so none can support a contact and the real list cannot produce Details Match; phone lists are empty. Legacy contact normalization and sender-role checks remain open work. T1-DOMAIN depends on the list naming each organization's main domains; the lure-word list was checked against a hand-built sample, not a field corpus. The parser uses a limited suffix list and character map.
+The app has not passed full v1.2 conformance or locked field evaluation. No record in the real list is reviewed by a person yet, so none can support a contact and the real list cannot produce Details Match; the user-supplied Chase number remains unreviewed and only qualifies a Tier 2 callback exception. Legacy contact normalization and sender-role checks remain open work. T1-DOMAIN depends on the list naming each organization's main domains; the lure-word list was checked against a hand-built sample, not a field corpus. The parser uses a limited suffix list and character map.
 
 Policy evaluation is built, but no sourced organization policy is active yet: the USPS record stays a draft until two people review it against the live page. Targeted first-contact questions are not built; a policy with a mandatory predicate stays quiet until an answer exists. The no-link USPS tracking policy must be independent of initiation. Follow-up answers may satisfy policy context but never verify who contacted the person. Reputation lookup and OCR remain outside v1. The Python package is a logic/test reference for a Node port, not a dependency.
 

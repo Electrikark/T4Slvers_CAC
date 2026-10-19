@@ -13,6 +13,7 @@ The evaluator now selects the requested split **before** engine analysis. Its re
 | F3 | Failed as expected | 19/19 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F4 | Failed as expected | 12/12 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F5 | Failed as expected | 23/23 | Pass | unavailable | unavailable | unavailable | unavailable |
+| Final robustness | Failed as expected | 11/11 | Pass | unavailable | unavailable | unavailable | unavailable |
 
 For each completed stage, `npm run eval -- --split dev` was invoked and exited 2 because `eval/data/messages.csv` is absent. Unavailable is not zero. The meanings of D and E and the existing failure taxonomy must come from the supplied analysis script/spec; they are not guessed here. Logs are in `docs/rules-v1.1-logs/`.
 
@@ -39,3 +40,22 @@ Added T1-COMBO only for a money request with secrecy and emergency/urgency conte
 ## F5
 
 Added whole-brand host matching plus direct pay/verify/confirm/reschedule/click instructions, using all domain-record statuses only for caution. Added domain-only Draft records for HSBC, Royal Mail and E-ZPass. Real domains and their subdomains, paths/queries, embedded brand letters and reported/negated instructions remain excluded. Modern contact-only Draft records also work without legacy domain fields. Fixed display handling of those records.
+
+## Final robustness and failure causes
+
+All 130 added rule/robustness cases pass alongside the existing suite. Five false-positive edge cases and one crash were reproduced as failing tests before correction:
+
+| Observed implementation cause | Correction |
+| --- | --- |
+| A generic phone-number request could borrow an unrelated remote-tool mention | Session sharing requires a session/connection/access/request/ID object, not an arbitrary number |
+| Quoted scam examples using single quotes lost their reporting scope across sentences | Both quote styles retain position-specific reporting ranges, including contractions and independent instructions after the quote |
+| Any nearby money noun could qualify a request to send a document or a statement about saving | T1-COMBO now requires money as the direct requested object |
+| Legacy lookalike checks assumed officialDomains existed | Contact-only Draft records supply a display/reference fallback without gaining trust |
+
+The earlier F2 robustness check also excludes “No charge was made” from financial-alarm context.
+
+These are code-level findings, **not updated corpus failure counts**. After all five fixes, `node eval/analyze-dev.cjs` was attempted and failed with MODULE_NOT_FOUND. The original analyzer and its D/E taxonomy are unavailable, so its failure causes cannot be recomputed faithfully. The final dev evaluation also stopped at the missing CSV. No dev false-alarm guarantee, fraud-caught count or D/E count is claimed.
+
+The gate comparison confirms that `src/assessment.js` matches `aa48952` exactly apart from adding `T1-COMBO` to the closed rule registry. Draft domain records and the unreviewed Chase number cannot authenticate a contact. Full test logs, failed-test evidence, dev command errors and the gate comparison are retained beside this file.
+
+To finish field validation, supply the locked corpus and the existing `eval/analyze-dev.cjs` (and its dependencies or D/E definitions). Verify the supplied CSV hash before installing it in the ignored `eval/data/` directory. Reproduce each stage using the F1–F5 commits, run only the dev split, and stop on any legitimate dev message becoming Suspicious. The earlier test split has not been evaluated.
