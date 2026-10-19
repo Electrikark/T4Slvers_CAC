@@ -22,7 +22,8 @@
     return parts.includes(check.brandWord) && parts.some(p => LURE.test(p));
   }
 
-  const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check));
+  const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check) ||
+    (check.code === 'brand_in_foreign_domain' && check.requestAction));
 
   function normalizeEvidence(checks, sender, inferred, signals, incomplete, policyFindings) {
     const contacts = [], findings = [], uncertainty = [];

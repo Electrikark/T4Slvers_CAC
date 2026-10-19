@@ -1,0 +1,6 @@
+
+> tech-for-silvers@0.4.0 eval
+> node eval/run.cjs --split dev
+
+No message file at eval/data/messages.csv.
+Copy eval/messages.template.csv to eval/data/messages.csv and add real messages (see eval/README.md).
