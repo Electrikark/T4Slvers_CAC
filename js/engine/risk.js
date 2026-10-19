@@ -658,5 +658,20 @@
     return signals;
   }
 
+  // Used by domain checks; the host is masked so path/query words cannot invent a demand.
+  T.sourceLinkAction = function (source) {
+    const raw = String(source), view = T.riskView(raw);
+    const text = T.extractTargets(view.text).masked;
+    for (const clause of clausesOf(text)) {
+      if (skip(clause)) continue;
+      for (const hit of clause.text.matchAll(/\b(?:pay|verify|confirm|reschedule|click)\b/gi)) {
+        if (reportedAt(clause.text, hit.index) || !directAction(clause.text.slice(0, hit.index), true)) continue;
+        const start = clause.start + hit.index, end = start + hit[0].length;
+        const moved = T.sourceSpan(view, raw, start, end);
+        return span(raw, moved.start, moved.end);
+      }
+    }
+    return null;
+  };
   T.sourceSignals = sourceSignals;
 })(typeof window !== 'undefined' ? window : globalThis);

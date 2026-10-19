@@ -29,7 +29,7 @@
     }
     // Only the filtered view can support a contact; the full list still names lookalikes.
     const trusted = T.buildTrustedView(store, options.today);
-    const ctx = { store, trusted, claimOrg: claim.org, implicitOrg: null };
+    const ctx = { store, trusted, claimOrg: claim.org, implicitOrg: null, linkAction: T.sourceLinkAction(bounded) };
     const checks = extracted.targets.map(target =>
       target.kind === 'phone' ? T.checkPhone(target, ctx) : T.checkHost(target, ctx));
 
