@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 /* Field evaluation: runs real, labeled messages through the real engine and reports how often
    it warns on fraud and how often it raises a false alarm on legitimate messages.
-   Usage: npm run eval [-- --input eval/data/messages.csv --out eval/results --split test --strict] */
+   Usage: npm run eval -- --split dev [--input eval/data/messages.csv --out eval/results --strict] */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
 const { parseCsv, toCsv } = require('./csv.cjs');
 const M = require('./metrics.cjs');
 const { loadEngine } = require('./engine.cjs');
+const { validateDataset, verifyLock } = require('./dataset.cjs');
+const { HEADER: DEV_HEADER, readDevData } = require('./dev-data.cjs');
+const { HEADER: SOURCE_HEADER, readSuppliedData } = require('./supplied-data.cjs');
+const { checkSplit, recordDevExposure, verifyTestRelease, reserveTestRun, finishTestRun } = require('./test-access.cjs');
 
 function option(name, fallback) {
   const i = process.argv.indexOf('--' + name);
@@ -37,37 +41,78 @@ function section(title, results) {
 
 function main() {
   const root = path.join(__dirname, '..');
-  const input = path.resolve(option('input', path.join(root, 'eval/data/messages.csv')));
-  const outDir = path.resolve(option('out', path.join(root, 'eval/results')));
-  const only = option('split', 'all');
+  const only = option('split', null);
+  try { checkSplit(only); } catch (err) { console.error(err.message); return 2; }
+  const activePath = path.join(root, 'eval/data/active-eval.json');
+  const active = fs.existsSync(activePath) ? JSON.parse(fs.readFileSync(activePath, 'utf8')) : null;
+  const activeInput = active ? path.resolve(root, 'eval/data', active.input) : null;
+  const devInput = path.join(root, 'eval/data/dev_messages.csv');
+  const input = path.resolve(option('input', activeInput || (fs.existsSync(devInput) ? devInput : path.join(root, 'eval/data/messages.csv'))));
+  const outDir = path.resolve(option('out', path.join(root, only === 'test' ? 'eval/results/heldout-2026-10-19' : 'eval/results')));
   const strict = process.argv.includes('--strict');
-  if (['all', 'dev', 'test'].indexOf(only) < 0) { console.error('--split must be all, dev or test'); return 2; }
   if (!fs.existsSync(input)) {
     console.error(`No message file at ${path.relative(process.cwd(), input)}.\nCopy eval/messages.template.csv to eval/data/messages.csv and add real messages (see eval/README.md).`);
     return 2;
   }
+  if (active && input === activeInput && active.sha256 !== require('./dataset.cjs').digest(fs.readFileSync(input))) {
+    console.error('The selected source snapshot changed; refusing to evaluate it.'); return 2;
+  }
 
-  const { messages, errors, skipped } = M.readMessages(parseCsv(fs.readFileSync(input, 'utf8')));
+  const parsed = parseCsv(fs.readFileSync(input, 'utf8'));
+  const devFormat = JSON.stringify(parsed[0]) === JSON.stringify(DEV_HEADER);
+  const devData = devFormat ? readDevData(parsed) : null;
+  if (devData && devData.errors.length) { console.error(devData.errors.join('\n')); return 2; }
+  const sourceFormat = JSON.stringify(parsed[0]) === JSON.stringify(SOURCE_HEADER);
+  const sourceData = sourceFormat ? readSuppliedData(parsed) : null;
+  if (sourceData && sourceData.errors.length) { console.error(sourceData.errors.join('\n')); return 2; }
+  if (!devFormat && !sourceFormat && parsed[0] && parsed[0].some(h => h === 'group_id' || h === 'expected_findings')) {
+    const checked = validateDataset(parsed);
+    if (checked.errors.length) { console.error(checked.errors.join('\n')); return 2; }
+    try { verifyLock(input); } catch (err) { console.error(err.message); return 2; }
+  }
+  if (sourceFormat) {
+    try { verifyLock(input); } catch (err) { console.error(err.message); return 2; }
+  }
+  const prepared = devData || sourceData;
+  const { messages, errors, skipped } = prepared
+    ? { messages: prepared.records, errors: [], skipped: 0 } : M.readMessages(parsed);
   if (skipped) console.log(`Skipped ${skipped} fictional template row(s).`);
   if (errors.length) { console.error('Fix these rows first:\n  ' + errors.join('\n  ')); return 2; }
   if (!messages.length) { console.error('No real messages to evaluate.'); return 2; }
 
-  const loaded = loadEngine(root);
-  const all = M.judge(messages, loaded.analyze);
-  const chosen = only === 'all' ? all : all.filter(r => r.split === only);
+  const selected = selectMessages(messages, only);
+  if (!selected.length) { console.error('The chosen split has no rows.'); return 2; }
+  if (only === 'dev') recordDevExposure(root, selected);
+  let access = null;
+  if (only === 'test') {
+    if (selected.some(r => /\bsynthetic\b/i.test((r.source || '') + ' ' + (r.notes || '')))) {
+      console.error('Synthetic rows cannot enter the held-out test.'); return 2;
+    }
+    try { access = verifyTestRelease(root, input); } catch (err) { console.error(err.message); return 2; }
+  }
+  const today = access ? access.release.referenceDate : option('today', active && input === activeInput ? active.today : undefined);
+  const loaded = loadEngine(root, { today });
+  if (access) {
+    try { reserveTestRun(access.receiptPath, { input, sha256: access.release.sha256, outDir, rows: selected.length }); }
+    catch (err) { console.error('Cannot reserve the single test attempt: ' + err.message); return 2; }
+  }
+  const all = M.judge(selected, loaded.analyze);
+  const chosen = all;
+  const synthetic = selected.filter(r => /\bsynthetic\b/i.test(r.notes || '')).length;
 
   const out = ['# Field evaluation', '',
-    `Input: \`${path.basename(input)}\` · ${messages.length} messages · engine ${loaded.engine.version} · reference list ${loaded.store.version}`,
+    `Input: \`${path.basename(input)}\` · ${selected.length} evaluated rows of ${messages.length} input rows · split ${only} · engine ${loaded.engine.version} · reference list ${loaded.store.version}`,
+    `Synthetic rows evaluated: ${synthetic}. Synthetic results check behavior and do not measure real-world accuracy.`,
+    `Reference date: ${today || 'runtime date'}.`,
     `Organizations with a trusted contact (reviewed by a person, in date, complete): ${loaded.reviewedOrgs} of ${loaded.store.orgs.length}` +
       (loaded.reviewedOrgs ? '' : ' — Details Match cannot occur on the real list until records are reviewed.'), ''];
-  const sections = only === 'all'
-    ? [['Test split (report this one)', all.filter(r => r.split === 'test')], ['Dev split (tune rules on this one)', all.filter(r => r.split === 'dev')], ['All messages', all]]
-    : [[`${only} split`, chosen]];
+  if (!loaded.reviewedOrgs) out.push('Interpretation: zero false reassurance is enforced by the current reference state, not evidence of detection quality.', '');
+  const sections = [[`${only} split`, chosen]];
   let reassured = 0;
   sections.forEach(([title, results]) => {
     const s = section(title, results);
     out.push(...s.lines);
-    if (title.startsWith('All') || only !== 'all') reassured = s.tally.fraud.match;
+    reassured = s.tally.fraud.match;
   });
 
   out.push('## Rules that fired', '', '| Rule | On fraud | On legitimate |', '| --- | --- | --- |');
@@ -82,7 +127,7 @@ function main() {
     rows.forEach(r => out.push(`- **${r.id}** [${r.split}, ${r.category}] ${why(r)} — "${excerpt(r.text)}"`));
   };
   list('Fraud given Details Match', chosen.filter(r => r.outcome === 'REASSURED'), () => 'no rule fired and every contact matched');
-  list('Fraud not labeled Suspicious', chosen.filter(r => r.outcome === 'paused'), r => 'signals: ' + (r.tier2.join(', ') || 'none') + '; blocked by ' + r.blockedBy.join(', '));
+  list('Fraud not labeled Suspicious', chosen.filter(r => r.label === 'fraud' && r.outcome === 'paused'), r => 'signals: ' + (r.tier2.join(', ') || 'none') + '; blocked by ' + r.blockedBy.join(', '));
   list('False alarms on legitimate messages', chosen.filter(r => r.outcome === 'FALSE_ALARM'), r => 'rules: ' + r.tier1.join(', '));
 
   fs.mkdirSync(outDir, { recursive: true });
@@ -92,10 +137,20 @@ function main() {
   fs.writeFileSync(path.join(outDir, 'results.csv'), toCsv(header, chosen.map(r => Object.assign({}, r, {
     tier1: r.tier1.join(' '), tier2: r.tier2.join(' '), blockedBy: r.blockedBy.join(' ')
   }))));
+  if (access) finishTestRun(access.receiptPath, {
+    report: path.join(outDir, 'report.md'), results: path.join(outDir, 'results.csv'),
+    reportSha256: require('./dataset.cjs').digest(fs.readFileSync(path.join(outDir, 'report.md'))),
+    resultsSha256: require('./dataset.cjs').digest(fs.readFileSync(path.join(outDir, 'results.csv')))
+  });
   console.log(report);
   console.log(`Wrote ${path.relative(process.cwd(), path.join(outDir, 'report.md'))} and results.csv`);
   return strict && reassured > 0 ? 1 : 0;
 }
 
+function selectMessages(messages, split) {
+  if (split !== 'dev' && split !== 'test') throw new Error('A dev or test split is required.');
+  return messages.filter(r => r.split === split);
+}
+
 if (require.main === module) process.exitCode = main();
-module.exports = { main };
+module.exports = { main, selectMessages };
