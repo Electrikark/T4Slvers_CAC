@@ -11,7 +11,7 @@ The evaluator now selects the requested split **before** engine analysis. Its re
 | F1 | Failed as expected | 38/38 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F2 | Failed as expected | 27/27 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F3 | Failed as expected | 19/19 | Pass | unavailable | unavailable | unavailable | unavailable |
-| F4 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
+| F4 | Failed as expected | 12/12 | Pass | unavailable | unavailable | unavailable | unavailable |
 | F5 | Pending | Pending | Pending | unavailable | unavailable | unavailable | unavailable |
 
 For each completed stage, `npm run eval -- --split dev` was invoked and exited 2 because `eval/data/messages.csv` is absent. Unavailable is not zero. The meanings of D and E and the existing failure taxonomy must come from the supplied analysis script/spec; they are not guessed here. Logs are in `docs/rules-v1.1-logs/`.
@@ -31,3 +31,7 @@ Added explicit-number financial/account callbacks, including conditional instruc
 ## F3
 
 Added gift-card acquisition requests with nearby reimbursement, sender-use or inability-to-buy context. Birthday gifts, Apple/Amazon/Target credit-card bills and context-free “get some more gift cards?” remain outside Tier 1. No new gift-card payment interpretation is inferred from a brand name alone.
+
+## F4
+
+Added T1-COMBO only for a money request with secrecy and emergency/urgency context. Surprise-party contributions, homework and cases missing any one predicate remain excluded. Registered T1-COMBO in the gate’s closed rule list; assessment decision logic is unchanged. Explanations, annotations and self-check advice retain all three predicates.

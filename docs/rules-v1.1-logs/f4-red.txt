@@ -1,0 +1,27 @@
+
+> tech-for-silvers@0.4.0 test
+> node scripts/build-assessment.cjs --check && node tests/run-node.cjs && node tests/eval-tests.cjs
+
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 119/119
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 16/16
+Reporting scope: 18/18
+Policy records: 11/11
+Annotations on pasted text: 9/9
+F1 rule fixes: 38/38
+F2 rule fixes: 27/27
+F3 rule fixes: 19/19
+F4 rule fixes: 7/12
+T1-COMBO catches: Grandma, I’m in trouble. Please send money. Don’t tell Mom. | FAIL | missing T1-COMBO
+T1-COMBO catches: I need money for bail. Keep this between us. | FAIL | missing T1-COMBO
+T1-COMBO catches: Don’t tell Mom. Can you send $800? It is an emergency. | FAIL | missing T1-COMBO
+T1-COMBO catches: Please send money right now and keep this between us. | FAIL | missing T1-COMBO
+F4 annotation retains all three predicates | FAIL | missing combo annotation
+Boundaries: 2/2
+Source gate parity: 36/36
