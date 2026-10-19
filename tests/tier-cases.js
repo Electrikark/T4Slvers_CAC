@@ -261,8 +261,8 @@ window.TFS_PHASE2.add('Tier 1 and Tier 2 rules', function (t) {
       ['', 'will ', 'may '].forEach(function (modal) {
         var r = run('Our ' + staff + ' ' + modal + 'need you to install AnyDesk.');
         t.same(flags(r), ['remote_access'], staff + ' ' + modal);
-        t.same(tier1(r), [], 'no pressure supplied');
-        t.same(r.assessment, 'insufficient_evidence', 'staff warning blocks a match');
+        t.same(tier1(r), ['T1-REMOTE'], 'named tool needs no pressure');
+        t.same(r.assessment, 'suspicious', 'direct named-tool request');
       });
     });
   });
@@ -277,7 +277,7 @@ window.TFS_PHASE2.add('Tier 1 and Tier 2 rules', function (t) {
     });
     var r = run('Our technician will need you to\r\ninstall AnyDesk.');
     t.same(flags(r), ['remote_access'], 'sender need survives wrapping');
-    t.same(r.assessment, 'insufficient_evidence', 'wrapped request warns');
+    t.same(r.assessment, 'suspicious', 'wrapped named-tool request');
   });
   t.test('T2-REVIEW Staff inflections and bounded modifiers retain reporting and negation', function () {
     ['Our technician needs', 'Our senior fraud specialist needed', 'The technician will need',
@@ -285,7 +285,7 @@ window.TFS_PHASE2.add('Tier 1 and Tier 2 rules', function (t) {
       [' ', '\n', '\r\n'].forEach(function (wrap) {
         var r = run(lead + ' you to' + wrap + 'install AnyDesk.');
         t.same(flags(r), ['remote_access'], lead + ' warning');
-        t.same(r.assessment, 'insufficient_evidence', 'unpressured staff request');
+        t.same(r.assessment, 'suspicious', 'unpressured named-tool request');
       });
     });
     ['Scammers need', 'Scammers will need', 'Scammers needed',
