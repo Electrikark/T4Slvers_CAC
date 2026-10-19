@@ -89,6 +89,7 @@
   // Each wording warning: its short label, and the advice shown under "What to do next".
   const FLAGS = {
     gift_card_purchase: { label: 'Buying gift cards for a requester', advice: 'Check with the person through a number you already trust before buying gift cards for them.' },
+    secret_emergency_money: { label: 'An emergency money request with secrecy', advice: 'Contact your family independently before sending money. Do not keep the request secret.' },
     gift_card_payment: { label: 'Payment with gift cards', advice: 'Do not send gift card numbers to someone demanding payment. Contact the organization independently.' },
     gift_card_disclosure: { label: 'Sending gift-card numbers or codes', advice: 'Do not send or read gift-card numbers, PINs, or codes to the requester. Check with the person through a number you already trust.' },
     crypto_or_wire: { label: 'Payment by crypto or wire transfer', advice: 'Requests to pay with cryptocurrency, a crypto ATM or a wire transfer are a frequent scam pattern.' },
@@ -119,6 +120,7 @@
     'T1-CODE': 'asks you to give a sign-in code, PIN or password to the sender',
     'T1-DOMAIN': 'uses a link or address built to imitate a known organization',
     'T1-CALLBACK': 'warns about your device, a payment or your account and asks you to call a number',
+    'T1-COMBO': 'asks for money in an emergency and tells you to keep it secret',
     'T1-POLICY': 'does something its claimed sender has said it never does'
   };
 
@@ -238,7 +240,7 @@
           ? `If you need their website, type ${domain} yourself instead of tapping a link.`
           : 'If you need their website, type a website address you already know, or use their official app.');
       }
-    } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number')) {
+    } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number' || f.id === 'secret_emergency_money')) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
       steps.push('Contact the organization using contact details you already trust, not the ones in the message.');

@@ -109,7 +109,7 @@ window.runAssessmentTests = function (gate) {
   });
   test('U14 Closed Tier 1 list', function () {
     // Phase 2 D adds T1-POLICY: a reviewed organization policy the message breaks.
-    same(Array.prototype.slice.call(gate.TIER1_RULES), ['T1-GIFT', 'T1-WIRE', 'T1-REMOTE', 'T1-DOMAIN', 'T1-CODE', 'T1-CALLBACK', 'T1-POLICY'], 'Tier 1 rules');
+    same(Array.prototype.slice.call(gate.TIER1_RULES), ['T1-GIFT', 'T1-WIRE', 'T1-REMOTE', 'T1-DOMAIN', 'T1-CODE', 'T1-CALLBACK', 'T1-COMBO', 'T1-POLICY'], 'Tier 1 rules');
   });
   test('E1 Gift-card demand through the real engine', function () {
     var r = engineIs('Example Bank: Buy gift cards to restore your account. Visit https://example.com.', 'suspicious', ['T1-GIFT'], []);

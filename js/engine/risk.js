@@ -12,7 +12,7 @@
 
   /* ---------- Shared patterns ---------- */
 
-  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|open|add|approve|accept|run|start|allow|grant|call|ring|phone|dial|contact)\b/gi;
+  const ACTIONS = /\b(?:pick up|go get|buy|get|purchase|purchasing|cover|pay|send|sending|transfer|wire|move|deposit|convert|put|withdraw|go|use|make|read|give|tell|text|share|provide|forward|disclose|reply with|reply|copy|type back|photograph|uncover|install|download|open|add|approve|accept|run|start|allow|grant|call|ring|phone|dial|contact|need)\b/gi;
   const GIFT = /\b(?:gift[ -]?cards?|itunes cards?|google play cards?|steam cards?|vanilla gift cards?|ebay gift cards?|apple (?:prepaid )?store[ -]value cards?|apple prepaid store cards?)\b/i;
   const CODE = /\b(?:numbers?|pins?|(?:redemption )?codes?|redemption strings?|characters(?=[^.!?\n]{0,45}\bscratch panels?))\b/i;
   const BACK_PHOTO = /\b(?:photos?|pictures?|pics?|images?|screenshots?)\s+of\s+(?:the\s+|each\s+|both\s+|all\s+)?backs?\b/i;
@@ -61,6 +61,18 @@
   const OBJECT_GAP = /^\s*(?:(?:me|us|them|him|her|back|to me|to us)\s+)?(?:(?:the|your|that|this|those|these|their|any)\s+)?(?:[\w-]+\s+){0,2}$/i;
   // Codes that are not secrets, or that T1-GIFT already judges.
   const NOT_SECRET = /\b(?:promo(?:tional)?|coupon|discount|zip|postal|area|qr|bar|referral|invite|invitation|gift[ -]?cards?|confirmation|tracking|reference|order|booking|pick-?up|voucher|redemption|rewards?|offer|country|dial)\s+$/i;
+  function emergencyMoney(d, s) {
+    if (!/^(?:send|give|transfer|wire|pay|need)$/.test(d.verb)) return;
+    const hit = d.near.match(/(?:\b(?:money|funds|bail)\b|[$£€]\s*\d[\d,.]*)/i);
+    if (!hit) return;
+    const secrecy = contextMatch(s, /\b(?:(?:don['’]?t|do not) tell (?:mom|dad|mother|father|anyone|anybody|your family)|keep (?:this|it) (?:between us|secret|private))\b/i, d.index, 2);
+    const emergency = contextMatch(s, /\b(?:emergency|urgent(?:ly)?|right now|right away|immediately|asap|at once|in trouble|arrested|jail|bail|accident|hospital|stranded|within \d+ (?:minutes?|hours?))\b/i, d.index, 2);
+    if (!secrecy || !emergency) return;
+    const object = spanOf(s.raw, d.clause, hit, d.after);
+    s.flag('secret_emergency_money', d.action.start, object.end);
+    s.tier1('T1-COMBO', d, object, emergency, secrecy);
+  }
+
   const FINANCIAL_ALARM = /\b(?:charges?|(?:payment|debit)\b[^!?\n]{0,60}\b(?:approved|attempted|queued|authorized)|(?:approved|attempted|queued|authorized)\b[^!?\n]{0,40}\b(?:payment|debit)|refunds?|disputes?|suspension|suspended|account(?:\s+\w+){0,3}\s+locked)\b/i;
 
   function financialCallback(d, s) {
@@ -469,13 +481,15 @@
       let priorDemand = false;
       for (const m of clause.text.matchAll(new RegExp(ACTIONS.source, 'gi'))) {
         if (reportedAt(clause.text, m.index)) continue;
-        if (!directAction(clause.text.slice(0, m.index), priorDemand, senderLabel)) continue;
+        if (!directAction(clause.text.slice(0, m.index), priorDemand, senderLabel) &&
+            !(m[0].toLowerCase() === 'need' && /^\s*(?:(?:grandma|grandpa|mom|dad),?\s*)?i\s*$/i.test(clause.text.slice(0, m.index)))) continue;
         priorDemand = true;
         const tail = clause.text.slice(m.index + m[0].length);
         const verb = m[0].toLowerCase();
         const d = { verb: verb === 'purchasing' ? 'purchase' : verb === 'sending' ? 'send' : verb, clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };
         giftPayment(d, s);
         giftForSender(d, s);
+        emergencyMoney(d, s);
         const giftCodeFound = giftCodes(d, s);
         wireTransfer(d, s);
         remoteAccess(d, s);
