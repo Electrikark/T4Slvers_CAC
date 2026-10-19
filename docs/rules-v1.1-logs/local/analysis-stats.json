@@ -1,0 +1,111 @@
+{
+  "source_sha256": "8f7788ce5f8d034b83cf3410dfec505bf5a89c76e13d3026c1581104699ccab3",
+  "rows": 194,
+  "dev": 194,
+  "dev_fraud": 95,
+  "dev_legit": 99,
+  "test_rows": 0,
+  "test_fraud": 0,
+  "test_legit": 0,
+  "baselineKinds": {
+    "B": 59,
+    "E": 7
+  },
+  "afterKinds": {
+    "B": 38,
+    "E": 7
+  },
+  "causes": {
+    "other": 55,
+    "overly broad warning": 4,
+    "missing record": 7
+  },
+  "baseline_failures": 66,
+  "fixed": 21,
+  "remaining": 45,
+  "regressions": [],
+  "before": {
+    "fraud": {
+      "n": 95,
+      "suspicious": 36,
+      "insufficient": 59,
+      "match": 0
+    },
+    "legit": {
+      "n": 99,
+      "suspicious": 0,
+      "insufficient": 99,
+      "match": 0
+    },
+    "rates": {
+      "caught": {
+        "rate": 0.37894736842105264,
+        "low": 0.28789651358466833,
+        "high": 0.4794079412197865
+      },
+      "paused": {
+        "rate": 1,
+        "low": 0.9611337736337738,
+        "high": 1
+      },
+      "reassured": {
+        "rate": 0,
+        "low": 0,
+        "high": 0.038866226366226365
+      },
+      "falseAlarm": {
+        "rate": 0,
+        "low": 0,
+        "high": 0.03735453357396229
+      },
+      "matched": {
+        "rate": 0,
+        "low": 0,
+        "high": 0.03735453357396229
+      }
+    }
+  },
+  "after": {
+    "fraud": {
+      "n": 95,
+      "suspicious": 57,
+      "insufficient": 38,
+      "match": 0
+    },
+    "legit": {
+      "n": 99,
+      "suspicious": 0,
+      "insufficient": 99,
+      "match": 0
+    },
+    "rates": {
+      "caught": {
+        "rate": 0.6,
+        "low": 0.49945418140451453,
+        "high": 0.6927725733222401
+      },
+      "paused": {
+        "rate": 1,
+        "low": 0.9611337736337738,
+        "high": 1
+      },
+      "reassured": {
+        "rate": 0,
+        "low": 0,
+        "high": 0.038866226366226365
+      },
+      "falseAlarm": {
+        "rate": 0,
+        "low": 0,
+        "high": 0.03735453357396229
+      },
+      "matched": {
+        "rate": 0,
+        "low": 0,
+        "high": 0.03735453357396229
+      }
+    }
+  },
+  "synthetic_dev": 100,
+  "public_example_dev": 94
+}
