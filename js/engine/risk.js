@@ -39,15 +39,30 @@
   }
 
   // Recognize the sender positively. An unfamiliar asker is not evidence that
-  // the sender made this request. A named subject must begin a statement.
-  function senderAsker(prefix, senderLabel) {
+  // the sender made this request. A named subject must begin a statement, and it must be
+  // the message's own label or a name on the organization list ("Amazon asks you to").
+  // Strict names ("Chase", "Apple") count only when capitalized, as in sender.js.
+  function senderAsker(prefix, askers) {
     const modifiers = /\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)\s*$/i;
     let subject = prefix.trim();
     for (let i = 0; i < 3 && modifiers.test(subject); i++) subject = subject.replace(modifiers, '').trim();
     const personal = subject.match(/\b(?:we|i|our team)$/i);
     if (personal) return !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(subject.slice(0, personal.index));
-    const statement = subject.split(/[:,;.!?\n]|\b(?:and|but|however|instead|so)\b/i).pop().trim().toLowerCase();
-    return statement === 'chase' || !!senderLabel && statement === senderLabel.toLowerCase();
+    const statement = subject.split(/[:,;.!?\n]|\b(?:and|but|however|instead|so)\b/i).pop().trim().replace(/\s+/g, ' ');
+    const same = name => statement.toLowerCase() === String(name).trim().replace(/\s+/g, ' ').toLowerCase();
+    if (!askers || !statement) return false;
+    if (askers.label && same(askers.label)) return true;
+    return askers.names.some(n => same(n.alias) && (!n.strict || /^[A-Z]/.test(statement)));
+  }
+
+  // The names an asker may have: every alias on the organization list.
+  function askerNames(orgs) {
+    const names = [];
+    for (const org of orgs || []) {
+      for (const alias of org.aliases || []) names.push({ alias, strict: false });
+      for (const alias of org.strictAliases || []) names.push({ alias, strict: true });
+    }
+    return names;
   }
   const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
   const PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
@@ -159,17 +174,23 @@
       .find(hit => !reportedAt(clause.text, hit.index)) || null;
   }
 
+  // An address at the start of a clause: "Grandma,", "Hi Mom,", "Maria,". Only the whole
+  // prefix counts, so a comma later in a sentence never starts a new instruction.
+  const KIN = /^\s*(?:(?:hi|hey|dear)\s+)?(?:grand(?:ma|pa|mother|father|mom|dad)|granny|nana|mom|mum|mama|mommy|dad|daddy|papa|mother|father|son|honey|sweetie)\s*,\s*(?:please\s+)?$/i;
+  const NAMED = /^\s*(?:(?:[Hh]i|[Hh]ey|[Dd]ear)\s+)?[A-Z][a-z]{1,20}\s*,\s*(?:please\s+)?$/;
+  const addressedTo = rest => KIN.test(rest) || NAMED.test(rest);
+
   // Is the verb after `prefix` an instruction to the reader? "Please send", "Chase: Send",
   // "You must send", "To fix it, send". priorDemand also allows "... and send" after an earlier demand.
-  function directAction(prefix, priorDemand, senderLabel) {
+  function directAction(prefix, priorDemand, askers) {
     if (NEGATION.test(prefix) || /["“][^"”]*$/.test(prefix)) return false;
     const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
     const asking = askingBefore(prefix);
-    if (asking) return senderAsker(prefix.slice(0, asking.index), senderLabel) && !isNegated(prefix, asking.index);
+    if (asking) return senderAsker(prefix.slice(0, asking.index), askers) && !isNegated(prefix, asking.index);
     // Seeing "need you to" does not identify the sender. Unknown subjects stay
     // quiet even with "please" or an SMS wrap before the action.
     if (NEED_COMPLEMENT.test(prefix)) return ownNeedBefore(prefix);
-    if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
+    if (/^\s*(?:please\s+)?$/i.test(rest) || addressedTo(rest)) return true;
     // A short warning/purpose preface does not turn the following imperative
     // into reported speech, even when its comma is omitted in a text message.
     if (/^\s*(?:beware of|to avoid)\s+(?:hackers?|fraudsters?|scam{2}ers?|criminals?|scams?)\s*[:,]?\s*(?:please\s*)?$/i.test(rest)) return true;
@@ -352,13 +373,13 @@
   }
 
   // Finds every direct demand and runs the Tier 1 rules on it, in this order.
-  function tier1Signals(text, raw) {
+  function tier1Signals(text, raw, orgs) {
     const clauses = clausesOf(text);
     // A label is a claimed sender, not proof of identity or a trusted record.
     const label = text.match(/^\s*([a-z][a-z0-9 &'’-]{0,59}):/i);
-    const senderLabel = label ? label[1].trim() : null;
     const s = {
       raw, clauses, flags: [], established: [], unresolved: [],
+      askers: { label: label ? label[1].trim() : null, names: askerNames(orgs) },
       clauseSpan: clause => span(raw, clause.start, clause.end),
       flag(id, start, end) {
         if (!this.flags.some(f => f.id === id)) this.flags.push({ id, level: 'high', words: raw.slice(start, end), start, end });
@@ -374,7 +395,7 @@
       let priorDemand = false;
       for (const m of clause.text.matchAll(new RegExp(ACTIONS.source, 'gi'))) {
         if (reportedAt(clause.text, m.index)) continue;
-        if (!directAction(clause.text.slice(0, m.index), priorDemand, senderLabel)) continue;
+        if (!directAction(clause.text.slice(0, m.index), priorDemand, s.askers)) continue;
         priorDemand = true;
         const tail = clause.text.slice(m.index + m[0].length);
         const d = { verb: m[0].toLowerCase(), clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };
@@ -391,19 +412,25 @@
 
   /* ---------- Wording flags (Tier 2) ---------- */
 
-  function shareCodeDemand(text, m, clause) {
+  function shareCodeDemand(text, m, clause, s) {
     const prefix = text.slice(clause.start, m.index);
-    return directAction(prefix, /\b(?:please|call|read|send|share)\b/i.test(prefix));
+    return directAction(prefix, /\b(?:please|call|read|send|share)\b/i.test(prefix), s.askers);
   }
 
   // "Never share your code" is advice to protect a code, not a demand to keep something secret.
-  function notCodeAdvice(text, m) {
-    return !/^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length));
+  // So is "Your code is 482913. Do not share this with anyone": "this" is the code named in
+  // this clause or the one before. "Don't tell Mom" and "keep this between us" stay flagged.
+  function notCodeAdvice(text, m, clause, s) {
+    if (/^\s+(?:(?:the|your|this|that|a)\s+)?(?:(?:verification|security|sign-in)\s+)?(?:code|pin|password|passcode|otp)\b/i.test(text.slice(m.index + m[0].length))) return false;
+    if (!clause || !/\b(?:share this with|mention (?:this|it) to)\b/i.test(m[0])) return true;
+    const previous = s.clauses[s.clauses.indexOf(clause) - 1];
+    const named = t => /\b(?:codes?|pins?|otps?|passcodes?|passwords?|one-time password)\b/i.test(t);
+    return !named(text.slice(clause.start, m.index)) && !(previous && !previous.inReport && named(previous.text));
   }
 
   // A login phrase counts only as a request: "Log in at", "please sign in", "click here to log in",
   // "verify your account by signing in". Notices, advice and front-desk visits stay quiet.
-  function loginRequest(text, m, clause) {
+  function loginRequest(text, m, clause, s) {
     const after = text.slice(m.index + m[0].length);
     if (LOGIN_NOTICE.test(after.slice(0, 30)) || SAFE_ROUTE.test(after.slice(0, 60)) || IN_PERSON_SIGN_IN.test(after.slice(0, 60))) return false;
     const prefix = text.slice(clause.start, m.index);
@@ -418,7 +445,7 @@
       const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
       return INSTRUCTION_START.test(rest) || /\b(?:please|you must|you need to|you have to|you should|required to)\b/i.test(rest);
     }
-    return directAction(prefix, true) ||
+    return directAction(prefix, true, s.askers) ||
       /\b(?:click|tap|press|select|visit|go|use|open|follow)\b[^.!?\n]{0,40}\bto\s*$/i.test(prefix) ||
       /\b(?:please|you must|you need to|you have to|you should|need to|have to|required to)\s*$/i.test(prefix);
   }
@@ -482,8 +509,8 @@
   ];
 
   // Runs on text with contacts masked out; `raw` is the same text unmasked, for quotes.
-  function requestSignals(text, raw) {
-    const s = tier1Signals(text, raw);
+  function requestSignals(text, raw, orgs) {
+    const s = tier1Signals(text, raw, orgs);
     let flags = s.flags;
     for (const flag of WORDING_FLAGS) {
       // A Tier 1 rule already reported this signal with its exact action.
@@ -493,7 +520,7 @@
           const clause = s.clauses.find(c => m.index >= c.start && m.index < c.end);
           if (clause && (clause.inReport || reportedAt(clause.text, m.index - clause.start))) return false;
           if (flag.negatable && isNegated(text, m.index)) return false;
-          return !flag.accept || !clause || flag.accept(text, m, clause);
+          return !flag.accept || !clause || flag.accept(text, m, clause, s);
         });
         if (!hit) continue;
         flags.push({ id: flag.id, level: flag.level, words: raw.slice(hit.index, hit.index + hit[0].length), start: hit.index, end: hit.index + hit[0].length });
@@ -514,11 +541,12 @@
   }
 
   // The rules read a cleaned-up view (T.riskView); every span is then moved back to the original text.
-  function sourceSignals(source) {
+  // orgs: the organization list, used only to recognize a named asker.
+  function sourceSignals(source, orgs) {
     const raw = source == null ? '' : String(source);
     const view = T.riskView(raw);
     const targets = T.extractTargets(view.text);
-    const signals = requestSignals(targets.masked, view.text);
+    const signals = requestSignals(targets.masked, view.text, orgs);
     signals.incomplete = targets.incomplete;
     if (view.identity) return signals;
     const move = s => {

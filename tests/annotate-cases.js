@@ -44,7 +44,8 @@ window.TFS_PHASE2.add('Annotations on pasted text', function (t) {
     'Please wire $800 to help me. Don’t tell Mom. Call 202-555-0123.',
     'C​hase: Buy g​ift cards to pay the fine. Visit https://chase.com.',
     'VIRUS DETECTED! Your computer has been locked. Do not restart. Call Windows Support at (888) 555-0199.',
-    'Chase: Log in at https://chase.com to review a charge. https://chase.com'
+    'Chase: Log in at https://chase.com to review a charge. https://chase.com',
+    'Chase: sign in at https://chаse.com'
   ];
 
   t.test('E1 Every highlight\'s text equals raw.slice(start, end)', function () {
