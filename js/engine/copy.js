@@ -90,11 +90,12 @@
   };
   const recordProblem = check => RECORD_PROBLEMS[check.reason] ? check.reason : check.reason ? 'incomplete' : 'not_reviewed';
 
-  // "Reviewed by … on …" after a human review; otherwise the automated status.
+  // "Reviewed by … on …" after a human review. Otherwise plain words: the store's own note
+  // (org.verifiedBy) records how the automated check was run and is not meant for the reader.
   function reviewStatus(org) {
     const review = org.humanReview;
     if (review && review.reviewer && review.date) return `. Review status: Reviewed by ${review.reviewer} on ${review.date}`;
-    return org.verifiedBy ? '. Review status: ' + org.verifiedBy : '';
+    return '. Review status: an automated check found that the website loads. No person has reviewed it yet';
   }
 
   const ADDRESS_CODES = ['domain_official', 'domain_belongs_to_other_org', 'not_in_official_list', 'reference_needs_review',
@@ -181,6 +182,7 @@
     ['phone_unreadable', 'This checker could not read a phone number in this message, so it could not compare it with any list.'],
     ['phone_not_on_file', 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.'],
     ['user_content_platform', 'A page on a site where anyone can publish does not show who made it.'],
+    ['not_in_official_list', null],
     ['reference_needs_review', 'Our list has this address, but no person has reviewed that record yet. Until someone does, it cannot count as a match.']
   ];
 
@@ -211,7 +213,10 @@
     const conflict = conflicts(result).length > 0;
     // Only similar names, with no address trick or other-organization conflict.
     const similar = conflict && result.evidence.contacts.every(c => c.support.status !== 'CONTRADICTS' || similarOnly(c.support));
+    // Addresses the named sender's list does not have, by name: "quickpay-now.top".
+    const unlisted = result.checks.filter(c => c.code === 'not_in_official_list' && c.target).map(c => c.target);
     let description = 'We do not have enough reliable evidence for a complete assessment.';
+    if (anySupport && unlisted.length) description = 'Some contact details match our stored list, but at least one does not. We cannot give a complete assessment.';
     if (similar) description = 'A contact detail in this message is similar to an address on our list. We can’t tell whether it belongs to the same organization, so we cannot give a complete assessment.';
     else if (conflict) description = 'A contact detail in this message does not match our stored list. We cannot give a complete assessment.';
     else if (risky) description = 'The message contains warning signs, and we cannot give a complete assessment.';
@@ -221,7 +226,9 @@
       result.evidence.contacts.map(c => c.support).find(c => c.code === 'reference_needs_review');
     let meaning = listed && recordProblem(listed) !== 'not_reviewed'
       ? 'Our list has this address, but that record cannot count as a match right now.'
-      : gap ? gap[1] : 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
+      : gap && gap[0] === 'not_in_official_list'
+        ? `${joinPhrases(unlisted)} ${unlisted.length > 1 ? 'are' : 'is'} not on our list for this sender. Our list may be incomplete, so we can’t tell either way. Don’t use ${unlisted.length > 1 ? 'them' : 'it'} until you check another way.`
+        : gap ? gap[1] : 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
     if (risky) {
       meaning = anySupport
         ? 'Warning signs remain in what the message asks. Matching contact details cannot clear those signs.'
@@ -255,6 +262,8 @@
     }
     list.push(...flagAdvice);
     if (matched && !flagAdvice.length) list.push('Even when details match, never share passwords or codes.');
+    // A real address can be copied into a fake message, and a reply can bring a fake "fraud team" call.
+    if (matched) list.push('If someone calls you about this message, hang up and call the number on your card or statement yourself.');
     return list;
   }
 
@@ -279,9 +288,12 @@
     } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number')) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
-      steps.push('Contact the organization using contact details you already trust, not the ones in the message.');
+      // No organization is named: the message may be from a person the reader knows.
+      steps.push('Contact the person or organization using contact details you had before this message, not the ones in it.');
     }
     if (result.requestRisk.level !== 'none') steps.push('If you already shared information or paid, call your bank right away and ask a trusted person for help.');
+    if (result.assessment === 'suspicious') steps.push('You can report it: forward a fake text to 7726 (SPAM), and report fraud at reportfraud.ftc.gov.');
+    if (result.assessment !== 'details_match') steps.push('It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you.');
     return steps;
   }
 

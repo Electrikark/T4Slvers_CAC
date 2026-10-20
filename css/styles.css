@@ -115,7 +115,7 @@ h1:focus,main:focus,#next-title:focus {
   gap:12px;
   align-items:center;
   margin:25px 0 48px;
-  font-size:0.875rem;
+  font-size:1rem;
   color:#465a50;
 }
 
@@ -139,7 +139,7 @@ h1:focus,main:focus,#next-title:focus {
 }
 
 .eyebrow {
-  font-size:0.875rem;
+  font-size:1rem;
   font-weight:700;
   letter-spacing:2px;
   margin:0 0 22px;
@@ -301,7 +301,7 @@ textarea::placeholder {
 }
 
 .hint {
-  font-size:0.875rem;
+  font-size:1rem;
   color:var(--muted);
   line-height:1.5;
   margin:9px 0 18px;
@@ -491,9 +491,8 @@ summary span {
 }
 
 .state-label {
-  font-size:0.875rem;
+  font-size:1.0625rem;
   font-weight:700;
-  letter-spacing:1.3px;
   margin:0 0 9px;
 }
 
@@ -509,11 +508,28 @@ summary span {
   font-size:1.125rem;
 }
 
-.result-layout {
-  display:grid;
-  grid-template-columns:minmax(0, 1.2fr) minmax(0, 1fr);
-  gap:42px;
-  margin-top:34px;
+/* Everything we checked, folded away under the next steps and the marked message. */
+.evidence-details {
+  margin-top:24px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:0 26px;
+  min-width:0;
+}
+
+.evidence-details > summary {
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  font-size:1.125rem;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.evidence-details[open] > summary {
+  border-bottom:1px solid var(--line);
+  margin-bottom:23px;
 }
 
 .evidence section {
@@ -564,13 +580,13 @@ summary span {
 
 .source {
   display:block;
-  font-size:0.875rem;
+  font-size:1rem;
   color:var(--muted);
   margin-top:8px;
 }
 
 .next-steps {
-  align-self:start;
+  margin-top:24px;
   background:#fff;
   border:1px solid var(--line);
   border-radius:12px;
@@ -611,7 +627,7 @@ summary span {
 }
 
 .result-bottom p {
-  font-size:0.875rem;
+  font-size:1rem;
   color:var(--muted);
   max-width:380px;
 }
@@ -640,9 +656,6 @@ summary span {
   }
   .submission-card {
     padding:23px;
-  }
-  .result-layout {
-    gap:25px;
   }
   .brand-caption {
     font-size:0.875rem;
@@ -688,7 +701,7 @@ summary span {
   .note-dot {
     margin-top:7px;
   }
-  .home-layout,.result-layout {
+  .home-layout {
     grid-template-columns:1fr;
     gap:22px;
   }
@@ -789,7 +802,7 @@ summary span {
 }
 
 /* Result details can contain very long addresses; keep them within the grid. */
-.home-layout > *, .result-layout > *, .result-banner > div {
+.home-layout > *, .evidence-details, .result-banner > div {
   min-width:0;
 }
 .result, .prototype-note, .brand, .option {
@@ -797,7 +810,7 @@ summary span {
 }
 .character-count {
   color:var(--muted);
-  font-size:0.875rem;
+  font-size:1rem;
   margin:4px 0 0;
   text-align:right;
 }
@@ -829,15 +842,6 @@ summary span {
   margin:0;
   max-width:65ch;
 }
-.action-link {
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-height:44px;
-  font-size:1rem;
-  text-underline-offset:4px;
-}
 .check-item {
   padding-left:16px;
   border-left:2px solid #b4c3af;
@@ -853,7 +857,7 @@ summary span {
 }
 .check-source summary {
   color:var(--muted);
-  font-size:0.875rem;
+  font-size:1rem;
   font-weight:400;
 }
 .check-source .source {
@@ -869,7 +873,6 @@ summary span {
   .prototype-note { margin-bottom:24px; }
   .action-note { align-items:flex-start; flex-direction:column; gap:8px; padding:20px; }
   .result-banner { flex-direction:column; }
-  .state-label { letter-spacing:0.5px; }
   .checks { margin-bottom:0; }
   .source, .hint, .privacy { font-size:1rem; }
 }
@@ -1024,14 +1027,9 @@ summary span {
   border:1px dotted var(--muted);
 }
 .ann-ref {
-  font-size:0.8125rem;
+  font-size:0.9375rem;
   font-weight:700;
   margin:0 2px;
-}
-.annotated-advice {
-  font-size:1.125rem;
-  font-weight:700;
-  margin:0 0 12px;
 }
 .annotation-notes {
   margin:0;
@@ -1052,6 +1050,8 @@ summary span {
 }
 @media (max-width:680px) {
   .annotated { padding:20px 16px; }
+  .evidence-details { padding:0 16px; }
+  .next-steps { padding:20px 16px; }
   .annotated-message { padding:12px; }
 }
 @media (forced-colors:active) {
