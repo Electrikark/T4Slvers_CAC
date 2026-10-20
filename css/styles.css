@@ -246,7 +246,7 @@ h2 {
 }
 
 .option {
-  border:1px solid #c3cec3;
+  border:1px solid #768a7a;
   border-radius:10px;
   background:#fff;
   color:var(--ink);
@@ -261,6 +261,15 @@ h2 {
   border:2px solid var(--teal);
   background:#edf3e9;
   padding:15px 7px 15px 17px;
+}
+
+/* The selected choice is also marked by a check, not by color and border width alone.
+   aria-pressed already tells screen readers, so the mark has empty alternative text. */
+.option[aria-pressed="true"]::before,
+.self-check-option[aria-pressed="true"]::before {
+  content:"\2713\00a0";
+  content:"\2713\00a0" / "";
+  font-weight:700;
 }
 
 .option:hover {
@@ -278,7 +287,7 @@ textarea {
   width:100%;
   resize:vertical;
   min-height:156px;
-  border:1px solid #aab9ad;
+  border:1px solid #768a7a;
   border-radius:8px;
   background:#fcfdfb;
   padding:15px;
@@ -902,7 +911,7 @@ summary span {
 }
 .self-check-option {
   min-height:56px;
-  border:1px solid #c3cec3;
+  border:1px solid #768a7a;
   border-radius:10px;
   background:#fff;
   color:var(--ink);

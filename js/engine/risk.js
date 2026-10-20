@@ -34,8 +34,20 @@
     return !!need && !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(prefix.slice(0, need.index));
   }
 
+  // Look-backs are bounded so long input stays fast (repair B6). An asking phrase or a
+  // reporting subject is a few words long, so a few hundred characters is plenty.
+  const LOOK_BACK = 200;
+  const SEGMENT_LIMIT = 500;
+
+  // Asking words that end right before the action ("ask you to [please]"). Indexes are into prefix.
   function askingBefore(prefix) {
-    return [...prefix.matchAll(ASKING)].find(m => /^\s*(?:please\s*)?$/i.test(prefix.slice(m.index + m[0].length)));
+    const asking = new RegExp(ASKING.source, 'gi');
+    asking.lastIndex = Math.max(0, prefix.length - LOOK_BACK);
+    let m;
+    while ((m = asking.exec(prefix)) !== null) {
+      if (/^\s*(?:please\s*)?$/i.test(prefix.slice(m.index + m[0].length))) return m;
+    }
+    return undefined;
   }
 
   // Recognize the sender positively. An unfamiliar asker is not evidence that
@@ -46,9 +58,11 @@
     const modifiers = /\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)\s*$/i;
     let subject = prefix.trim();
     for (let i = 0; i < 3 && modifiers.test(subject); i++) subject = subject.replace(modifiers, '').trim();
+    subject = subject.slice(-LOOK_BACK);
     const personal = subject.match(/\b(?:we|i|our team)$/i);
     if (personal) return !/\b(?:if|when|unless|posing as|pretending to be|claiming to be|impersonating)\s*$/i.test(subject.slice(0, personal.index));
-    const statement = subject.split(/[:,;.!?\n]|\b(?:and|but|however|instead|so)\b/i).pop().trim().replace(/\s+/g, ' ');
+    // "The IRS asks", "Your Chase Bank asks": the article is not part of the name.
+    const statement = subject.split(/[:,;.!?\n]|\b(?:and|but|however|instead|so)\b/i).pop().trim().replace(/\s+/g, ' ').replace(/^(?:the|your) /i, '');
     const same = name => statement.toLowerCase() === String(name).trim().replace(/\s+/g, ' ').toLowerCase();
     if (!askers || !statement) return false;
     if (askers.label && same(askers.label)) return true;
@@ -108,6 +122,10 @@
   // "only through the official app", "a website you already know". "This secure link" is not one.
   const SAFE_ROUTE = /^\s+(?:only\s+)?(?:through|in|on|with|using|from|at)\s+(?:the\s+|your\s+)?(?:official\s+app|app\s+you\s+(?:already\s+)?(?:have|trust|know)|(?:website|site|address|number)\s+you\s+(?:already\s+)?(?:know|trust|typed?|type yourself))\b/i;
 
+  // A noun followed by what already happened: "Deposit received", "Transfer completed",
+  // "Deposit of $500 by wire received". Not an instruction to the reader.
+  const NOTICE = /^\s*(?:(?:of|for)\s[^.!?\n]{0,40}?\s)?(?:received|completed|complete|confirmed|processed|posted|sent|successful|succeeded|failed|declined|cancell?ed|was|has been|is (?:complete|pending|on hold))\b/i;
+
   /* ---------- Reading clauses ---------- */
 
   const span = (raw, start, end) => ({ start, end, quote: raw.slice(start, end) });
@@ -144,6 +162,7 @@
   const skip = clause => !clause || clause.inReport;
 
   function reportingSubject(prefix) {
+    prefix = prefix.slice(-LOOK_BACK);
     const coordination = prefix.match(ALARM_COORDINATION);
     return REPORT_SUBJECT.test(coordination ? prefix.slice(0, coordination.index) : prefix);
   }
@@ -159,9 +178,13 @@
       if (REPORT.test(before) || /\b(?:says?|said|reads?|example|quoted|warning)[^.!?]{0,40}$/i.test(before)) return true;
     }
     const prefix = clauseText.slice(0, demandIndex).replace(/\r?\n/g, ' ');
-    const segment = prefix.split(/[,;.!?\n]|\b(?:so|because|since|but|however|instead)\b/i).pop();
+    // A segment longer than SEGMENT_LIMIT is read from its last SEGMENT_LIMIT characters.
+    const segment = prefix.slice(-SEGMENT_LIMIT * 4).split(/[,;.!?\n]|\b(?:so|because|since|but|however|instead)\b/i).pop().slice(-SEGMENT_LIMIT);
+    // A new instruction after an asking verb ends its reach ("asks you to wait; you must send").
+    const musts = [...segment.matchAll(/\b(?:you must|you need to|you have to|you should)\b/gi)];
+    const lastMust = musts.length ? musts[musts.length - 1].index : -1;
     for (const asking of segment.matchAll(ASKING)) {
-      if (/\b(?:you must|you need to|you have to|you should)\b/i.test(segment.slice(asking.index + asking[0].length))) continue;
+      if (lastMust >= asking.index + asking[0].length) continue;
       if (reportingSubject(segment.slice(0, asking.index)) || isNegated(segment, asking.index)) return true;
     }
     return false;
@@ -396,6 +419,7 @@
       for (const m of clause.text.matchAll(new RegExp(ACTIONS.source, 'gi'))) {
         if (reportedAt(clause.text, m.index)) continue;
         if (!directAction(clause.text.slice(0, m.index), priorDemand, s.askers)) continue;
+        if (NOTICE.test(clause.text.slice(m.index + m[0].length))) continue;
         priorDemand = true;
         const tail = clause.text.slice(m.index + m[0].length);
         const d = { verb: m[0].toLowerCase(), clause, index, tail, near: tail.slice(0, 40), action: spanOf(raw, clause, m), after: m.index + m[0].length };
@@ -428,6 +452,18 @@
     return !named(text.slice(clause.start, m.index)) && !(previous && !previous.inReport && named(previous.text));
   }
 
+  // "SSA will never threaten you with arrest", "Scammers may threaten arrest": advice about
+  // a threat, not a threat. A negation or a reporting subject earlier in the same part of the
+  // sentence covers the hit, unless "if/unless" makes it a condition ("If you do not pay a
+  // warrant will be issued") or "or/otherwise" starts a new consequence ("or you will be
+  // arrested"; "arrest or deportation" is still one object).
+  function notThreatAdvice(text, m, clause) {
+    const segment = text.slice(clause.start, m.index).split(/[,;:]|\b(?:but|however|instead|then|so|because)\b/i).pop();
+    const tail = segment.split(/\b(?:or|otherwise|else)\b(?=\s+(?:you|we|they|a|an|the|your|police|officers?)\b)/i).pop();
+    if (/^\s*(?:if|unless|when)\b/i.test(tail) || /\b(?:if|unless)\b[^]*\b(?:not|never|don['’]t|doesn['’]t)\b/i.test(tail)) return true;
+    return !LOGIN_NEGATION.test(tail) && !/\b(?:scam{2}ers?|fraudsters?|criminals?|imposters?|impostors?)\b/i.test(tail);
+  }
+
   // A login phrase counts only as a request: "Log in at", "please sign in", "click here to log in",
   // "verify your account by signing in". Notices, advice and front-desk visits stay quiet.
   function loginRequest(text, m, clause, s) {
@@ -457,7 +493,7 @@
     { id: 'share_code', level: 'high', negatable: true, accept: shareCodeDemand, patterns: [
       re('\\b(?:read|tell|give|send|share|provide|reply with|text|forward|say)\\b(?:\\s+(?:us|me|them|him|her|it|back))?\\s+(?:the|your|that|this|their)?\\s*(?:\\w+\\s+)?(?:codes?|pins?|otp|passcodes?|passwords?|verification numbers?|security codes?)\\b')
     ] },
-    { id: 'arrest_threat', level: 'high', patterns: [
+    { id: 'arrest_threat', level: 'high', accept: notThreatAdvice, patterns: [
       re('\\b(?:arrest(?:ed)?|warrant|lawsuit|legal action|jail|deport(?:ed|ation)?)\\b')
     ] },
     { id: 'secrecy', level: 'high', accept: notCodeAdvice, patterns: [
