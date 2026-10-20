@@ -8,12 +8,15 @@ const MAX_CHARS = window.TFS.MAX_CHARS;
 let chosenChannel = null;
 let shownResult = null;
 
+// The label line says in plain words what the title means and does not mean.
 const RESULT_STYLES = {
-  suspicious: { css: 'mismatch', title: 'Suspicious', label: 'PAUSE BEFORE ACTING', symbol: '!' },
-  details_match: { css: 'match', title: 'Details Match', label: 'CONTACT DETAILS ONLY', symbol: '=' },
-  insufficient_evidence: { css: 'unknown', title: 'Insufficient Evidence', label: 'UNRESOLVED · PAUSE BEFORE ACTING', symbol: '?' }
+  suspicious: { css: 'mismatch', title: 'Suspicious', label: 'Strong warning · Pause before acting', symbol: '!' },
+  details_match: { css: 'match', title: 'Details Match', label: 'Contact details only · The sender is not confirmed', symbol: '=' },
+  insufficient_evidence: { css: 'unknown', title: 'Insufficient Evidence', label: 'We can’t tell from this message alone · Pause before acting', symbol: '?',
+    riskyLabel: 'We can’t tell from this message alone · Warning signs in what it asks' }
 };
-const CHECK_LABELS = { SUPPORTS: 'On our list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
+// Same words as the annotation labels, so one state has one name.
+const CHECK_LABELS = { SUPPORTS: 'On our reviewed list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
 
 function textElement(tag, text, className) {
   const element = document.createElement(tag);
@@ -80,8 +83,9 @@ function checkMessage(event) {
     if (!window.TfsEngine.validateResult(result)) throw new Error('Invalid result');
     showResult(result, text);
   } catch {
+    // The same input fails the same way again, so give protective advice instead of "try again".
     showScreen('home');
-    showError('The check could not finish. Your input is still here. Please try again.', byId('message'));
+    showError('We couldn’t finish checking this message. That doesn’t mean it is harmless. Don’t use any links or numbers in it, and ask someone you trust to look at it with you.', byId('message'));
   }
 }
 
@@ -130,9 +134,7 @@ function signalItem(flag, result) {
 function showAnnotations(text, result) {
   const model = window.TFS.annotate(text, result, window.TFS_STORE);
   window.TFS.renderAnnotations(document, model, byId('annotated'), byId('annotation-notes'));
-  const advice = model.notes.length && result.assessment !== 'details_match' ? result.actionWarnings[0] : '';
-  byId('annotated-advice').textContent = advice;
-  byId('annotated-advice').hidden = !advice;
+  // The main warning already sits under the result, so it is not repeated here.
   byId('annotated-section').hidden = model.notes.length === 0;
 }
 
@@ -141,7 +143,8 @@ function showResult(result, text) {
   const risk = result.requestRisk.level;
   byId('result-banner').className = `result-banner ${style.css}${risk !== 'none' ? ' risky' : ''}`;
   byId('state-symbol').textContent = style.symbol;
-  byId('state-label').textContent = risk === 'high' ? `${style.label} · ACTION WARNING` : style.label;
+  // "Suspicious" already is the strong warning; only an unresolved result needs the risk named.
+  byId('state-label').textContent = risk === 'high' && style.riskyLabel ? style.riskyLabel : style.label;
   byId('result-title').textContent = style.title;
   byId('result-description').textContent = result.description;
   byId('identity').textContent = result.claimedIdentity;
@@ -160,6 +163,8 @@ function showResult(result, text) {
   byId('warnings').replaceChildren(...otherWarnings.map(warning => textElement('p', warning, 'warning')));
   byId('next-list').replaceChildren(...result.nextSteps.map(step => textElement('li', step)));
   showAnnotations(text, result);
+  // Each new result starts with its full details folded away.
+  byId('evidence-details').open = false;
 
   shownResult = result;
   resetSelfCheck();
@@ -167,7 +172,7 @@ function showResult(result, text) {
 }
 
 function clearResult() {
-  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotated-advice', 'annotation-notes']) {
+  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
     byId(id).replaceChildren();
   }
   byId('annotated-section').hidden = true;

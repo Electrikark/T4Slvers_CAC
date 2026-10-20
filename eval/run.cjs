@@ -31,6 +31,7 @@ function section(title, results) {
   lines.push(`- Fraud labeled Suspicious: ${rate(t.rates.caught, t.fraud.suspicious, t.fraud.n)}`);
   lines.push(`- Fraud that at least said "pause" (Suspicious or Insufficient): ${rate(t.rates.paused, t.fraud.suspicious + t.fraud.insufficient, t.fraud.n)}`);
   lines.push(`- Legitimate labeled Suspicious (false alarm): ${rate(t.rates.falseAlarm, t.legit.suspicious, t.legit.n)}`);
+  lines.push(`- Legitimate labeled Suspicious or shown a strong warning: ${rate(t.rates.alarmed, t.legit.suspicious + t.legit.warnedOnly, t.legit.n)}`);
   lines.push(`- Legitimate reaching Details Match: ${rate(t.rates.matched, t.legit.match, t.legit.n)}`, '');
   return { lines, tally: t };
 }
@@ -84,6 +85,7 @@ function main() {
   list('Fraud given Details Match', chosen.filter(r => r.outcome === 'REASSURED'), () => 'no rule fired and every contact matched');
   list('Fraud not labeled Suspicious', chosen.filter(r => r.outcome === 'paused'), r => 'signals: ' + (r.tier2.join(', ') || 'none') + '; blocked by ' + r.blockedBy.join(', '));
   list('False alarms on legitimate messages', chosen.filter(r => r.outcome === 'FALSE_ALARM'), r => 'rules: ' + r.tier1.join(', '));
+  list('Strong warnings on legitimate messages not labeled Suspicious', chosen.filter(r => r.label === 'legit' && r.outcome !== 'FALSE_ALARM' && r.strongWarning), r => 'signals: ' + (r.tier2.join(', ') || 'none'));
 
   fs.mkdirSync(outDir, { recursive: true });
   const report = out.join('\n') + '\n';

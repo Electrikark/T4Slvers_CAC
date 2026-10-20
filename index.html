@@ -44,12 +44,12 @@
     <section id="home" class="home-layout" aria-labelledby="home-title">
       <div class="intro">
         <p class="eyebrow">PAUSE. TAKE A CLOSER LOOK.</p>
-        <h1 id="home-title" tabindex="-1">Not sure if a<br class="desktop-break"> message is real?</h1>
+        <h1 id="home-title" tabindex="-1">Not sure what to do<br class="desktop-break"> about a message?</h1>
         <p class="lead">Paste a message or link. We’ll help you look at the details and choose your next step.</p>
         <div class="how-it-works">
           <h2>A calmer next step.</h2>
           <ol>
-            <li><span>1</span>Share what you received.</li>
+            <li><span>1</span>Paste what you received.</li>
             <li><span>2</span>Look at the evidence.</li>
             <li><span>3</span>Choose a safer next step.</li>
           </ol>
@@ -94,22 +94,32 @@
           <p id="result-description"></p>
         </div>
       </div>
+      <!-- Reading order for a quick decision: the result, the one thing to do first, what to do
+           next, the message with its marks, then the full details for anyone who wants them. -->
       <section id="action-note" class="action-note" aria-labelledby="action-title">
         <div>
           <h2 id="action-title">Before you act</h2>
           <p id="action-lead"></p>
         </div>
-        <a href="#next-title" class="action-link">See next steps <span aria-hidden="true">↓</span></a>
+      </section>
+      <section class="next-steps" aria-labelledby="next-title">
+        <h2 id="next-title" tabindex="-1">What to do next</h2>
+        <div id="warnings"></div>
+        <ol id="next-list"></ol>
       </section>
       <section id="annotated-section" class="annotated" aria-labelledby="annotated-title" hidden>
         <h2 id="annotated-title">Your message, with what we noticed</h2>
         <p class="annotated-key">Marked words are numbered. Each number has a note below. Press Tab to move between marks.</p>
         <p id="annotated" class="annotated-message"></p>
-        <p id="annotated-advice" class="annotated-advice"></p>
         <ol id="annotation-notes" class="annotation-notes"></ol>
       </section>
-      <div class="result-layout">
+      <details id="evidence-details" class="evidence-details">
+        <summary>See everything we checked</summary>
         <div class="evidence">
+          <section>
+            <h2>What this means</h2>
+            <p id="meaning"></p>
+          </section>
           <section>
             <h2>Claims to be</h2>
             <p id="identity" class="identity"></p>
@@ -128,18 +138,8 @@
             <h2>Signals in the wording</h2>
             <ul id="asks" class="checks asks"></ul>
           </section>
-          <section>
-            <h2>What this means</h2>
-            <p id="meaning"></p>
-          </section>
         </div>
-        <aside class="next-steps" aria-labelledby="next-title">
-          <h2 id="next-title" tabindex="-1">What to do next</h2>
-          <div id="warnings"></div>
-          <ol id="next-list"></ol>
-          <p class="hint">Use contact details you already trust, such as the number on your bank card.</p>
-        </aside>
-      </div>
+      </details>
       <section id="self-check" class="self-check" aria-labelledby="self-check-title">
         <h2 id="self-check-title">Did you check it yourself?</h2>
         <p class="self-check-intro">This app cannot confirm who sent a message. You can. Contact them using details you had before this message arrived, then tell us what you found out.</p>
