@@ -38,7 +38,7 @@
       if (check.target) {
         contacts.push({ org: check.orgId || null, verification: check.status === 'SUPPORTS' ? 'verified' : 'unresolved', checkIndex: index, support: check });
       }
-      if (check.code === 'link_unreadable') uncertainty.push('extraction_failed:' + index);
+      if (check.code === 'link_unreadable' || check.code === 'phone_unreadable') uncertainty.push('extraction_failed:' + index);
       // Other conflicts stay Tier 2: real brand domains missing from the list produce them too.
       if (check.status === 'CONTRADICTS') {
         if (isDomainTrick(check)) finding('T1-DOMAIN', 1, 'established', null, check);
