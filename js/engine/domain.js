@@ -76,7 +76,9 @@
     'com.au', 'net.au', 'org.au', 'gov.au', 'edu.au',
     'co.nz', 'org.nz', 'co.jp', 'ne.jp', 'co.in', 'org.in',
     'com.br', 'com.mx', 'co.za', 'com.cn', 'com.sg', 'com.hk', 'com.tw',
-    'com.ph', 'com.ng', 'co.kr', 'com.tr', 'com.ar', 'com.co'
+    'com.ph', 'com.ng', 'co.kr', 'com.tr', 'com.ar', 'com.co',
+    // California agencies each own a name under ca.gov (dmv.ca.gov, edd.ca.gov).
+    'ca.gov'
   ]);
 
   const isIp = host => /^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host.includes(':') || /^\[.*\]$/.test(host);
@@ -162,8 +164,9 @@
      contact unresolved, so an unreviewed list fails closed (no Details Match). */
   function supported(ctx, org, target, code, extra) {
     const view = ctx.trusted || T.buildTrustedView({ orgs: [] });
-    return T.trustedMatches(view, target, org.id).length
-      ? check('SUPPORTS', code, extra) : check('UNKNOWN', 'reference_needs_review', extra);
+    if (T.trustedMatches(view, target, org.id).length) return check('SUPPORTS', code, extra);
+    // Say why the record cannot count: unreviewed, expired, unclear scope, conflict, missing details.
+    return check('UNKNOWN', 'reference_needs_review', { ...extra, reason: T.exclusionReason(view, ctx.store, target, org.id) || 'not_reviewed' });
   }
 
   /* ---------- The rule table ----------
@@ -206,7 +209,7 @@
     if (owners.length) {
       const listed = owners.find(o => claim && o.id === claim.id) || owners[0];
       if ((listed.sources || []).some(source => hostMatches(host, source.domain) && /^needs review/i.test(source.check || ''))) {
-        return check('UNKNOWN', 'reference_needs_review', { ...base, orgId: listed.id });
+        return check('UNKNOWN', 'reference_needs_review', { ...base, orgId: listed.id, reason: 'not_reviewed' });
       }
       if (!claim) return supported(ctx, owners[0], target, 'domain_official', { ...base, orgId: owners[0].id, implicit: true });
       if (owners.some(o => o.id === claim.id)) return supported(ctx, claim, target, 'domain_official', { ...base, orgId: claim.id });
@@ -290,9 +293,9 @@
     }
     const matches = T.trustedMatches(ctx.trusted, target);
     if (matches.length) return check('SUPPORTS', 'phone_official', { target, orgId: matches[0].orgId, implicit: true });
-    if (listed.length) return check('UNKNOWN', 'reference_needs_review', { target, orgId: listed[0].id });
+    if (listed.length) return check('UNKNOWN', 'reference_needs_review', { target, orgId: listed[0].id, reason: T.exclusionReason(ctx.trusted, ctx.store, target, listed[0].id) || 'not_reviewed' });
     return check('UNKNOWN', 'phone_not_on_file', { target });
   }
 
-  Object.assign(T, { toUnicodeHost, registrable, hostMatches, orgById, checkHost, checkPhone });
+  Object.assign(T, { toUnicodeHost, registrable, hostMatches, orgById, checkHost, checkPhone, skeleton });
 })(typeof window !== 'undefined' ? window : globalThis);

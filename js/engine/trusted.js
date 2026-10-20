@@ -177,7 +177,21 @@
     });
   }
 
+  // Why this organization's record for a contact was left out of the view, or null.
+  // "not_reviewed", "expired", "ambiguous_scope", "conflict", "missing:sourceUrl", ...
+  function exclusionReason(view, store, target, orgId) {
+    var org = ((store && store.orgs) || []).filter(function (o) { return o.id === orgId; })[0];
+    if (!view || !org || !target) return null;
+    var ids = recordsOf(org).filter(function (r) {
+      if (target.kind === 'phone') return r.kind === 'phone' && phoneKey(r.value) === phoneKey(target.e164);
+      return r.kind === 'domain' && target.host && T.hostMatches(hostKey(target.host), hostKey(r.value));
+    }).map(function (r) { return r.id; });
+    var hit = view.excluded.filter(function (x) { return ids.indexOf(x.id) >= 0; })[0];
+    return hit ? hit.reason : null;
+  }
+
   T.buildTrustedView = buildTrustedView;
+  T.exclusionReason = exclusionReason;
   T.trustedMatches = trustedMatches;
   T.recordsOf = recordsOf;
   T.listedFor = listedFor;

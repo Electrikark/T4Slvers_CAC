@@ -10,14 +10,24 @@
   function shown(target) {
     if (!target) return '';
     if (target.kind === 'phone') return target.display;
-    if (target.kind === 'email') return target.raw;
+    // A lookalike email domain shows its encoded form too: support@chаse.com (support@xn--chse-63d.com).
+    if (target.kind === 'email') {
+      const local = target.raw.slice(0, target.raw.lastIndexOf('@'));
+      return target.hostUnicode && target.host && target.hostUnicode !== target.host ? `${target.raw} (${local}@${target.host})` : target.raw;
+    }
     return target.hostUnicode && target.hostUnicode !== target.host ? `${target.hostUnicode} (${target.host})` : target.host || target.raw;
   }
+
+  // A name close to an official one, but no address trick (Tier 2). Real, unrelated sites
+  // look like this too: medicaid.gov is two letters from medicare.gov.
+  const SIMILAR_CODES = ['typosquat', 'same_label_other_tld', 'brand_in_foreign_domain'];
+  const similarOnly = check => check.status === 'CONTRADICTS' && SIMILAR_CODES.includes(check.code) && !T.isDomainTrick(check);
 
   // One or two sentences per check, for "What we found".
   function checkDetail(check, ctx) {
     const t = shown(check.target);
     const org = check.orgId ? T.orgById(ctx.store, check.orgId) : null;
+    if (similarOnly(check) && check.lookalikeOf) return `${t} is similar to ${check.lookalikeOf}. We can’t tell whether it belongs to them.`;
     switch (check.code) {
       case 'domain_official':
         return check.target.kind === 'email'
@@ -48,7 +58,7 @@
       case 'not_in_official_list':
         return `${t} is not on our list for ${orgName(org)}. Our list may be incomplete, so this alone does not establish a conflict.`;
       case 'reference_needs_review':
-        return `${t} is listed for ${orgName(org)}, but its source record still needs review. We cannot count it as a match.`;
+        return `${t} is listed for ${orgName(org)}${RECORD_PROBLEMS[recordProblem(check)]}`;
       case 'input_incomplete':
         return 'Part of this input exceeds the checker’s limits. A partial check cannot establish a full match. Paste a shorter message or one complete link.';
       case 'risk_unresolved':
@@ -70,6 +80,23 @@
     }
   }
 
+  // Why a listed record cannot count, from the trusted view's exclusion reason.
+  const RECORD_PROBLEMS = {
+    not_reviewed: ', but its source record still needs review. We cannot count it as a match.',
+    expired: ', but the review of that record has expired. We cannot count it as a match until someone reviews it again.',
+    ambiguous_scope: ', but that record’s scope is unclear, so we can’t tell which addresses it covers. We cannot count it as a match.',
+    conflict: ' and also for another organization. We cannot count it as a match for either.',
+    incomplete: ', but that record is missing review details. We cannot count it as a match.'
+  };
+  const recordProblem = check => RECORD_PROBLEMS[check.reason] ? check.reason : check.reason ? 'incomplete' : 'not_reviewed';
+
+  // "Reviewed by … on …" after a human review; otherwise the automated status.
+  function reviewStatus(org) {
+    const review = org.humanReview;
+    if (review && review.reviewer && review.date) return `. Review status: Reviewed by ${review.reviewer} on ${review.date}`;
+    return org.verifiedBy ? '. Review status: ' + org.verifiedBy : '';
+  }
+
   const ADDRESS_CODES = ['domain_official', 'domain_belongs_to_other_org', 'not_in_official_list', 'reference_needs_review',
     'user_content_platform', 'brand_in_foreign_domain', 'typosquat', 'same_label_other_tld', 'homoglyph',
     'official_domain_as_subdomain', 'userinfo_trick'];
@@ -80,7 +107,7 @@
     if (ADDRESS_CODES.includes(check.code)) {
       const org = check.orgId ? T.orgById(ctx.store, check.orgId) : null;
       const listed = org ? `Local list: ${org.displayName} → ${org.officialDomains.join(', ')}` : 'Reference list';
-      return listed + version + (org && org.verifiedBy ? '. Review status: ' + org.verifiedBy : '');
+      return listed + version + (org ? reviewStatus(org) : '');
     }
     if (check.code === 'phone_official' || check.code === 'phone_not_on_file') return 'Reference list of official phone numbers' + version;
     if (check.code === 'shortener_unresolvable') return 'List of known link shorteners' + version;
@@ -182,17 +209,26 @@
     }
     const risky = result.requestRisk.flags.length || result.requestRisk.unresolved.length;
     const conflict = conflicts(result).length > 0;
+    // Only similar names, with no address trick or other-organization conflict.
+    const similar = conflict && result.evidence.contacts.every(c => c.support.status !== 'CONTRADICTS' || similarOnly(c.support));
     let description = 'We do not have enough reliable evidence for a complete assessment.';
-    if (conflict) description = 'A contact detail in this message does not match our stored list. We cannot give a complete assessment.';
+    if (similar) description = 'A contact detail in this message is similar to an address on our list. We can’t tell whether it belongs to the same organization, so we cannot give a complete assessment.';
+    else if (conflict) description = 'A contact detail in this message does not match our stored list. We cannot give a complete assessment.';
     else if (risky) description = 'The message contains warning signs, and we cannot give a complete assessment.';
     const gap = GAP_MEANINGS.find(([code]) => codes.includes(code));
-    let meaning = gap ? gap[1] : 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
+    // A listed record that was reviewed but cannot count (expired, unclear, conflicting) is not "unreviewed".
+    const listed = gap && gap[0] === 'reference_needs_review' &&
+      result.evidence.contacts.map(c => c.support).find(c => c.code === 'reference_needs_review');
+    let meaning = listed && recordProblem(listed) !== 'not_reviewed'
+      ? 'Our list has this address, but that record cannot count as a match right now.'
+      : gap ? gap[1] : 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
     if (risky) {
       meaning = anySupport
         ? 'Warning signs remain in what the message asks. Matching contact details cannot clear those signs.'
         : 'Warning signs remain in what the message asks. Judge it by those signs, not by how official it looks.';
     }
-    if (conflict) meaning += ' Contact details also conflict with our stored list. That conflict blocks a match. This checker cannot resolve it from the available evidence.';
+    if (similar) meaning += ' An address is similar to one on our list, and we can’t tell who it belongs to. That blocks a match.';
+    else if (conflict) meaning += ' Contact details also conflict with our stored list. That conflict blocks a match. This checker cannot resolve it from the available evidence.';
     return { description, meaning };
   }
 

@@ -15,11 +15,13 @@
   const UNCLEAR_GIFT = ['unclear_gift_payment_purpose', 'competing_card_code_antecedent'];
 
   // A brand name and a lure word as separate parts of one address: chase-secure-login.net.
+  // The brand part is read the way the brand match read it, so amaz0n-secure.com counts too.
   function brandLure(check) {
     const host = check.target && check.target.host;
     if (check.code !== 'brand_in_foreign_domain' || !host || !check.brandWord) return false;
     const parts = host.split('.').slice(0, -1).join('.').split(/[-_.]+/);
-    return parts.includes(check.brandWord) && parts.some(p => LURE.test(p));
+    const brand = T.skeleton(check.brandWord);
+    return parts.some(p => p === check.brandWord || T.skeleton(T.toUnicodeHost(p) || p) === brand) && parts.some(p => LURE.test(p));
   }
 
   const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check));
@@ -65,4 +67,5 @@
   }
 
   T.normalizeEvidence = normalizeEvidence;
+  T.isDomainTrick = isDomainTrick;
 })(typeof window !== 'undefined' ? window : globalThis);
