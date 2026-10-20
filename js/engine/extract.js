@@ -17,6 +17,10 @@
   const EMAIL_RE = /^(?:mailto:)?([a-z0-9._%+\-]{1,64})@((?:[a-z0-9\u00A1-\uFFFF-]{1,63}\.){1,10}[a-z\u00A1-\uFFFF]{2,24})$/i;
   // North American numbers: (202) 555-0148, 202.555.0148, +1 202 555 0148.
   const PHONE_RE = /(?<![\w+])(?:\+?1[\s.\-]?)?\(?([2-9]\d{2})\)?[\s.\-]?([2-9]\d{2})[\s.\-]?(\d{4})(?!\d)/g;
+  // Numbers this checker cannot read but must not ignore: another country's code
+  // (+44 20 7946 0958) or letters in place of digits (1-800-ASK-USPS).
+  const FOREIGN_PHONE_RE = /(?<![\w+])\+[2-9][\d\s.\-()]{6,20}\d(?!\d)/g;
+  const LETTER_PHONE_RE = /(?<![\w+\-])(?:1[\s.\-]?)?\(?[2-9]\d{2}\)?[\s.\-]?[A-Z0-9]{2,4}[\s.\-]?[A-Z0-9]{2,5}(?![\w\-])/g;
 
   function decodeSafe(s) {
     try { return decodeURIComponent(s); } catch (err) { return s; }
@@ -104,6 +108,21 @@
       const lead = p[0].length - p[0].trimStart().length;
       const raw = p[0].trim();
       add('phone:' + e164, { kind: 'phone', raw, e164, display: `(${p[1]}) ${p[2]}-${p[3]}`, at: [p.index + lead, p.index + lead + raw.length] });
+    }
+    // Unreadable numbers are listed, never guessed at, so the page does not say there is no number.
+    const taken = targets.filter(t => t.kind === 'phone').map(t => t.at);
+    const unreadable = [...masked.matchAll(FOREIGN_PHONE_RE)].filter(p => {
+      const digits = p[0].replace(/\D/g, '').length;
+      return digits >= 8 && digits <= 15;
+    }).concat([...masked.matchAll(LETTER_PHONE_RE)].filter(p => {
+      const after = p[0].replace(/^(?:1[\s.\-]?)?\(?\d{3}\)?[\s.\-]?/, '');
+      return /[A-Z]/.test(after) && after.replace(/[^A-Z0-9]/g, '').length === 7;
+    }));
+    for (const p of unreadable.sort((a, b) => a.index - b.index)) {
+      const at = [p.index, p.index + p[0].length];
+      if (taken.some(([from, to]) => at[0] < to && from < at[1])) continue;
+      taken.push(at);
+      add('phone:' + p[0], { kind: 'phone', raw: p[0], e164: null, display: p[0], error: 'unsupported', at });
     }
     return { targets, masked, incomplete };
   }

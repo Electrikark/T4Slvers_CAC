@@ -59,6 +59,8 @@
         return `${t} is a free email account. Anyone can create one with any name.`;
       case 'no_claimed_identity':
         return `The message does not name an organization we know, and ${t} is not on our list.`;
+      case 'phone_unreadable':
+        return `${t} looks like a phone number, but this checker reads only U.S. and Canadian numbers written in digits. It was not compared with any list.`;
       case 'link_unreadable':
         return 'We could not read this link: ' + check.target.raw;
       case 'nothing_to_check':
@@ -149,6 +151,7 @@
     ['input_incomplete', 'Some input was not inspected. Check a shorter message before drawing a conclusion.'],
     ['shortener_unresolvable', 'The destination remains unknown because this app does not follow links.'],
     ['nothing_to_check', 'Without a link, email address or phone number, there is nothing to compare. Judge it by what it asks you to do.'],
+    ['phone_unreadable', 'This checker could not read a phone number in this message, so it could not compare it with any list.'],
     ['phone_not_on_file', 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.'],
     ['user_content_platform', 'A page on a site where anyone can publish does not show who made it.'],
     ['reference_needs_review', 'Our list has this address, but no person has reviewed that record yet. Until someone does, it cannot count as a match.']
@@ -199,9 +202,14 @@
     const flagAdvice = result.requestRisk.flags.map(f => FLAGS[f.id].advice);
     const matched = result.assessment === 'details_match';
     if (!matched) list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the person or organization using a website, app, statement, or number you already trust.");
-    // Name each lookalike address so the person knows exactly what not to open.
-    for (const c of conflicts(result)) {
-      if (c.strength === 'strong' && c.target) list.push(`Do not open or reply to ${c.target}. It looks like a known address but is not on our list for that organization.`);
+    // Name each lookalike address so the person knows exactly what not to open. Only an address
+    // trick (T1-DOMAIN) gets that warning: a merely similar name can be a real, unrelated site
+    // (medicaid.gov is two letters from medicare.gov), so it gets plainer words.
+    const tricks = result.evidence.findings.filter(f => f.ruleId === 'T1-DOMAIN').map(f => f.support);
+    for (const c of result.evidence.contacts.map(contact => contact.support)) {
+      if (c.status !== 'CONTRADICTS' || c.strength !== 'strong') continue;
+      if (tricks.includes(c)) list.push(`Do not open or reply to ${shown(c.target)}. It looks like a known address but is not on our list for that organization.`);
+      else if (c.lookalikeOf) list.push(`${shown(c.target)} looks similar to ${c.lookalikeOf}. We can’t tell whether it belongs to them.`);
     }
     if (!matched && result.checks.some(c => c.code === 'nothing_to_check') && (flagAdvice.length || result.requestRisk.unresolved.length)) {
       list.push('Do not act on this request until you check independently.');

@@ -280,6 +280,8 @@
   // Phone numbers. Missing from a sparse list is never a conflict.
   function checkPhone(target, ctx) {
     const claim = ctx.claimOrg;
+    // A number this checker cannot read is compared with nothing.
+    if (target.error) return check('UNKNOWN', 'phone_unreadable', { target });
     const listed = T.listedFor(ctx.store, target);
     if (claim) {
       return listed.some(o => o.id === claim.id)
