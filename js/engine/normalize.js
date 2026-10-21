@@ -76,7 +76,15 @@
     return { text, map, identity: text === raw };
   }
 
+  // Move a view span back to the source, so quotes show exactly what the person pasted.
+  function sourceSpan(view, raw, start, end) {
+    if (view.identity) return { start, end };
+    const s = view.map[start], e = view.map[end - 1] + 1;
+    return { start: s, end: e, quote: raw.slice(s, e) };
+  }
+
   T.normalizeText = normalizeText;
   T.riskView = riskView;
+  T.sourceSpan = sourceSpan;
   T.MAX_CHARS = MAX_CHARS;
 })(typeof window !== 'undefined' ? window : globalThis);
