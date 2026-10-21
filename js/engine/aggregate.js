@@ -41,9 +41,10 @@
     if (incomplete) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
     if (signals.unresolved.length) checks.push({ status: 'UNKNOWN', code: 'risk_unresolved' });
 
-    // No named sender, but every listed address points to the same organization.
+    // No named sender, but every listed address points to the same organization. A lookalike
+    // (CONTRADICTS) only resembles an organization, so it never names one: medicaid.gov is not Medicare.
     if (!claim.org) {
-      const pointers = checks.filter(c => c.orgId && (c.status === 'SUPPORTS' || c.status === 'CONTRADICTS'));
+      const pointers = checks.filter(c => c.orgId && c.status === 'SUPPORTS');
       if (pointers.length && pointers.every(c => c.orgId === pointers[0].orgId)) ctx.implicitOrg = T.orgById(store, pointers[0].orgId);
     }
 

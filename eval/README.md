@@ -53,6 +53,8 @@ It writes `eval/results/report.md` and `eval/results/results.csv` (one row per m
 - **Fraud given Details Match** is false reassurance, the worst possible outcome. It must be 0.
 - **Fraud labeled Suspicious** is the catch rate. **Fraud that at least said "pause"** also counts Insufficient Evidence, which still tells the person to stop and check.
 - **Legitimate labeled Suspicious** is the false alarm rate.
+- **Legitimate labeled Suspicious or shown a strong warning** also counts honest messages that got the page's "Warning signs in what it asks" line without the Suspicious label. That line still alarms the reader, so report it next to the false alarm rate. The report lists each of these messages.
+- **"At least said pause"** counts Insufficient Evidence, which every message gets until records are reviewed, so it is close to 100% by design. Don't present it as a catch rate.
 - **Legitimate reaching Details Match** stays at 0% until records in `data/store.js` are human-reviewed; the report says so.
 - Each rate has a **95% range**. With 100 messages, a measured 90% can really be anywhere from about 83% to 94%. Quote the range, not only the percentage.
 

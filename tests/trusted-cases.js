@@ -160,4 +160,25 @@ window.TFS_PHASE2.add('Trusted reference view', function (t) {
     t.assert(r.checks.some(function (c) { return c.status === 'CONTRADICTS'; }), 'lookalike lost with an empty view');
     t.same(r.assessment, 'suspicious', 'glued official domain stays Tier 1');
   });
+
+  t.test('A12 An organization-wide review covers its draft contacts, and only those', function () {
+    var review = { reviewer: 'Test fixture (fictional record)', date: '2026-10-01', reviewDue: '2099-12-31', sourceUrl: 'https://example.invalid/org-review' };
+    var o = org('example-bank', 'Example Bank', [], [
+      rec('domain', 'examplebank.com', { id: 'draft', status: 'draft', reviewedBy: null }),
+      rec('domain', 'examplebank.net', { id: 'own', reviewedBy: 'Someone else', sourceUrl: 'https://example.invalid/own-page' }),
+      rec('domain', 'examplebank.org', { id: 'rejected', status: 'rejected' })
+    ]);
+    o.humanReview = review;
+    var view = T.buildTrustedView(store([o]), DAY);
+    var byId = function (id) { return view.trusted.filter(function (x) { return x.id === id; })[0]; };
+    t.assert(byId('draft') && byId('draft').reviewedBy === review.reviewer && byId('draft').sourceUrl === review.sourceUrl, 'draft contact takes the organization review');
+    t.assert(byId('own') && byId('own').reviewedBy === 'Someone else' && byId('own').sourceUrl === 'https://example.invalid/own-page', 'a reviewed contact keeps its own fields');
+    t.same(reasonOf(view, 'rejected'), 'not_reviewed', 'a rejected contact stays out');
+    var noSource = org('example-bank', 'Example Bank', [], [rec('domain', 'examplebank.com', { id: 'draft', status: 'draft' })]);
+    noSource.humanReview = { reviewer: review.reviewer, date: review.date, reviewDue: review.reviewDue };
+    t.same(reasonOf(T.buildTrustedView(store([noSource]), DAY), 'draft'), 'missing:sourceUrl', 'a review without its own source page does not count');
+    var expired = org('example-bank', 'Example Bank', [], [rec('domain', 'examplebank.com', { id: 'draft', status: 'draft' })]);
+    expired.humanReview = { reviewer: review.reviewer, date: '2026-07-01', reviewDue: '2026-09-29', sourceUrl: review.sourceUrl };
+    t.same(reasonOf(T.buildTrustedView(store([expired]), DAY), 'draft'), 'expired', 'an expired organization review stops counting');
+  });
 });

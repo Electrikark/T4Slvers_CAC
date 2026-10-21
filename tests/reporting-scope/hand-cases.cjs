@@ -64,4 +64,15 @@ function reviewRow([id, family, text, finding]) {
   return { id, context: 'T2_REVIEW', family, variant: 'hand', record_state: 'approved', text: text + ' Visit https://chase.com.',
     expected_findings: [finding], expected_verdict: family === 'RA' ? 'Suspicious' : 'Insufficient Evidence', known_limitation: null };
 }
-module.exports = own.map(c => row(c, 'OWN')).concat(warnings.map(c => row(c, 'W')), controls.map(c => row(c, 'LEGIT')), gaps.map(gapRow), reviewCases.map(reviewRow));
+// Repair B5: a notice is not a demand. KNOWN-DEPOSIT was an open diagnostic in
+// docs/testing/reporting-scope-results/tier2-review-known-gaps.json; it now passes.
+const notices = [
+  ['KNOWN-DEPOSIT', 'WT', 'Chase: Deposit received: $500 by wire transfer. Visit https://chase.com.', null],
+  ['NOTICE2', 'WT', 'Chase: Transfer completed: $500 by wire transfer. Visit https://chase.com.', null],
+  ['NOTICE3', 'WT', 'Chase: Deposit $500 by wire today. Visit https://chase.com.', 'wire_demand']
+];
+function noticeRow([id, family, text, finding]) {
+  return { id, context: 'NOTICE', family, variant: 'hand', record_state: 'approved', text,
+    expected_findings: finding ? [finding] : [], expected_verdict: finding ? 'Insufficient Evidence' : 'Details Match', known_limitation: null };
+}
+module.exports = own.map(c => row(c, 'OWN')).concat(warnings.map(c => row(c, 'W')), controls.map(c => row(c, 'LEGIT')), gaps.map(gapRow), reviewCases.map(reviewRow), notices.map(noticeRow));

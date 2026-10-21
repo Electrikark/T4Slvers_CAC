@@ -36,7 +36,7 @@
 
   function contactKey(target) {
     if (!target) return null;
-    if (target.kind === 'phone') return 'phone:' + target.e164;
+    if (target.kind === 'phone') return 'phone:' + (target.e164 || target.raw);
     return target.kind + ':' + (target.error ? target.raw : target.host || target.raw) + ':' + (target.userinfo || '');
   }
 
@@ -69,12 +69,17 @@
       var flag = T.copy.FLAGS[f.id] || { label: 'A warning sign', advice: '' };
       item(f.id, 'check', flag.label + '. ' + flag.advice, [{ start: f.start, end: f.end }]);
     });
-    // Contacts, with the check that was made on each.
-    var found = T.sourceTargets(raw);
+    // Contacts, with the check that was made on each. sourceTargets reads lookalike letters as
+    // Latin (chаse.com as chase.com), but the check read the pasted characters (xn--chse-63d.com).
+    // So each pasted span is read again the way the check read it, and matched by that reading.
+    var found = T.sourceTargets(raw).map(function (x) {
+      var asChecked = T.extractTargets(T.normalizeText(x.quote).text).targets[0];
+      return { start: x.start, end: x.end, key: contactKey(asChecked && asChecked.kind === x.target.kind ? asChecked : x.target) };
+    });
     var domainFindings = ((result.evidence && result.evidence.findings) || []).filter(function (f) { return f.ruleId === 'T1-DOMAIN'; });
     ((result.evidence && result.evidence.contacts) || []).forEach(function (c) {
       var key = contactKey(c.support.target);
-      var spans = found.filter(function (x) { return contactKey(x.target) === key; });
+      var spans = found.filter(function (x) { return x.key === key; });
       var check = result.checks[c.checkIndex];
       var domain = domainFindings.some(function (f) { return f.support === c.support || (f.support && f.support.code === c.support.code && contactKey(f.support.target) === key); });
       var kind = domain ? 'strong' : c.verification === 'verified' ? 'list' : 'check';

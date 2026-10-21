@@ -14,6 +14,8 @@
    "registrable" | "host", "pathPrefix"? }, "status": "reviewed" | "draft", "sourceUrl",
    "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations have source-documented draft contacts. Human reviewer fields
    are blank pending review. All contacts remain excluded as not_reviewed until approved.
+   An organization-level humanReview also reviews every contact still in draft (see
+   recordsOf in js/engine/trusted.js and docs/reference-review-guide.md).
    securityNotes and publishedEmailSenderDomains document evidence only; they do not
    enable policy rules or authenticate a sender. */
 window.TFS_STORE = {
