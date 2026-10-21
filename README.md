@@ -6,6 +6,14 @@ A local text-only workshop prototype. Plain HTML, CSS, and JavaScript; no packag
 
 The app compares contacts with a stored list and checks fixed English risk patterns. It does not authenticate a sender, read images, follow links, or run AI extraction. Some legacy reference and parsing paths still need repair before release. Matching contact details do not establish that a message is real.
 
+Version **0.4.1** adds the [session safety repairs](docs/decisions/session-safety-repairs.md):
+bounded code/pressure exceptions, consistent benign-code warnings, separate policy
+answers and unresolved checks, family-first guidance, contact/path fixes, and
+development-only default evaluation with literal-text export handling. The current
+suite has **1,183 shared checks**, plus 36 source-gate checks, 2 boundaries,
+15 evaluation checks and the app-element contract. Older counts below describe
+earlier checkpoints. These checks do not measure accuracy on public messages.
+
 ## Run and test
 
 Open `index.html` in a modern browser, or serve this folder locally:
@@ -19,8 +27,11 @@ Visit `http://localhost:8000`. Visit `/tests/run.html` on that server for browse
 ```sh
 npm test
 # Without npm, run the same dependency-free checks:
+node tests/page-scripts.cjs
 node scripts/build-assessment.cjs --check
+node tests/app-elements.cjs
 node tests/run-node.cjs
+node tests/eval-tests.cjs
 ```
 
 Phase 2 adds 58 shared checks in five groups (trusted view A1-A11, sender attribution B1-B11, tier rules C13-C22 with N1, S1-S3, L1-L2, policy records D1-D11, annotations E1-E9), for 301 shared checks. Reporting-scope checks (RS1–RS37), 768 generated matrix rows and 45 hand-written rows, plus seven Tier 2/policy guards, eight [reviewed next-step advice checks](docs/decisions/reviewed-next-steps.md) and 40 [engine repair checks](docs/decisions/engine-defect-repairs.md) (R1–R6, A1–A5, B1–B10), and six [result wording checks](tests/page-wording-cases.js) (W1–W6) bring the shared total to 1,214. With 36 source-gate parity checks, 12 evaluation-harness checks, the app element contract, two boundary checks and two Node-only page copy and contrast checks, `npm test` runs 1,267 checks; see the [reporting-scope decision and execution checklist](docs/decisions/reporting-scope.md). The matrix covers 32 sentence templates in 11 surface variants plus record states, not 768 independent messages. It reads its checked-in JSON; it never generates expectations during tests. Run `node scripts/run-reporting-scope.cjs` for the suite pass rate by context, family and hand-row group. The Node runner also checks all 47 app element IDs against index.html before running the engine suite. There is also a Node-only boundary group: no engine file reads a raw record file, and no file that draws results uses `innerHTML`. A Node-only page group checks the English-only line on the form, 3:1 border contrast for the message box and choice buttons, and a check mark on the selected choice. Before Phase 2, the recorded eac1229 baseline passed all 111 checks, and there were 243 shared checks, including 14 for the self-check step (S1–S14), 38 for login requests (L1–L38) and 3 for review status (I18–I20): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 44 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), one unresolved card-number case, and two checks that a real website cannot outweigh a Tier 1 request in the same message. The Node runner also runs the 36 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
@@ -36,7 +47,7 @@ window.TfsEngine.analyze(text, store, { declaredChannel: 'text' });
 // declaredChannel must be 'text', 'email', or 'unknown'.
 ```
 
-Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.4.0 and schema version 3.
+Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.4.1 and schema version 3.
 
 - `suspicious`: established Tier 1 takes priority over contact support, missing contacts, and uncertainty.
 - `details_match`: an explicit recognized sender, at least one contact verified for that sender, all contacts verified for that sender, and no findings or uncertainty. The adapter preserves legacy contact-verification semantics; this is not full v1.2 conformance.
@@ -49,7 +60,7 @@ Missing or invalid channel choice is rejected. The form uses large Text / Email 
 The gate holds a closed list of Tier 1 rules (`TIER1_RULES`): T1-GIFT, T1-WIRE, T1-REMOTE, T1-DOMAIN, T1-CODE, T1-CALLBACK, T1-COMBO and T1-POLICY. A Tier 1 finding with any other rule ID throws instead of winning.
 
 - **T1-DOMAIN** covers address tricks with no innocent reading: text before `@` in a link, an official domain glued to another site (`usps.com-redelivery.top`), lookalike letters (`paypa1.com`, a Cyrillic `а`), and a brand name beside a lure word as separate parts of an address (`chase-secure-login.net`, `fastrak-ca-tolls.com`, and `amaz0n-secure.com`, where the brand is written with lookalike letters). Only these get "Do not open or reply to…". Other conflicts stay Tier 2: a brand name alone, the same name with another ending, one- or two-letter differences, and another listed organization's address. A similar name is worded as similar ("medicaid.gov is similar to medicare.gov. We can’t tell whether it belongs to them."), because real, unrelated sites look like this too, and it never names an implied sender. Measured against about 70 real domains that listed organizations use but the list lacks, those codes fired 128 times across runs with and without a named sender (`wellsfargoemail.com`, `paypal-prepaid.com`, `facebookmail.com`, `amazon.co.uk`, `uspis.gov`); the T1-DOMAIN subset fired zero times. Country forms such as `amazon.com.au` are no longer read as the glued-domain trick. It also catches a whole brand name in a foreign link host with a direct pay/verify/confirm/reschedule/click instruction (rules v1.1, F5); real domains, their subdomains and embedded letters such as “apple” inside “pineapple” do not trigger it.
-- **T1-CODE** covers a direct, unnegated, unreported demand to give a code, PIN, OTP, passcode or password to the requester, including "read it back to me" after a named code. The asker can be the message's own label or a name on the list, with or without "the" or "your" ("Amazon asks you to read the code back to us", "The IRS asks you to…"); reporting and conditional askers ("Scammers posing as the IRS ask…", "If the IRS asks…") stay quiet. A request after an address at the start of a sentence ("Grandma, buy me gift cards…", "Hi Mom, send me the code", "Maria, …") is a direct request. Entering a code yourself, codes with no named requester, promo, confirmation, tracking and gift-card codes (T1-GIFT judges those), codes handed to a driver or cashier, and household codes such as the wifi password stay outside it.
+- **T1-CODE** covers a direct, unnegated, unreported demand to give a code, PIN, OTP, passcode or password to the requester, including "read it back to me" after a named code. The asker can be the message's own label or a name on the list, with or without "the" or "your" ("Amazon asks you to read the code back to us", "The IRS asks you to…"); reporting and conditional askers ("Scammers posing as the IRS ask…", "If the IRS asks…") stay quiet. A request after an address at the start of a sentence ("Grandma, buy me gift cards…", "Hi Mom, send me the code", "Maria, …") is a direct request. Entering a code yourself, codes with no named requester, promo, confirmation, tracking and gift-card codes (T1-GIFT judges those), delivery or pickup codes handed to a driver or cashier (an incidental driver or cashier never clears a bank password or account code), and household codes such as the wifi password stay outside it.
 - **T1-CALLBACK** covers the tech-support pattern: a device alarm (infected, hacked, locked, "virus detected") anywhere outside a reporting frame, plus a direct demand to call a phone number, "us", or a named support line. Real security warnings do not include a number to call. A call request with no device alarm, a health "virus", and calling a number you already trust (the back of your card) stay outside it. It also covers direct requests to call/ring/phone/dial a written number about a charge, approved or attempted payment, queued debit, refund, dispute, suspension or locked account (rules v1.1, F2). A stored number for the attributed brand, including Draft, leaves a Tier 2 blocker: Insufficient Evidence, never Details Match.
 - **T1-REMOTE** no longer needs pressure for direct requests involving AnyDesk, TeamViewer, QuickSupport, LogMeIn, ScreenConnect, RustDesk or UltraViewer. Reported, negated and informational mentions stay excluded; generic screen sharing retains its pressure requirement.
 - **T1-GIFT** also catches gift-card acquisition paired with nearby reimbursement, sender-use or inability-to-buy context. Ordinary birthday purchases and credit-card bills remain excluded.
@@ -126,18 +137,41 @@ Phase 2 (sections A to E) is described under "Phase 2" below. Before it, this ch
 
 The app has not passed full v1.2 conformance or locked field evaluation. No record in the real list is reviewed by a person yet, so none can support a contact and the real list cannot produce Details Match; phone lists are empty; the user-supplied Chase number remains unreviewed and only qualifies a Tier 2 callback exception. [Reviewing reference records](docs/reference-review-guide.md) explains how a person reviews one, which records the demos need, and the decisions still open. Legacy contact normalization and sender-role checks remain open work. T1-DOMAIN depends on the list naming each organization's main domains; the lure-word list was checked against a hand-built sample, not a field corpus. The parser uses a limited suffix list and character map.
 
-Policy evaluation is built, but no sourced organization policy is active yet: the USPS record stays a draft until two people review it against the live page. Targeted first-contact questions are not built; a policy with a mandatory predicate stays quiet until an answer exists. The no-link USPS tracking policy must be independent of initiation. Follow-up answers may satisfy policy context but never verify who contacted the person. Reputation lookup and OCR remain outside v1. The Python package is a logic/test reference for a Node port, not a dependency.
+Policy evaluation is built, but no sourced organization policy is active yet: the USPS record stays a draft until two people review it against the live page. Targeted first-contact questions are not built; a policy with a mandatory predicate stays quiet until an answer exists. The no-link USPS tracking policy must be independent of initiation. Follow-up answers may satisfy policy context but never verify who contacted the person. Reputation lookup remains outside v1. Screenshot OCR (merged from the `ocr-preview` branch) is a preview; see [its setup and limits](docs/ocr/SETUP.md). The Python package is a logic/test reference for a Node port, not a dependency.
 
 ## Phase 2
 
-**A. Trusted reference view.** `TFS.buildTrustedView(store, today)` turns each organization into contact records and keeps only those that are reviewed, have a source, a check date, a review-due date and a reviewer, are not past their review-due date, have an unambiguous scope (a whole registrable domain, an exact host, or a path on a shared platform), and are not claimed by a second organization. Every other record is listed with its reason (`not_reviewed`, `missing:<field>`, `expired`, `ambiguous_scope`, `conflict`, and date errors). Only this view can turn a listed contact into support. Lookalike and conflict rules still read the full list, since they can only raise a warning. The result reports `referenceView` counts. Today every record in `data/store.js` is excluded as `not_reviewed`.
+**A. Trusted reference view.** `TFS.buildTrustedView(store, today)` keeps reviewed,
+complete, unexpired, conflict-free domain/host records and optional path scopes
+on private hosts. Path scopes respect path-segment boundaries. Shared-platform
+paths are excluded as `unsupported_shared_scope`; matching does not yet support
+tenant identity. Explicit per-contact reviews supersede legacy pending notes.
+The result reports `referenceView` counts. Every real-store record is still
+excluded as `not_reviewed`; no review was added by the repairs.
 
 **B. Sender attribution.** `TFS.attributeSender(text, orgs)` names a sender only from a label at the start of a line (`USPS:`, `Chase Alert:`), a direct statement (`This is Medicare`), an affirmative "from" (`a notice from the IRS`), or a sign-off on the last non-empty line (`- Chase`, `Sincerely, Wells Fargo`). A name inside a negation, a reporting frame or a payment phrase is not a claim, a phone number or address is never a claim, and two surviving organizations give `competing_claims`. The result carries `senderAttribution` with a span into the pasted text. An organization implied only by an address keeps `explicit: false`. Names are read from the whole list, not only reviewed records: a sender still reaches Details Match only together with a trusted contact for that same organization, and claim-dependent lookalike warnings (such as `usps-redelivery.top` under a USPS label) need the name.
 
 **C. Tier rules.** `tests/tier-cases.js` runs the exact C13 to C22 spec messages through the real engine. Secrecy cues now qualify a wire or remote-access demand only in the demand's own clause or the clause right after it. The spec row "Never share your code, but send me the code." expected a Tier 2 code request; since Step 2 it is T1-CODE, and it is still never T1-GIFT.
 
-**D. Policy records.** `TFS.buildPolicyView(policies, today)` admits a policy only when two different people reviewed it, it is in date, its action is on the fixed list, its channels are `sms` or `email`, and its predicates and exceptions are well formed. `TFS.evaluatePolicies` then requires, in order: the attributed sender is the policy's organization, the declared channel is Text or Email and in scope (Not sure gives `channel_unknown`), a service cue is present, every mandatory predicate has an answer, no recorded exception applies, and the forbidden action is detected. The result's `policy.trace` lists every skip with its reason. T1-POLICY is in the closed Tier 1 list.
+**D. Policy records.** Policies require two distinct reviewers, valid dates,
+supported actions and channels, and well-formed boolean context fields.
+`request_move_money` is rejected until a detector exists. For an applicable
+detected action, unknown channel or required context produces `policy.uncertainty`
+and a visible unresolved check; it blocks Details Match without proving a violation.
+No detected action or an unrelated sender/service/channel stays out of scope.
+Exceptions require `answer: { name, value }` supplied separately in
+`options.answers`; message wording and `cues` never establish user history.
+The page has no context-question flow yet, so applicable unanswered checks remain
+unresolved. No real policy was activated.
 
 **Engine repairs.** [Two inspection passes](docs/decisions/engine-defect-repairs.md) also changed these behaviors. "Do not share this with anyone" after a named code is advice, not secrecy. Negated or educational arrest wording ("SSA will never threaten you with arrest") is not an arrest threat. Notices such as "Deposit received" or "Transfer completed" are not demands. A phone number with another country's code or letters on a toll-free number (`+44 20 7946 0958`, `1-800-ASK-USPS`, `1-800-Flowers`) is listed as a number this checker cannot read, which blocks Details Match. Addresses ending in `.zip`, `.mov` or `.md` are checked when written as a website (after "at" or "visit", with a path, or with a subdomain); plain file names stay quiet. `ca.gov` is read as a two-part ending, so `dmv.ca.gov` and `edd.ca.gov` can be reviewed. A lookalike email domain shows its encoded form. Long input is read with bounded look-backs.
 
 **E. Annotations.** `TFS.annotate(raw, result, store)` marks Tier 1 requests with their context and antecedent under one note, policy breaks (sender and action), Tier 2 signals, and every checked contact. Labels are words plus a symbol: "Strong warning: don't act on this" (!), "Needs an independent check" (?), "On our reviewed list" (=). Notes come from fixed templates. Overlapping spans merge into one mark listing every note number. The page builds the view with text nodes and `textContent` only, marks are reachable with Tab and point to their notes with `aria-describedby`, and message text is 18px.
+
+
+## Screenshot preview
+
+This build includes local English screenshot reading with mandatory text review.
+Run `npm run preview:ocr` and open `http://127.0.0.1:8381/T4Slvers_CAC/`.
+See [OCR setup](docs/ocr/SETUP.md) for installation, validation and limits. Image
+contacts remain unresolved and cannot produce Details Match.
