@@ -46,7 +46,24 @@ npm run eval -- --split test        # only the test split
 npm run eval -- --strict            # exit 1 if any fraud message gets Details Match
 ```
 
-It writes `eval/results/report.md` and `eval/results/results.csv` (one row per message with its result).
+The default is `--split dev`. Rows are selected before the engine runs; an empty
+selection stops the run. `--split test` also requires both fraud and legitimate
+messages. `--split all` is an explicit choice that exposes both splits.
+
+ID-based automatic allocation still does not separate related message families.
+Assign whole source/template families to one split before reserving a test set;
+the runner does not establish an unseen holdout or freeze the evaluation date.
+
+Outputs in `eval/results/` are:
+
+- `report.md`: rates and diagnostic notes.
+- `results.csv`: a display export. Formula-like cells receive a leading apostrophe;
+  that prefix is not part of the analyzed message. Spreadsheet-program behavior
+  has not been validated, so use an explicit text import when inspecting unknown data.
+- `results.json`: results with the exact analyzed text, without display prefixes.
+
+The input corpus is unchanged. Use JSON for automated comparisons and source
+spans, rather than re-importing the display CSV as a new corpus.
 
 ## 3. Read the report
 

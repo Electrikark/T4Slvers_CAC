@@ -106,8 +106,11 @@
     if (!host || host.indexOf('.') < 0) return 'ambiguous_scope';
     // A whole-domain scope must name the registrable domain itself.
     if (scope.type === 'registrable' && T.registrable(host) !== host) return 'ambiguous_scope';
+    if (scope.pathPrefix != null && (typeof scope.pathPrefix !== 'string' || !scope.pathPrefix.startsWith('/') || /[?#]/.test(scope.pathPrefix))) return 'ambiguous_scope';
     // A bare shared-platform root, with no tenant host or path, could be anyone's page.
     if (sharedPlatform(store, host) && !(scope.pathPrefix && scope.pathPrefix.length > 1)) return 'ambiguous_scope';
+    // Matching does not support tenant paths on shared platforms yet.
+    if (sharedPlatform(store, host)) return 'unsupported_shared_scope';
     return null;
   }
 
@@ -161,7 +164,10 @@
       var host = hostKey(target.host), value = hostKey(r.value);
       var hostOk = r.scope.type === 'host' ? host === value : T.hostMatches(host, value);
       if (!hostOk) return false;
-      if (r.scope.pathPrefix && target.kind === 'link') return pathOf(target).indexOf(r.scope.pathPrefix) === 0;
+      if (r.scope.pathPrefix && target.kind === 'link') {
+        var prefix = r.scope.pathPrefix, path = pathOf(target);
+        return path === prefix || path.indexOf(prefix.endsWith('/') ? prefix : prefix + '/') === 0;
+      }
       // An email address has no path, so a path-scoped record cannot cover it.
       return !r.scope.pathPrefix;
     });
