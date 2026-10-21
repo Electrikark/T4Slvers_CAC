@@ -1,5 +1,10 @@
 # Next task: grandparent instruction openers
 
+Update, 2026-10-21: the bounded Grandma/Grandpa instruction and gift-code link
+now pass `FIX18` in `tests/repair-cases.js`, with negated and reported controls.
+Arbitrary first-name openers are still outside that repair. The diagnostic JSON
+below is retained as historical before-repair evidence, not current execution.
+
 Priority: follow the Tier 2 wording repair. This is an existing detection gap,
 not implemented as part of that repair.
 

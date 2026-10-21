@@ -78,7 +78,8 @@ function checkMessage(event) {
     return showError('Choose Text, Email, or Not sure before checking.', byId('channel-text'));
   }
   try {
-    const result = window.TfsEngine.analyze(text, window.TFS_STORE, { declaredChannel: chosenChannel, policies: window.TFS_POLICIES });
+    const result = window.TfsEngine.analyze(text, window.TFS_STORE, { declaredChannel: chosenChannel, policies: window.TFS_POLICIES,
+      inputSource: byId('submission-form').dataset.inputSource === 'screenshot' ? 'screenshot' : 'pasted_text' });
     // Never show a result whose parts disagree; fail with a plain message instead.
     if (!window.TfsEngine.validateResult(result)) throw new Error('Invalid result');
     showResult(result, text);
@@ -139,6 +140,7 @@ function showAnnotations(text, result) {
 }
 
 function showResult(result, text) {
+  byId('ocr-result-note').hidden = result.inputSource !== 'screenshot';
   const style = RESULT_STYLES[result.assessment];
   const risk = result.requestRisk.level;
   byId('result-banner').className = `result-banner ${style.css}${risk !== 'none' ? ' risky' : ''}`;

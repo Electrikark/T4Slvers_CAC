@@ -5,7 +5,7 @@
   'use strict';
   const T = root.TFS = root.TFS || {};
   const gate = root.TfsAssessment;
-  const VERSION = '0.4.0';
+  const VERSION = '0.4.1';
   const CHANNELS = { text: 'Text', email: 'Email', unknown: 'Not sure' };
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
@@ -14,6 +14,9 @@
     if (!options || typeof options.declaredChannel !== 'string' || !has(CHANNELS, options.declaredChannel)) {
       throw new Error('Choose Text, Email, or Not sure before analysis');
     }
+
+    const inputSource = options.inputSource === undefined ? 'pasted_text' : options.inputSource;
+    if (!['pasted_text', 'screenshot'].includes(inputSource)) throw new Error('Unknown input source');
 
     // Reading 1: who the message claims to be from, and its links, emails and phone numbers.
     const norm = T.normalizeText(input);
@@ -38,6 +41,7 @@
     const incomplete = norm.truncated || extracted.incomplete || signals.incomplete;
 
     if (!checks.length) checks.push({ status: 'UNKNOWN', code: 'nothing_to_check' });
+    if (inputSource === 'screenshot') checks.push({ status: 'UNKNOWN', code: 'ocr_text_unverified' });
     if (incomplete) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
     if (signals.unresolved.length) checks.push({ status: 'UNKNOWN', code: 'risk_unresolved' });
 
@@ -56,12 +60,14 @@
       contacts: T.sourceTargets(bounded), view: policyView, answers: options.answers
     });
     policy.excluded = policyView ? policyView.excluded.slice() : [];
+    if (policy.uncertainty.length) checks.push({ status: 'UNKNOWN', code: 'policy_unresolved' });
 
-    const evidence = T.normalizeEvidence(checks, sender, Boolean(ctx.implicitOrg), signals, incomplete, policy.findings);
+    const evidence = T.normalizeEvidence(checks, sender, Boolean(ctx.implicitOrg), signals, incomplete, policy.findings, policy.uncertainty);
     const decided = gate.assess(evidence);
 
     const result = {
       schemaVersion: 3,
+      inputSource,
       engineVersion: VERSION,
       storeVersion: store.version || null,
       referenceView: { day: trusted.day, trusted: trusted.trusted.length, excluded: trusted.excluded.length },
@@ -111,7 +117,7 @@
 
   // Every field the page shows must be present and well-formed.
   function validShape(r) {
-    if (!r || typeof r !== 'object' || 'state' in r || 'decision' in r) return false;
+    if (!r || !['pasted_text', 'screenshot'].includes(r.inputSource) || typeof r !== 'object' || 'state' in r || 'decision' in r) return false;
     if (Object.values(gate.Assessment).indexOf(r.assessment) < 0) return false;
     if (typeof r.declaredChannel !== 'string' || !has(CHANNELS, r.declaredChannel)) return false;
     if (!r.reputationLookup || r.reputationLookup.status !== 'not_performed') return false;
@@ -154,11 +160,13 @@
     }
     if (r.checks.some((c, i) => Boolean(c.target) !== seen.has(i))) return false;
     if (r.incomplete !== r.checks.some(c => c.code === 'input_incomplete')) return false;
+    if ((r.inputSource === 'screenshot') !== r.checks.some(c => c.code === 'ocr_text_unverified')) return false;
 
     // Rebuilding the evidence from what is displayed must give the same evidence and the same decision.
-    if (!r.policy || !Array.isArray(r.policy.findings) || !Array.isArray(r.policy.trace)) return false;
+    if (!r.policy || !Array.isArray(r.policy.findings) || !Array.isArray(r.policy.trace) || !isTextList(r.policy.uncertainty)) return false;
+    if (Boolean(r.policy.uncertainty.length) !== r.checks.some(c => c.code === 'policy_unresolved')) return false;
     if (!r.policy.findings.every(f => f && f.ruleId === 'T1-POLICY' && isText(f.policyId) && isText(f.quote))) return false;
-    if (!same(e, T.normalizeEvidence(rawChecks, e.sender, r.claimSource === 'implicit', r.requestRisk, r.incomplete, r.policy.findings))) return false;
+    if (!same(e, T.normalizeEvidence(rawChecks, e.sender, r.claimSource === 'implicit', r.requestRisk, r.incomplete, r.policy.findings, r.policy.uncertainty))) return false;
     if (!r.trace || !isTextList(r.trace.rules) || !isTextList(r.trace.blockedBy)) return false;
     const expected = gate.assess(e);
     return expected.assessment === r.assessment && same(expected.trace, r.trace);

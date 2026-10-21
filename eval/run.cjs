@@ -138,14 +138,16 @@ function main() {
   const header = ['id', 'label', 'split', 'category', 'channel', 'assessment', 'outcome', 'tier1', 'tier2', 'blockedBy', 'source', 'text'];
   fs.writeFileSync(path.join(outDir, 'results.csv'), toCsv(header, chosen.map(r => Object.assign({}, r, {
     tier1: r.tier1.join(' '), tier2: r.tier2.join(' '), blockedBy: r.blockedBy.join(' ')
-  }))));
+  })), { spreadsheetSafe: true }));
+  // Exact analyzed text is retained separately from the display-only CSV prefix.
+  fs.writeFileSync(path.join(outDir, 'results.json'), JSON.stringify(chosen, null, 2) + '\n');
   if (access) finishTestRun(access.receiptPath, {
     report: path.join(outDir, 'report.md'), results: path.join(outDir, 'results.csv'),
     reportSha256: require('./dataset.cjs').digest(fs.readFileSync(path.join(outDir, 'report.md'))),
     resultsSha256: require('./dataset.cjs').digest(fs.readFileSync(path.join(outDir, 'results.csv')))
   });
   console.log(report);
-  console.log(`Wrote ${path.relative(process.cwd(), path.join(outDir, 'report.md'))} and results.csv`);
+  console.log(`Wrote ${path.relative(process.cwd(), path.join(outDir, 'report.md'))}, results.csv and results.json`);
   return strict && reassured > 0 ? 1 : 0;
 }
 
