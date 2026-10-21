@@ -23,5 +23,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      # No packages to install: the suite and the stale-wrapper check are dependency-free.
+      - run: npm ci --ignore-scripts
       - run: npm test
+      - run: npm run check:ocr-assets
+
+  ocr-browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:ocr-browser
