@@ -34,11 +34,6 @@ button {
   line-height:1.35;
 }
 
-button:disabled {
-  cursor:wait;
-  opacity:.65;
-}
-
 a {
   color:inherit;
 }
@@ -239,13 +234,11 @@ h2 {
   padding:0;
   margin:24px 0;
 }
-
 .channel-question legend {
   font-size:1rem;
   font-weight:700;
   margin-bottom:12px;
 }
-
 .channel-options {
   display:grid;
   grid-template-columns:repeat(3, minmax(0, 1fr));
@@ -614,106 +607,6 @@ summary span {
   max-width:380px;
 }
 
-.asks .quote {
-  font-style:italic;
-  margin:4px 0 0;
-}
-
-.warning + .warning {
-  margin-top:-10px;
-  font-weight:400;
-}
-
-/* Keep long addresses inside the layout. */
-.home-layout > *, .result-layout > *, .result-banner > div {
-  min-width:0;
-}
-
-.result, .prototype-note, .brand, .option {
-  overflow-wrap:anywhere;
-}
-
-.character-count {
-  color:var(--muted);
-  font-size:0.875rem;
-  margin:4px 0 0;
-  text-align:right;
-}
-
-.over-limit {
-  color:#923823;
-  font-weight:700;
-}
-
-.action-note {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:24px;
-  margin-top:18px;
-  padding:22px 26px;
-  background:#edf1e8;
-  border-left:4px solid var(--teal);
-  border-radius:0 8px 8px 0;
-}
-
-.action-note.high-risk {
-  background:#fbefdd;
-  border-color:#946024;
-  color:#654011;
-}
-
-.action-note h2 {
-  font-size:1rem;
-  margin-bottom:6px;
-}
-
-.action-note p {
-  margin:0;
-  max-width:65ch;
-}
-
-.action-link {
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-height:44px;
-  font-size:1rem;
-  text-underline-offset:4px;
-}
-
-.check-item {
-  padding-left:16px;
-  border-left:2px solid #b4c3af;
-}
-
-.check-item.contradicts {
-  border-left-color:#a76745;
-}
-
-.check-item.unknown {
-  border-left-color:#a68a47;
-}
-
-.check-source {
-  margin-top:8px;
-}
-
-.check-source summary {
-  color:var(--muted);
-  font-size:0.875rem;
-  font-weight:400;
-}
-
-.check-source .source {
-  margin:0 0 12px;
-}
-
-#next-title {
-  scroll-margin-top:24px;
-}
-
 @media(min-width:1400px) {
   .home-layout {
     gap:100px;
@@ -742,16 +635,21 @@ summary span {
   .result-layout {
     gap:25px;
   }
+  .brand-caption {
+    font-size:0.875rem;
+  }
 }
 
 @media(max-width:680px) {
+  body {
+    font-size:1.125rem;
+  }
   .wrap {
     width:calc(100% - 32px);
   }
   .site-header {
     padding:21px 0;
     gap:12px;
-    flex-wrap:wrap;
   }
   .brand {
     font-size:1.25rem;
@@ -764,18 +662,19 @@ summary span {
     border-radius:13px 13px 13px 3px;
   }
   .brand-caption {
-    max-width:220px;
+    font-size:0.875rem;
   }
   .prototype-tag {
     font-size:0.875rem;
     padding:5px 8px;
     white-space:normal;
-    max-width:none;
+    max-width:120px;
     text-align:center;
   }
   .prototype-note {
-    margin:20px 0 24px;
+    margin:20px 0 30px;
     align-items:start;
+    font-size:0.875rem;
   }
   .note-dot {
     margin-top:7px;
@@ -804,6 +703,7 @@ summary span {
     padding:22px;
   }
   .eyebrow {
+    font-size:0.875rem;
     margin-bottom:16px;
   }
   .demo-tools {
@@ -813,6 +713,7 @@ summary span {
     align-items:start;
     flex-wrap:wrap;
     gap:12px;
+    font-size:0.875rem;
   }
   .site-footer p {
     width:100%;
@@ -821,7 +722,6 @@ summary span {
   .result-banner {
     padding:22px;
     gap:13px;
-    flex-direction:column;
   }
   .result-banner h1 {
     font-size:1.9375rem;
@@ -845,21 +745,6 @@ summary span {
   summary span {
     display:block;
     margin:4px 0 0 18px;
-  }
-  .action-note {
-    align-items:flex-start;
-    flex-direction:column;
-    gap:8px;
-    padding:20px;
-  }
-  .state-label {
-    letter-spacing:0.5px;
-  }
-  .checks {
-    margin-bottom:0;
-  }
-  .source, .hint, .privacy {
-    font-size:1rem;
   }
 }
 
@@ -980,21 +865,9 @@ summary span {
   .source, .hint, .privacy { font-size:1rem; }
 }
 @media (max-width:360px) {
-  .channel-options {
-    grid-template-columns:1fr;
-  }
-  .submission-card {
-    padding:18px;
-  }
+  .channel-options { grid-template-columns:1fr; }
+  .submission-card { padding:18px; }
 }
-
-@media (forced-colors:active) {
-  .option.active {
-    outline:3px solid Highlight;
-  }
-  .action-note, .check-item {
-    border-color:CanvasText;
-  }
 .self-check {
   margin:8px 0 32px;
   padding:27px;
