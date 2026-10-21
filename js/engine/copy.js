@@ -49,6 +49,8 @@
         return `${t} is not on our list for ${orgName(org)}. Our list may be incomplete, so this alone does not establish a conflict.`;
       case 'reference_needs_review':
         return `${t} is listed for ${orgName(org)}, but its source record still needs review. We cannot count it as a match.`;
+      case 'ocr_text_unverified':
+        return 'This text was read from an image. A link or word may be wrong or missing, so it cannot establish a contact-details match.';
       case 'input_incomplete':
         return 'Part of this input exceeds the checker’s limits. A partial check cannot establish a full match. Paste a shorter message or one complete link.';
       case 'risk_unresolved':

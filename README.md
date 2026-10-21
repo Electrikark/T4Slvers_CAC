@@ -133,7 +133,7 @@ Phase 2 (sections A to E) is described under "Phase 2" below. Before it, this ch
 
 The app has not passed full v1.2 conformance or locked field evaluation. No record in the real list is reviewed by a person yet, so none can support a contact and the real list cannot produce Details Match; phone lists are empty. Legacy contact normalization and sender-role checks remain open work. T1-DOMAIN depends on the list naming each organization's main domains; the lure-word list was checked against a hand-built sample, not a field corpus. The parser uses a limited suffix list and character map.
 
-Policy evaluation is built, but no sourced organization policy is active yet: the USPS record stays a draft until two people review it against the live page. Targeted first-contact questions are not built; a policy with a mandatory predicate stays quiet until an answer exists. The no-link USPS tracking policy must be independent of initiation. Follow-up answers may satisfy policy context but never verify who contacted the person. Reputation lookup and OCR remain outside v1. The Python package is a logic/test reference for a Node port, not a dependency.
+Policy evaluation is built, but no sourced organization policy is active yet: the USPS record stays a draft until two people review it against the live page. Targeted first-contact questions are not built; a policy with a mandatory predicate stays quiet until an answer exists. The no-link USPS tracking policy must be independent of initiation. Follow-up answers may satisfy policy context but never verify who contacted the person. Reputation lookup remains outside v1. Screenshot OCR is available only on the isolated `ocr-preview` development branch; see [its setup and limits](docs/ocr/SETUP.md). The Python package is a logic/test reference for a Node port, not a dependency.
 
 ## Phase 2
 
@@ -161,3 +161,12 @@ The page has no context-question flow yet, so applicable unanswered checks remai
 unresolved. No real policy was activated.
 
 **E. Annotations.** `TFS.annotate(raw, result, store)` marks Tier 1 requests with their context and antecedent under one note, policy breaks (sender and action), Tier 2 signals, and every checked contact. Labels are words plus a symbol: "Strong warning: don't act on this" (!), "Needs an independent check" (?), "On our reviewed list" (=). Notes come from fixed templates. Overlapping spans merge into one mark listing every note number. The page builds the view with text nodes and `textContent` only, marks are reachable with Tab and point to their notes with `aria-describedby`, and message text is 18px.
+
+
+## Screenshot preview branch
+
+This branch includes local English screenshot reading with mandatory text review.
+Run `npm run preview:ocr` and open `http://127.0.0.1:8381/T4Slvers_CAC/`.
+See [OCR setup](docs/ocr/SETUP.md) for installation, validation and limits. Image
+contacts remain unresolved and cannot produce Details Match. This branch does not
+change the public deployment.
