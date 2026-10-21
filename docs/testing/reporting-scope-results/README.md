@@ -4,7 +4,7 @@ Primary metric: **suite pass rate**. Frozen evaluation date: **2026-10-12**.
 
 Tier 2 follow-up: GAP1–3 add approved-record warnings (795/795 fixture rows; 1,138 shared checks), changing all three from Details Match to Insufficient Evidence; see [before](tier2-gaps-before.json) and [after](tier2-gaps-after.json), with earlier tables retained as historical results.
 
-Tier 2 review: 15 new variations improve from 1/15 to 15/15, bringing the fixture suite pass rate to 810/810; see [before](tier2-review-before.json), [after](tier2-review-after.json) and [two open diagnostics](tier2-review-known-gaps.json).
+Tier 2 review: 15 new variations improve from 1/15 to 15/15, bringing the fixture suite pass rate to 810/810; see [before](tier2-review-before.json), [after](tier2-review-after.json) and [two open diagnostics](tier2-review-known-gaps.json). Both diagnostics now pass: FOLLOWUP-GRANDPARENT after repair R3, and KNOWN-DEPOSIT, now a passing NOTICE row, after repair B5 ([engine defect repairs](../../decisions/engine-defect-repairs.md)).
 
 ## Current Tier 2 review
 
