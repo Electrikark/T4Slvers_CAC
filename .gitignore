@@ -5,3 +5,8 @@ eval/results/
 
 # macOS folder files
 .DS_Store
+
+# Local dependencies and browser-test output
+node_modules/
+test-results/
+playwright-report/

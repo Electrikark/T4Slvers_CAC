@@ -36,6 +36,7 @@
     uncertainty.push(...(policyUncertainty || []));
 
     checks.forEach((check, index) => {
+      if (check.code === 'ocr_text_unverified') uncertainty.push('ocr_text_unverified');
       if (check.target) {
         contacts.push({ org: check.orgId || null, verification: check.status === 'SUPPORTS' ? 'verified' : 'unresolved', checkIndex: index, support: check });
       }

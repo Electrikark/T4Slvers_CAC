@@ -10,5 +10,11 @@
   "freeze": {
     "sourceRevision": "",
     "evidence": ""
+  },
+  "authorization": {
+    "requirementsWaived": true,
+    "date": "2026-10-21",
+    "evidence": "User: Ignore the video requirments and the others. Later authorized package downloads, a preview branch and implementation.",
+    "baselineRevision": "075860496e91fa7c84138f26d8cfede47d685ecc"
   }
 }

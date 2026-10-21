@@ -34,6 +34,14 @@ let readinessError = '';
 try { readiness = JSON.parse(fs.readFileSync(path.join(root, 'docs/ocr/readiness.json'), 'utf8')); }
 catch (error) { readinessError = error.message; }
 const noted = value => typeof value === 'string' && value.trim().length > 0;
+if (readiness?.authorization?.requirementsWaived === true) {
+  check('preview_authorized', noted(readiness.authorization.evidence), readiness.authorization.evidence || 'Missing authorization note');
+  const baseline = readiness.authorization.baselineRevision;
+  check('preview_baseline', typeof baseline === 'string' && /^[0-9a-f]{40}$/.test(baseline) &&
+    git('merge-base', '--is-ancestor', baseline, 'HEAD') === '', baseline || 'Missing preview baseline');
+  const branch = git('branch', '--show-current');
+  check('preview_branch', branch === 'ocr-preview', branch || 'Detached HEAD');
+} else {
 check('video_recorded', readiness?.video?.recorded === true && noted(readiness?.video?.evidence),
   readinessError || readiness?.video?.evidence || 'Record the video and note its date or location');
 check('phone_copying_hard', readiness?.phone?.copyingWasHard === true && noted(readiness?.phone?.evidence),
@@ -49,6 +57,8 @@ check('frozen_source', validSource && resolved === source && noted(readiness?.fr
   (tag ? tag === source : releaseSource === source),
   tag ? 'v1.0-cac: ' + tag : releaseSource ? 'RELEASE.md source: ' + releaseSource :
     'No v1.0-cac tag or tracked RELEASE.md with a Source revision: <full SHA> line');
+
+}
 
 let fixture = null;
 try {
@@ -68,6 +78,6 @@ else {
   for (const item of checks) console.log((item.passed ? 'PASS ' : 'WAIT ') + item.name + ': ' + item.detail);
   if (fixture) console.log('Fixture: ' + fixture.total + ' rows; ' + fixture.singleLine + ' have no line breaks');
   console.log(report.ready ? 'Prerequisites recorded. Use the isolated setup steps in docs/ocr/SETUP.md.' :
-    'NOT READY. Resolve the WAIT items before creating the OCR feature branch.');
+    'NOT READY. Resolve the WAIT items before treating this preview as ready for review.');
 }
 process.exitCode = report.ready ? 0 : 1;
