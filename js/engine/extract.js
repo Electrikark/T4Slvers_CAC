@@ -9,7 +9,11 @@
   const MAX_TARGETS = 30;
   // Characters that end a token: whitespace, brackets and quotes around links.
   const TOKEN_RE = /[^\s<>"'`()\[\]{}]+/g;
-  const FILE_ENDINGS = /^(?:pdf|jpg|jpeg|png|gif|svg|webp|docx?|xlsx?|pptx?|txt|csv|zip|exe|js|css|html?|mp[34]|md)$/i;
+  const FILE_ENDINGS = /^(?:pdf|jpg|jpeg|png|gif|svg|webp|docx?|xlsx?|pptx?|txt|csv|zip|exe|js|css|html?|mp[34]|md|mov)$/i;
+  // File endings that are also real domain endings. "photos.zip" stays a file name; it is read
+  // as a website when written like one: after "at" or "visit", with a path, or with a subdomain.
+  const DOMAIN_FILE_ENDINGS = /^(?:zip|mov|md)$/i;
+  const WEB_CUE = /\b(?:at|visit|go to|website|site|link|tap|click)\s+$/i;
   const LEAD_PUNCT = /^[*.,;:!?\-_~]+/;
   const TRAIL_PUNCT = /[.,;:!?*~]+$/;
   // \u00A1-\uFFFF: any non-ASCII letter, for internationalized domain names.
@@ -17,6 +21,11 @@
   const EMAIL_RE = /^(?:mailto:)?([a-z0-9._%+\-]{1,64})@((?:[a-z0-9\u00A1-\uFFFF-]{1,63}\.){1,10}[a-z\u00A1-\uFFFF]{2,24})$/i;
   // North American numbers: (202) 555-0148, 202.555.0148, +1 202 555 0148.
   const PHONE_RE = /(?<![\w+])(?:\+?1[\s.\-]?)?\(?([2-9]\d{2})\)?[\s.\-]?([2-9]\d{2})[\s.\-]?(\d{4})(?!\d)/g;
+  // Numbers this checker cannot read but must not ignore: another country's code
+  // (+44 20 7946 0958) or letters in place of digits on a toll-free number (1-800-ASK-USPS,
+  // 1-800-Flowers). Seven letters and digits follow the area code, with at least three letters.
+  const FOREIGN_PHONE_RE = /(?<![\w+])\+[2-9][\d\s.\-()]{6,20}\d(?!\d)/g;
+  const LETTER_PHONE_RE = /(?<![\w+\-])(?:1[\s.\-]?)?\(?8(?:00|33|44|55|66|77|88)\)?([\s.\-]?)([A-Za-z0-9]{2,4}[\s.\-]?[A-Za-z0-9]{2,5})(?![\w\-])/g;
 
   function decodeSafe(s) {
     try { return decodeURIComponent(s); } catch (err) { return s; }
@@ -51,14 +60,16 @@
     return target;
   }
 
-  // One token to a link or email target, or null.
-  function parseToken(token) {
+  // One token to a link or email target, or null. `before` is the text just before the token.
+  function parseToken(token, before) {
     if (/^(?:https?|ftp):\/\//i.test(token)) return parseLink(token, token);
     if (EMAIL_RE.test(token)) return parseEmail(token);
     if (/^www\./i.test(token)) return parseLink(token, 'http://' + token);
     const bare = !token.includes('@') && token.match(BARE_HOST_RE);
     // "report.pdf" is a file name, but an unfamiliar ending like ".top" must still be checked.
     if (bare && !FILE_ENDINGS.test(bare[2])) return parseLink(token, 'http://' + token);
+    if (bare && DOMAIN_FILE_ENDINGS.test(bare[2]) &&
+        (WEB_CUE.test(before || '') || token.length > bare[1].length || (bare[1].match(/\./g) || []).length > 1)) return parseLink(token, 'http://' + token);
     if (/[.|\\^@]/.test(token) && /(?:https?:|www\.)/i.test(token)) return { kind: 'link', raw: token, error: 'unreadable' };
     return null;
   }
@@ -86,7 +97,7 @@
         start += lead[0].length;
       }
       token = token.replace(TRAIL_PUNCT, '');
-      const target = token && parseToken(token);
+      const target = token && parseToken(token, text.slice(Math.max(0, start - 20), start));
       if (!target) continue;
       // Offsets into the text given to extractTargets (see sourceTargets for the person's text).
       target.at = [start, start + token.length];
@@ -104,6 +115,22 @@
       const lead = p[0].length - p[0].trimStart().length;
       const raw = p[0].trim();
       add('phone:' + e164, { kind: 'phone', raw, e164, display: `(${p[1]}) ${p[2]}-${p[3]}`, at: [p.index + lead, p.index + lead + raw.length] });
+    }
+    // Unreadable numbers are listed, never guessed at, so the page does not say there is no number.
+    const taken = targets.filter(t => t.kind === 'phone').map(t => t.at);
+    const unreadable = [...masked.matchAll(FOREIGN_PHONE_RE)].filter(p => {
+      const digits = p[0].replace(/\D/g, '').length;
+      return digits >= 8 && digits <= 15;
+    }).concat([...masked.matchAll(LETTER_PHONE_RE)].filter(p => {
+      const chars = p[2].replace(/[^A-Za-z0-9]/g, '');
+      // "800 Clients" is a count, not a number: lowercase letters need a dash or dot first.
+      return chars.length === 7 && /[A-Za-z]{3}/.test(chars) && (/^[A-Z0-9]+$/.test(chars) || /[.\-]/.test(p[1]));
+    }));
+    for (const p of unreadable.sort((a, b) => a.index - b.index)) {
+      const at = [p.index, p.index + p[0].length];
+      if (taken.some(([from, to]) => at[0] < to && from < at[1])) continue;
+      taken.push(at);
+      add('phone:' + p[0], { kind: 'phone', raw: p[0], e164: null, display: p[0], error: 'unsupported', at });
     }
     return { targets, masked, incomplete };
   }

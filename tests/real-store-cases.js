@@ -216,7 +216,7 @@ window.TFS_REAL_CASES = [
   {
     "id": "R16",
     "text": "Amazon: verify your account at https://amaz0n-secure.com/login within 24 hours",
-    "expect": {"assessment": "insufficient_evidence" /* spec v1.2: legacy contact conflict is Tier 2; only established Tier 1 wins. */, "contactStrength": "strong", "codes": ["brand_in_foreign_domain"], "flags": ["credential_request", "urgency"]},
+    "expect": {"assessment": "suspicious" /* Changed by repair B4: the lookalike-letter brand plus the lure word "secure" is an address trick (was insufficient_evidence). */, "rules": ["T1-DOMAIN"], "contactStrength": "strong", "codes": ["brand_in_foreign_domain"], "flags": ["credential_request", "urgency"]},
     "guards": "A digit zero inside a brand name with extra words"
   }
 ];

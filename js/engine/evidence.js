@@ -15,11 +15,13 @@
   const UNCLEAR_GIFT = ['unclear_gift_payment_purpose', 'competing_card_code_antecedent'];
 
   // A brand name and a lure word as separate parts of one address: chase-secure-login.net.
+  // The brand part is read the way the brand match read it, so amaz0n-secure.com counts too.
   function brandLure(check) {
     const host = check.target && check.target.host;
     if (check.code !== 'brand_in_foreign_domain' || !host || !check.brandWord) return false;
     const parts = host.split('.').slice(0, -1).join('.').split(/[-_.]+/);
-    return parts.includes(check.brandWord) && parts.some(p => LURE.test(p));
+    const brand = T.skeleton(check.brandWord);
+    return parts.some(p => p === check.brandWord || T.skeleton(T.toUnicodeHost(p) || p) === brand) && parts.some(p => LURE.test(p));
   }
 
   const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check) ||
@@ -39,7 +41,7 @@
       if (check.target) {
         contacts.push({ org: check.orgId || null, verification: check.status === 'SUPPORTS' ? 'verified' : 'unresolved', checkIndex: index, support: check });
       }
-      if (check.code === 'link_unreadable') uncertainty.push('extraction_failed:' + index);
+      if (check.code === 'link_unreadable' || check.code === 'phone_unreadable') uncertainty.push('extraction_failed:' + index);
       // Other conflicts stay Tier 2: real brand domains missing from the list produce them too.
       if (check.status === 'CONTRADICTS') {
         if (isDomainTrick(check)) finding('T1-DOMAIN', 1, 'established', null, check);
@@ -66,4 +68,5 @@
   }
 
   T.normalizeEvidence = normalizeEvidence;
+  T.isDomainTrick = isDomainTrick;
 })(typeof window !== 'undefined' ? window : globalThis);

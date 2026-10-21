@@ -19,11 +19,13 @@ vary Grandma/Grandpa, an addressed first name, buy/purchase, and a line break
 after the address. Include negated requests, reported scam examples and ordinary
 family messages as quiet controls. Do not treat every comma as a new imperative.
 
-- [ ] Write variants and quiet controls; save all initial failures.
-- [ ] Recognize addressed instructions without bypassing negation or reporting.
-- [ ] Verify the gift-card antecedent and disclosure source spans.
-- [ ] Test both absent and approved contact records.
-- [ ] Run shared, parity, boundary and evaluation suites; document residual gaps.
+- [x] Write variants and quiet controls; save all initial failures.
+- [x] Recognize addressed instructions without bypassing negation or reporting.
+- [x] Verify the gift-card antecedent and disclosure source spans.
+- [x] Test both absent and approved contact records.
+- [x] Run shared, parity, boundary and evaluation suites; document residual gaps.
 
 The exact observed miss is recorded in
 [the open diagnostics](reporting-scope-results/tier2-review-known-gaps.json).
+
+Done: see [engine defect repairs, R3](../decisions/engine-defect-repairs.md).

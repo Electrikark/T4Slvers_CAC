@@ -10,14 +10,24 @@
   function shown(target) {
     if (!target) return '';
     if (target.kind === 'phone') return target.display;
-    if (target.kind === 'email') return target.raw;
+    // A lookalike email domain shows its encoded form too: support@chаse.com (support@xn--chse-63d.com).
+    if (target.kind === 'email') {
+      const local = target.raw.slice(0, target.raw.lastIndexOf('@'));
+      return target.hostUnicode && target.host && target.hostUnicode !== target.host ? `${target.raw} (${local}@${target.host})` : target.raw;
+    }
     return target.hostUnicode && target.hostUnicode !== target.host ? `${target.hostUnicode} (${target.host})` : target.host || target.raw;
   }
+
+  // A name close to an official one, but no address trick (Tier 2). Real, unrelated sites
+  // look like this too: medicaid.gov is two letters from medicare.gov.
+  const SIMILAR_CODES = ['typosquat', 'same_label_other_tld', 'brand_in_foreign_domain'];
+  const similarOnly = check => check.status === 'CONTRADICTS' && SIMILAR_CODES.includes(check.code) && !T.isDomainTrick(check);
 
   // One or two sentences per check, for "What we found".
   function checkDetail(check, ctx) {
     const t = shown(check.target);
     const org = check.orgId ? T.orgById(ctx.store, check.orgId) : null;
+    if (similarOnly(check) && check.lookalikeOf) return `${t} is similar to ${check.lookalikeOf}. We can’t tell whether it belongs to them.`;
     switch (check.code) {
       case 'domain_official':
         return check.target.kind === 'email'
@@ -48,7 +58,7 @@
       case 'not_in_official_list':
         return `${t} is not on our list for ${orgName(org)}. Our list may be incomplete, so this alone does not establish a conflict.`;
       case 'reference_needs_review':
-        return `${t} is listed for ${orgName(org)}, but its source record still needs review. We cannot count it as a match.`;
+        return `${t} is listed for ${orgName(org)}${RECORD_PROBLEMS[recordProblem(check)]}`;
       case 'input_incomplete':
         return 'Part of this input exceeds the checker’s limits. A partial check cannot establish a full match. Paste a shorter message or one complete link.';
       case 'risk_unresolved':
@@ -59,6 +69,8 @@
         return `${t} is a free email account. Anyone can create one with any name.`;
       case 'no_claimed_identity':
         return `The message does not name an organization we know, and ${t} is not on our list.`;
+      case 'phone_unreadable':
+        return `${t} looks like a phone number, but this checker reads only U.S. and Canadian numbers written in digits. It was not compared with any list.`;
       case 'link_unreadable':
         return 'We could not read this link: ' + check.target.raw;
       case 'nothing_to_check':
@@ -66,6 +78,26 @@
       default:
         return 'No details for this check.';
     }
+  }
+
+  // Why a listed record cannot count, from the trusted view's exclusion reason.
+  const RECORD_PROBLEMS = {
+    not_reviewed: ', but its source record still needs review. We cannot count it as a match.',
+    expired: ', but the review of that record has expired. We cannot count it as a match until someone reviews it again.',
+    ambiguous_scope: ', but that record’s scope is unclear, so we can’t tell which addresses it covers. We cannot count it as a match.',
+    conflict: ' and also for another organization. We cannot count it as a match for either.',
+    incomplete: ', but that record is missing review details. We cannot count it as a match.'
+  };
+  const recordProblem = check => RECORD_PROBLEMS[check.reason] ? check.reason : check.reason ? 'incomplete' : 'not_reviewed';
+
+  // "Reviewed by … on …" after a human review. Otherwise plain words: the store's own note
+  // (org.verifiedBy) records how the automated check was run and is not meant for the reader.
+  function reviewStatus(org) {
+    const review = org.humanReview;
+    if (review && review.reviewer && review.date) return `. Review status: Reviewed by ${review.reviewer} on ${review.date}`;
+    const done = (org.contacts || []).filter(c => c.status === 'reviewed' && c.reviewedBy && c.checkedOn);
+    if (done.length) return `. Review status: ${done.length} of ${org.contacts.length} contacts reviewed by ${[...new Set(done.map(c => c.reviewedBy))].join(', ')}`;
+    return '. Review status: an automated check found that the website loads. No person has reviewed it yet';
   }
 
   const ADDRESS_CODES = ['domain_official', 'domain_belongs_to_other_org', 'not_in_official_list', 'reference_needs_review',
@@ -78,7 +110,7 @@
     if (ADDRESS_CODES.includes(check.code)) {
       const org = check.orgId ? T.orgById(ctx.store, check.orgId) : null;
       const listed = org ? `Local list: ${org.displayName} → ${[...new Set((org.officialDomains || []).concat((org.contacts || []).filter(c => c.kind === 'domain').map(c => c.value)))].join(', ')}` : 'Reference list';
-      return listed + version + (org && org.verifiedBy ? '. Review status: ' + org.verifiedBy : '');
+      return listed + version + (org ? reviewStatus(org) : '');
     }
     if (check.code === 'phone_official' || check.code === 'phone_not_on_file') return 'Reference list of official phone numbers' + version;
     if (check.code === 'shortener_unresolvable') return 'List of known link shorteners' + version;
@@ -153,8 +185,10 @@
     ['input_incomplete', 'Some input was not inspected. Check a shorter message before drawing a conclusion.'],
     ['shortener_unresolvable', 'The destination remains unknown because this app does not follow links.'],
     ['nothing_to_check', 'Without a link, email address or phone number, there is nothing to compare. Judge it by what it asks you to do.'],
+    ['phone_unreadable', 'This checker could not read a phone number in this message, so it could not compare it with any list.'],
     ['phone_not_on_file', 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.'],
     ['user_content_platform', 'A page on a site where anyone can publish does not show who made it.'],
+    ['not_in_official_list', null],
     ['reference_needs_review', 'Our list has this address, but no person has reviewed that record yet. Until someone does, it cannot count as a match.']
   ];
 
@@ -183,17 +217,31 @@
     }
     const risky = result.requestRisk.flags.length || result.requestRisk.unresolved.length;
     const conflict = conflicts(result).length > 0;
+    // Only similar names, with no address trick or other-organization conflict.
+    const similar = conflict && result.evidence.contacts.every(c => c.support.status !== 'CONTRADICTS' || similarOnly(c.support));
+    // Addresses the named sender's list does not have, by name: "quickpay-now.top".
+    const unlisted = result.checks.filter(c => c.code === 'not_in_official_list' && c.target).map(c => c.target);
     let description = 'We do not have enough reliable evidence for a complete assessment.';
-    if (conflict) description = 'A contact detail in this message does not match our stored list. We cannot give a complete assessment.';
+    if (anySupport && unlisted.length) description = 'Some contact details match our stored list, but at least one does not. We cannot give a complete assessment.';
+    if (similar) description = 'A contact detail in this message is similar to an address on our list. We can’t tell whether it belongs to the same organization, so we cannot give a complete assessment.';
+    else if (conflict) description = 'A contact detail in this message does not match our stored list. We cannot give a complete assessment.';
     else if (risky) description = 'The message contains warning signs, and we cannot give a complete assessment.';
     const gap = GAP_MEANINGS.find(([code]) => codes.includes(code));
-    let meaning = gap ? gap[1] : 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
+    // A listed record that was reviewed but cannot count (expired, unclear, conflicting) is not "unreviewed".
+    const listed = gap && gap[0] === 'reference_needs_review' &&
+      result.evidence.contacts.map(c => c.support).find(c => c.code === 'reference_needs_review');
+    let meaning = listed && recordProblem(listed) !== 'not_reviewed'
+      ? 'Our list has this address, but that record cannot count as a match right now.'
+      : gap && gap[0] === 'not_in_official_list'
+        ? `${joinPhrases(unlisted)} ${unlisted.length > 1 ? 'are' : 'is'} not on our list for this sender. Our list may be incomplete, so we can’t tell either way. Don’t use ${unlisted.length > 1 ? 'them' : 'it'} until you check another way.`
+        : gap ? gap[1] : 'Missing information is not a sign that a message is fake, and it is not a sign that it is real either.';
     if (risky) {
       meaning = anySupport
         ? 'Warning signs remain in what the message asks. Matching contact details cannot clear those signs.'
         : 'Warning signs remain in what the message asks. Judge it by those signs, not by how official it looks.';
     }
-    if (conflict) meaning += ' Contact details also conflict with our stored list. That conflict blocks a match. This checker cannot resolve it from the available evidence.';
+    if (similar) meaning += ' An address is similar to one on our list, and we can’t tell who it belongs to. That blocks a match.';
+    else if (conflict) meaning += ' Contact details also conflict with our stored list. That conflict blocks a match. This checker cannot resolve it from the available evidence.';
     return { description, meaning };
   }
 
@@ -203,9 +251,14 @@
     const flagAdvice = result.requestRisk.flags.map(f => FLAGS[f.id].advice);
     const matched = result.assessment === 'details_match';
     if (!matched) list.push("Don't use any contact information from this message, including links, email addresses, or phone numbers. Contact the person or organization using a website, app, statement, or number you already trust.");
-    // Name each lookalike address so the person knows exactly what not to open.
-    for (const c of conflicts(result)) {
-      if (c.strength === 'strong' && c.target) list.push(`Do not open or reply to ${c.target}. It looks like a known address but is not on our list for that organization.`);
+    // Name each lookalike address so the person knows exactly what not to open. Only an address
+    // trick (T1-DOMAIN) gets that warning: a merely similar name can be a real, unrelated site
+    // (medicaid.gov is two letters from medicare.gov), so it gets plainer words.
+    const tricks = result.evidence.findings.filter(f => f.ruleId === 'T1-DOMAIN').map(f => f.support);
+    for (const c of result.evidence.contacts.map(contact => contact.support)) {
+      if (c.status !== 'CONTRADICTS' || c.strength !== 'strong') continue;
+      if (tricks.includes(c)) list.push(`Do not open or reply to ${shown(c.target)}. It looks like a known address but is not on our list for that organization.`);
+      else if (c.lookalikeOf) list.push(`${shown(c.target)} looks similar to ${c.lookalikeOf}. We can’t tell whether it belongs to them.`);
     }
     if (!matched && result.checks.some(c => c.code === 'nothing_to_check') && (flagAdvice.length || result.requestRisk.unresolved.length)) {
       list.push('Do not act on this request until you check independently.');
@@ -215,6 +268,8 @@
     }
     list.push(...flagAdvice);
     if (matched && !flagAdvice.length) list.push('Even when details match, never share passwords or codes.');
+    // A real address can be copied into a fake message, and a reply can bring a fake "fraud team" call.
+    if (matched) list.push('If someone calls you about this message, hang up and call the number on your card or statement yourself.');
     return list;
   }
 
@@ -243,9 +298,12 @@
     } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number' || f.id === 'secret_emergency_money')) {
       steps.push('Call the family member using a number you already know before responding or sending anything.');
     } else {
-      steps.push('Contact the organization using contact details you already trust, not the ones in the message.');
+      // No organization is named: the message may be from a person the reader knows.
+      steps.push('Contact the person or organization using contact details you had before this message, not the ones in it.');
     }
     if (result.requestRisk.level !== 'none') steps.push('If you already shared information or paid, call your bank right away and ask a trusted person for help.');
+    if (result.assessment === 'suspicious') steps.push('You can report it: forward a fake text to 7726 (SPAM), and report fraud at reportfraud.ftc.gov.');
+    if (result.assessment !== 'details_match') steps.push('It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you.');
     return steps;
   }
 

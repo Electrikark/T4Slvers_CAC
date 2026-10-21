@@ -62,15 +62,17 @@ test('E9 Outcomes: Details Match on fraud is false reassurance', () => {
 });
 test('E10 Counts and rates from stubbed results', () => {
   const messages = M.readMessages(parseCsv(header +
-    'f1,fraud,text,s,a\nf2,fraud,text,s,b\nf3,fraud,text,s,c\nl1,legit,text,s,d\nl2,legit,text,s,e\n')).messages;
-  const answers = { a: 'suspicious', b: 'insufficient_evidence', c: 'details_match', d: 'suspicious', e: 'details_match' };
-  const stub = text => ({ assessment: answers[text], trace: { blockedBy: [] },
+    'f1,fraud,text,s,a\nf2,fraud,text,s,b\nf3,fraud,text,s,c\nl1,legit,text,s,d\nl2,legit,text,s,e\nl3,legit,text,s,w\n')).messages;
+  const answers = { a: 'suspicious', b: 'insufficient_evidence', c: 'details_match', d: 'suspicious', e: 'details_match', w: 'insufficient_evidence' };
+  const stub = text => ({ assessment: answers[text], trace: { blockedBy: [] }, requestRisk: { level: text === 'w' ? 'high' : 'none' },
     evidence: { findings: answers[text] === 'suspicious' ? [{ ruleId: 'T1-GIFT', tier: 1, status: 'established' }] : [] } });
   const results = M.judge(messages, stub);
   const t = M.tally(results);
   assert.deepEqual([t.fraud.suspicious, t.fraud.insufficient, t.fraud.match, t.legit.suspicious, t.legit.match], [1, 1, 1, 1, 1]);
   near(t.rates.caught.rate, 1 / 3); near(t.rates.paused.rate, 2 / 3); near(t.rates.reassured.rate, 1 / 3);
-  near(t.rates.falseAlarm.rate, 1 / 2);
+  near(t.rates.falseAlarm.rate, 1 / 3);
+  // A strong warning on an honest message counts as alarming, even without the Suspicious label.
+  assert.equal(t.legit.warnedOnly, 1); near(t.rates.alarmed.rate, 2 / 3);
   assert.deepEqual(M.ruleCounts(results), [{ rule: 'T1-GIFT', fraud: 1, legit: 1 }]);
 });
 test('E11 The real engine and list load, and report how many records are reviewed', () => {
