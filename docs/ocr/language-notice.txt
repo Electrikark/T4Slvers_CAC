@@ -1,0 +1,16 @@
+English OCR language asset
+
+Package: @tesseract.js-data/eng 1.0.0
+Source: https://github.com/naptha/tessdata
+Asset: 4.0.0_best_int/eng.traineddata.gz (copied without changes)
+Package author: Balearica <admin@scribeocr.com>
+Package contributors: Balearica, jeromewu
+The package metadata declares MIT; its full metadata is retained in PACKAGE.json.
+
+The model is an integerized Tessdata Best English model.
+Upstream model family: https://github.com/tesseract-ocr/tessdata_best
+Upstream license: Apache-2.0
+https://github.com/tesseract-ocr/tessdata_best/blob/main/LICENSE
+The Apache-2.0 text is included as ../LICENSE-core.txt.
+
+No private screenshots or recognized message text are included in these assets.
