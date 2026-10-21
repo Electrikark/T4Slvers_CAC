@@ -1048,3 +1048,18 @@ summary span {
 @media (forced-colors:active) {
   .ann { border:1px solid CanvasText; }
 }
+
+
+/* Screenshot preview */
+.ocr-button { min-height:52px; padding:12px; border:2px solid var(--teal); border-radius:8px; background:var(--soft); color:var(--ink); font-size:1.125rem; font-weight:700; }
+.ocr-preview { border:2px solid var(--teal); border-radius:8px; padding:14px; margin-bottom:18px; }
+.ocr-preview h3 { margin:0 0 12px; font-size:1.125rem; }
+.ocr-preview img { display:block; max-width:100%; max-height:200px; margin:12px auto 0; object-fit:contain; }
+.ocr-preview p, .ocr-preview summary, .ocr-review, #ocr-status { font-size:1.125rem; line-height:1.5; }
+.ocr-preview pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:220px; overflow:auto; font:inherit; }
+.ocr-review { display:flex; gap:12px; align-items:flex-start; padding:12px 0; cursor:pointer; }
+.ocr-review input { flex:0 0 24px; width:24px; height:24px; margin:4px 0 0; accent-color:var(--teal); }
+.ocr-warning { padding:12px; border-left:4px solid #923823; background:#fff0e6; color:#682515; }
+button:disabled { opacity:0.65; cursor:default; }
+
+.ocr-image-link { display:block; min-height:48px; padding:10px 0; color:var(--teal); font-size:1.125rem; }
