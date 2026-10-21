@@ -1,0 +1,14 @@
+{
+  "video": {
+    "recorded": false,
+    "evidence": ""
+  },
+  "phone": {
+    "copyingWasHard": false,
+    "evidence": ""
+  },
+  "freeze": {
+    "sourceRevision": "",
+    "evidence": ""
+  }
+}

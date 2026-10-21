@@ -67,7 +67,13 @@ function outcomeOf(label, assessment) {
   return { details_match: 'matched', insufficient_evidence: 'paused', suspicious: 'FALSE_ALARM' }[assessment];
 }
 
-function judge(messages, analyze) {
+function judge(messages, analyze, split = 'all') {
+  if (!['all', 'dev', 'test'].includes(split)) throw new Error('split must be all, dev or test');
+  if (split !== 'all') messages = messages.filter(m => m.split === split);
+  if (!messages.length) throw new Error('No messages in the selected split.');
+  if (split === 'test' && !LABELS.every(label => messages.some(m => m.label === label))) {
+    throw new Error('The test split needs both fraud and legitimate messages.');
+  }
   return messages.map(m => {
     const r = analyze(m.text, m.channel);
     const established = r.evidence.findings.filter(f => f.status === 'established');

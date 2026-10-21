@@ -67,14 +67,15 @@
   const ALARM_COORDINATION = /\bsay\s+(?:your|the)\s+(?:computer|device|pc|laptop|phone|system)\s+is\s+(?:locked|infected|hacked|compromised|blocked)\s+and\s*$/i;
   const CALL_OBJECT = /^\s+(?:us\b|me\b|them\b|(?:this|the|our|that) (?:toll[- ]free )?(?:number|helpline|hotline)\b|(?:the |a )?(?:microsoft|windows|apple|google|norton|mcafee|geek squad)?\s*(?:tech(?:nical)? |customer |security )?(?:support|helpline|help desk|helpdesk|technicians?)\b|(?:on |at )?\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b|(?:\w+\s+){0,3}(?:at|on)\s+\+?1?[\s.\-]?\(?[2-9]\d{2}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}\b)/i;
   // Calling a number you already trust is the advice, not the trick.
-  const TRUSTED_CALL = /\b(?:back of your card|you (?:already )?(?:trust|know)|on your (?:statement|bill)|official (?:website|site|app))\b/i;
+  const TRUSTED_CALL = /^\s+(?:(?:the|a|your)\s+)?(?:phone\s+)?number\s+(?:you\s+(?:already\s+)?(?:trust|know)\b|on\s+(?:the\s+back\s+of\s+your\s+card|your\s+(?:card|statement|bill)|(?:the|your)\s+official\s+(?:website|site|app))\b)/i;
 
   // Household codes family members share: the wifi password, the garage code.
   const HOUSEHOLD = /\b(?:wi-?fi|wireless|network|router|garage|door|gate|alarm|lockbox|locker|keypad|building|house|guest|bike lock|gym)\s+$/i;
   const HOUSEHOLD_AFTER = /^\s+(?:for|to|of)\s+(?:the\s+|your\s+|our\s+|my\s+)?(?:wi-?fi|wireless|network|router|garage|door|front door|gate|alarm|lockbox|locker|keypad|building|house|bike|gym)\b/i;
   const REQUESTER = /\b(?:me|us|them|him|her|back|to (?:the )?(?:agent|caller|representative|rep|officer|technician|team)|our (?:agent|team|representative|staff))\b/i;
   // Handing a delivery or pickup code to a courier in person is how the code is meant to be used.
-  const IN_PERSON = /\b(?:driver|courier|delivery (?:associate|person|agent)|cashier|checkout|front desk)\b/i;
+  const DELIVERY_CODE = /\b(?:delivery|pick[- ]?up|collection)\s+(?:codes?|pins?)\b/i;
+  const CODE_RECIPIENT = /^\s+(?:with|to)\s+(?:the\s+|your\s+)?(?:driver|courier|delivery (?:associate|person|agent)|cashier|front desk)\b/i;
 
   // Login wording (Tier 2).
   const IN_PERSON_SIGN_IN = /^\s+(?:at|with)\s+(?:the\s+)?(?:front desk|reception(?: desk)?|office|counter|check-in desk|lobby|nurses?['’]? station)(?=\s*(?:[.!?,;\n]|$)|\s+(?:when|before|upon|after|on arrival|and)\b)/i;
@@ -170,6 +171,7 @@
     // quiet even with "please" or an SMS wrap before the action.
     if (NEED_COMPLEMENT.test(prefix)) return ownNeedBefore(prefix);
     if (/^\s*(?:please\s+)?$/i.test(rest)) return true;
+    if (/^\s*(?:hi\s+)?(?:grandma|grandpa|mom|dad|mum|mother|father|nana|papa)\s*,\s*(?:please\s+)?$/i.test(rest)) return true;
     // A short warning/purpose preface does not turn the following imperative
     // into reported speech, even when its comma is omitted in a text message.
     if (/^\s*(?:beware of|to avoid)\s+(?:hackers?|fraudsters?|scam{2}ers?|criminals?|scams?)\s*[:,]?\s*(?:please\s*)?$/i.test(rest)) return true;
@@ -194,7 +196,7 @@
       let pressure = unreportedMatch(own, PRESSURE);
       if (pressure && SECRET.test(own.text.slice(pressure.index + pressure[0].length))) pressure = null;
       const hit = pressure || unreportedMatch(own, URGENT) || unreportedMatch(own, THREAT);
-      if (hit && !casual(own.text)) return spanOf(raw, own, hit);
+      if (hit) return spanOf(raw, own, hit);
     }
     for (const other of [clauses[index - 1], clauses[index + 1]]) {
       if (skip(other)) continue;
@@ -216,6 +218,17 @@
     if (!last) return false;
     const before = text.slice(0, last.index);
     return !NOT_SECRET.test(before) && !HOUSEHOLD.test(before) && !HOUSEHOLD_AFTER.test(text.slice(last.index + last[0].length));
+  }
+
+  // An exception describes the code itself and its recipient, never a noun
+  // elsewhere in the sentence. Both detection layers use this same decision.
+  function benignSecret(clause, start, end, previous) {
+    const before = clause.text.slice(0, start), after = clause.text.slice(end);
+    if (NOT_SECRET.test(before) || HOUSEHOLD.test(before) || HOUSEHOLD_AFTER.test(after)) return true;
+    const object = clause.text.slice(start, end);
+    if (!/^(?:codes?|pins?)$/i.test(object) || !CODE_RECIPIENT.test(after)) return false;
+    if (/\b(?:bank|banking|account|sign[ -]?in|verification|security|authorization|one[ -]?time)\b/i.test(before)) return false;
+    return DELIVERY_CODE.test(before + object) || Boolean(unreportedMatch(previous, DELIVERY_CODE));
   }
 
   /* ---------- Tier 1 rules ----------
@@ -255,7 +268,7 @@
     const toRequester = /\b(?:me|us|to me|to us|back to me|back to us|to (?:the )?(?:requester|caller))\b/i.test(d.tail.slice(0, 65));
     // An OTP or credit card nearby makes it unclear which code is meant.
     const competing = /\b(?:otp|one[ -]time|authorization|verification|password|credit card|debit card)\b/i.test(d.clause.text + ' ' + (cardClause === d.clause ? '' : cardClause.text));
-    if (card && toRequester && !competing && !/\b(?:checkout|retailer|redeem at)\b/i.test(d.clause.text)) {
+    if (card && toRequester && !competing) {
       s.flag('gift_card_disclosure', d.action.start, code.end);
       s.tier1('T1-GIFT', d, code, null, spanOf(s.raw, cardClause, card));
       return true;
@@ -328,7 +341,7 @@
   // T1-CODE: give a sign-in code, PIN or password to the requester. No pressure is needed:
   // no organization asks for one this way. Also "read it back to me" after a named code.
   function shareSecret(d, s) {
-    if (!/^(?:send|read|give|tell|text|share|provide|reply with)$/.test(d.verb) || IN_PERSON.test(d.clause.text)) return;
+    if (!/^(?:send|read|give|tell|text|share|provide|reply with)$/.test(d.verb)) return;
     const pronoun = d.verb !== 'reply with' && d.near.match(/^\s+(?:it|them)\b/i);
     if (pronoun && REQUESTER.test(d.tail.slice(pronoun[0].length, 65))) {
       const previous = s.clauses[d.index - 1];
@@ -343,8 +356,8 @@
     if (!hit) return;
     const gap = d.near.slice(0, hit.index);
     const toRequester = /^(?:read|give|tell|reply with)$/.test(d.verb) || REQUESTER.test(d.tail.slice(0, 65));
-    const household = HOUSEHOLD.test(gap) || HOUSEHOLD_AFTER.test(d.near.slice(hit.index + hit[0].length) + d.tail.slice(40, 70));
-    if (OBJECT_GAP.test(gap) && !NOT_SECRET.test(gap) && !household && toRequester) {
+    const excluded = benignSecret(d.clause, d.after + hit.index, d.after + hit.index + hit[0].length, s.clauses[d.index - 1]);
+    if (OBJECT_GAP.test(gap) && !excluded && toRequester) {
       const object = spanOf(s.raw, d.clause, hit, d.after);
       s.flag('share_code', d.action.start, object.end);
       s.tier1('T1-CODE', d, object, null);
@@ -391,7 +404,13 @@
 
   /* ---------- Wording flags (Tier 2) ---------- */
 
-  function shareCodeDemand(text, m, clause) {
+  function shareCodeDemand(text, m, clause, clauses) {
+    const objects = [...m[0].matchAll(new RegExp(SECRET_OBJECT.source, 'gi'))];
+    const object = objects[objects.length - 1];
+    if (object) {
+      const start = m.index - clause.start + object.index;
+      if (benignSecret(clause, start, start + object[0].length, clauses[clauses.indexOf(clause) - 1])) return false;
+    }
     const prefix = text.slice(clause.start, m.index);
     return directAction(prefix, /\b(?:please|call|read|send|share)\b/i.test(prefix));
   }
@@ -460,7 +479,7 @@
       re('\\b(?:device|computer|pc|phone|laptop|system)\\b' + '[^.!?\\n]{0,20}' + '\\b(?:is|has been|was)\\s+(?:locked|infected|hacked|compromised|blocked)\\b'),
       re('\\b(?:virus|malware|trojan|spyware)\\s+(?:detected|found|alert)\\b')
     ] },
-    { id: 'credential_request', level: 'medium', patterns: [
+    { id: 'credential_request', level: 'medium', negatable: true, patterns: [
       re('\\b(?:verify|confirm|update|validate|re-?enter|provide|enter)\\b' + SHORT_GAP + '\\b(?:password|passcode|pin|ssn|social security(?: number)?|card (?:number|details)|bank (?:details|information|account)|login|identity|account(?: details| information)?)\\b')
     ] },
     // A request to sign in, usually through the message's own link. Tier 2: it blocks Details Match.
@@ -493,7 +512,7 @@
           const clause = s.clauses.find(c => m.index >= c.start && m.index < c.end);
           if (clause && (clause.inReport || reportedAt(clause.text, m.index - clause.start))) return false;
           if (flag.negatable && isNegated(text, m.index)) return false;
-          return !flag.accept || !clause || flag.accept(text, m, clause);
+          return !flag.accept || !clause || flag.accept(text, m, clause, s.clauses);
         });
         if (!hit) continue;
         flags.push({ id: flag.id, level: flag.level, words: raw.slice(hit.index, hit.index + hit[0].length), start: hit.index, end: hit.index + hit[0].length });

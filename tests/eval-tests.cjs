@@ -88,8 +88,9 @@ test('E11 The real engine and list load, and report how many records are reviewe
 test('E12 The command runs end to end, and --strict passes when no fraud gets Details Match', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tfs-eval-'));
   const input = path.join(dir, 'messages.csv');
-  fs.writeFileSync(input, header + 'g1,fraud,text,unit test,"Grandma, please buy 3 Apple gift cards and send me the codes."\n' +
-    'u1,legit,text,unit test,USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction\n');
+  fs.writeFileSync(input, 'id,label,channel,source,split,text\n' + 'g1,fraud,text,unit test,dev,"Grandma, please buy 3 Apple gift cards and send me the codes."\n' +
+    'u1,legit,text,unit test,dev,USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction\n' +
+    'reserved,fraud,text,unit test,test,Reserved row excluded from a development run.\n');
   const { spawnSync } = require('node:child_process');
   const run = args => spawnSync(process.execPath, [path.join(__dirname, '../eval/run.cjs'), '--input', input, '--out', dir].concat(args), { encoding: 'utf8' });
   const ok = run(['--strict']);
@@ -97,7 +98,42 @@ test('E12 The command runs end to end, and --strict passes when no fraud gets De
   const report = fs.readFileSync(path.join(dir, 'report.md'), 'utf8');
   assert.match(report, /Fraud given Details Match \(false reassurance; must be 0\):\*\* 0\/1/);
   assert.equal(parseCsv(fs.readFileSync(path.join(dir, 'results.csv'), 'utf8')).length, 3);
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, 'results.json'), 'utf8')).map(r => r.id), ['g1', 'u1']);
   fs.rmSync(dir, { recursive: true, force: true });
+});
+
+test('E13 Display CSV neutralizes formula-like cells while the raw encoder preserves text', () => {
+  const texts = ['=1+1', '+123', '-12', '@SUM(A1)', '  =1', '\t=1', '\n+1', 'plain', ' padded '];
+  const records = texts.map(text => ({ text }));
+  assert.deepEqual(parseCsv(toCsv(['text'], records)).slice(1).map(r => r[0]), texts);
+  const shown = parseCsv(toCsv(['text'], records, { spreadsheetSafe: true })).slice(1).map(r => r[0]);
+  assert.deepEqual(shown, texts.map((text, i) => i < 7 ? "'" + text : text));
+});
+test('E14 Development selection never invokes the analyzer on reserved rows', () => {
+  const messages = [{ id: 'dev', text: 'seen', split: 'dev', label: 'legit' },
+    { id: 'test', text: 'reserved', split: 'test', label: 'fraud' }];
+  const calls = [];
+  const analyze = text => {
+    assert.notEqual(text, 'reserved'); calls.push(text);
+    return { assessment: 'insufficient_evidence', evidence: { findings: [] }, trace: { blockedBy: [] } };
+  };
+  assert.deepEqual(M.judge(messages, analyze, 'dev').map(r => r.id), ['dev']);
+  assert.deepEqual(calls, ['seen']);
+  assert.throws(() => M.judge([], analyze, 'dev'), /No messages/);
+  assert.throws(() => M.judge(messages, analyze, 'test'), /both fraud and legitimate/);
+});
+test('E15 CSV display prefixes never alter exact JSON results', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tfs-export-'));
+  try {
+    const input = path.join(dir, 'messages.csv');
+    fs.writeFileSync(input, 'id,label,channel,source,split,text\nx,legit,text,unit test,dev,=1+1\n');
+    const { spawnSync } = require('node:child_process');
+    const result = spawnSync(process.execPath, [path.join(__dirname, '../eval/run.cjs'), '--input', input, '--out', dir], { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+    const csv = parseCsv(fs.readFileSync(path.join(dir, 'results.csv'), 'utf8'));
+    assert.equal(csv[1][csv[0].indexOf('text')], "'=1+1");
+    assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'results.json'), 'utf8'))[0].text, '=1+1');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
 const failed = rows.filter(r => !r[1]);

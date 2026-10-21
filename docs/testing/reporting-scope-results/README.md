@@ -36,10 +36,11 @@ check passed; runtime tests read the checked-in fixture.
 
 Separately, **one known false alarm remains**: “Deposit received: $500 by wire
 transfer” produces a wire warning and Insufficient Evidence instead of Details
-Match with an approved official link. The older “Grandma, buy…” miss also
-remains. Both are recorded as failed diagnostics with desired expectations,
-outside the 810 passing rows; neither is silently counted as a pass. The latter
-has a [separate follow-up task](../grandparent-opener-task.md).
+Match with an approved official link. Both that case and the older “Grandma,
+buy…” miss are retained as historical failed diagnostics outside the 810 rows.
+The bounded family opener was repaired on 2026-10-21 in `FIX18` of
+`tests/repair-cases.js`; the deposit false warning remains. See the
+[follow-up task](../grandparent-opener-task.md) for the remaining opener scope.
 
 Only examples supplied in the review and the listed variations were checked;
 the reviewer's complete 24-message set was not provided. Synthetic tests do

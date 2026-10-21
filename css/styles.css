@@ -246,7 +246,7 @@ h2 {
 }
 
 .option {
-  border:1px solid #c3cec3;
+  border:1px solid #738377;
   border-radius:10px;
   background:#fff;
   color:var(--ink);
@@ -278,7 +278,7 @@ textarea {
   width:100%;
   resize:vertical;
   min-height:156px;
-  border:1px solid #aab9ad;
+  border:1px solid #738377;
   border-radius:8px;
   background:#fcfdfb;
   padding:15px;
@@ -392,7 +392,7 @@ summary span {
 
 .scenario-buttons button {
   background:white;
-  border:1px solid #b7c4b3;
+  border:1px solid #738377;
   color:var(--ink);
   border-radius:7px;
   padding:12px 16px;
@@ -902,7 +902,7 @@ summary span {
 }
 .self-check-option {
   min-height:56px;
-  border:1px solid #c3cec3;
+  border:1px solid #738377;
   border-radius:10px;
   background:#fff;
   color:var(--ink);

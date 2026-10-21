@@ -24,7 +24,7 @@
 
   const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check));
 
-  function normalizeEvidence(checks, sender, inferred, signals, incomplete, policyFindings) {
+  function normalizeEvidence(checks, sender, inferred, signals, incomplete, policyFindings, policyUncertainty) {
     const contacts = [], findings = [], uncertainty = [];
     function finding(ruleId, tier, status, span, support) {
       // Contact checks carry no position in the original text, and none is guessed.
@@ -33,6 +33,7 @@
     }
     if (incomplete) uncertainty.push('input_incomplete');
     if (inferred) uncertainty.push('inferred_sender');
+    uncertainty.push(...(policyUncertainty || []));
 
     checks.forEach((check, index) => {
       if (check.target) {
