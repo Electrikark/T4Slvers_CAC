@@ -30,8 +30,15 @@ function cell(value) {
   return /[",\r\n]/.test(s) || /^\s|\s$/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
 }
 
-function toCsv(header, records) {
-  return [header.map(cell).join(',')].concat(records.map(r => header.map(h => cell(r[h])).join(','))).join('\n') + '\n';
+function displayCell(value) {
+  const text = value == null ? '' : String(value);
+  const formulaLike = /^[\s\u0000-\u001F]*[=+\-@]/.test(text) || /^[\t\r\n]/.test(text);
+  return cell(formulaLike ? "'" + text : text);
+}
+
+function toCsv(header, records, options = {}) {
+  const encode = options.spreadsheetSafe ? displayCell : cell;
+  return [header.map(encode).join(',')].concat(records.map(r => header.map(h => encode(r[h])).join(','))).join('\n') + '\n';
 }
 
 module.exports = { parseCsv, toCsv };

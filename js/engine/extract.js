@@ -12,6 +12,7 @@
   const FILE_ENDINGS = /^(?:pdf|jpg|jpeg|png|gif|svg|webp|docx?|xlsx?|pptx?|txt|csv|zip|exe|js|css|html?|mp[34]|md)$/i;
   const LEAD_PUNCT = /^[*.,;:!?\-_~]+/;
   const TRAIL_PUNCT = /[.,;:!?*~]+$/;
+  const CONTACT_LABEL = /^(?:(?:email|e-mail|from|reply-to|website|url|link):)+/i;
   // \u00A1-\uFFFF: any non-ASCII letter, for internationalized domain names.
   const BARE_HOST_RE = /^((?:[a-z0-9\u00A1-\uFFFF](?:[a-z0-9\u00A1-\uFFFF-]{0,62})?\.){1,10}([a-z\u00A1-\uFFFF]{2,24}|xn--[a-z0-9-]{1,59}))(?::\d{1,5})?(?:[\/?#].*)?$/i;
   const EMAIL_RE = /^(?:mailto:)?([a-z0-9._%+\-]{1,64})@((?:[a-z0-9\u00A1-\uFFFF-]{1,63}\.){1,10}[a-z\u00A1-\uFFFF]{2,24})$/i;
@@ -26,6 +27,7 @@
     const target = { kind: 'link', raw };
     try {
       const url = new URL(withScheme);
+      target.href = url.href;
       target.host = url.hostname.toLowerCase().replace(/\.+$/, '');
       target.hostUnicode = T.toUnicodeHost(target.host);
       // Text before an @ in a link ("paypal.com@evil.example") is a known trick; keep it for checking.
@@ -60,7 +62,14 @@
     // "report.pdf" is a file name, but an unfamiliar ending like ".top" must still be checked.
     if (bare && !FILE_ENDINGS.test(bare[2])) return parseLink(token, 'http://' + token);
     if (/[.|\\^@]/.test(token) && /(?:https?:|www\.)/i.test(token)) return { kind: 'link', raw: token, error: 'unreadable' };
+    // An unparsed address must not vanish beside a reviewed contact.
+    if (/@[^@\s]+\.[^@\s]+/.test(token)) return { kind: 'email', raw: token, error: 'unreadable' };
     return null;
+  }
+
+  function targetKey(target) {
+    if (target.kind === 'phone') return 'phone:' + target.e164;
+    return target.kind + ':' + (target.error ? target.raw : target.href || target.raw);
   }
 
   function extractTargets(text) {
@@ -86,12 +95,14 @@
         start += lead[0].length;
       }
       token = token.replace(TRAIL_PUNCT, '');
+      const label = token.match(CONTACT_LABEL);
+      if (label) { start += label[0].length; token = token.slice(label[0].length); }
       const target = token && parseToken(token);
       if (!target) continue;
       // Offsets into the text given to extractTargets (see sourceTargets for the person's text).
       target.at = [start, start + token.length];
       spans.push([start, start + token.length]);
-      add(`${target.kind}:${target.error ? target.raw : target.host || target.raw}:${target.userinfo || ''}`, target);
+      add(targetKey(target), target);
     }
 
     // Blank out links and emails so their digits and names do not count as phones or senders.
@@ -155,6 +166,7 @@
   }
 
   T.extractTargets = extractTargets;
+  T.targetKey = targetKey;
   T.sourceTargets = sourceTargets;
   T.findClaim = findClaim;
 })(typeof window !== 'undefined' ? window : globalThis);

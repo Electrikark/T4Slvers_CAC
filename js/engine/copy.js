@@ -53,6 +53,8 @@
         return 'Part of this input exceeds the checker’s limits. A partial check cannot establish a full match. Paste a shorter message or one complete link.';
       case 'risk_unresolved':
         return 'A requested action has more than one possible meaning. This uncertainty blocks a contact-details match.';
+      case 'policy_unresolved':
+        return 'We could not complete a relevant organization-policy check because context is missing. This blocks a contact-details match.';
       case 'phone_not_on_file':
         return `${t} is not on our list${org ? ' for ' + orgName(org) : ''}. That alone does not mean it is fake.`;
       case 'free_email_address':
@@ -60,7 +62,7 @@
       case 'no_claimed_identity':
         return `The message does not name an organization we know, and ${t} is not on our list.`;
       case 'link_unreadable':
-        return 'We could not read this link: ' + check.target.raw;
+        return 'We could not read this ' + (check.target.kind === 'email' ? 'email address' : 'link') + ': ' + check.target.raw;
       case 'nothing_to_check':
         return 'There is no link, email address or phone number in this message to check.';
       default:
@@ -149,6 +151,7 @@
     ['input_incomplete', 'Some input was not inspected. Check a shorter message before drawing a conclusion.'],
     ['shortener_unresolvable', 'The destination remains unknown because this app does not follow links.'],
     ['nothing_to_check', 'Without a link, email address or phone number, there is nothing to compare. Judge it by what it asks you to do.'],
+    ['policy_unresolved', 'A relevant organization-policy check needs context we do not have. Check independently before acting.'],
     ['phone_not_on_file', 'This prototype has no reviewed phone list. A missing number proves nothing about the caller.'],
     ['user_content_platform', 'A page on a site where anyone can publish does not show who made it.'],
     ['reference_needs_review', 'Our list has this address, but no person has reviewed that record yet. Until someone does, it cannot count as a match.']
@@ -223,18 +226,18 @@
   }
 
   function nextSteps(result, ctx) {
-    const org = ctx.claimOrg || ctx.implicitOrg;
+    const family = result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number');
+    const org = ctx.claimOrg || (!family && ctx.implicitOrg);
     const steps = [];
     if (result.checks.some(c => c.code === 'shortener_unresolvable')) steps.push('Do not tap the short link. Ask a trusted person to help, or contact the organization directly.');
+    if (family) steps.push('Call the family member using a number you already know before responding or sending anything.');
     if (org) {
       steps.push(`Contact ${org.displayName} using a number you already trust, such as the one on your card, bill or statement.`);
       const domain = trustedDomain(ctx, org);
       steps.push(domain
         ? `If you need their website, type ${domain} yourself instead of tapping a link.`
         : 'If you need their website, type a website address you already know, or use their official app.');
-    } else if (result.requestRisk.flags.some(f => f.id === 'family_emergency' || f.id === 'new_number')) {
-      steps.push('Call the family member using a number you already know before responding or sending anything.');
-    } else {
+    } else if (!family) {
       steps.push('Contact the organization using contact details you already trust, not the ones in the message.');
     }
     if (result.requestRisk.level !== 'none') steps.push('If you already shared information or paid, call your bank right away and ask a trusted person for help.');

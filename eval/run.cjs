@@ -39,7 +39,7 @@ function main() {
   const root = path.join(__dirname, '..');
   const input = path.resolve(option('input', path.join(root, 'eval/data/messages.csv')));
   const outDir = path.resolve(option('out', path.join(root, 'eval/results')));
-  const only = option('split', 'all');
+  const only = option('split', 'dev');
   const strict = process.argv.includes('--strict');
   if (['all', 'dev', 'test'].indexOf(only) < 0) { console.error('--split must be all, dev or test'); return 2; }
   if (!fs.existsSync(input)) {
@@ -53,8 +53,10 @@ function main() {
   if (!messages.length) { console.error('No real messages to evaluate.'); return 2; }
 
   const loaded = loadEngine(root);
-  const all = M.judge(messages, loaded.analyze);
-  const chosen = only === 'all' ? all : all.filter(r => r.split === only);
+  let all;
+  try { all = M.judge(messages, loaded.analyze, only); }
+  catch (error) { console.error(error.message); return 2; }
+  const chosen = all;
 
   const out = ['# Field evaluation', '',
     `Input: \`${path.basename(input)}\` · ${messages.length} messages · engine ${loaded.engine.version} · reference list ${loaded.store.version}`,
@@ -91,9 +93,11 @@ function main() {
   const header = ['id', 'label', 'split', 'category', 'channel', 'assessment', 'outcome', 'tier1', 'tier2', 'blockedBy', 'source', 'text'];
   fs.writeFileSync(path.join(outDir, 'results.csv'), toCsv(header, chosen.map(r => Object.assign({}, r, {
     tier1: r.tier1.join(' '), tier2: r.tier2.join(' '), blockedBy: r.blockedBy.join(' ')
-  }))));
+  })), { spreadsheetSafe: true }));
+  // Exact analyzed text is retained separately from the display-only CSV prefix.
+  fs.writeFileSync(path.join(outDir, 'results.json'), JSON.stringify(chosen, null, 2) + '\n');
   console.log(report);
-  console.log(`Wrote ${path.relative(process.cwd(), path.join(outDir, 'report.md'))} and results.csv`);
+  console.log(`Wrote ${path.relative(process.cwd(), path.join(outDir, 'report.md'))}, results.csv and results.json`);
   return strict && reassured > 0 ? 1 : 0;
 }
 
