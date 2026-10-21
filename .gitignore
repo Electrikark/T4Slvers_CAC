@@ -11,3 +11,8 @@ docs/testing/test-observations.md
 .venv-ml/
 ml/data/
 ml/results/
+
+# Local dependencies and browser-test output
+node_modules/
+test-results/
+playwright-report/

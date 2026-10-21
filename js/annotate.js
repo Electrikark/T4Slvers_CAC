@@ -36,8 +36,7 @@
 
   function contactKey(target) {
     if (!target) return null;
-    if (target.kind === 'phone') return 'phone:' + (target.e164 || target.raw);
-    return target.kind + ':' + (target.error ? target.raw : target.host || target.raw) + ':' + (target.userinfo || '');
+    return T.targetKey(target);
   }
 
   function annotate(source, result, store) {

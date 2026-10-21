@@ -246,7 +246,7 @@
       (org.contacts || []).filter(c => c.kind === 'domain').map(c => c.value))));
     if (owners.length) {
       const listed = owners.find(o => claim && o.id === claim.id) || owners[0];
-      if ((listed.sources || []).some(source => hostMatches(host, source.domain) && /^needs review/i.test(source.check || ''))) {
+      if (!Array.isArray(listed.contacts) && (listed.sources || []).some(source => hostMatches(host, source.domain) && /^needs review/i.test(source.check || ''))) {
         return check('UNKNOWN', 'reference_needs_review', { ...base, orgId: listed.id, reason: 'not_reviewed' });
       }
       if (!claim) return supported(ctx, owners[0], target, 'domain_official', { ...base, orgId: owners[0].id, implicit: true });
