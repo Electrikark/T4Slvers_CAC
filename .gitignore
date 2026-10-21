@@ -6,3 +6,8 @@ docs/testing/test-observations.md
 
 # macOS folder files
 .DS_Store
+
+# ML experiment: Python environment, downloaded data and results stay on this computer
+.venv-ml/
+ml/data/
+ml/results/
