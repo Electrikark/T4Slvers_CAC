@@ -67,7 +67,13 @@ function outcomeOf(label, assessment) {
   return { details_match: 'matched', insufficient_evidence: 'paused', suspicious: 'FALSE_ALARM' }[assessment];
 }
 
-function judge(messages, analyze) {
+function judge(messages, analyze, split = 'all') {
+  if (!['all', 'dev', 'test'].includes(split)) throw new Error('split must be all, dev or test');
+  if (split !== 'all') messages = messages.filter(m => m.split === split);
+  if (!messages.length) throw new Error('No messages in the selected split.');
+  if (split === 'test' && !LABELS.every(label => messages.some(m => m.label === label))) {
+    throw new Error('The test split needs both fraud and legitimate messages.');
+  }
   return messages.map(m => {
     const r = analyze(m.text, m.channel);
     const established = r.evidence.findings.filter(f => f.status === 'established');
@@ -76,6 +82,8 @@ function judge(messages, analyze) {
       outcome: outcomeOf(m.label, r.assessment),
       tier1: established.filter(f => f.tier === 1).map(f => f.ruleId),
       tier2: established.filter(f => f.tier === 2).map(f => f.ruleId),
+      // The page's "Warning signs in what it asks" line: alarming even when the label is not Suspicious.
+      strongWarning: Boolean(r.requestRisk && r.requestRisk.level === 'high'),
       blockedBy: r.trace.blockedBy
     });
   });
@@ -89,7 +97,8 @@ function tally(results) {
     n: list.length,
     suspicious: count(list, 'suspicious'),
     insufficient: count(list, 'insufficient_evidence'),
-    match: count(list, 'details_match')
+    match: count(list, 'details_match'),
+    warnedOnly: list.filter(r => r.assessment !== 'suspicious' && r.strongWarning).length
   });
   const f = block(fraud), l = block(legit);
   return {
@@ -103,6 +112,9 @@ function tally(results) {
       reassured: wilson(f.match, f.n),
       // Share of legitimate messages labeled Suspicious.
       falseAlarm: wilson(l.suspicious, l.n),
+      // Share of legitimate messages that were labeled Suspicious or shown a high-level warning.
+      // A strong warning on an honest message still alarms the reader, so it is counted here too.
+      alarmed: wilson(l.suspicious + l.warnedOnly, l.n),
       // Share of legitimate messages that reached Details Match.
       matched: wilson(l.match, l.n)
     }

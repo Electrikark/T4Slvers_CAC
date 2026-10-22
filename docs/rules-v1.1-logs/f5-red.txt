@@ -1,0 +1,35 @@
+
+> tech-for-silvers@0.4.0 test
+> node scripts/build-assessment.cjs --check && node tests/run-node.cjs && node tests/eval-tests.cjs
+
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 119/119
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 16/16
+Reporting scope: 18/18
+Policy records: 11/11
+Annotations on pasted text: 9/9
+F1 rule fixes: 38/38
+F2 rule fixes: 27/27
+F3 rule fixes: 19/19
+F4 rule fixes: 12/12
+F5 rule fixes: 11/23
+T1-DOMAIN catches: Please verify at https://hsbc-check.example. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: HSBC: Confirm at https://hsbc.example. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Please reschedule at https://royal-mail.example. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Click https://royalmail.example. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Please pay at https://e-zpass.example. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Confirm at https://ezpass.example. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Please click https://chase.example/notice. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Verify at https://apple.customer.example. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Click https://usps.delivery.example.co.uk. | FAIL | missing T1-DOMAIN
+T1-DOMAIN catches: Click https://chase.amazon.com. | FAIL | missing T1-DOMAIN
+F5 domain-only Draft contacts work without legacy fields | FAIL | Cannot read properties of undefined (reading '0')
+F5 added brand records remain Draft and cannot authenticate | FAIL | missing domain-only draft
+Boundaries: 2/2
+Source gate parity: 36/36

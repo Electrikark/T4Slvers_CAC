@@ -15,19 +15,19 @@
   const UNCLEAR_GIFT = ['unclear_gift_payment_purpose', 'competing_card_code_antecedent'];
 
   // A brand name and a lure word as separate parts of one address: chase-secure-login.net.
+  // The brand part is read the way the brand match read it, so amaz0n-secure.com counts too.
   function brandLure(check) {
     const host = check.target && check.target.host;
     if (check.code !== 'brand_in_foreign_domain' || !host || !check.brandWord) return false;
     const parts = host.split('.').slice(0, -1).join('.').split(/[-_.]+/);
-    return parts.includes(check.brandWord) && parts.some(p => LURE.test(p));
+    const brand = T.skeleton(check.brandWord);
+    return parts.some(p => p === check.brandWord || T.skeleton(T.toUnicodeHost(p) || p) === brand) && parts.some(p => LURE.test(p));
   }
 
-  const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check));
+  const isDomainTrick = check => check.strength === 'strong' && (DOMAIN_TRICKS.includes(check.code) || brandLure(check) ||
+    (check.code === 'brand_in_foreign_domain' && check.requestAction));
 
-  function normalizeEvidence(checks, sender, inferred, signals, incomplete, policyFindings) {
-    var uncertainty = [];
-    var findings = [];
-  function normalizeEvidence(checks, sender, inferred, signals, incomplete) {
+  function normalizeEvidence(checks, sender, inferred, signals, incomplete, policyFindings, policyUncertainty) {
     const contacts = [], findings = [], uncertainty = [];
     function finding(ruleId, tier, status, span, support) {
       // Contact checks carry no position in the original text, and none is guessed.
@@ -36,12 +36,14 @@
     }
     if (incomplete) uncertainty.push('input_incomplete');
     if (inferred) uncertainty.push('inferred_sender');
+    uncertainty.push(...(policyUncertainty || []));
 
     checks.forEach((check, index) => {
+      if (check.code === 'ocr_text_unverified') uncertainty.push('ocr_text_unverified');
       if (check.target) {
         contacts.push({ org: check.orgId || null, verification: check.status === 'SUPPORTS' ? 'verified' : 'unresolved', checkIndex: index, support: check });
       }
-      if (check.code === 'link_unreadable') uncertainty.push('extraction_failed:' + index);
+      if (check.code === 'link_unreadable' || check.code === 'phone_unreadable') uncertainty.push('extraction_failed:' + index);
       // Other conflicts stay Tier 2: real brand domains missing from the list produce them too.
       if (check.status === 'CONTRADICTS') {
         if (isDomainTrick(check)) finding('T1-DOMAIN', 1, 'established', null, check);
@@ -60,13 +62,13 @@
       finding(flag.id, 2, 'established', span, { id: flag.id, level: flag.level, words: flag.words, start: flag.start, end: flag.end });
     });
     // A reviewed policy the message breaks (policy.js). Unresolved when its detector is unsure.
-    (policyFindings || []).forEach(function (p) {
+    for (const p of policyFindings || []) {
       finding('T1-POLICY', 1, p.status, p.spans.action, p);
       if (p.status !== 'established') uncertainty.push('policy_unresolved:' + p.policyId);
-    });
-    return { sender: sender, contacts: contacts, findings: findings, uncertainty: uncertainty };
+    }
     return { sender, contacts, findings, uncertainty };
   }
 
   T.normalizeEvidence = normalizeEvidence;
+  T.isDomainTrick = isDomainTrick;
 })(typeof window !== 'undefined' ? window : globalThis);

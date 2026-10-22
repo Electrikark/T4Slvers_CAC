@@ -1,91 +1,78 @@
 /* The engine's front door: analyze() runs every stage and builds the result;
    validateResult() refuses any result whose parts disagree with each other.
    window.TfsEngine = { analyze(text, store, { declaredChannel }), validateResult(result), version } */
-// Run the checks, assess the evidence, and prepare the result for display.
 (function (root) {
   'use strict';
   const T = root.TFS = root.TFS || {};
   const gate = root.TfsAssessment;
-  const VERSION = '0.4.0';
+  const VERSION = '0.4.1';
   const CHANNELS = { text: 'Text', email: 'Email', unknown: 'Not sure' };
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
   function analyze(input, store, options) {
     if (!store || !store.orgs) throw new Error('analyze(text, store) needs a reference store');
-    if (!options || typeof options.declaredChannel !== 'string' || !Object.prototype.hasOwnProperty.call(CHANNELS, options.declaredChannel)) throw new Error('Choose Text, Email, or Not sure before analysis');
-    var norm = T.normalizeText(input);
-    var extracted = T.extractTargets(norm.text);
-    // Sender attribution reads the person's own text, so its span points at what they pasted.
-    var raw = input == null ? '' : String(input);
-    var bounded = raw.slice(0, T.MAX_CHARS);
-    var senderView = T.riskView(bounded);
-    var claim = T.findClaim(T.extractTargets(senderView.text).masked, store);
-    var attribution = claim.attribution;
-    if (attribution.span) {
-      var moved = T.sourceSpan(senderView, bounded, attribution.span.start, attribution.span.end);
-      attribution.span = { start: moved.start, end: moved.end, quote: bounded.slice(moved.start, moved.end) };
-    }
-    // Only the filtered view can support a contact; the full list still names lookalikes.
-    var trusted = T.buildTrustedView(store, options.today);
-    var ctx = { store: store, trusted: trusted, claimOrg: claim.org, implicitOrg: null };
     if (!options || typeof options.declaredChannel !== 'string' || !has(CHANNELS, options.declaredChannel)) {
       throw new Error('Choose Text, Email, or Not sure before analysis');
     }
 
+    const inputSource = options.inputSource === undefined ? 'pasted_text' : options.inputSource;
+    if (!['pasted_text', 'screenshot'].includes(inputSource)) throw new Error('Unknown input source');
+
     // Reading 1: who the message claims to be from, and its links, emails and phone numbers.
-    const norm = T.normalizeText(input);
+    // Screenshot line breaks are layout, not sentence ends (see T.unwrapLayout).
+    const layout = inputSource === 'screenshot';
+    const norm = T.normalizeText(input, { layout });
     const extracted = T.extractTargets(norm.text);
-    const claim = T.findClaim(extracted.masked, store);
-    const ctx = { store, claimOrg: claim.org, implicitOrg: null };
+    // Sender attribution reads the person's own text, so its span points at what they pasted.
+    const bounded = (input == null ? '' : String(input)).slice(0, T.MAX_CHARS);
+    const senderView = T.riskView(bounded, { layout });
+    const claim = T.findClaim(T.extractTargets(senderView.text).masked, store);
+    const attribution = claim.attribution;
+    if (attribution.span) {
+      const moved = T.sourceSpan(senderView, bounded, attribution.span.start, attribution.span.end);
+      attribution.span = { start: moved.start, end: moved.end, quote: bounded.slice(moved.start, moved.end) };
+    }
+    // Only the filtered view can support a contact; the full list still names lookalikes.
+    const trusted = T.buildTrustedView(store, options.today);
+    const ctx = { store, trusted, claimOrg: claim.org, implicitOrg: null, linkAction: T.sourceLinkAction(bounded, { layout }), layout };
     const checks = extracted.targets.map(target =>
       target.kind === 'phone' ? T.checkPhone(target, ctx) : T.checkHost(target, ctx));
 
     // Reading 2: what the message asks for, read from the original text so quotes stay exact.
-    const signals = T.sourceSignals((input == null ? '' : String(input)).slice(0, T.MAX_CHARS));
+    const signals = T.sourceSignals(bounded, ctx);
     const incomplete = norm.truncated || extracted.incomplete || signals.incomplete;
 
     if (!checks.length) checks.push({ status: 'UNKNOWN', code: 'nothing_to_check' });
+    if (inputSource === 'screenshot') checks.push({ status: 'UNKNOWN', code: 'ocr_text_unverified' });
     if (incomplete) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
     if (signals.unresolved.length) checks.push({ status: 'UNKNOWN', code: 'risk_unresolved' });
 
-    // No named sender, but every listed address points to the same organization.
+    // No named sender, but every listed address points to the same organization. A lookalike
+    // (CONTRADICTS) only resembles an organization, so it never names one: medicaid.gov is not Medicare.
     if (!claim.org) {
-      const pointers = checks.filter(c => c.orgId && (c.status === 'SUPPORTS' || c.status === 'CONTRADICTS'));
+      const pointers = checks.filter(c => c.orgId && c.status === 'SUPPORTS');
       if (pointers.length && pointers.every(c => c.orgId === pointers[0].orgId)) ctx.implicitOrg = T.orgById(store, pointers[0].orgId);
     }
 
-    // Risk evidence uses the supplied source, before legacy contact normalization.
     const sender = { explicit: Boolean(claim.org), recognizedOrg: claim.org ? claim.org.id : null };
-    const evidence = T.normalizeEvidence(checks, sender, Boolean(ctx.implicitOrg), signals, incomplete);
-    const decided = gate.assess(evidence);
-    // Use the original text here so risk quotes retain their exact positions.
-    var raw = input == null ? '' : String(input);
-    var bounded = raw.slice(0, T.MAX_CHARS);
-    // Curly apostrophes, invisible characters and fullwidth letters must not hide a request.
-    var signals = T.sourceSignals(bounded);
-    if (signals.incomplete && !checks.some(function (c) { return c.code === 'input_incomplete'; })) checks.push({ status: 'UNKNOWN', code: 'input_incomplete' });
-    if (signals.unresolved.length) checks.push({ status: 'UNKNOWN', code: 'risk_unresolved' });
-    var incomplete = norm.truncated || extracted.incomplete || signals.incomplete;
-    // Reviewed organization policies (T1-POLICY). Drafts never reach the evaluator.
-    var policyView = options.policies ? T.buildPolicyView(options.policies, options.today) : null;
-    var policy = T.evaluatePolicies({
-      raw: bounded, declaredChannel: options.declaredChannel, attribution: attribution, signals: signals,
-      contacts: T.sourceTargets(bounded), view: policyView, answers: options.answers
+    // Reading 3: reviewed organization policies (T1-POLICY). Drafts never reach the evaluator.
+    const policyView = options.policies ? T.buildPolicyView(options.policies, options.today) : null;
+    const policy = T.evaluatePolicies({
+      raw: bounded, declaredChannel: options.declaredChannel, attribution, signals,
+      contacts: T.sourceTargets(bounded, { layout }), view: policyView, answers: options.answers
     });
     policy.excluded = policyView ? policyView.excluded.slice() : [];
-    var evidence = T.normalizeEvidence(checks, {
-      explicit: Boolean(claim.org), recognizedOrg: claim.org ? claim.org.id : null
-    }, Boolean(ctx.implicitOrg), signals, incomplete, policy.findings);
-    var assessed = gate.assess(evidence);
+    if (policy.uncertainty.length) checks.push({ status: 'UNKNOWN', code: 'policy_unresolved' });
+
+    const evidence = T.normalizeEvidence(checks, sender, Boolean(ctx.implicitOrg), signals, incomplete, policy.findings, policy.uncertainty);
+    const decided = gate.assess(evidence);
 
     const result = {
       schemaVersion: 3,
+      inputSource,
       engineVersion: VERSION,
       storeVersion: store.version || null,
       referenceView: { day: trusted.day, trusted: trusted.trusted.length, excluded: trusted.excluded.length },
-      assessment: assessed.assessment,
-      trace: assessed.trace,
-      evidence: evidence,
       assessment: decided.assessment,
       trace: decided.trace,
       evidence,
@@ -96,8 +83,7 @@
         : claim.generic || 'Not stated',
       claimSource: claim.org ? 'explicit' : ctx.implicitOrg ? 'implicit' : 'none',
       senderAttribution: attribution,
-      policy: policy,
-      otherMentions: claim.otherMentions,
+      policy,
       channel: CHANNELS[options.declaredChannel] + ' · ' + T.copy.channel(extracted.targets),
       inspected: extracted.targets.length
         ? extracted.targets.map(T.copy.shown).join(' · ')
@@ -118,10 +104,7 @@
       incomplete
     };
     Object.assign(result, T.copy.describe(result));
-    var words = T.copy.describe(result);
-    result.description = words.description;
-    result.meaning = words.meaning;
-    result.actionWarnings = T.copy.warnings(result);
+    result.actionWarnings = T.copy.warnings(result, ctx);
     result.nextSteps = T.copy.nextSteps(result, ctx);
     return result;
   }
@@ -136,7 +119,7 @@
 
   // Every field the page shows must be present and well-formed.
   function validShape(r) {
-    if (!r || typeof r !== 'object' || 'state' in r || 'decision' in r) return false;
+    if (!r || !['pasted_text', 'screenshot'].includes(r.inputSource) || typeof r !== 'object' || 'state' in r || 'decision' in r) return false;
     if (Object.values(gate.Assessment).indexOf(r.assessment) < 0) return false;
     if (typeof r.declaredChannel !== 'string' || !has(CHANNELS, r.declaredChannel)) return false;
     if (!r.reputationLookup || r.reputationLookup.status !== 'not_performed') return false;
@@ -177,21 +160,15 @@
       rawChecks[contact.checkIndex] = original;
       seen.add(contact.checkIndex);
     }
-    if (r.checks.some(function (c, index) { return Boolean(c.target) !== seen.has(index); })) return false;
-    if (r.incomplete !== r.checks.some(function (c) { return c.code === 'input_incomplete'; })) return false;
-    // Rebuild the adapter output to ensure displayed checks and risk retain their evidence.
-    if (!r.policy || !Array.isArray(r.policy.findings) || !Array.isArray(r.policy.trace)) return false;
-    if (!r.policy.findings.every(function (f) { return f && f.ruleId === 'T1-POLICY' && isText(f.policyId) && isText(f.quote); })) return false;
-    var rebuilt = T.normalizeEvidence(rawChecks, e.sender, r.claimSource === 'implicit', r.requestRisk, r.incomplete, r.policy.findings);
-    if (!equal(e, rebuilt)) return false;
-    // Severity decorates advice only; enforce its shape without deriving an assessment from it.
-    var flags = r.requestRisk.flags;
-    if ((r.requestRisk.level === 'none') !== (flags.length === 0)) return false;
     if (r.checks.some((c, i) => Boolean(c.target) !== seen.has(i))) return false;
     if (r.incomplete !== r.checks.some(c => c.code === 'input_incomplete')) return false;
+    if ((r.inputSource === 'screenshot') !== r.checks.some(c => c.code === 'ocr_text_unverified')) return false;
 
     // Rebuilding the evidence from what is displayed must give the same evidence and the same decision.
-    if (!same(e, T.normalizeEvidence(rawChecks, e.sender, r.claimSource === 'implicit', r.requestRisk, r.incomplete))) return false;
+    if (!r.policy || !Array.isArray(r.policy.findings) || !Array.isArray(r.policy.trace) || !isTextList(r.policy.uncertainty)) return false;
+    if (Boolean(r.policy.uncertainty.length) !== r.checks.some(c => c.code === 'policy_unresolved')) return false;
+    if (!r.policy.findings.every(f => f && f.ruleId === 'T1-POLICY' && isText(f.policyId) && isText(f.quote))) return false;
+    if (!same(e, T.normalizeEvidence(rawChecks, e.sender, r.claimSource === 'implicit', r.requestRisk, r.incomplete, r.policy.findings, r.policy.uncertainty))) return false;
     if (!r.trace || !isTextList(r.trace.rules) || !isTextList(r.trace.blockedBy)) return false;
     const expected = gate.assess(e);
     return expected.assessment === r.assessment && same(expected.trace, r.trace);

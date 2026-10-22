@@ -1,0 +1,51 @@
+
+> tech-for-silvers@0.4.0 test
+> node scripts/build-assessment.cjs --check && node tests/app-elements.cjs && node tests/run-node.cjs && node tests/eval-tests.cjs && node tests/five-org-review.cjs
+
+App element contract: 1/1 (47 IDs checked)
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 119/119
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 33/36
+T2-STAFF Only the bounded sender staff list establishes a need request | FAIL | no pressure supplied: got ["T1-REMOTE"], expected []
+T2-NEED Unknown, conditional and negated need subjects stay quiet across wraps | FAIL | wrapped request warns: got "suspicious", expected "insufficient_evidence"
+T2-REVIEW Staff inflections and bounded modifiers retain reporting and negation | FAIL | unpressured staff request: got "suspicious", expected "insufficient_evidence"
+Reporting scope: 37/37
+Scope matrix WF × GC: 48/48
+Scope matrix WF × CD: 48/48
+Scope matrix WF × WT: 48/48
+Scope matrix WF × RA: 48/48
+Scope matrix PC × GC: 48/48
+Scope matrix PC × CD: 48/48
+Scope matrix PC × WT: 48/48
+Scope matrix PC × RA: 48/48
+Scope matrix RD × GC: 48/48
+Scope matrix RD × CD: 48/48
+Scope matrix RD × WT: 48/48
+Scope matrix RD × RA: 48/48
+Scope matrix TW × GC: 48/48
+Scope matrix TW × CD: 48/48
+Scope matrix TW × WT: 48/48
+Scope matrix TW × RA: 48/48
+Scope matrix OWN: 8/8
+Scope matrix W: 10/10
+Scope matrix LEGIT: 6/6
+Scope matrix GAP: 2/3
+GAP3 | FAIL | {"id":"GAP3","context":"GAP","family":"RA","passed":false,"expected_findings":["remote_access"],"expected_verdict":"Insufficient Evidence","actual_findings":["remote_access"],"actual_verdict":"Suspicious","problems":["verdict differs"]}
+Scope matrix T2_REVIEW: 10/15
+STAFF1 | FAIL | {"id":"STAFF1","context":"T2_REVIEW","family":"RA","passed":false,"expected_findings":["remote_access"],"expected_verdict":"Insufficient Evidence","actual_findings":["remote_access"],"actual_verdict":"Suspicious","problems":["verdict differs"]}
+STAFF2 | FAIL | {"id":"STAFF2","context":"T2_REVIEW","family":"RA","passed":false,"expected_findings":["remote_access"],"expected_verdict":"Insufficient Evidence","actual_findings":["remote_access"],"actual_verdict":"Suspicious","problems":["verdict differs"]}
+STAFF3 | FAIL | {"id":"STAFF3","context":"T2_REVIEW","family":"RA","passed":false,"expected_findings":["remote_access"],"expected_verdict":"Insufficient Evidence","actual_findings":["remote_access"],"actual_verdict":"Suspicious","problems":["verdict differs"]}
+STAFF4 | FAIL | {"id":"STAFF4","context":"T2_REVIEW","family":"RA","passed":false,"expected_findings":["remote_access"],"expected_verdict":"Insufficient Evidence","actual_findings":["remote_access"],"actual_verdict":"Suspicious","problems":["verdict differs"]}
+STAFF5 | FAIL | {"id":"STAFF5","context":"T2_REVIEW","family":"RA","passed":false,"expected_findings":["remote_access"],"expected_verdict":"Insufficient Evidence","actual_findings":["remote_access"],"actual_verdict":"Suspicious","problems":["verdict differs"]}
+Reviewed next-step advice: 8/8
+Policy records: 12/12
+Annotations on pasted text: 9/9
+F1 rule fixes: 38/38
+Boundaries: 2/2
+Source gate parity: 36/36

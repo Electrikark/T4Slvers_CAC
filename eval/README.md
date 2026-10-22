@@ -46,13 +46,32 @@ npm run eval -- --split test        # only the test split
 npm run eval -- --strict            # exit 1 if any fraud message gets Details Match
 ```
 
-It writes `eval/results/report.md` and `eval/results/results.csv` (one row per message with its result).
+The default is `--split dev`. Rows are selected before the engine runs; an empty
+selection stops the run. `--split test` also requires both fraud and legitimate
+messages. `--split all` is an explicit choice that exposes both splits.
+
+ID-based automatic allocation still does not separate related message families.
+Assign whole source/template families to one split before reserving a test set;
+the runner does not establish an unseen holdout or freeze the evaluation date.
+
+Outputs in `eval/results/` are:
+
+- `report.md`: rates and diagnostic notes.
+- `results.csv`: a display export. Formula-like cells receive a leading apostrophe;
+  that prefix is not part of the analyzed message. Spreadsheet-program behavior
+  has not been validated, so use an explicit text import when inspecting unknown data.
+- `results.json`: results with the exact analyzed text, without display prefixes.
+
+The input corpus is unchanged. Use JSON for automated comparisons and source
+spans, rather than re-importing the display CSV as a new corpus.
 
 ## 3. Read the report
 
 - **Fraud given Details Match** is false reassurance, the worst possible outcome. It must be 0.
 - **Fraud labeled Suspicious** is the catch rate. **Fraud that at least said "pause"** also counts Insufficient Evidence, which still tells the person to stop and check.
 - **Legitimate labeled Suspicious** is the false alarm rate.
+- **Legitimate labeled Suspicious or shown a strong warning** also counts honest messages that got the page's "Warning signs in what it asks" line without the Suspicious label. That line still alarms the reader, so report it next to the false alarm rate. The report lists each of these messages.
+- **"At least said pause"** counts Insufficient Evidence, which every message gets until records are reviewed, so it is close to 100% by design. Don't present it as a catch rate.
 - **Legitimate reaching Details Match** stays at 0% until records in `data/store.js` are human-reviewed; the report says so.
 - Each rate has a **95% range**. With 100 messages, a measured 90% can really be anywhere from about 83% to 94%. Quote the range, not only the percentage.
 

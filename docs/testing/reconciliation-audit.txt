@@ -1,0 +1,61 @@
+$ git status
+On branch review/eligibility-workflow-2026-10-18
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   docs/testing/five-organization-handoff.md
+	modified:   docs/testing/five-organization-review.xlsx
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	RELEASE.md
+	docs/testing/reconciliation-audit.txt
+	docs/testing/reconciliation-npm-test.log
+	docs/testing/workbook-consistency.json
+	tests/review-artifact-consistency.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+$ git log --oneline -5
+acf26de Reverify five organization drafts and document eligibility workflow
+fd8d0e2 Document five official-source organization reviews as draft and test eligibility
+305cbdf Merge gift-card back-photo fix into release-v1
+
+$ git branch --show-current
+review/eligibility-workflow-2026-10-18
+
+$ grep -n "2026-10-1\|reviewer\|ChatGPT" data/store.js | head -30
+10:     "humanReview": { "reviewer": "<name>", "date": "YYYY-MM-DD",
+15:   "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations have source-documented draft contacts. Human reviewer fields
+20:  "version": "2026-10-18-five-org-draft",
+89:          "retrieved": "2026-10-18",
+103:          "checkedOn": "2026-10-18",
+115:          "checkedOn": "2026-10-18",
+123:        "reviewer": null,
+124:        "date": "2026-10-18",
+127:        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+178:          "retrieved": "2026-10-18",
+192:          "checkedOn": "2026-10-18",
+204:          "checkedOn": "2026-10-18",
+212:        "reviewer": null,
+213:        "date": "2026-10-18",
+216:        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+475:          "retrieved": "2026-10-18",
+489:          "checkedOn": "2026-10-18",
+496:        "reviewer": null,
+497:        "date": "2026-10-18",
+500:        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+933:          "retrieved": "2026-10-18",
+947:          "checkedOn": "2026-10-18",
+959:          "checkedOn": "2026-10-18",
+967:        "reviewer": null,
+968:        "date": "2026-10-18",
+971:        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+1079:          "retrieved": "2026-10-18",
+1093:          "checkedOn": "2026-10-18",
+1105:          "checkedOn": "2026-10-18",
+1113:        "reviewer": null,
+
+Workbook check: K=2026-10-18, L blank, N=2027-01-16, O=Draft for all five rows; expiry note Jan 17; all 20 Eligibility Results dates Oct 18.
+
+npm test: 1252/1252; exit 0
