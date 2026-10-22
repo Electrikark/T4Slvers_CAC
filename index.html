@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#214e48">
+  <meta name="description" content="Check English message text for risky requests and contact details on a local reference list. Review marked findings and choose an independent next step.">
   <title>Tech for Silvers · A little clarity, before you click</title>
   <link rel="stylesheet" href="css/styles.css">
   <script defer src="js/engine/normalize.js"></script>
@@ -23,6 +24,7 @@
   <script defer src="js/mockData.js"></script>
   <script defer src="js/annotate.js"></script>
   <script defer src="js/app.js"></script>
+  <script type="module" src="js/ocr-ui.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -38,23 +40,23 @@
     <noscript><p class="error">Turn on JavaScript to use this local prototype.</p></noscript>
     <div class="prototype-note">
       <span class="note-dot" aria-hidden="true"></span>
-      <p><strong>A second look, not a guarantee.</strong> This prototype compares written addresses with a limited local list. It does not establish who sent a message.</p>
+      <p><strong>A second look, not a guarantee.</strong> This prototype checks English text for risky requests and compares contact details with a limited local list. It cannot confirm who sent a message.</p>
     </div>
 
     <section id="home" class="home-layout" aria-labelledby="home-title">
       <div class="intro">
         <p class="eyebrow">PAUSE. TAKE A CLOSER LOOK.</p>
-        <h1 id="home-title" tabindex="-1">Not sure if a<br class="desktop-break"> message is real?</h1>
+        <h1 id="home-title" tabindex="-1">Not sure what to do<br class="desktop-break"> about a message?</h1>
         <p class="lead">Paste a message or link. We’ll help you look at the details and choose your next step.</p>
         <div class="how-it-works">
           <h2>A calmer next step.</h2>
           <ol>
-            <li><span>1</span>Share what you received.</li>
+            <li><span>1</span>Paste what you received.</li>
             <li><span>2</span>Look at the evidence.</li>
             <li><span>3</span>Choose a safer next step.</li>
           </ol>
         </div>
-        <p class="privacy"><span aria-hidden="true">↳</span> No account. No uploads to a server.<br>What you share stays in this browser tab.</p>
+        <p class="privacy"><span aria-hidden="true">↳</span> No account. No uploads to a server.<br>Your pasted text stays in this tab and is not saved by the app.</p>
       </div>
 
       <div class="submission-card">
@@ -69,12 +71,32 @@
             </div>
             <p id="channel-hint" class="hint">Choose one before checking.</p>
           </fieldset>
+          <div class="ocr-tools">
+            <button id="ocr-button" class="ocr-button full" type="button" hidden>Read text from a screenshot</button>
+            <input id="ocr-file" type="file" accept="image/png,image/jpeg" hidden>
+            <p id="ocr-status" class="hint" role="status" aria-live="polite" aria-atomic="true"></p>
+            <button id="ocr-cancel" class="text-button" type="button" hidden>Cancel reading</button>
+          </div>
+          <section id="ocr-confirm" class="ocr-preview" aria-labelledby="ocr-title" hidden>
+            <h3 id="ocr-title">Review screenshot text · Preview</h3>
+            <p>Check every word against the image. Fix missing words, links and phone numbers, especially “not” and “never”.</p>
+            <p id="ocr-warning" class="ocr-warning" hidden>This picture was hard to read. Words may be wrong or missing. Copy and paste the original message if you cannot check every word.</p>
+            <p class="hint">Line breaks are kept. Repair broken links or numbers yourself.</p>
+            <details><summary>Text first read from the image</summary><pre id="ocr-raw"></pre></details>
+            <button id="ocr-clear" class="text-button" type="button">Clear screenshot and paste instead</button>
+            <a id="ocr-open-image" class="ocr-image-link" target="_blank" rel="noopener">Open screenshot larger (new tab)</a>
+            <img id="ocr-image" alt="Your selected screenshot for comparison">
+          </section>
           <div id="paste-panel">
             <label for="message">Your message or link</label>
             <textarea id="message" rows="5" placeholder="Paste the message or link here…" aria-describedby="input-hint character-count error" spellcheck="false" autocapitalize="off"></textarea>
             <p id="character-count" class="character-count"></p>
-            <p id="input-hint" class="hint">Copy from the original text or email. Leave out passwords, account details, and real verification codes.</p>
+            <p id="input-hint" class="hint">Copy from the original text or email. Screenshot preview accepts PNG or JPEG images up to 12 MB. Leave out passwords, account details, and real verification codes. This checker reads messages written in English.</p>
           </div>
+          <label id="ocr-review-label" class="ocr-review" hidden>
+            <input id="ocr-reviewed" type="checkbox">
+            <span>I compared the full text with the screenshot and fixed any errors.</span>
+          </label>
           <p id="example-loaded" class="example-loaded" hidden></p>
           <p id="error" class="error" role="alert"></p>
           <button id="check-button" class="primary full" type="submit" aria-describedby="example-loaded">Check this <span aria-hidden="true">→</span></button>
@@ -86,6 +108,7 @@
     <section id="result" class="result" aria-labelledby="result-title" hidden>
       <button id="back" type="button" class="text-button">← Back to your message</button>
       <p class="eyebrow">YOUR LOCAL CHECK</p>
+      <p id="ocr-result-note" class="ocr-warning" hidden>This result checks text read from your image. Missing or wrong words can change it. Compare it with the screenshot before acting.</p>
       <div id="result-banner" class="result-banner">
         <span id="state-symbol" class="state-symbol" aria-hidden="true"></span>
         <div>
@@ -94,22 +117,32 @@
           <p id="result-description"></p>
         </div>
       </div>
+      <!-- Reading order for a quick decision: the result, the one thing to do first, what to do
+           next, the message with its marks, then the full details for anyone who wants them. -->
       <section id="action-note" class="action-note" aria-labelledby="action-title">
         <div>
           <h2 id="action-title">Before you act</h2>
           <p id="action-lead"></p>
         </div>
-        <a href="#next-title" class="action-link">See next steps <span aria-hidden="true">↓</span></a>
+      </section>
+      <section class="next-steps" aria-labelledby="next-title">
+        <h2 id="next-title" tabindex="-1">What to do next</h2>
+        <div id="warnings"></div>
+        <ol id="next-list"></ol>
       </section>
       <section id="annotated-section" class="annotated" aria-labelledby="annotated-title" hidden>
         <h2 id="annotated-title">Your message, with what we noticed</h2>
         <p class="annotated-key">Marked words are numbered. Each number has a note below. Press Tab to move between marks.</p>
         <p id="annotated" class="annotated-message"></p>
-        <p id="annotated-advice" class="annotated-advice"></p>
         <ol id="annotation-notes" class="annotation-notes"></ol>
       </section>
-      <div class="result-layout">
+      <details id="evidence-details" class="evidence-details">
+        <summary>See everything we checked</summary>
         <div class="evidence">
+          <section>
+            <h2>What this means</h2>
+            <p id="meaning"></p>
+          </section>
           <section>
             <h2>Claims to be</h2>
             <p id="identity" class="identity"></p>
@@ -128,21 +161,11 @@
             <h2>Signals in the wording</h2>
             <ul id="asks" class="checks asks"></ul>
           </section>
-          <section>
-            <h2>What this means</h2>
-            <p id="meaning"></p>
-          </section>
         </div>
-        <aside class="next-steps" aria-labelledby="next-title">
-          <h2 id="next-title" tabindex="-1">What to do next</h2>
-          <div id="warnings"></div>
-          <ol id="next-list"></ol>
-          <p class="hint">Use contact details you already trust, such as the number on your bank card.</p>
-        </aside>
-      </div>
+      </details>
       <section id="self-check" class="self-check" aria-labelledby="self-check-title">
         <h2 id="self-check-title">Did you check it yourself?</h2>
-        <p class="self-check-intro">This app cannot confirm who sent a message. You can. Contact them using details you had before this message arrived, then tell us what you found out.</p>
+        <p class="self-check-intro">Contact the person or organization using details you had before this message arrived, then record what you were told. This records your own check; it does not change the app’s result.</p>
         <fieldset class="self-check-step">
           <legend id="method-title" tabindex="-1">How did you check?</legend>
           <div id="method-options" class="self-check-options"></div>
@@ -157,16 +180,29 @@
         </div>
       </section>
       <div class="result-bottom">
-        <p>Local text comparison only. No website was opened. The sender and caller were not checked.</p>
-        <p id="result-scope">Local text comparison only. No website was opened. The sender and caller were not checked.</p>
+        <p>Local text and contact checks only. No website was opened. The sender and caller were not verified.</p>
         <button id="start-again" class="primary" type="button">Check another message <span aria-hidden="true">→</span></button>
       </div>
     </section>
 
+    <details class="demo-tools">
+      <summary>About this check <span>What the results mean</span></summary>
+      <div class="demo-inner">
+        <p>The app looks for fixed English patterns such as requests for gift-card codes, passwords, or remote access, and certain deceptive web addresses. It can miss risky messages.</p>
+        <ul>
+          <li><strong>Suspicious:</strong> a strong warning pattern was found. Pause before acting and use the next steps shown.</li>
+          <li><strong>Insufficient Evidence:</strong> the app cannot establish a contact match. Missing details, an unreviewed record, or a request that needs an independent check can cause this result.</li>
+          <li><strong>Details Match:</strong> contact details match reviewed records, with no findings or unresolved checks. This does not prove who sent the message.</li>
+        </ul>
+        <p>The current contact list is awaiting human review, so it cannot produce Details Match yet. A familiar or listed address does not cancel a risky request.</p>
+        <p>Choose Text, Email, or Not sure before each check. The app does not open links, read screenshots, or verify callers.</p>
+      </div>
+    </details>
+
     <details class="demo-tools" id="demo-tools">
       <summary>Demo examples <span>For workshop testing</span></summary>
       <div class="demo-inner">
-        <p>Load an example, choose its listed channel, then choose “Check this.” Each example runs through the local rules.</p>
+        <p>These are made-up examples for practice. Load one, choose its listed channel, then choose “Check this.” Each example runs through the same local rules as your pasted text.</p>
         <div id="scenario-buttons" class="scenario-buttons"></div>
         <button type="button" id="reset" class="text-button">Reset for the next participant</button>
       </div>

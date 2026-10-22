@@ -1,0 +1,1 @@
+PASS: src/assessment.js equals aa48952 after removing only T1-COMBO from the closed rule registry. Details Match decision logic is unchanged.

@@ -1,0 +1,63 @@
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 119/119
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 36/36
+Reporting scope: 37/37
+Scope matrix WF × GC: 48/48
+Scope matrix WF × CD: 48/48
+Scope matrix WF × WT: 48/48
+Scope matrix WF × RA: 48/48
+Scope matrix PC × GC: 48/48
+Scope matrix PC × CD: 48/48
+Scope matrix PC × WT: 48/48
+Scope matrix PC × RA: 48/48
+Scope matrix RD × GC: 48/48
+Scope matrix RD × CD: 48/48
+Scope matrix RD × WT: 48/48
+Scope matrix RD × RA: 48/48
+Scope matrix TW × GC: 48/48
+Scope matrix TW × CD: 48/48
+Scope matrix TW × WT: 48/48
+Scope matrix TW × RA: 48/48
+Scope matrix OWN: 8/8
+Scope matrix W: 10/10
+Scope matrix LEGIT: 6/6
+Scope matrix GAP: 3/3
+Scope matrix T2_REVIEW: 15/15
+Reviewed next-step advice: 8/8
+Policy records: 12/12
+Annotations on pasted text: 9/9
+F1 rule fixes: 38/38
+F2 rule fixes: 27/27
+F3 rule fixes: 19/19
+F4 rule fixes: 12/12
+F5 rule fixes: 23/23
+Rule robustness: 11/11
+Rule fixes v1.1b: 12/26
+T1-CALLBACK catches: Amazon: Your order of iPhone 15 for $1,299 has been placed. If you did not place this order call 1-888-555-0177 immediately. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Your annual renewal of $399.99 was charged today. To cancel and get a refund call 1-805-555-0133. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Norton: your subscription auto-renewed for $289. If you did not authorize this, call 1-844-555-0161. | FAIL | missing T1-CALLBACK
+T1-CALLBACK catches: Charge of $732.69 was attempted at Target on your card. Not yours, 866-555-0156 | FAIL | missing T1-CALLBACK
+T1-GIFT catches: I’m in a meeting, can you grab 3 Google Play cards for a client? Will reimburse you today. | FAIL | missing T1-GIFT
+T1-GIFT catches: Can you go get some gift cards? I will reimburse later. | FAIL | missing T1-GIFT
+T1-GIFT catches: I’m in a meeting and need help getting some Amazon Gift Cards. | FAIL | missing T1-GIFT
+T1-GIFT catches: Please pick up five Apple gift cards for the staff. I’m tied up on a call. | FAIL | missing T1-GIFT
+stays non-suspicious: Can you pick up a Target gift card for Grandma’s birthday? I’ll pay you back Sunday. | FAIL | legitimate control became suspicious
+stays non-suspicious: Can you get a Starbucks gift card for your teacher for Christmas? I’ll pay you back. | FAIL | legitimate control became suspicious
+T1-COMBO catches: Grandpa it’s Josh, I got arrested and need $3000 for bail right now. Please don’t tell my parents. | FAIL | missing T1-COMBO
+T1-COMBO catches: Grandma, this is Sam. I was in an accident and need bail money. Please don’t tell Dad yet. | FAIL | missing T1-COMBO
+T1-COMBO catches: Grandma, it’s me. I’m in a terrible mess and need money today. Please don’t tell Mom; I’ll explain later. | FAIL | missing T1-COMBO
+T1-COMBO catches: Gran please help. I need money before tonight and can’t talk. Keep this between us until I get home. | FAIL | missing T1-COMBO
+Independent rule probe (Oct 18): 33/38
+probe S: Amazon: Your order of iPhone 15 for $1,299 has been placed. If you did not place this order call 1-888-555-0177 immediately. | FAIL | scam not caught: got "insufficient_evidence", expected "suspicious"
+probe S: Geek Squad: your annual renewal of $399.99 was charged today. To cancel and get a refund call 1-805-555-0133. | FAIL | scam not caught: got "insufficient_evidence", expected "suspicious"
+probe S: I’m in a meeting, can you grab 3 Google Play cards for a client? Will reimburse you today. | FAIL | scam not caught: got "insufficient_evidence", expected "suspicious"
+probe S: Grandpa it’s Josh, I got arrested and need $3000 for bail right now. Please don’t tell my parents. | FAIL | scam not caught: got "insufficient_evidence", expected "suspicious"
+probe N: Can you pick up a Target gift card for Grandma’s birthday? I’ll pay you back Sunday. | FAIL | legitimate message became suspicious
+Boundaries: 2/2
+Source gate parity: 36/36

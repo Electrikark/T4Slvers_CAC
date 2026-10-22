@@ -1,0 +1,38 @@
+
+> tech-for-silvers@0.4.0 test
+> node scripts/build-assessment.cjs --check && node tests/run-node.cjs && node tests/eval-tests.cjs
+
+Legacy baseline cases: 20/20
+Reference-list and regression cases: 41/41
+v1.2 step 1 cases: 118/119
+C22-unhurried | FAIL | Chase: Please install AnyDesk. Visit https://chase.com. | assessment is insufficient_evidence, expected suspicious; missing rule T1-REMOTE
+Invariants: 13/13
+Single assessment gate: 36/36
+Self-check step: 14/14
+Trusted reference view: 11/11
+Sender attribution: 11/11
+Tier 1 and Tier 2 rules: 16/16
+Reporting scope: 17/18
+RS15 Reported pressure and alarms cannot qualify a separate demand | FAIL | Fraudsters ask you to wire money today, please install AnyDesk. Tier 1 rules: got [], expected ["T1-REMOTE"]
+Policy records: 11/11
+Annotations on pasted text: 9/9
+F1 rule fixes: 21/38
+T1-REMOTE catches: Please install AnyDesk. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Please install TeamViewer. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Please install QuickSupport. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Please install LogMeIn. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Please install ScreenConnect. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Please install RustDesk. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Please install UltraViewer. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Open TeamViewer. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Add QuickSupport. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Approve the RustDesk connection. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Accept the ScreenConnect session. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Open RustDesk and accept the request. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Share your AnyDesk session ID. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: TeamViewer is ready. Please share the connection number. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: In AnyDesk, approve the connection. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Keep this between us. Install AnyDesk. | FAIL | missing T1-REMOTE
+T1-REMOTE catches: Please open ＡｎｙＤｅｓｋ. | FAIL | missing T1-REMOTE
+Boundaries: 2/2
+Source gate parity: 36/36

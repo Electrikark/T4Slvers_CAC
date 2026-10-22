@@ -26,7 +26,7 @@ window.TFS_PHASE2.add('Policy records', function (t) {
     copy(realRecord('USPS-TRACKING-NOLINK-001'), REVIEW),
     copy(bankCode, REVIEW),
     copy(bankCode, { id: 'EXAMPLE-BANK-EXCEPTION-001', forbidden_action: 'request_personal_data', quote: 'Fictional: we never ask for account details, unless you called us first.',
-      exceptions: [{ quote: 'unless you called us first', cues: ['you called us'] }], reviewed_by: REVIEW.reviewed_by, second_reviewer: REVIEW.second_reviewer, status: 'reviewed' }),
+      exceptions: [{ quote: 'unless you called us first', cues: ['you called us'], answer: { name: 'customer_called', value: true } }], reviewed_by: REVIEW.reviewed_by, second_reviewer: REVIEW.second_reviewer, status: 'reviewed' }),
     copy(bankCode, { id: 'EXAMPLE-BANK-UNSOLICITED-001', forbidden_action: 'any_contact_on_channel', channels: ['email'], quote: 'Fictional: we never email you unless you asked us to.',
       predicates: [{ name: 'customer_requested', mandatory: true, value: false, needs_question: 'Did you ask Example Bank to email you?' }], reviewed_by: REVIEW.reviewed_by, second_reviewer: REVIEW.second_reviewer, status: 'reviewed' })
   ] };
@@ -59,8 +59,8 @@ window.TFS_PHASE2.add('Policy records', function (t) {
       unknown: ['Example Bank: Send us the code we just texted you.', 'unknown']
     },
     'EXAMPLE-BANK-EXCEPTION-001': {
-      fires: ['Example Bank: Please confirm your bank details here.', 'text'],
-      legitimate: ['Example Bank: Since you called us, please confirm your bank details here.', 'text'],
+      fires: ['Example Bank: Please confirm your bank details here.', 'text', { customer_called: false }],
+      legitimate: ['Example Bank: Since you called us, please confirm your bank details here.', 'text', { customer_called: true }],
       unknown: ['Example Bank: Please confirm your bank details here.', 'unknown']
     },
     'EXAMPLE-BANK-UNSOLICITED-001': {
@@ -130,7 +130,7 @@ window.TFS_PHASE2.add('Policy records', function (t) {
 
   t.test('D7 Service scope, exceptions and predicates each explain their skip', function () {
     t.same(traceOf(run('USPS: See our holiday hours at https://redelivery-help.top', 'text'), 'USPS-TRACKING-NOLINK-001').reason, 'service_out_of_scope', 'service');
-    t.same(traceOf(run(FIXTURES['EXAMPLE-BANK-EXCEPTION-001'].legitimate[0], 'text'), 'EXAMPLE-BANK-EXCEPTION-001').reason, 'exception:0', 'exception');
+    t.same(traceOf(run(FIXTURES['EXAMPLE-BANK-EXCEPTION-001'].legitimate[0], 'text', { answers: { customer_called: true } }), 'EXAMPLE-BANK-EXCEPTION-001').reason, 'exception:0', 'exception');
     t.same(traceOf(run('Example Bank: Here is your monthly update.', 'email'), 'EXAMPLE-BANK-UNSOLICITED-001').reason, 'predicate_unknown:customer_requested', 'unknown predicate');
     t.same(traceOf(run('Example Bank: Here is your monthly update.', 'email', { answers: { customer_requested: true } }), 'EXAMPLE-BANK-UNSOLICITED-001').reason, 'predicate_not_met:customer_requested', 'answered predicate');
     t.same(traceOf(run('Example Bank: Here is your monthly update.', 'text', { answers: { customer_requested: false } }), 'EXAMPLE-BANK-UNSOLICITED-001').reason, 'channel_out_of_scope', 'channel');
@@ -174,5 +174,15 @@ window.TFS_PHASE2.add('Policy records', function (t) {
     t.same(r.policy.trace, [{ policyId: 'EXAMPLE-BANK-GIFT-001', outcome: 'unresolved', reason: 'request_payment_gift_card' }], 'trace');
     t.assert(r.evidence.uncertainty.indexOf('policy_unresolved:EXAMPLE-BANK-GIFT-001') >= 0, 'uncertainty');
     t.same(r.assessment, 'insufficient_evidence', 'an unresolved policy blocks without deciding');
+  });
+  t.test('D12 A purchase warning cannot establish a gift-card payment policy violation', function () {
+    var gift = { version: 'gift', records: [copy(bankCode, { id: 'EXAMPLE-BANK-GIFT-001', forbidden_action: 'request_payment_gift_card', reviewed_by: REVIEW.reviewed_by, second_reviewer: REVIEW.second_reviewer, status: 'reviewed' })] };
+    var r = engine.analyze('Example Bank: Buy gift cards to secure your account.', store, { declaredChannel: 'text', policies: gift, today: DAY });
+    t.same(r.requestRisk.flags.map(function (f) { return f.id; }), ['gift_card_payment'], 'purchase warns');
+    t.same(r.policy.trace, [{ policyId: 'EXAMPLE-BANK-GIFT-001', outcome: 'unresolved', reason: 'request_payment_gift_card' }], 'payment remains unproved');
+    t.same(r.assessment, 'insufficient_evidence', 'no accidental Tier 1 promotion');
+    var payment = engine.analyze('Example Bank: Pay with gift cards.', store, { declaredChannel: 'text', policies: gift, today: DAY });
+    t.same(payment.policy.trace, [{ policyId: 'EXAMPLE-BANK-GIFT-001', outcome: 'fired', reason: 'request_payment_gift_card' }], 'proved payments still fire');
+    t.same(payment.assessment, 'suspicious', 'proved payment stays Tier 1');
   });
 });
