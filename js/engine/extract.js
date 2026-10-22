@@ -168,9 +168,9 @@
 
   /* Contacts with spans in the person's own text: the same extraction as the risk rules use,
      moved back to source offsets. Every occurrence is listed, repeats included. */
-  function sourceTargets(source) {
+  function sourceTargets(source, options = {}) {
     const raw = source == null ? '' : String(source);
-    const view = T.riskView(raw);
+    const view = T.riskView(raw, options);
     const found = [], seen = new Set();
     const push = (target, from, to) => {
       const moved = T.sourceSpan(view, raw, from, to);

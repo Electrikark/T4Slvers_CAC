@@ -13,8 +13,40 @@
   // Control characters and unusual spaces, read as a plain space.
   const SPACE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u00A0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/;
 
-  function normalizeText(input) {
+  /* Screenshot text only. OCR returns one line per row of the picture, so a line break there
+     is layout, not meaning: "We ask / you to pay with gift cards" is one sentence. A single
+     break becomes a space, and a web address broken after a hyphen ("chase-secure- /
+     login.net") or a phone number broken the same way ("1-" / "888-555-0142") is joined again
+     exactly as written; nothing is corrected or guessed, so a misread "hitps://" stays as read. Blank
+     lines (paragraph breaks) stay. Pasted text never goes through this.
+     Returns { text, map }: map[i] is the position of text[i] in the original. */
+  const ADDRESS = /^(?:https?:\/\/|www\.)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,24}(?:[\/?#:][^\s]*)?$/i;
+  // A U.S. number broken after a hyphen: "Call 1-" / "888-555-0142".
+  const PHONE = /^(?:\+?1-)?\(?\d{3}\)?-\d{3}-\d{4}$/;
+  function unwrapLayout(source) {
+    const raw = source == null ? '' : String(source);
+    const chars = [], map = [];
+    const isBreak = i => raw[i] === '\n' || (raw[i] === '\r' && raw[i + 1] === '\n');
+    for (let i = 0; i < raw.length; i++) {
+      const ch = raw[i];
+      if (ch === '\r' && raw[i + 1] === '\n') continue;
+      if (ch !== '\n') { chars.push(ch); map.push(i); continue; }
+      let before = i - 1;
+      if (raw[before] === '\r') before--;
+      if (raw[before] === '\n' || isBreak(i + 1)) { chars.push(ch); map.push(i); continue; }
+      const head = raw.slice(0, before + 1).match(/[^\s]*$/)[0];
+      const tail = raw.slice(i + 1).match(/^[^\s]*/)[0];
+      const joined = (head + tail).replace(/[.,;:!?)\]]+$/, '');
+      if (/[A-Za-z0-9]-$/.test(head) && /^[A-Za-z0-9]/.test(tail) && (ADDRESS.test(joined) || PHONE.test(joined))) continue;
+      chars.push(' ');
+      map.push(i);
+    }
+    return { text: chars.join(''), map };
+  }
+
+  function normalizeText(input, options = {}) {
     let text = input == null ? '' : String(input);
+    if (options.layout) text = unwrapLayout(text).text;
     let truncated = text.length > MAX_CHARS;
     text = text.slice(0, MAX_CHARS)
       // A lone half of a surrogate pair would break the Unicode steps below.
@@ -62,13 +94,15 @@
 
   // Returns { text, map, identity }: map[i] is the original position of text[i];
   // identity means nothing changed, so positions need no mapping.
-  function riskView(source) {
+  function riskView(source, options = {}) {
     const raw = source == null ? '' : String(source);
+    const layout = options.layout ? unwrapLayout(raw) : null;
+    const base = layout ? layout.text : raw;
     const chars = [], map = [];
-    for (let i = 0; i < raw.length; i++) {
-      if (INVISIBLE.test(raw[i])) continue;
-      chars.push(foldChar(raw[i]));
-      map.push(i);
+    for (let i = 0; i < base.length; i++) {
+      if (INVISIBLE.test(base[i])) continue;
+      chars.push(foldChar(base[i]));
+      map.push(layout ? layout.map[i] : i);
     }
     // A word mixing Latin letters with lookalikes is read as Latin: "gіft" with a Cyrillic і.
     const text = chars.join('').replace(/[A-Za-zͰ-ϿЀ-ԯɡ]+/g, word =>
@@ -84,6 +118,7 @@
   }
 
   T.normalizeText = normalizeText;
+  T.unwrapLayout = unwrapLayout;
   T.riskView = riskView;
   T.sourceSpan = sourceSpan;
   T.MAX_CHARS = MAX_CHARS;

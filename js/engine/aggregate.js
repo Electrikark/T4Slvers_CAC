@@ -19,11 +19,13 @@
     if (!['pasted_text', 'screenshot'].includes(inputSource)) throw new Error('Unknown input source');
 
     // Reading 1: who the message claims to be from, and its links, emails and phone numbers.
-    const norm = T.normalizeText(input);
+    // Screenshot line breaks are layout, not sentence ends (see T.unwrapLayout).
+    const layout = inputSource === 'screenshot';
+    const norm = T.normalizeText(input, { layout });
     const extracted = T.extractTargets(norm.text);
     // Sender attribution reads the person's own text, so its span points at what they pasted.
     const bounded = (input == null ? '' : String(input)).slice(0, T.MAX_CHARS);
-    const senderView = T.riskView(bounded);
+    const senderView = T.riskView(bounded, { layout });
     const claim = T.findClaim(T.extractTargets(senderView.text).masked, store);
     const attribution = claim.attribution;
     if (attribution.span) {
@@ -32,7 +34,7 @@
     }
     // Only the filtered view can support a contact; the full list still names lookalikes.
     const trusted = T.buildTrustedView(store, options.today);
-    const ctx = { store, trusted, claimOrg: claim.org, implicitOrg: null, linkAction: T.sourceLinkAction(bounded) };
+    const ctx = { store, trusted, claimOrg: claim.org, implicitOrg: null, linkAction: T.sourceLinkAction(bounded, { layout }), layout };
     const checks = extracted.targets.map(target =>
       target.kind === 'phone' ? T.checkPhone(target, ctx) : T.checkHost(target, ctx));
 
@@ -57,7 +59,7 @@
     const policyView = options.policies ? T.buildPolicyView(options.policies, options.today) : null;
     const policy = T.evaluatePolicies({
       raw: bounded, declaredChannel: options.declaredChannel, attribution, signals,
-      contacts: T.sourceTargets(bounded), view: policyView, answers: options.answers
+      contacts: T.sourceTargets(bounded, { layout }), view: policyView, answers: options.answers
     });
     policy.excluded = policyView ? policyView.excluded.slice() : [];
     if (policy.uncertainty.length) checks.push({ status: 'UNKNOWN', code: 'policy_unresolved' });
