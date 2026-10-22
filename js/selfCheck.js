@@ -30,7 +30,8 @@
     'T1-CODE': 'No real company asks you to read or send a sign-in code, PIN or password to someone.',
     'T1-WIRE': 'Pressure to send cryptocurrency or a wire transfer is a fraud pattern, even when the caller sounds official.',
     'T1-REMOTE': 'No real company needs control of your device because of a message they sent.',
-    'T1-CALLBACK': 'Real device warnings do not ask you to call a phone number.',
+    'T1-CALLBACK': 'A callback about a device, payment or account alarm needs an independent check through a contact you already trust.',
+    'T1-COMBO': 'An emergency money request combined with secrecy is a fraud pattern. Contact your family independently.',
     'T1-POLICY': 'The organization it claims to be from has published that it never sends a message like this.'
   };
 

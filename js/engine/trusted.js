@@ -42,14 +42,25 @@
      org.contacts (when present) lists records explicitly, each with its own status.
      Otherwise records are derived from the legacy fields: an organization's humanReview
      reviews its listed domains and phones together, and a source still marked
-     "needs review" keeps that domain in draft. */
+     "needs review" keeps that domain in draft.
+     An organization can have both: its humanReview then reviews every contact still in
+     draft, with the review's own reviewer, dates and source page. A contact already marked
+     reviewed keeps its own fields, and any other status (for example "rejected") stays as it is. */
   function recordsOf(org) {
     if (Array.isArray(org.contacts)) {
+      var orgReview = org.humanReview || null;
       return org.contacts.map(function (c, k) {
         var r = {};
         for (var key in c) if (Object.prototype.hasOwnProperty.call(c, key)) r[key] = c[key];
         r.id = c.id || org.id + ':contact:' + k;
         r.orgId = org.id;
+        if (orgReview && (r.status === 'draft' || r.status == null)) {
+          r.status = 'reviewed';
+          r.sourceUrl = orgReview.sourceUrl || null;
+          r.checkedOn = orgReview.date || null;
+          r.reviewDue = orgReview.reviewDue || null;
+          r.reviewedBy = orgReview.reviewer || null;
+        }
         return r;
       });
     }
@@ -106,8 +117,11 @@
     if (!host || host.indexOf('.') < 0) return 'ambiguous_scope';
     // A whole-domain scope must name the registrable domain itself.
     if (scope.type === 'registrable' && T.registrable(host) !== host) return 'ambiguous_scope';
+    if (scope.pathPrefix != null && (typeof scope.pathPrefix !== 'string' || !scope.pathPrefix.startsWith('/') || /[?#]/.test(scope.pathPrefix))) return 'ambiguous_scope';
     // A bare shared-platform root, with no tenant host or path, could be anyone's page.
     if (sharedPlatform(store, host) && !(scope.pathPrefix && scope.pathPrefix.length > 1)) return 'ambiguous_scope';
+    // Matching does not support tenant paths on shared platforms yet.
+    if (sharedPlatform(store, host)) return 'unsupported_shared_scope';
     return null;
   }
 
@@ -161,7 +175,10 @@
       var host = hostKey(target.host), value = hostKey(r.value);
       var hostOk = r.scope.type === 'host' ? host === value : T.hostMatches(host, value);
       if (!hostOk) return false;
-      if (r.scope.pathPrefix && target.kind === 'link') return pathOf(target).indexOf(r.scope.pathPrefix) === 0;
+      if (r.scope.pathPrefix && target.kind === 'link') {
+        var prefix = r.scope.pathPrefix, path = pathOf(target);
+        return path === prefix || path.indexOf(prefix.endsWith('/') ? prefix : prefix + '/') === 0;
+      }
       // An email address has no path, so a path-scoped record cannot cover it.
       return !r.scope.pathPrefix;
     });
@@ -177,7 +194,21 @@
     });
   }
 
+  // Why this organization's record for a contact was left out of the view, or null.
+  // "not_reviewed", "expired", "ambiguous_scope", "conflict", "missing:sourceUrl", ...
+  function exclusionReason(view, store, target, orgId) {
+    var org = ((store && store.orgs) || []).filter(function (o) { return o.id === orgId; })[0];
+    if (!view || !org || !target) return null;
+    var ids = recordsOf(org).filter(function (r) {
+      if (target.kind === 'phone') return r.kind === 'phone' && phoneKey(r.value) === phoneKey(target.e164);
+      return r.kind === 'domain' && target.host && T.hostMatches(hostKey(target.host), hostKey(r.value));
+    }).map(function (r) { return r.id; });
+    var hit = view.excluded.filter(function (x) { return ids.indexOf(x.id) >= 0; })[0];
+    return hit ? hit.reason : null;
+  }
+
   T.buildTrustedView = buildTrustedView;
+  T.exclusionReason = exclusionReason;
   T.trustedMatches = trustedMatches;
   T.recordsOf = recordsOf;
   T.listedFor = listedFor;

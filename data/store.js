@@ -12,10 +12,14 @@
    (reviewDue is 90 days after the review). To review contacts one at a time instead, list
    them in "contacts": [{ "kind": "domain" | "phone", "value", "scope": { "type":
    "registrable" | "host", "pathPrefix"? }, "status": "reviewed" | "draft", "sourceUrl",
-   "checkedOn", "reviewDue", "reviewedBy" }]. No record below has either yet, so every record
-   is excluded as not_reviewed and none can support a match. */
+   "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations have source-documented draft contacts. Human reviewer fields
+   are blank pending review. All contacts remain excluded as not_reviewed until approved.
+   An organization-level humanReview also reviews every contact still in draft (see
+   recordsOf in js/engine/trusted.js and docs/reference-review-guide.md).
+   securityNotes and publishedEmailSenderDomains document evidence only; they do not
+   enable policy rules or authenticate a sender. */
 window.TFS_STORE = {
-  "version": "2026-10-03",
+  "version": "2026-10-18-five-org-draft",
   "schemaVersion": 1,
   "shorteners": [
     "bit.ly",
@@ -62,23 +66,163 @@ window.TFS_STORE = {
   ],
   "orgs": [
     {
+      "id": "hsbc",
+      "displayName": "HSBC",
+      "aliases": [
+        "hsbc"
+      ],
+      "strictAliases": [],
+      "officialDomains": [
+        "hsbc.com",
+        "hsbc.co.uk"
+      ],
+      "officialPhones": [],
+      "userContentHosts": [],
+      "status": "draft",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "hsbc.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        },
+        {
+          "kind": "domain",
+          "value": "hsbc.co.uk",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        }
+      ]
+    },
+    {
+      "id": "royalmail",
+      "displayName": "Royal Mail",
+      "aliases": [
+        "royal mail",
+        "royalmail"
+      ],
+      "strictAliases": [],
+      "officialDomains": [
+        "royalmail.com"
+      ],
+      "officialPhones": [],
+      "userContentHosts": [],
+      "status": "draft",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "royalmail.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        }
+      ]
+    },
+    {
+      "id": "ezpass",
+      "displayName": "E-ZPass",
+      "aliases": [
+        "e-zpass",
+        "ezpass",
+        "e zpass"
+      ],
+      "strictAliases": [],
+      "officialDomains": [
+        "e-zpassiag.com"
+      ],
+      "officialPhones": [],
+      "userContentHosts": [],
+      "status": "draft",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "e-zpassiag.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft"
+        }
+      ]
+    },
+
+    {
       "id": "chase",
       "displayName": "Chase",
       "category": "bank",
-      "aliases": ["chase bank", "jpmorgan chase", "jp morgan chase"],
-      "strictAliases": ["chase"],
-      "officialDomains": ["chase.com"],
+      "aliases": [
+        "chase bank",
+        "jpmorgan chase",
+        "jp morgan chase"
+      ],
+      "strictAliases": [
+        "chase"
+      ],
+      "officialDomains": [
+        "chase.com"
+      ],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-935-9935"
+      ],
       "sources": [
         {
           "domain": "chase.com",
-          "url": "https://www.chase.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "url": "https://www.chase.com/digital/resources/privacy-security",
+          "retrieved": "2026-10-18",
+          "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "Human review pending",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "chase.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.chase.com/digital/resources/privacy-security",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-935-9935",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.chase.com/digital/customer-service",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null,
+          "purpose": "Personal Banking Customer Service:"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": null,
+        "date": "2026-10-18",
+        "reviewDue": "2027-01-16",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "notes": "Sender-domain field blank: no explicit legitimate sender-domain list found in checked pages. A phishing-report mailbox is not proof of a sending domain. Security quote concerns moving money to resolve fraud; it is not a general ban on bank transfers. Only the main domain and the listed US personal-banking number are included."
+      },
+      "securityNotes": {
+        "quote": "Legitimate banks will never ask you to move money to resolve a fraud issue.",
+        "sourceUrl": "https://www.chase.com/digital/resources/privacy-security/security/scam-stories",
+        "status": "draft"
+      },
+      "contactInstruction": {
+        "text": "call Chase using the phone number on the back of your card or on your account statement.",
+        "sourceUrl": "https://www.chase.com/digital/resources/privacy-security/security/self-service-text-messages"
+      }
     },
     {
       "id": "bankofamerica",
@@ -103,20 +247,78 @@ window.TFS_STORE = {
       "id": "wellsfargo",
       "displayName": "Wells Fargo",
       "category": "bank",
-      "aliases": ["wells fargo"],
-      "officialDomains": ["wellsfargo.com"],
+      "aliases": [
+        "wells fargo"
+      ],
+      "officialDomains": [
+        "wellsfargo.com"
+      ],
       "strictAliases": [],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-869-3557"
+      ],
       "sources": [
         {
           "domain": "wellsfargo.com",
           "url": "https://www.wellsfargo.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "retrieved": "2026-10-18",
+          "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "Human review pending",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "wellsfargo.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.wellsfargo.com/",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-869-3557",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/report/",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null,
+          "purpose": "Checking or savings account, debit, or ATM card fraud"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": null,
+        "date": "2026-10-18",
+        "reviewDue": "2027-01-16",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "notes": "Email source explicitly identifies wellsfargo.com in legitimate email addresses; this does not authenticate an email, and a string containing that text is not sufficient. Security quote refers to screen-sharing/remote-access tools. Other business, wire-fraud and card-claim numbers are outside this narrow review. Card instruction applies when reporting suspected fraud or unauthorized transactions and filing a claim."
+      },
+      "securityNotes": {
+        "quote": "Wells Fargo will never ask you to download this type of software or ask you to screen share with them.",
+        "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/bank-scams/bank-imposter/",
+        "status": "draft"
+      },
+      "contactInstruction": {
+        "text": "calling the number on the back of your credit or debit card.",
+        "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/report/"
+      },
+      "publishedEmailSenderDomains": [
+        {
+          "value": "wellsfargo.com",
+          "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/bank-scams/bank-imposter/",
+          "status": "draft"
+        }
+      ]
     },
     {
       "id": "citi",
@@ -343,20 +545,53 @@ window.TFS_STORE = {
       "id": "amazon",
       "displayName": "Amazon",
       "category": "retail",
-      "aliases": ["amazon", "amazon prime"],
-      "officialDomains": ["amazon.com"],
+      "aliases": [
+        "amazon",
+        "amazon prime"
+      ],
+      "officialDomains": [
+        "amazon.com"
+      ],
       "strictAliases": [],
       "userContentHosts": [],
       "officialPhones": [],
       "sources": [
         {
           "domain": "amazon.com",
-          "url": "https://www.amazon.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "url": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+          "retrieved": "2026-10-18",
+          "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "Human review pending",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "amazon.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": null,
+        "date": "2026-10-18",
+        "reviewDue": "2027-01-16",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "notes": "Phone, purpose and phone source remain blank: no official customer-service number was verified. The earlier contact-flow attempt returned 503; this pass does not claim a new successful phone lookup. Use the Amazon app or type amazon.com yourself. Sender domain remains blank; a scam-report inbox is not evidence of outbound senders. The gift-card quote is an exact excerpt from Amazon’s own publication; it does not authorize another contact domain."
+      },
+      "securityNotes": {
+        "quote": "We will never ask you to purchase a gift card",
+        "sourceUrl": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
+        "status": "draft"
+      }
     },
     {
       "id": "apple",
@@ -764,20 +999,71 @@ window.TFS_STORE = {
       "id": "usps",
       "displayName": "USPS",
       "category": "delivery",
-      "aliases": ["usps", "postal service", "u.s. postal service", "us postal service"],
-      "officialDomains": ["usps.com"],
+      "aliases": [
+        "usps",
+        "postal service",
+        "u.s. postal service",
+        "us postal service"
+      ],
+      "officialDomains": [
+        "usps.com"
+      ],
       "strictAliases": [],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-275-8777"
+      ],
       "sources": [
         {
           "domain": "usps.com",
           "url": "https://www.usps.com/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads and stays on this domain"
+          "retrieved": "2026-10-18",
+          "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "Human review pending",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "usps.com",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.usps.com/",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-275-8777",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.usps.com/help/contact-us.htm",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null,
+          "purpose": "Customer Care Center"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": null,
+        "date": "2026-10-18",
+        "reviewDue": "2027-01-16",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "notes": "Scope: the paragraph describes tracking a specific package, registration online or an initiated text, and a customer request with a tracking number. The next sentence discusses an unrequested tracking text with a link. Preserve all those conditions. The excerpt is documentation only, not a broader rule about every USPS communication. USPS lists Postal Inspectors on its own contact page: https://www.usps.com/help/contact-us.htm . Sender domain remains blank. The tracking short code is not a callable phone record."
+      },
+      "securityNotes": {
+        "quote": "and it will NOT contain a link.",
+        "sourceUrl": "https://www.uspis.gov/news/scam-article/smishing-package-tracking-text-scams",
+        "status": "draft",
+        "scopeNote": "Package tracking requested by registering online or initiating a text, with a tracking number; the surrounding guidance also discusses an unsolicited tracking message containing a link."
+      }
     },
     {
       "id": "ups",
@@ -859,20 +1145,70 @@ window.TFS_STORE = {
       "id": "ssa",
       "displayName": "Social Security Administration",
       "category": "government",
-      "aliases": ["social security", "social security administration"],
-      "strictAliases": ["ssa"],
-      "officialDomains": ["ssa.gov"],
+      "aliases": [
+        "social security",
+        "social security administration"
+      ],
+      "strictAliases": [
+        "ssa"
+      ],
+      "officialDomains": [
+        "ssa.gov"
+      ],
       "userContentHosts": [],
-      "officialPhones": [],
+      "officialPhones": [
+        "1-800-772-1213"
+      ],
       "sources": [
         {
           "domain": "ssa.gov",
           "url": "https://www.ssa.gov/",
-          "retrieved": "2026-10-03",
-          "check": "automated: HTTPS page loads (retried by hand)"
+          "retrieved": "2026-10-18",
+          "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "Human review pending",
+      "contacts": [
+        {
+          "kind": "domain",
+          "value": "ssa.gov",
+          "scope": {
+            "type": "registrable"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.ssa.gov/",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null
+        },
+        {
+          "kind": "phone",
+          "value": "1-800-772-1213",
+          "scope": {
+            "type": "host"
+          },
+          "status": "draft",
+          "sourceUrl": "https://www.ssa.gov/agency/contact/phone.html",
+          "checkedOn": "2026-10-18",
+          "reviewDue": "2027-01-16",
+          "reviewedBy": null,
+          "purpose": "National 800 Number"
+        }
+      ],
+      "sourceReview": {
+        "status": "draft",
+        "reviewer": null,
+        "date": "2026-10-18",
+        "reviewDue": "2027-01-16",
+        "timezone": "America/Los_Angeles",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "notes": "Sender domain blank: no explicit outbound sender-domain statement found in checked pages. Card-style instruction is not applicable. National phone support is distinct from local offices; the quoted prohibition is scoped to social media, email and text, not every phone interaction."
+      },
+      "securityNotes": {
+        "quote": "Social Security will never ask for sensitive or personal information through social media, email, or text message.",
+        "sourceUrl": "https://www.ssa.gov/scam/",
+        "status": "draft"
+      }
     },
     {
       "id": "medicare",

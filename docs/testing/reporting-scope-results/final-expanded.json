@@ -1,0 +1,151 @@
+{
+  "metric": "suite pass rate",
+  "evaluation_date": "2026-10-12",
+  "fixture_sha256": "5a3b0cf5308af9138a9b6e0a383632a8d5fd7c16271183af21184b75d842f76c",
+  "engine_sha256": "d8db05644a95719e3f2141560118843cedc4677f9def9dcec5dfece0fcfd3495",
+  "passed": 792,
+  "total": 792,
+  "counts": {
+    "asking-WF-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-WF-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-WF-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-WF-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-PC-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-RD-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "asking-TW-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-WF-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-PC-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-RD-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-GC": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-CD": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-WT": {
+      "passed": 24,
+      "total": 24
+    },
+    "bare-TW-RA": {
+      "passed": 24,
+      "total": 24
+    },
+    "OWN": {
+      "passed": 8,
+      "total": 8
+    },
+    "W": {
+      "passed": 10,
+      "total": 10
+    },
+    "LEGIT": {
+      "passed": 6,
+      "total": 6
+    }
+  },
+  "failures": []
+}

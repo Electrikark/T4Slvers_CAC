@@ -2,3 +2,18 @@
 eval/data/*
 !eval/data/.gitkeep
 eval/results/
+docs/testing/test-observations.md
+
+# macOS folder files
+.DS_Store
+
+# ML experiment: Python environment, downloaded data and results stay on this computer
+.venv-ml/
+ml/data/
+ml/results/
+
+# Local dependencies and browser-test output
+node_modules/
+test-results/
+playwright-report/
+experiments/ocr-robustness/out/

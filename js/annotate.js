@@ -17,9 +17,10 @@
   var TIER1_NOTES = {
     'T1-GIFT': 'This message asks for gift cards or gift card codes. Real businesses and government agencies don’t ask for payment this way.',
     'T1-WIRE': 'This message pressures you to send a wire transfer or cryptocurrency. That money is very hard to get back.',
-    'T1-REMOTE': 'This message pressures you to let someone control your device. Only let a helper you contacted yourself do that.',
+    'T1-REMOTE': 'This message asks you to let someone control your device. Only let a helper you contacted yourself do that.',
     'T1-CODE': 'This message asks you to give a sign-in code, PIN or password to the sender. Real organizations never ask for these.',
-    'T1-CALLBACK': 'This message warns about your device and tells you to call a number. Real device warnings don’t include a number to call.',
+    'T1-CALLBACK': 'This message raises a device, payment or account alarm and asks you to call. Check through a contact you already trust.',
+    'T1-COMBO': 'This message combines an emergency, a money request and secrecy. Contact your family independently before sending money.',
     'T1-DOMAIN': 'This address is built to look like a known organization’s address, but it goes somewhere else.'
   };
   var UNRESOLVED_NOTES = {
@@ -27,7 +28,7 @@
     competing_card_code_antecedent: 'This asks for card numbers or codes, and it is not clear which card it means. Don’t send any card numbers or codes.'
   };
   // Tier 2 flags that only repeat a Tier 1 request already marked at the same place.
-  var COMPANION = { gift_card_payment: 'T1-GIFT', gift_card_disclosure: 'T1-GIFT', crypto_or_wire: 'T1-WIRE', remote_access: 'T1-REMOTE', share_code: 'T1-CODE', tech_support_call: 'T1-CALLBACK' };
+  var COMPANION = { secret_emergency_money: 'T1-COMBO', gift_card_purchase: 'T1-GIFT', financial_callback: 'T1-CALLBACK', gift_card_payment: 'T1-GIFT', gift_card_disclosure: 'T1-GIFT', crypto_or_wire: 'T1-WIRE', remote_access: 'T1-REMOTE', share_code: 'T1-CODE', tech_support_call: 'T1-CALLBACK' };
 
   function valid(raw, s) {
     return s && Number.isInteger(s.start) && Number.isInteger(s.end) && s.start >= 0 && s.end > s.start && s.end <= raw.length;
@@ -35,8 +36,7 @@
 
   function contactKey(target) {
     if (!target) return null;
-    if (target.kind === 'phone') return 'phone:' + target.e164;
-    return target.kind + ':' + (target.error ? target.raw : target.host || target.raw) + ':' + (target.userinfo || '');
+    return T.targetKey(target);
   }
 
   function annotate(source, result, store) {
@@ -65,14 +65,22 @@
     risk.flags.forEach(function (f) {
       var covered = COMPANION[f.id] && risk.established.some(function (e) { return e.ruleId === COMPANION[f.id] && e.action.start === f.start; });
       if (covered) return;
-      item(f.id, 'check', (T.copy.FLAG_LABELS[f.id] || 'A warning sign') + '. ' + (T.copy.FLAG_WARNINGS[f.id] || ''), [{ start: f.start, end: f.end }]);
+      var flag = T.copy.FLAGS[f.id] || { label: 'A warning sign', advice: '' };
+      item(f.id, 'check', flag.label + '. ' + flag.advice, [{ start: f.start, end: f.end }]);
     });
-    // Contacts, with the check that was made on each.
-    var found = T.sourceTargets(raw);
+    // Contacts, with the check that was made on each. sourceTargets reads lookalike letters as
+    // Latin (chаse.com as chase.com), but the check read the pasted characters (xn--chse-63d.com).
+    // So each pasted span is read again the way the check read it, and matched by that reading.
+    // Screenshot text is read with its line breaks treated as layout, the same way the check read it.
+    var layout = { layout: result.inputSource === 'screenshot' };
+    var found = T.sourceTargets(raw, layout).map(function (x) {
+      var asChecked = T.extractTargets(T.normalizeText(x.quote, layout).text).targets[0];
+      return { start: x.start, end: x.end, key: contactKey(asChecked && asChecked.kind === x.target.kind ? asChecked : x.target) };
+    });
     var domainFindings = ((result.evidence && result.evidence.findings) || []).filter(function (f) { return f.ruleId === 'T1-DOMAIN'; });
     ((result.evidence && result.evidence.contacts) || []).forEach(function (c) {
       var key = contactKey(c.support.target);
-      var spans = found.filter(function (x) { return contactKey(x.target) === key; });
+      var spans = found.filter(function (x) { return x.key === key; });
       var check = result.checks[c.checkIndex];
       var domain = domainFindings.some(function (f) { return f.support === c.support || (f.support && f.support.code === c.support.code && contactKey(f.support.target) === key); });
       var kind = domain ? 'strong' : c.verification === 'verified' ? 'list' : 'check';

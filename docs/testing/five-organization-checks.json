@@ -1,0 +1,12 @@
+{
+  "command": "npm test",
+  "exitCode": 0,
+  "passed": 1252,
+  "total": 1252,
+  "runAt": "2026-10-18T19:53:32.834897+00:00",
+  "sourceBase": "305cbdf3e7b66fc6e143fc6b29423a6fee8d0518",
+  "branch": "review/eligibility-workflow-2026-10-18",
+  "log": "docs/testing/five-organization-checks.log",
+  "eligibilityReport": "docs/testing/five-organization-test-results.json",
+  "browserVerification": "Not performed: interactive browser transport failed and headless Chrome exited during startup. Engine results and visible-label source mapping checked."
+}
