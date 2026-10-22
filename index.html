@@ -25,6 +25,8 @@
   <script defer src="js/annotate.js"></script>
   <script defer src="js/app.js"></script>
   <script type="module" src="js/ocr-ui.js"></script>
+  <script defer src="data/help-cards.js"></script>
+  <script type="module" src="js/help-ui.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -183,6 +185,23 @@
         <p>Local text and contact checks only. No website was opened. The sender and caller were not verified.</p>
         <button id="start-again" class="primary" type="button">Check another message <span aria-hidden="true">→</span></button>
       </div>
+    </section>
+
+    <section id="help-after" class="help-after" aria-labelledby="help-title">
+      <h2 id="help-title">Already did something?</h2>
+      <p class="help-intro">If you already shared a code, paid, or let someone onto your computer, it is not too late. Choose what happened to see what to do now.</p>
+      <p id="help-draft" class="help-draft" hidden>Draft: these steps are waiting for a person to check them against their sources.</p>
+      <div id="help-menu" class="help-topics"></div>
+      <form id="help-form" class="help-form">
+        <label for="help-query">Or describe it in your own words</label>
+        <div class="help-search-row">
+          <input id="help-query" type="text" autocomplete="off" placeholder="For example: I read the code to the caller">
+          <button id="help-find" class="primary" type="submit">Find help</button>
+        </div>
+        <p id="help-status" class="hint" role="status" aria-live="polite"></p>
+        <div id="help-suggestions" class="help-topics"></div>
+      </form>
+      <div id="help-card" class="help-card" hidden></div>
     </section>
 
     <details class="demo-tools">
