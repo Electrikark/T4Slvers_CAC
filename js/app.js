@@ -167,6 +167,7 @@ function showResult(result, text) {
   showAnnotations(text, result);
   // Each new result starts with its full details folded away.
   byId('evidence-details').open = false;
+  byId('self-check-details').open = false;
 
   shownResult = result;
   resetSelfCheck();
@@ -250,3 +251,14 @@ for (const [id, example] of Object.entries(window.demoScenarios)) {
 byId('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations · Website list ${window.TFS_STORE.version}`;
 resetSelfCheck();
 updateCount();
+
+// Only a fixed made-up example can be loaded by a link; no message text travels in a URL.
+if (new URLSearchParams(window.location.search).get('example') === 'family') {
+  startOver();
+  byId('message').value = 'Grandma, please buy 3 Apple gift cards and send me the codes.';
+  updateCount();
+  byId('example-loaded').textContent = 'Made-up practice message. Choose Text, then Check this message when you are ready.';
+  byId('example-loaded').hidden = false;
+  byId('channel-text').focus();
+  window.history.replaceState(null, '', window.location.pathname);
+}

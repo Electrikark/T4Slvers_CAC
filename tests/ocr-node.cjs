@@ -15,7 +15,7 @@ test('OCR helpers have only their explicit local dependency and no verdict or da
   const files = ['js/ocr.js', 'js/ocr-ui.js'];
   for (const name of files) {
     const source = fs.readFileSync(path.join(root, name), 'utf8');
-    const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    const html = fs.readFileSync(path.join(root, 'check.html'), 'utf8');
     for (const match of source.matchAll(/document\.getElementById\(['"]([^'"]+)['"]\)/g)) {
       assert.ok(html.includes('id="' + match[1] + '"'), 'Missing OCR UI element: ' + match[1]);
     }

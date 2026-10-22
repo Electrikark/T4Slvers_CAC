@@ -1,6 +1,7 @@
 # Page and GitHub workflow
 
-- Keep `index.html` aligned with the engine and input features. Check result
+- `index.html` is Home; `check.html` owns the checker IDs and engine script order.
+  Keep all five site pages aligned with the engine and input features. Check result
   explanations, screenshot limits, script order and required element IDs when
   changing related behavior. Update supporting scripts and styles together.
 - Preserve original message text, screenshot review, input-source tracking and

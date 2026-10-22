@@ -18,7 +18,7 @@ http.createServer((request, response) => {
   name = name.startsWith(prefix) ? name.slice(prefix.length) : name.slice(1);
   if (!name) name = 'index.html';
   if (name.includes('\0') || name.split('/').some(part => part.startsWith('.')) ||
-      !(name === 'index.html' || /^(css|js|data|vendor|tests)\//.test(name)) || /\.(?:cjs|mjs)$/.test(name)) {
+      !(/^(index|check|recover|learn|about)\.html$/.test(name) || /^(css|js|data|vendor|tests)\//.test(name)) || /\.(?:cjs|mjs)$/.test(name)) {
     response.writeHead(404).end(); return;
   }
   const file = path.resolve(root, name);
