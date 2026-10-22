@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { storeFor } = require('../reporting-scope/setup.js');
-const URL_PATH = '/T4Slvers_CAC/';
+const URL_PATH = '/T4Slvers_CAC/check.html';
 
 async function open(page) {
   await page.goto(URL_PATH);
@@ -267,10 +267,10 @@ test('cancelling a real worker during startup terminates it before language load
 });
 
 test('invalid formats, image limits, root path and private-path isolation', async ({ page, request }) => {
-  await page.goto('/');
+  await page.goto('/check.html');
   await expect(page.locator('#ocr-button')).toBeVisible();
   for (const resource of ['.git/config', 'node_modules/tesseract.js/package.json', 'eval/data/messages.csv']) {
-    expect((await request.get(URL_PATH + resource)).status()).toBe(404);
+    expect((await request.get('/T4Slvers_CAC/' + resource)).status()).toBe(404);
   }
   await page.locator('#message').fill('Keep this text');
   await page.locator('#ocr-file').setInputFiles({ name: 'file.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>') });

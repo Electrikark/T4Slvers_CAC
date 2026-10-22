@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.join(__dirname, '..');
 const app = fs.readFileSync(path.join(root, 'js/app.js'), 'utf8');
-const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'check.html'), 'utf8');
 const ids = new Set([...html.matchAll(/\bid=["']([^"']+)["']/g)].map(m => m[1]));
 const required = new Set();
 const problems = [];
@@ -56,7 +56,7 @@ for (const call of app.matchAll(new RegExp('\\b' + alias[1] + '\\(([^)]*)\\)', '
 const withoutHelper = app.replace(alias[0], '');
 for (const call of withoutHelper.matchAll(/document\.getElementById\(([^)]*)\)/g)) addExpression(call[1]);
 if (!required.size) problems.push('No app element IDs were checked');
-for (const id of required) if (!ids.has(id)) problems.push('Missing in index.html: ' + id);
+for (const id of required) if (!ids.has(id)) problems.push('Missing in check.html: ' + id);
 console.log('App element contract: ' + (problems.length ? 'FAIL' : '1/1') + ' (' + required.size + ' IDs checked)');
 problems.forEach(problem => console.error(problem));
 process.exitCode = problems.length ? 1 : 0;

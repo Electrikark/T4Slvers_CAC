@@ -38,9 +38,9 @@ console.log(`Boundaries: ${boundaryProblems.length ? 'FAIL' : '2/2'}`);
 for (const problem of boundaryProblems) console.error(problem);
 // Page copy and contrast (repairs B7 and B9): file reads, so Node only.
 const pageProblems = [];
-const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '..', 'check.html'), 'utf8');
 const css = fs.readFileSync(path.join(__dirname, '..', 'css/styles.css'), 'utf8');
-if (!html.includes('This checker reads messages written in English.')) pageProblems.push('B7: the English-only line is missing from index.html');
+if (!html.includes('This checker reads messages written in English.')) pageProblems.push('B7: the English-only line is missing from check.html');
 // WCAG 1.4.11: control borders need 3:1 against the white card.
 const luminance = hex => {
   const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(c => c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
-// The order of the matching <script> tags in index.html (checked by tests/eval-tests.cjs).
+// The order of the matching <script> tags in check.html (checked by tests/eval-tests.cjs).
 const FILES = [
   'js/engine/normalize.js', 'js/engine/extract.js', 'js/engine/sender.js', 'js/engine/domain.js',
   'js/engine/trusted.js', 'js/engine/risk.js', 'js/engine/policy.js', 'js/assessment-gate.js',

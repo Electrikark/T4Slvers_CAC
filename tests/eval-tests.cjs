@@ -77,7 +77,7 @@ test('E10 Counts and rates from stubbed results', () => {
 });
 test('E11 The real engine and list load, and report how many records are reviewed', () => {
   // The same engine files as the page, in the same order, so the evaluation measures the app.
-  const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, '../check.html'), 'utf8');
   const pageFiles = [...html.matchAll(/<script defer src="([^"]+)"/g)].map(m => m[1])
     .filter(f => !['js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'js/app.js'].includes(f));
   assert.deepEqual(FILES, pageFiles);
