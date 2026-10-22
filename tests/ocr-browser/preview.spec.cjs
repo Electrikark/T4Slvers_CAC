@@ -44,6 +44,28 @@ async function mockReader(page) {
 }
 const dummy = name => ({ name, mimeType: 'image/png', buffer: Buffer.from('synthetic fixture') });
 
+test('page explains screenshot limits and keeps next steps ahead of full evidence', async ({ page }) => {
+  await open(page);
+  const about = page.locator('details.demo-tools').filter({ hasText: 'What the results mean' });
+  await about.locator('summary').click();
+  await expect(about).toContainText('Screenshot text cannot produce Details Match, even after your review.');
+  await expect(about).not.toContainText('does not open links, read screenshots');
+  await page.locator('#channel-text').click();
+  await page.locator('#message').fill('Maria, buy me gift cards for my birthday and text me the codes.');
+  await page.locator('#check-button').click();
+  await expect(page.locator('#result-title')).toHaveText('Suspicious');
+  await expect(page.locator('#next-list')).toBeVisible();
+  await expect(page.locator('#checks')).toBeHidden();
+  expect(await page.locator('#next-list').evaluate(node => Boolean(
+    node.compareDocumentPosition(document.getElementById('evidence-details')) & Node.DOCUMENT_POSITION_FOLLOWING
+  ))).toBe(true);
+  await page.locator('#evidence-details > summary').click();
+  await expect(page.locator('#checks')).toBeVisible();
+  await page.locator('#back').click();
+  await page.locator('#check-button').click();
+  await expect(page.locator('#checks')).toBeHidden();
+});
+
 test('paste stays lazy and follows the existing Check path', async ({ page }) => {
   const vendor = [];
   page.on('request', request => { if (request.url().includes('/vendor/')) vendor.push(request.url()); });
