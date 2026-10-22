@@ -825,7 +825,7 @@
   // options: the analysis context; options.store.orgs is used only to recognize a named asker.
   function sourceSignals(source, options = {}) {
     const raw = source == null ? '' : String(source);
-    const view = T.riskView(raw);
+    const view = T.riskView(raw, { layout: options.layout });
     const targets = T.extractTargets(view.text);
     const signals = requestSignals(targets.masked, view.text, options);
     signals.incomplete = targets.incomplete;
@@ -845,8 +845,8 @@
   }
 
   // Used by domain checks; the host is masked so path/query words cannot invent a demand.
-  T.sourceLinkAction = function (source) {
-    const raw = String(source), view = T.riskView(raw);
+  T.sourceLinkAction = function (source, options = {}) {
+    const raw = String(source), view = T.riskView(raw, options);
     const text = T.extractTargets(view.text).masked;
     for (const clause of clausesOf(text)) {
       if (skip(clause)) continue;

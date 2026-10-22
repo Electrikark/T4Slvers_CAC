@@ -71,8 +71,10 @@
     // Contacts, with the check that was made on each. sourceTargets reads lookalike letters as
     // Latin (chаse.com as chase.com), but the check read the pasted characters (xn--chse-63d.com).
     // So each pasted span is read again the way the check read it, and matched by that reading.
-    var found = T.sourceTargets(raw).map(function (x) {
-      var asChecked = T.extractTargets(T.normalizeText(x.quote).text).targets[0];
+    // Screenshot text is read with its line breaks treated as layout, the same way the check read it.
+    var layout = { layout: result.inputSource === 'screenshot' };
+    var found = T.sourceTargets(raw, layout).map(function (x) {
+      var asChecked = T.extractTargets(T.normalizeText(x.quote, layout).text).targets[0];
       return { start: x.start, end: x.end, key: contactKey(asChecked && asChecked.kind === x.target.kind ? asChecked : x.target) };
     });
     var domainFindings = ((result.evidence && result.evidence.findings) || []).filter(function (f) { return f.ruleId === 'T1-DOMAIN'; });
