@@ -1,6 +1,6 @@
 /* Local prototype reference data, carried forward from the existing store.
    Source notes record earlier automated reachability checks; these are not proof
-   of ownership, sender identity, or human review. Review is still pending.
+   of ownership, sender identity, or human review. Review evidence is pending.
    Entries marked 'needs review' cannot produce a positive address match.
    officialPhones stays empty until numbers have a reviewed primary source.
    Plain script supports opening the app directly from disk.
@@ -13,7 +13,11 @@
    them in "contacts": [{ "kind": "domain" | "phone", "value", "scope": { "type":
    "registrable" | "host", "pathPrefix"? }, "status": "reviewed" | "draft", "sourceUrl",
    "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations have source-documented draft contacts. Human reviewer fields
-   are blank pending review. All contacts remain excluded as not_reviewed until approved.
+   are blank pending review evidence. All contacts remain excluded as not_reviewed.
+   humanReviewDraft records Naman Raichura's statement that he checked the original
+   46 organizations. attestedOn is the date of that statement, not the check date.
+   These drafts are not read as approval by the engine. Missing review dates and
+   source pages stay null; existing research dates are not human check dates.
    An organization-level humanReview also reviews every contact still in draft (see
    recordsOf in js/engine/trusted.js and docs/reference-review-guide.md).
    securityNotes and publishedEmailSenderDomains document evidence only; they do not
@@ -152,6 +156,14 @@ window.TFS_STORE = {
 
     {
       "id": "chase",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Chase",
       "category": "bank",
       "aliases": [
@@ -226,6 +238,14 @@ window.TFS_STORE = {
     },
     {
       "id": "bankofamerica",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Bank of America",
       "category": "bank",
       "aliases": ["bank of america", "bofa"],
@@ -245,6 +265,14 @@ window.TFS_STORE = {
     },
     {
       "id": "wellsfargo",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Wells Fargo",
       "category": "bank",
       "aliases": [
@@ -322,6 +350,14 @@ window.TFS_STORE = {
     },
     {
       "id": "citi",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Citi",
       "category": "bank",
       "aliases": ["citibank"],
@@ -347,6 +383,14 @@ window.TFS_STORE = {
     },
     {
       "id": "usbank",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "U.S. Bank",
       "category": "bank",
       "aliases": ["u.s. bank", "usbank"],
@@ -366,6 +410,14 @@ window.TFS_STORE = {
     },
     {
       "id": "capitalone",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Capital One",
       "category": "bank",
       "aliases": ["capital one", "capitalone"],
@@ -385,6 +437,14 @@ window.TFS_STORE = {
     },
     {
       "id": "pnc",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "PNC Bank",
       "category": "bank",
       "aliases": ["pnc bank"],
@@ -404,6 +464,14 @@ window.TFS_STORE = {
     },
     {
       "id": "navyfederal",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Navy Federal Credit Union",
       "category": "bank",
       "aliases": ["navy federal"],
@@ -423,6 +491,14 @@ window.TFS_STORE = {
     },
     {
       "id": "golden1",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Golden 1 Credit Union",
       "category": "bank",
       "aliases": ["golden 1", "golden one", "golden1"],
@@ -442,6 +518,14 @@ window.TFS_STORE = {
     },
     {
       "id": "amex",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "American Express",
       "category": "bank",
       "aliases": ["american express", "amex"],
@@ -461,6 +545,14 @@ window.TFS_STORE = {
     },
     {
       "id": "paypal",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "PayPal",
       "category": "payments",
       "aliases": ["paypal"],
@@ -480,6 +572,14 @@ window.TFS_STORE = {
     },
     {
       "id": "venmo",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Venmo",
       "category": "payments",
       "aliases": ["venmo"],
@@ -499,6 +599,14 @@ window.TFS_STORE = {
     },
     {
       "id": "zelle",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Zelle",
       "category": "payments",
       "aliases": ["zelle"],
@@ -524,6 +632,14 @@ window.TFS_STORE = {
     },
     {
       "id": "cashapp",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Cash App",
       "category": "payments",
       "aliases": ["cash app", "cashapp"],
@@ -543,6 +659,14 @@ window.TFS_STORE = {
     },
     {
       "id": "amazon",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Amazon",
       "category": "retail",
       "aliases": [
@@ -595,6 +719,14 @@ window.TFS_STORE = {
     },
     {
       "id": "apple",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Apple",
       "category": "tech",
       "aliases": ["apple support", "apple id", "icloud"],
@@ -620,6 +752,14 @@ window.TFS_STORE = {
     },
     {
       "id": "microsoft",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Microsoft",
       "category": "tech",
       "aliases": ["microsoft", "windows defender", "microsoft support"],
@@ -663,6 +803,14 @@ window.TFS_STORE = {
     },
     {
       "id": "google",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Google",
       "category": "tech",
       "aliases": ["google", "gmail", "google account"],
@@ -695,6 +843,14 @@ window.TFS_STORE = {
     },
     {
       "id": "meta",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Meta (Facebook, Instagram, WhatsApp)",
       "category": "tech",
       "aliases": ["facebook", "instagram", "whatsapp"],
@@ -732,6 +888,14 @@ window.TFS_STORE = {
     },
     {
       "id": "netflix",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Netflix",
       "category": "tech",
       "aliases": ["netflix"],
@@ -751,6 +915,14 @@ window.TFS_STORE = {
     },
     {
       "id": "geeksquad",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Geek Squad (Best Buy)",
       "category": "tech",
       "aliases": ["geek squad", "geeksquad", "best buy"],
@@ -776,6 +948,14 @@ window.TFS_STORE = {
     },
     {
       "id": "norton",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Norton",
       "category": "tech",
       "aliases": ["norton", "lifelock"],
@@ -795,6 +975,14 @@ window.TFS_STORE = {
     },
     {
       "id": "mcafee",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "McAfee",
       "category": "tech",
       "aliases": ["mcafee"],
@@ -814,6 +1002,14 @@ window.TFS_STORE = {
     },
     {
       "id": "docusign",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "DocuSign",
       "category": "tech",
       "aliases": ["docusign"],
@@ -839,6 +1035,14 @@ window.TFS_STORE = {
     },
     {
       "id": "walmart",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Walmart",
       "category": "retail",
       "aliases": ["walmart"],
@@ -858,6 +1062,14 @@ window.TFS_STORE = {
     },
     {
       "id": "costco",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Costco",
       "category": "retail",
       "aliases": ["costco"],
@@ -877,6 +1089,14 @@ window.TFS_STORE = {
     },
     {
       "id": "att",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "AT&T",
       "category": "telecom",
       "aliases": ["at&t", "at & t"],
@@ -896,6 +1116,14 @@ window.TFS_STORE = {
     },
     {
       "id": "verizon",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Verizon",
       "category": "telecom",
       "aliases": ["verizon"],
@@ -915,6 +1143,14 @@ window.TFS_STORE = {
     },
     {
       "id": "tmobile",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "T-Mobile",
       "category": "telecom",
       "aliases": ["t-mobile", "tmobile"],
@@ -934,6 +1170,14 @@ window.TFS_STORE = {
     },
     {
       "id": "xfinity",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Xfinity (Comcast)",
       "category": "telecom",
       "aliases": ["xfinity", "comcast"],
@@ -959,6 +1203,14 @@ window.TFS_STORE = {
     },
     {
       "id": "pge",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "PG&E",
       "category": "utility",
       "aliases": ["pg&e", "pacific gas and electric"],
@@ -978,6 +1230,14 @@ window.TFS_STORE = {
     },
     {
       "id": "smud",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "SMUD",
       "category": "utility",
       "aliases": ["smud", "sacramento municipal utility district"],
@@ -997,6 +1257,14 @@ window.TFS_STORE = {
     },
     {
       "id": "usps",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "USPS",
       "category": "delivery",
       "aliases": [
@@ -1067,6 +1335,14 @@ window.TFS_STORE = {
     },
     {
       "id": "ups",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "UPS",
       "category": "delivery",
       "aliases": [],
@@ -1086,6 +1362,14 @@ window.TFS_STORE = {
     },
     {
       "id": "fedex",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "FedEx",
       "category": "delivery",
       "aliases": ["fedex", "federal express"],
@@ -1105,6 +1389,14 @@ window.TFS_STORE = {
     },
     {
       "id": "dhl",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "DHL",
       "category": "delivery",
       "aliases": ["dhl"],
@@ -1124,6 +1416,14 @@ window.TFS_STORE = {
     },
     {
       "id": "irs",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "IRS",
       "category": "government",
       "aliases": ["irs", "internal revenue service"],
@@ -1143,6 +1443,14 @@ window.TFS_STORE = {
     },
     {
       "id": "ssa",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Social Security Administration",
       "category": "government",
       "aliases": [
@@ -1212,6 +1520,14 @@ window.TFS_STORE = {
     },
     {
       "id": "medicare",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Medicare",
       "category": "government",
       "aliases": ["medicare"],
@@ -1237,6 +1553,14 @@ window.TFS_STORE = {
     },
     {
       "id": "ftc",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Federal Trade Commission",
       "category": "government",
       "aliases": ["ftc"],
@@ -1256,6 +1580,14 @@ window.TFS_STORE = {
     },
     {
       "id": "cadmv",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "California DMV",
       "category": "government",
       "aliases": ["california dmv", "department of motor vehicles"],
@@ -1275,6 +1607,14 @@ window.TFS_STORE = {
     },
     {
       "id": "caedd",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "California EDD",
       "category": "government",
       "aliases": ["employment development department"],
@@ -1294,6 +1634,14 @@ window.TFS_STORE = {
     },
     {
       "id": "fastrak",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "FasTrak (Bay Area)",
       "category": "tolls",
       "aliases": ["fastrak", "fas trak", "bay area fastrak"],
@@ -1313,6 +1661,14 @@ window.TFS_STORE = {
     },
     {
       "id": "tollroads",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "The Toll Roads (Orange County)",
       "category": "tolls",
       "aliases": ["the toll roads"],
@@ -1332,6 +1688,14 @@ window.TFS_STORE = {
     },
     {
       "id": "aarp",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "AARP",
       "category": "nonprofit",
       "aliases": ["aarp"],
@@ -1351,6 +1715,14 @@ window.TFS_STORE = {
     },
     {
       "id": "pch",
+      "humanReviewDraft": {
+        "reviewer": "Naman Raichura",
+        "status": "evidence_pending",
+        "attestedOn": "2026-10-22",
+        "date": null,
+        "reviewDue": null,
+        "sourceUrl": null
+      },
       "displayName": "Publishers Clearing House",
       "category": "sweepstakes",
       "aliases": ["publishers clearing house"],
