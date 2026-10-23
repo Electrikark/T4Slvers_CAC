@@ -93,6 +93,6 @@ These were left alone on purpose, because each one changes what the app claims:
   those two count as Tier 1. Either keep that and describe Suspicious more narrowly in the pitch,
   or decide they are always Tier 1.
 - **Competition rules.** Check the official Congressional App Challenge rules for video length,
-  eligibility and how to disclose AI help with code. They were not available during the review.
+  eligibility and how to disclose development assistance. They were not available during the review.
 - **What judges see on GitHub.** The default branch `main` is behind `release-v1`. Merge
   the finished work through a pull request when you are ready. Nothing has been pushed for you.

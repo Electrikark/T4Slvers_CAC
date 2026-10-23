@@ -12,7 +12,7 @@
   "workbooks": [
     {
       "passed": true,
-      "workbook": "/Users/namanraichura/.codex/.chatgpt-projects/g-p-6ab2104216048191848ae7f86cdc348c/review-five-organizations/docs/testing/five-organization-review.xlsx",
+      "workbook": "[local workspace]/review-five-organizations/docs/testing/five-organization-review.xlsx",
       "organizations": [
         {
           "organization": "Chase",
@@ -55,7 +55,7 @@
     },
     {
       "passed": true,
-      "workbook": "/Users/namanraichura/.codex/.chatgpt-projects/g-p-6ab2104216048191848ae7f86cdc348c/outputs/five-org-review/five-organization-review.xlsx",
+      "workbook": "[local workspace]/outputs/five-org-review/five-organization-review.xlsx",
       "organizations": [
         {
           "organization": "Chase",

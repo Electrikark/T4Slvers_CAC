@@ -75,7 +75,7 @@ push the intended files on a working branch. Saving a file alone does not upload
 it to GitHub. For example, when this branch contains only the intended changes:
 
 ```sh
-git add index.html check.html recover.html learn.html about.html js css tests scripts eval/engine.cjs docs/decisions/senior-site.md README.md AGENTS.md
+git add index.html check.html recover.html learn.html about.html js css tests scripts eval/engine.cjs docs/decisions/senior-site.md README.md CONTRIBUTING.md
 git commit -m 'Keep the page aligned with the app'
 git push -u origin HEAD
 ```
