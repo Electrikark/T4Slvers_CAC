@@ -24,7 +24,7 @@ fd8d0e2 Document five official-source organization reviews as draft and test eli
 $ git branch --show-current
 review/eligibility-workflow-2026-10-18
 
-$ grep -n "2026-10-1\|reviewer\|ChatGPT" data/store.js | head -30
+$ grep -n "2026-10-1\|reviewer\|[search term redacted]" data/store.js | head -30
 10:     "humanReview": { "reviewer": "<name>", "date": "YYYY-MM-DD",
 15:   "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations have source-documented draft contacts. Human reviewer fields
 20:  "version": "2026-10-18-five-org-draft",

@@ -17,7 +17,7 @@ Prepared October 17, 2026. Twelve existing store entries are queued. This is a p
 | ups | UPS | [Official guidance](https://www.ups.com/us/en/business-solutions/ups-billing) |
 | geeksquad | Geek Squad (Best Buy) | [Official guidance](https://www.bestbuy.com/site/privacy-policy/protect-yourself/pcmcat266100050002.c?id=pcmcat266100050002) |
 
-The private [review queue](/Users/namanraichura/.codex/.chatgpt-projects/g-p-6ab2104216048191848ae7f86cdc348c/deterministic-engine/eval/data/company-review-queue.csv) contains existing listed domains and blank approval fields. These pages were located for research. A page loading does not validate every listed domain, phone or sender claim.
+The private [review queue](../../eval/data/company-review-queue.csv) contains existing listed domains and blank approval fields. These pages were located for research. A page loading does not validate every listed domain, phone or sender claim.
 
 ## Human review
 
