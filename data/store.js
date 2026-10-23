@@ -261,7 +261,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "wellsfargo",
@@ -379,7 +379,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "usbank",
@@ -406,7 +406,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "capitalone",
@@ -433,7 +433,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "pnc",
@@ -460,7 +460,7 @@ window.TFS_STORE = {
           "check": "needs review: site refused the automated check"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "navyfederal",
@@ -487,7 +487,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "golden1",
@@ -514,7 +514,7 @@ window.TFS_STORE = {
           "check": "needs review: site refused the automated check"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "amex",
@@ -541,7 +541,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "paypal",
@@ -568,7 +568,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "venmo",
@@ -595,7 +595,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "zelle",
@@ -628,7 +628,7 @@ window.TFS_STORE = {
           "check": "automated: zellepay.com redirects here"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "cashapp",
@@ -655,7 +655,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "amazon",
@@ -748,7 +748,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "microsoft",
@@ -799,7 +799,7 @@ window.TFS_STORE = {
           "check": "automated: office.com redirects here"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "google",
@@ -839,7 +839,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "meta",
@@ -884,7 +884,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "netflix",
@@ -911,7 +911,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "geeksquad",
@@ -944,7 +944,7 @@ window.TFS_STORE = {
           "check": "needs review: site refused the automated check"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "norton",
@@ -971,7 +971,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "mcafee",
@@ -998,7 +998,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "docusign",
@@ -1031,7 +1031,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads (retried by hand)"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "walmart",
@@ -1058,7 +1058,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "costco",
@@ -1085,7 +1085,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "att",
@@ -1112,7 +1112,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "verizon",
@@ -1139,7 +1139,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "tmobile",
@@ -1166,7 +1166,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "xfinity",
@@ -1199,7 +1199,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads (retried by hand)"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "pge",
@@ -1226,7 +1226,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "smud",
@@ -1253,7 +1253,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "usps",
@@ -1358,7 +1358,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "fedex",
@@ -1385,7 +1385,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "dhl",
@@ -1412,7 +1412,7 @@ window.TFS_STORE = {
           "check": "needs review: site refused the automated check"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "irs",
@@ -1439,7 +1439,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "ssa",
@@ -1549,7 +1549,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "ftc",
@@ -1576,7 +1576,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "cadmv",
@@ -1603,7 +1603,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "caedd",
@@ -1630,7 +1630,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "fastrak",
@@ -1657,7 +1657,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "tollroads",
@@ -1684,7 +1684,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "aarp",
@@ -1711,7 +1711,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     },
     {
       "id": "pch",
@@ -1738,7 +1738,7 @@ window.TFS_STORE = {
           "check": "automated: HTTPS page loads and stays on this domain"
         }
       ],
-      "verifiedBy": "automated check by Claude; awaiting human review"
+      "verifiedBy": "automated check; awaiting human review"
     }
   ]
 };
