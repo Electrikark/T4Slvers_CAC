@@ -1,12 +1,25 @@
 # Reviewing reference records (a person's job)
 
-No record in `data/store.js` has been reviewed by a person, so the real list can never give
+No record in `data/store.js` has complete human approval metadata, so the real list cannot yet give
 **Details Match**. Demo 7 (the real USPS tracking link) shows Insufficient Evidence with
 "its source record still needs review". That is the safe default, not a bug. This guide is the
 part the code cannot do for you: a person checks each record against a primary source and signs it.
 
 Don't add a review you did not do. A fixture or placeholder reviewer in the real list would make
 Details Match claim something nobody checked.
+
+## Approval preparation recorded October 22, 2026
+
+Naman Raichura states that he already checked the original 46 organizations. His name is
+prefilled in each `humanReviewDraft`. The dates and approval source pages stay null because
+his notes are not available. `attestedOn` records his statement date, not a new check date.
+The engine ignores these drafts, so they do not approve contacts or enable Details Match.
+HSBC, Royal Mail and E-ZPass stay outside this scope.
+
+See [the preparation list](testing/human-review-preparation.md) for all 46 records, stored
+source candidates and the fields still needed. Existing source dates are research dates;
+do not reuse them as human check dates without a basis. Once the evidence is complete,
+use `humanReview` or contact-level approval as described below and run validation.
 
 ## Which records to start with
 
@@ -30,7 +43,7 @@ records are enough for the submission; more records mean more re-reviews later.
    only record that the site loaded.
 2. Check every domain in that organization's `officialDomains` against the source. Remove a domain
    the source does not support instead of reviewing it.
-3. Add this to the organization in `data/store.js`, with your own name and today's date:
+3. Add this to the organization in `data/store.js`, with your own name and the actual day you checked it:
 
    ```json
    "humanReview": {
@@ -48,9 +61,8 @@ records are enough for the submission; more records mean more re-reviews later.
    delete the contact you could not confirm, or mark that one contact `"status": "rejected"`.
    A contact you mark `"reviewed"` yourself keeps its own reviewer, dates and source page.
 4. **Review-due date.** The store's rule is 90 days after the review. After that date the record
-   stops counting and the page says "the review of that record has expired". Pick your review
-   date so the record is still in date on the day judges try the app, or plan to review again
-   before then.
+   stops counting and the page says "the review of that record has expired". Use the actual check
+   date. If it will expire before judges try the app, plan to check it again before then.
 5. A few sources say `"check": "needs review: site refused the automated check"` (PNC, Golden 1,
    Best Buy/Geek Squad, DHL). Those domains stay in draft even with a `humanReview`. After you
    check one by hand, change that `check` text to say how you checked it.
@@ -63,7 +75,7 @@ records are enough for the submission; more records mean more re-reviews later.
 npm test
 ```
 
-Then open `index.html`, load demo 7, choose Text and press "Check this". With USPS reviewed it
+Then open `check.html`, load demo 7, choose Text and press "Check this". With USPS reviewed it
 should say **Details Match**, with "Contact details only · The sender is not confirmed" under it.
 Demos 1, 2, 4, 5 and 6 should still say Suspicious, and demo 3 Insufficient Evidence.
 
