@@ -54,28 +54,35 @@ function close() {
   byId('help-menu').querySelector('button')?.focus();
 }
 
+// ML search is used only once the model is ready. Until then (or if it never loads) the page
+// uses keyword search straight away, so nobody waits on a download.
 let modelState = 'idle';
 function prepareModel() {
   if (method !== 'ml' || modelState !== 'idle') return;
   modelState = 'loading';
-  byId('help-status').textContent = 'Getting the search ready. The list of topics above works now.';
-  loadModel().then(() => { modelState = 'ready'; byId('help-status').textContent = ''; })
-    .catch(() => { modelState = 'failed'; byId('help-status').textContent = 'The search could not load. Use the list of topics above.'; });
+  loadModel().then(() => { modelState = 'ready'; })
+    .catch(() => { modelState = 'failed'; });
 }
 
+// Each search gets a number; a slower, older search never replaces a newer one's results.
+let latest = 0;
 async function find(event) {
   event.preventDefault();
+  const mine = ++latest;
   const query = byId('help-query').value.trim();
   const out = byId('help-suggestions');
   out.replaceChildren();
   if (!query) { byId('help-status').textContent = 'Type a few words about what happened, or choose a topic above.'; return; }
-  let results;
-  try {
-    results = method === 'ml' && modelState !== 'failed' ? await mlSearch(query, help) : keywordSearch(query, help);
-  } catch {
-    modelState = 'failed';
+  let results, used = 'keyword';
+  if (method === 'ml' && modelState === 'ready') {
+    try { results = await mlSearch(query, help); used = 'ml'; }
+    catch { modelState = 'failed'; results = keywordSearch(query, help); }
+  } else {
     results = keywordSearch(query, help);
   }
+  if (mine !== latest) return;
+  out.replaceChildren();
+  out.dataset.method = used;
   if (!results.length) {
     byId('help-status').textContent = 'We could not match that to a topic. Choose the closest one above, or “Something else, or I am not sure.”';
     return;

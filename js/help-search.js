@@ -7,7 +7,7 @@
 // Both return suggestions only. The page always shows every topic, and a weak match
 // returns nothing rather than a confident guess.
 
-const BASE = new URL('vendor/minilm/', document.baseURI).href;
+const base = () => new URL('vendor/minilm/', document.baseURI).href;
 const MODEL = 'Xenova/all-MiniLM-L6-v2';
 
 // Chosen on development data only (experiments/help-search/dev-challenge.json and the card
@@ -21,13 +21,45 @@ export const SETTINGS = {
   suggestions: 3
 };
 
-// "They asked for my code but I didn't give it": nothing was handed over, so the general card
-// comes first. Applied the same way to both methods.
-const NEGATION = /\b(?:did ?n[o’']?t|didn['’]t|never|almost|before i (?:gave|sent|paid|did)|stopped|hung up|refused)\b/i;
+// "Something else, or I am not sure" goes first only when the description says nothing was
+// handed over: "they asked for my code but I did not give it", "I hung up before I gave them
+// anything". If the person did hand something over anywhere in the sentence ("I gave them my
+// password but did not send money"), the suggestions are left alone. Same rule for both methods.
+// "n't" sits inside a word (didn't, haven't), so it has no word boundary before it.
+const NEGATION_CUE = /\b(?:not|never|almost|nearly|stopped|hung up|refused|before)\b|n['’]t\b/i;
+const HANDOVER = /\b(?:gave|give|given|sent|send|paid|pay|told|tell|read|shared?|typed|entered|bought|buy|purchased|installed|downloaded|let|transferred|wired|mailed|scratched|filled|answered|put|zelled|venmoed)\b/gi;
+const NOT_ME = /\b(?:they|he|she|someone|somebody|the (?:caller|man|woman|guy|lady|scammer|text|message)|it)\b/gi;
+// Clause boundaries: a negation or "before" does not reach past these.
+const CLAUSE_END = /[.;!?,]|\b(?:but|and then|then|and|so|because)\b/gi;
+
+function nothingHandedOver(query) {
+  const text = String(query).toLowerCase();
+  if (!NEGATION_CUE.test(text)) return false;
+  const cuts = [0];
+  for (const m of text.matchAll(CLAUSE_END)) cuts.push(m.index, m.index + m[0].length);
+  cuts.push(text.length);
+  for (let i = 0; i < cuts.length - 1; i += 2) {
+    const clause = text.slice(cuts[i], cuts[i + 1]);
+    for (const verb of clause.matchAll(HANDOVER)) {
+      const before = clause.slice(0, verb.index);
+      // "did not give", "never paid", "almost bought", "before I gave": not handed over.
+      if (/\b(?:not|never|almost|nearly|before|without|refused to)\b|n['’]t\b/.test(before)) continue;
+      // "they sent me", "the caller told me": someone else did it.
+      const lastMe = Math.max(before.lastIndexOf(' i '), before.startsWith('i ') ? 0 : -1, before.lastIndexOf("i'"));
+      const others = [...before.matchAll(NOT_ME)].map(m => m.index);
+      if (others.length && others[others.length - 1] > lastMe) continue;
+      return false;
+    }
+  }
+  return true;
+}
+
 function withNegation(query, list) {
-  if (!NEGATION.test(query)) return list;
+  if (!nothingHandedOver(query)) return list;
   return [{ id: 'other', score: null }].concat(list.filter(r => r.id !== 'other')).slice(0, SETTINGS.suggestions);
 }
+
+export const _test = { nothingHandedOver };
 
 const STOP = new Set(('a an and are as at be but by for from had has have he her him his i i\'m im in is it its me my of on or ' +
   'our she so that the their them then there they this to was we were what when which who will with you your just did do ' +
@@ -94,6 +126,7 @@ let index = null;
 export async function loadModel(onProgress = () => {}) {
   if (!extractorPromise) {
     extractorPromise = (async () => {
+      const BASE = base();
       const t = await import(BASE + 'lib/transformers.min.js');
       t.env.allowRemoteModels = false;
       t.env.allowLocalModels = true;

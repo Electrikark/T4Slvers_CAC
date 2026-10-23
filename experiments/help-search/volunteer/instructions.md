@@ -12,6 +12,10 @@ Mix these in:
 - vague ones ("I did what the text said")
 - a few that have nothing to do with scams ("how do I make the letters bigger")
 
+Across all volunteers, the test needs **at least 5** descriptions with two or more incidents and
+**at least 5** that have nothing to do with scams; it will not run with fewer. Two of each per
+volunteer is a safe target.
+
 Write them in `descriptions.csv` with columns `id,volunteer,text` (ids like `v1-01`, `v1-02`).
 Spelling mistakes are fine; keep them.
 
