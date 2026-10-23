@@ -23,7 +23,15 @@ const root = path.join(__dirname, '..', '..');
 const OUT = path.join(__dirname, 'out');
 const arg = (name, fallback) => { const i = process.argv.indexOf('--' + name); return i > 0 ? process.argv[i + 1] : fallback; };
 const sha = file => crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex');
-const FROZEN = ['js/help-search.js'];
+// Everything that decides the result: the search code, this scorer and its ship rule, the written
+// decision, and every model and runtime file. Changing any of them after the freeze blocks the test.
+const MIN_NONE = 5, MIN_MULTIPLE = 5;
+function frozenFiles() {
+  const walk = dir => fs.readdirSync(path.join(root, dir), { withFileTypes: true })
+    .flatMap(e => e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]);
+  return ['js/help-search.js', 'experiments/help-search/evaluate.cjs', 'docs/decisions/help-search.md']
+    .concat(walk('vendor/minilm').sort());
+}
 // What search reads from the cards: ids, parents, titles and examples. Step wording is not
 // included, so approving or correcting a step after the freeze does not invalidate the test.
 function searchContent() {
@@ -125,7 +133,7 @@ async function dev() {
 }
 
 function freeze() {
-  const record = { frozenAt: new Date().toISOString(), files: Object.fromEntries(FROZEN.map(f => [f, sha(f)])), searchContent: searchContent() };
+  const record = { frozenAt: new Date().toISOString(), files: Object.fromEntries(frozenFiles().map(f => [f, sha(f)])), searchContent: searchContent() };
   fs.writeFileSync(path.join(__dirname, 'freeze.json'), JSON.stringify(record, null, 2) + '\n');
   console.log(JSON.stringify(record, null, 2));
 }
@@ -134,7 +142,10 @@ async function test() {
   const freezeFile = path.join(__dirname, 'freeze.json');
   if (!fs.existsSync(freezeFile)) throw new Error('Freeze first: node experiments/help-search/evaluate.cjs freeze');
   const frozen = JSON.parse(fs.readFileSync(freezeFile, 'utf8'));
-  for (const f of FROZEN) if (frozen.files[f] !== sha(f)) throw new Error(`${f} changed after the freeze; the test would not be blind.`);
+  const now = frozenFiles();
+  for (const f of new Set(Object.keys(frozen.files).concat(now))) {
+    if (!now.includes(f) || frozen.files[f] !== sha(f)) throw new Error(`${f} changed, appeared or disappeared after the freeze; the test would not be blind.`);
+  }
   if (frozen.searchContent !== searchContent()) throw new Error('Card titles or examples changed after the freeze; the test would not be blind.');
   const guard = path.join(OUT, 'test-run.json');
   if (fs.existsSync(guard)) throw new Error('The volunteer test was already run. It counts once.');
@@ -146,16 +157,24 @@ async function test() {
     const accept = l.accept.toLowerCase() === 'none' ? [] : l.accept.split(/\s+/).filter(Boolean);
     return { id: d.id, kind: accept.length ? (l.all === 'yes' ? 'multiple' : 'single') : 'none', text: d.text, accept, all: l.all === 'yes' };
   });
+  // Without enough hard cases, the "none" and multiple-incident conditions would pass by default.
+  const none = queries.filter(q => q.kind === 'none').length, multiple = queries.filter(q => q.kind === 'multiple').length;
+  if (none < MIN_NONE || multiple < MIN_MULTIPLE) {
+    throw new Error(`The labeled descriptions need at least ${MIN_NONE} with no fitting card (have ${none}) and ${MIN_MULTIPLE} with two or more incidents (have ${multiple}). Nothing was run.`);
+  }
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(guard, JSON.stringify({ when: new Date().toISOString(), freeze: frozen, n: queries.length }, null, 2) + '\n');
   const out = await withPage(page => score(page, queries));
   const r = report('Volunteer test (blind, run once)', out.rows);
   const noneRows = out.rows.filter(x => !x.accept.length);
   const wrong = m => noneRows.filter(x => judge(x, x[m]).confidentWrong).length;
-  const ships = r.semOnly - r.keyOnly >= 5 && wrong('semantic') <= wrong('keyword');
+  const multi = out.rows.filter(x => x.all);
+  const covers = m => multi.filter(x => judge(x, x[m]).covered).length;
+  const ships = r.semOnly - r.keyOnly >= 5 && wrong('semantic') <= wrong('keyword') && covers('semantic') >= covers('keyword');
   const lines = ['# Help search: volunteer test', '', `Descriptions: ${queries.length} from ${new Set(descriptions.map(d => d.volunteer)).size} volunteers.`, '']
-    .concat(r.lines, [`Decision rule (docs/decisions/help-search.md): semantic-only wins minus keyword-only wins = ${r.semOnly - r.keyOnly} (needs 5 or more); ` +
-      `confident wrong on "none" rows: semantic ${wrong('semantic')}, keyword ${wrong('keyword')}. **${ships ? 'Semantic search ships.' : 'Keyword search ships.'}**`, ''],
+    .concat(r.lines, [`Decision rule (docs/decisions/help-search.md): ML-only wins minus keyword-only wins = ${r.semOnly - r.keyOnly} (needs 5 or more); ` +
+      `confident wrong on "none" rows (${noneRows.length}): ML ${wrong('semantic')}, keyword ${wrong('keyword')}; ` +
+      `all incidents covered on multiple-incident rows (${multi.length}): ML ${covers('semantic')}, keyword ${covers('keyword')}. **${ships ? 'ML search ships.' : 'Keyword search ships.'}**`, ''],
       ['## Every row', ''], show(out.rows, () => true));
   fs.writeFileSync(path.join(OUT, 'test-report.md'), lines.join('\n') + '\n');
   console.log(lines.join('\n'));

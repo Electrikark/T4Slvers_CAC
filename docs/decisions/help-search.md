@@ -20,7 +20,7 @@ suggests topics; it never opens one by itself, and a weak match suggests nothing
 | --- | --- | --- |
 | Menu | The topic titles | none |
 | Keyword search | Each card's title and example descriptions, plus a fixed synonym list | none |
-| ML search (hybrid) | The same titles and examples, as all-MiniLM-L6-v2 sentence embeddings, plus the keyword score | about 49 MB, once, only when the person starts typing |
+| ML search (hybrid) | The same titles and examples, as all-MiniLM-L6-v2 sentence embeddings, plus the keyword score | about 49 MB when the search box is first selected; it is not saved in the browser, so it downloads again on each visit. Until it has loaded, the page answers with keyword search |
 
 Both searches read the same content, so the comparison tests the method, not the content.
 
@@ -29,19 +29,23 @@ Both searches read the same content, so the comparison tests the method, not the
 - **Development:** the example descriptions in `data/help-cards.js` and the challenge set in
   `experiments/help-search/dev-challenge.json` (negations, two incidents in one description,
   ambiguous wording, situations no card covers). Thresholds and synonyms are tuned on these only.
-- **Freeze:** after tuning, `js/help-search.js` (its `SETTINGS`, synonyms and negation rule) and what
-  search reads from the cards (ids, titles and examples) are frozen; their fingerprints are in
-  `experiments/help-search/freeze.json`. Step wording is not part of the freeze, so the cards can
-  still be approved or corrected.
+- **Freeze:** after tuning, these are frozen, with fingerprints in `experiments/help-search/freeze.json`:
+  `js/help-search.js` (settings, synonyms, the "nothing handed over" rule), the scorer and ship rule
+  (`experiments/help-search/evaluate.cjs`), this document, every model and runtime file in
+  `vendor/minilm/`, and what search reads from the cards (ids, titles and examples). Step wording is
+  not part of the freeze, so the cards can still be approved or corrected.
 - **Tuning result (development only):** the ML candidate is a hybrid. The embedding similarity decides
   whether a card matches at all (at least 0.45), and matching cards are ranked by 0.6 x similarity +
   0.4 x the keyword score (scaled to the best card). Keyword search needs a score of at least 2. Both
-  methods put "Something else, or I am not sure" first when the description says nothing was handed
-  over ("didn't", "hung up", "stopped"). On development data: ML 59 of 81 left-out examples and 20 of
-  24 challenge rows; keyword 55 and 19. The keyword synonym list was written while looking at the
-  same examples, so development favors keyword; only the volunteer test counts.
+  methods put "Something else, or I am not sure" first only when the description says nothing was
+  handed over ("they asked for my code but I did not give it"). If anything was handed over anywhere in
+  the sentence ("I gave them my password but did not send money"), suggestions are left alone.
+  Development results are in `experiments/help-search/out/dev-report.md` (rerun after the Oct 22
+  fixes). The keyword synonym list was written while looking at the same examples, so development
+  favors keyword; only the volunteer test counts.
 - **Test:** volunteers who have not seen the cards each write 10–15 descriptions of something a
-  senior might have done after a scam. A separate person, who sees neither search's results, marks
+  senior might have done after a scam. The test refuses to run unless at least 5 descriptions have no
+  fitting card and at least 5 describe two or more incidents, so neither condition passes by default. A separate person, who sees neither search's results, marks
   the acceptable card or cards for each description (more than one for a two-incident description;
   "none" when no card fits). The test runs once; the script refuses a second run.
 
@@ -64,7 +68,9 @@ ML search ships as the page's search only if, on the volunteer test:
 
 - it gets the first suggestion right on **at least 5 more descriptions** than keyword search (paired
   count: ML-only wins minus keyword-only wins ≥ 5), **and**
-- it does not give a confident wrong suggestion on more "none" descriptions than keyword search.
+- it does not give a confident wrong suggestion on more "none" descriptions than keyword search, **and**
+- on descriptions with two or more incidents, it covers every incident in its 3 suggestions at least as
+  often as keyword search.
 
 The page's search method is the `SEARCH` constant in `js/help-ui.js`, `'keyword'` until then.
 
