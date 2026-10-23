@@ -139,6 +139,32 @@ function showAnnotations(text, result) {
   byId('annotated-section').hidden = model.notes.length === 0;
 }
 
+// "Why this is a warning sign": a plain reason for each rule found, with an official quote and its page.
+function showWhy(result) {
+  const why = window.TFS_WHY;
+  const items = why && window.TFS.whyItems ? window.TFS.whyItems(result, why) : [];
+  byId('why-section').hidden = items.length === 0;
+  byId('why-draft').hidden = !why || Boolean(why.approvedBy);
+  byId('why-list').replaceChildren(...items.map(item => {
+    const li = textElement('li', item.why);
+    for (const quote of [item.official, item.also].filter(Boolean)) {
+      const source = why.sources[quote.source];
+      // Every source in data/why.js is an FTC publication (MilitaryConsumer.gov is run with the FTC).
+      const p = textElement('p', 'The FTC says: “' + quote.quote + '”', 'why-quote');
+      if (source) {
+        const link = textElement('a', source.title, 'why-source');
+        link.href = source.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        p.append(' ', link);
+      }
+      li.append(p);
+    }
+    if (!item.official) li.append(textElement('p', 'Tech for Silvers advice', 'why-source'));
+    return li;
+  }));
+}
+
 function showResult(result, text) {
   byId('ocr-result-note').hidden = result.inputSource !== 'screenshot';
   const style = RESULT_STYLES[result.assessment];
@@ -149,6 +175,7 @@ function showResult(result, text) {
   byId('state-label').textContent = risk === 'high' && style.riskyLabel ? style.riskyLabel : style.label;
   byId('result-title').textContent = style.title;
   byId('result-description').textContent = result.description;
+  showWhy(result);
   byId('identity').textContent = result.claimedIdentity;
   byId('channel').textContent = result.channel;
   byId('inspected').textContent = result.inspected;
@@ -174,7 +201,7 @@ function showResult(result, text) {
 }
 
 function clearResult() {
-  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
+  for (const id of ['why-list', 'result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
     byId(id).replaceChildren();
   }
   byId('annotated-section').hidden = true;
