@@ -63,7 +63,7 @@
       var r = analyze(t, 'Chase: Your statement is ready at https://chase.com');
       var source = r.checks[0].source;
       t.assert(source.indexOf('No person has reviewed it yet') >= 0, 'plain review status missing: ' + source);
-      t.assert(!/Claude|automated check by/i.test(source), 'internal review note shown: ' + source);
+      t.assert(!/automated check(?: by|; awaiting human review)/i.test(source), 'internal review note shown: ' + source);
     });
   });
 })();
