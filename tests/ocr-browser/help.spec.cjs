@@ -94,3 +94,24 @@ test('a newer search is never replaced by an older one', async ({ page }) => {
   await expect(page.locator('#help-suggestions .help-topic').first()).toHaveText(/Social Security/);
   await expect(page.locator('#help-suggestions .help-topic', { hasText: 'wire' })).toHaveCount(0);
 });
+
+test('a flagged result explains why, with the official quote and a link to its page', async ({ page }) => {
+  await page.goto(URL);
+  await page.locator('.option', { hasText: 'Text' }).first().click().catch(() => {});
+  await page.fill('#message', 'Grandma, I’m in trouble. Please buy 3 Apple gift cards and send me the codes.');
+  await page.click('#check-button');
+  await expect(page.locator('#why-section')).toBeVisible();
+  await expect(page.locator('#why-list > li').first()).toContainText('gift card');
+  await expect(page.locator('#why-list .why-quote').first()).toContainText('No real business or government agency');
+  await expect(page.locator('#why-list a.why-source').first()).toHaveAttribute('href', /consumer\.ftc\.gov/);
+  await expect(page.locator('#why-draft')).toBeVisible();
+});
+
+test('an ordinary message shows no "why" section', async ({ page }) => {
+  await page.goto(URL);
+  await page.locator('.option', { hasText: 'Text' }).first().click().catch(() => {});
+  await page.fill('#message', 'See you at lunch on Sunday!');
+  await page.click('#check-button');
+  await expect(page.locator('#result-title')).toBeVisible();
+  await expect(page.locator('#why-section')).toBeHidden();
+});
