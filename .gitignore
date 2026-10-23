@@ -17,3 +17,4 @@ node_modules/
 test-results/
 playwright-report/
 experiments/ocr-robustness/out/
+experiments/help-search/out/

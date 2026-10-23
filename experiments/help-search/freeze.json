@@ -1,0 +1,20 @@
+{
+  "frozenAt": "2026-10-23T05:10:24.996Z",
+  "files": {
+    "js/help-search.js": "e8cbcd8592df8f75df62a4910165e9b8344130cebd94be3bb6fb3fa92681f9a6",
+    "experiments/help-search/evaluate.cjs": "04b19ad84c01023ba1fa7d7f83c2e65f0eeca7e6865b081ce676b21ac524a949",
+    "docs/decisions/help-search.md": "882b94319db0c18c2edfacd99f90a12c5ed487a8910f8c6d8089589a9056cd3e",
+    "vendor/minilm/LICENSE-transformers.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "vendor/minilm/NOTICE.md": "72a77bc3a76d1b06f13bf763cccbff0c0e25c0a2954f7f53923aa6610cbb8301",
+    "vendor/minilm/lib/ort-wasm-simd-threaded.asyncify.mjs": "0966b6105cd936744498aa60df7a22cbd47af3374dbc64a9ab561c08a71e3611",
+    "vendor/minilm/lib/ort-wasm-simd-threaded.asyncify.wasm": "49871f5a4409519797e127440868a6d1923339d9185907f301a5b2a1d90af082",
+    "vendor/minilm/lib/transformers.min.js": "1475fd440e9932ab206682ee42cb18f6097403e9ee77ea62084c592d0f83597d",
+    "vendor/minilm/models/Xenova/all-MiniLM-L6-v2/README.md": "63ea99bf681a2e9eda4f6a537d5ed8fda95d1677111656da37e9cfd080c3af02",
+    "vendor/minilm/models/Xenova/all-MiniLM-L6-v2/config.json": "7135149f7cffa1a573466c6e4d8423ed73b62fd2332c575bf738a0d033f70df7",
+    "vendor/minilm/models/Xenova/all-MiniLM-L6-v2/onnx/model_quantized.onnx": "afdb6f1a0e45b715d0bb9b11772f032c399babd23bfc31fed1c170afc848bdb1",
+    "vendor/minilm/models/Xenova/all-MiniLM-L6-v2/special_tokens_map.json": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+    "vendor/minilm/models/Xenova/all-MiniLM-L6-v2/tokenizer.json": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0",
+    "vendor/minilm/models/Xenova/all-MiniLM-L6-v2/tokenizer_config.json": "9261e7d79b44c8195c1cada2b453e55b00aeb81e907a6664974b4d7776172ab3"
+  },
+  "searchContent": "a971f506251fbec513643a5c609ccc7da922067222ea7b78c8ed1b5a62b43b46"
+}
