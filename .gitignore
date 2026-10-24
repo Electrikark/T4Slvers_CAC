@@ -17,3 +17,7 @@ node_modules/
 test-results/
 playwright-report/
 experiments/ocr-robustness/out/
+
+# Robustness run output. The report is regenerated from the frozen generator, so it is not
+# source; commit a single dated copy if a judge-facing number needs to live in the repo.
+adversarial/results/
