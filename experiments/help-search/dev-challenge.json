@@ -1,0 +1,230 @@
+{
+  "_note": "Development only, written by the developer. Never use these to report results. 'accept' lists every acceptable card; [] means no card fits and the best behavior is no suggestion. Rows d25-d28 were added Oct 22 from a code review that found the first negation rule wrong.",
+  "rows": [
+    {
+      "id": "d01",
+      "kind": "paraphrase",
+      "text": "the fella on the phone wanted the numbers from the text I just got",
+      "accept": [
+        "code"
+      ]
+    },
+    {
+      "id": "d02",
+      "kind": "paraphrase",
+      "text": "I bought iTunes cards at Walgreens and read them the backs",
+      "accept": [
+        "giftcard"
+      ]
+    },
+    {
+      "id": "d03",
+      "kind": "paraphrase",
+      "text": "a man came to my door and picked up a box of cash",
+      "accept": [
+        "money-cash"
+      ]
+    },
+    {
+      "id": "d04",
+      "kind": "paraphrase",
+      "text": "I let the Apple support guy on my iPad",
+      "accept": [
+        "remote"
+      ]
+    },
+    {
+      "id": "d05",
+      "kind": "paraphrase",
+      "text": "they have my SSN now",
+      "accept": [
+        "identity"
+      ]
+    },
+    {
+      "id": "d06",
+      "kind": "paraphrase",
+      "text": "I went to the gas station machine and put in 3000 dollars",
+      "accept": [
+        "money-crypto"
+      ]
+    },
+    {
+      "id": "d07",
+      "kind": "paraphrase",
+      "text": "I Zelled him the money for the puppy",
+      "accept": [
+        "money-bank"
+      ]
+    },
+    {
+      "id": "d08",
+      "kind": "paraphrase",
+      "text": "I gave the caller my login",
+      "accept": [
+        "code"
+      ]
+    },
+    {
+      "id": "d09",
+      "kind": "paraphrase",
+      "text": "I paid the toll fee with my Visa on that website",
+      "accept": [
+        "money-credit"
+      ]
+    },
+    {
+      "id": "d10",
+      "kind": "paraphrase",
+      "text": "the IRS lady said to buy Steam cards",
+      "accept": [
+        "giftcard"
+      ]
+    },
+    {
+      "id": "d11",
+      "kind": "paraphrase",
+      "text": "I sent money through Western Union to Canada",
+      "accept": [
+        "money-wire"
+      ]
+    },
+    {
+      "id": "d12",
+      "kind": "paraphrase",
+      "text": "my screen went black after the tech connected",
+      "accept": [
+        "remote"
+      ]
+    },
+    {
+      "id": "d13",
+      "kind": "negation",
+      "text": "they asked for my code but I did not give it",
+      "accept": [
+        "other"
+      ]
+    },
+    {
+      "id": "d14",
+      "kind": "negation",
+      "text": "I almost bought the gift cards but stopped at the register",
+      "accept": [
+        "other"
+      ]
+    },
+    {
+      "id": "d15",
+      "kind": "negation",
+      "text": "I hung up before I gave them anything",
+      "accept": [
+        "other"
+      ]
+    },
+    {
+      "id": "d16",
+      "kind": "multiple",
+      "text": "I gave my password and then sent money with Zelle",
+      "accept": [
+        "code",
+        "money-bank"
+      ],
+      "all": true
+    },
+    {
+      "id": "d17",
+      "kind": "multiple",
+      "text": "they got on my computer and then I bought gift cards",
+      "accept": [
+        "remote",
+        "giftcard"
+      ],
+      "all": true
+    },
+    {
+      "id": "d18",
+      "kind": "multiple",
+      "text": "I told them my social security number and my bank PIN",
+      "accept": [
+        "identity",
+        "code"
+      ],
+      "all": true
+    },
+    {
+      "id": "d19",
+      "kind": "ambiguous",
+      "text": "I gave them the number",
+      "accept": [
+        "code",
+        "identity",
+        "money-credit",
+        "giftcard"
+      ]
+    },
+    {
+      "id": "d20",
+      "kind": "ambiguous",
+      "text": "I did what the text said",
+      "accept": [
+        "other"
+      ]
+    },
+    {
+      "id": "d21",
+      "kind": "none",
+      "text": "my phone screen is cracked",
+      "accept": []
+    },
+    {
+      "id": "d22",
+      "kind": "none",
+      "text": "how do I make the text bigger",
+      "accept": []
+    },
+    {
+      "id": "d23",
+      "kind": "none",
+      "text": "I want to send a photo to my daughter",
+      "accept": []
+    },
+    {
+      "id": "d24",
+      "kind": "none",
+      "text": "what time does the workshop start",
+      "accept": []
+    },
+    {
+      "id": "d25",
+      "kind": "handed over + negation",
+      "text": "I gave them my password but did not send money.",
+      "accept": [
+        "code"
+      ]
+    },
+    {
+      "id": "d26",
+      "kind": "handed over + negation",
+      "text": "I sent gift card numbers and then hung up.",
+      "accept": [
+        "giftcard"
+      ]
+    },
+    {
+      "id": "d27",
+      "kind": "handed over + negation",
+      "text": "I let them on my computer but never paid",
+      "accept": [
+        "remote"
+      ]
+    },
+    {
+      "id": "d28",
+      "kind": "handed over + negation",
+      "text": "I told them my social security number before I hung up",
+      "accept": [
+        "identity"
+      ]
+    }
+  ]
+}

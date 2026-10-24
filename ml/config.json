@@ -1,0 +1,9 @@
+{
+  "_note": "Decided before training (see docs/decisions/ml-layer.md). compare.py refuses to choose a threshold until confirmed_by and confirmed_on are filled in. Changing a value after seeing dev results defeats the purpose; if you must, record why in the decision doc.",
+  "confirmed_by": null,
+  "confirmed_on": null,
+  "false_warning_budget": 0.10,
+  "min_extra_caution_rate": 0.20,
+  "min_extra_caution_lower_bound": 0.10,
+  "c_values": [0.1, 1, 10]
+}
