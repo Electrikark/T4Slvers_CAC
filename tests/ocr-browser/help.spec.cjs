@@ -70,15 +70,23 @@ test('a suggested payment route opens inside "I sent money or paid"', async ({ p
   await expect(page.locator('#money-wire .help-steps li').first()).toBeVisible();
 });
 
-test('ML search loads locally only after the search box is used, and stays on this site', async ({ page }) => {
+test('smarter search downloads only after its button is pressed, locally, and says when it is on', async ({ page }) => {
   const outside = [];
   page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:8381/')) outside.push(r.url()); });
   const model = modelRequests(page);
-  await page.goto(RECOVER + '?search=ml');
-  expect(model).toEqual([]);
+  await page.goto(RECOVER);
+  await expect(page.locator('#smart-search-on')).toBeVisible();
+  await expect(page.locator('#smart-search-on')).toContainText('experimental');
   await page.focus('#help-query');
-  await expect.poll(() => model.some(u => u.endsWith('.wasm')), { timeout: 60000 }).toBe(true);
-  await page.waitForTimeout(3000);
+  await page.fill('#help-query', 'I read the code to the caller');
+  await page.click('#help-find');
+  await page.waitForTimeout(500);
+  expect(model).toEqual([]);
+  await page.click('#smart-search-on');
+  await expect(page.locator('#smart-search-on')).toBeDisabled();
+  await expect(page.locator('#smart-search-status')).toContainText(/Downloading|is on for this visit/);
+  await expect(page.locator('#smart-search-status')).toContainText('is on for this visit', { timeout: 60000 });
+  expect(model.some(u => u.endsWith('.wasm'))).toBe(true);
   await page.fill('#help-query', 'I read the six numbers from my text to the man on the phone');
   await page.click('#help-find');
   await expect(page.locator('#help-suggestions .help-topic').first()).toHaveText(/code or password/, { timeout: 60000 });
@@ -88,8 +96,8 @@ test('ML search loads locally only after the search box is used, and stays on th
 
 test('while the model is still loading, or if it never loads, keyword search answers at once', async ({ page }) => {
   await page.route('**/vendor/minilm/**', () => {});
-  await page.goto(RECOVER + '?search=ml');
-  await page.focus('#help-query');
+  await page.goto(RECOVER);
+  await page.click('#smart-search-on');
   await page.fill('#help-query', 'I sent money by Western Union');
   const started = Date.now();
   await page.click('#help-find');
@@ -100,11 +108,11 @@ test('while the model is still loading, or if it never loads, keyword search ans
   await expect(page.locator('#remote .help-steps li')).toHaveCount(4);
 });
 
-test('if the model fails, the topics and keyword search still work', async ({ page }) => {
+test('if smarter search fails to load, the reader is told and the topics and keyword search still work', async ({ page }) => {
   await page.route('**/vendor/minilm/**', route => route.abort());
-  await page.goto(RECOVER + '?search=ml');
-  await page.focus('#help-query');
-  await page.waitForTimeout(500);
+  await page.goto(RECOVER);
+  await page.click('#smart-search-on');
+  await expect(page.locator('#smart-search-status')).toContainText('could not load');
   await page.fill('#help-query', 'I let them on my computer but never paid');
   await page.click('#help-find');
   await expect(page.locator('#help-suggestions .help-topic').first()).toHaveText(/computer or phone/);
