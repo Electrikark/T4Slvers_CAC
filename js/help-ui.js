@@ -5,9 +5,9 @@
 import { keywordSearch, mlSearch, loadModel } from './help-search.js';
 
 // Which search the page uses by default. Set by the volunteer test (docs/decisions/help-search.md):
-// 'keyword' unless the ML search meets the decision rule. Until then the ML search is opt-in:
-// it downloads only when the reader presses "Try smarter search", and only for that visit
-// (nothing is stored). docs/decisions/help-search-opt-in.md.
+// 'keyword' unless the ML search meets the decision rule. Until then the ML search is a mode the
+// reader turns on: it downloads only when they press "Turn on smart search mode", and only for
+// that visit (nothing is stored). docs/decisions/help-search-opt-in.md.
 const SEARCH = 'keyword';
 let method = SEARCH;
 
@@ -44,14 +44,15 @@ function turnOnSmartSearch() {
   modelState = 'loading';
   const button = byId('smart-search-on'), status = byId('smart-search-status');
   button.disabled = true;
-  status.textContent = 'Downloading smarter search (about 50 MB). You can search now; the regular search answers until it is ready.';
+  status.textContent = 'Turning on smart search mode (about 50 MB download). You can search now; the regular search answers until it is ready.';
   loadModel().then(() => {
     modelState = 'ready';
-    status.textContent = 'Smarter search is on for this visit. It is still being tested, so make sure the topic fits.';
+    button.textContent = 'Smart search mode is on';
+    status.textContent = 'Smart search mode is on for this visit.';
   }).catch(() => {
     modelState = 'failed';
     method = SEARCH;
-    status.textContent = 'Smarter search could not load. The regular search and every topic below still work.';
+    status.textContent = 'Smart search mode could not load. The regular search and every topic below still work.';
   });
 }
 
@@ -69,7 +70,7 @@ async function find(event) {
     try { results = await mlSearch(query, help); used = 'ml'; }
     catch {
       modelState = 'failed';
-      byId('smart-search-status').textContent = 'Smarter search stopped working. The regular search and every topic below still work.';
+      byId('smart-search-status').textContent = 'Smart search mode stopped working. The regular search and every topic below still work.';
       results = keywordSearch(query, help);
     }
   } else {

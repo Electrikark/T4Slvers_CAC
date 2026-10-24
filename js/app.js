@@ -292,13 +292,18 @@ byId('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations 
 resetSelfCheck();
 updateCount();
 
-// Only a fixed made-up example can be loaded by a link; no message text travels in a URL.
-if (new URLSearchParams(window.location.search).get('example') === 'family') {
+// Only a fixed made-up example from the scam guide (data/scam-guide.js) can be loaded by a link;
+// no message text travels in a URL. Loading it neither chooses the channel nor runs the check.
+const CHANNEL_NAMES = { text: 'Text', email: 'Email', unknown: 'Not sure' };
+const exampleId = new URLSearchParams(window.location.search).get('example');
+const practice = window.TFS_GUIDE && window.TFS_GUIDE.scams.find(s => s.id === exampleId);
+if (practice) {
   startOver();
-  byId('message').value = 'Grandma, please buy 3 Apple gift cards and send me the codes.';
+  byId('message').value = practice.example.text;
   updateCount();
-  byId('example-loaded').textContent = 'Made-up practice message. Choose Text, then Check this message when you are ready.';
+  const channel = practice.example.channel;
+  byId('example-loaded').textContent = `Made-up practice message. Choose ${CHANNEL_NAMES[channel]}, then Check this message when you are ready.`;
   byId('example-loaded').hidden = false;
-  byId('channel-text').focus();
+  byId(`channel-${channel}`).focus();
   window.history.replaceState(null, '', window.location.pathname);
 }

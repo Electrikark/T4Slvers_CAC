@@ -29,7 +29,7 @@ choices. See [the site design and next-feature plan](docs/decisions/senior-site.
 | `index.html` | Start here; choose a task |
 | `check.html` | Paste or read a screenshot, review a result, choose a next step |
 | `recover.html` | Recovery steps, official hotline, reporting links, printable plan |
-| `learn.html` | Four warning signs and a made-up practice message |
+| `learn.html` | Four warning signs, made-up practice messages one at a time, and a guide to common scams |
 | `about.html` | Results, limits, screenshot handling, privacy |
 
 The pages use normal links and shared styles, with no router or new dependency.
@@ -169,6 +169,7 @@ In the order a message passes through them:
 | `js/selfCheck.js` | "I checked it myself" outcomes; never changes the result |
 | `data/store.js` | The organization list: 49 organizations, none human-reviewed yet |
 | `js/mockData.js` | The seven demo examples |
+| `data/scam-guide.js`, `scripts/build-learn.cjs`, `js/learn.js` | The scam guide and practice messages; the script that writes them into `learn.html`; the one-at-a-time practice. See [the learn page decision](docs/decisions/learn-guide.md) |
 | `tests/` | `npm test` runs everything here; `tests/run.html` shows the same checks in a browser |
 | `eval/` | Field evaluation on real messages (`npm run eval`); `tests/eval-tests.cjs` checks the tool itself |
 

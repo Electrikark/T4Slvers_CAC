@@ -70,13 +70,14 @@ test('a suggested payment route opens inside "I sent money or paid"', async ({ p
   await expect(page.locator('#money-wire .help-steps li').first()).toBeVisible();
 });
 
-test('smarter search downloads only after its button is pressed, locally, and says when it is on', async ({ page }) => {
+test('smart search mode downloads only after its button is pressed, locally, and says when it is on', async ({ page }) => {
   const outside = [];
   page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:8381/')) outside.push(r.url()); });
   const model = modelRequests(page);
   await page.goto(RECOVER);
   await expect(page.locator('#smart-search-on')).toBeVisible();
-  await expect(page.locator('#smart-search-on')).toContainText('experimental');
+  await expect(page.locator('#smart-search-on')).toContainText('Turn on smart search mode');
+  await expect(page.locator('.smart-search')).not.toContainText(/experimental|being tested/i);
   await page.focus('#help-query');
   await page.fill('#help-query', 'I read the code to the caller');
   await page.click('#help-find');
@@ -84,8 +85,9 @@ test('smarter search downloads only after its button is pressed, locally, and sa
   expect(model).toEqual([]);
   await page.click('#smart-search-on');
   await expect(page.locator('#smart-search-on')).toBeDisabled();
-  await expect(page.locator('#smart-search-status')).toContainText(/Downloading|is on for this visit/);
+  await expect(page.locator('#smart-search-status')).toContainText(/Turning on|is on for this visit/);
   await expect(page.locator('#smart-search-status')).toContainText('is on for this visit', { timeout: 60000 });
+  await expect(page.locator('#smart-search-on')).toHaveText('Smart search mode is on');
   expect(model.some(u => u.endsWith('.wasm'))).toBe(true);
   await page.fill('#help-query', 'I read the six numbers from my text to the man on the phone');
   await page.click('#help-find');
@@ -108,7 +110,7 @@ test('while the model is still loading, or if it never loads, keyword search ans
   await expect(page.locator('#remote .help-steps li')).toHaveCount(4);
 });
 
-test('if smarter search fails to load, the reader is told and the topics and keyword search still work', async ({ page }) => {
+test('if smart search mode fails to load, the reader is told and the topics and keyword search still work', async ({ page }) => {
   await page.route('**/vendor/minilm/**', route => route.abort());
   await page.goto(RECOVER);
   await page.click('#smart-search-on');

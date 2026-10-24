@@ -14,7 +14,8 @@ test('home leads to practice, a real result, and recovery without sending input'
   await page.goto(base);
   await page.getByRole('link', { name: /I want to feel prepared/ }).click();
   await expect(page).toHaveURL(/learn.html$/);
-  await page.getByRole('link', { name: /Try this practice message/ }).click();
+  await page.locator('#scam-family > summary').click();
+  await page.getByRole('link', { name: /Try this message in the checker\s*: A grandchild/ }).click();
   await expect(page).toHaveURL(/check.html$/);
   await expect(page.locator('#message')).toHaveValue('Grandma, please buy 3 Apple gift cards and send me the codes.');
   await expect(page.locator('#example-loaded')).toContainText('Made-up');
