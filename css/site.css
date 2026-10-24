@@ -96,6 +96,16 @@ textarea { min-height:164px; font-size:1.125rem; }
 .recovery-options details[open] summary { border-bottom:1px solid var(--line); }
 .detail-body { padding:4px 0 16px; }
 .detail-body a { display:block; min-height:48px; padding:10px 0; }
+.detail-body .help-steps { margin:8px 0 0; padding-left:22px; }
+.detail-body .help-steps li { margin:12px 0; }
+.detail-body .help-steps a.help-source { min-height:0; padding:4px 0; }
+.help-source.own-advice { font-style:italic; }
+.help-summary, .help-choose { margin:12px 0 4px; }
+.payment-routes { display:grid; gap:10px; margin:10px 0 4px; }
+.payment-routes details { padding:0 16px; }
+.payment-routes summary { font-size:1.0625rem; min-height:56px; padding:14px 0; }
+.help-form { margin:0 0 20px; }
+.help-form .hint { margin:4px 0; }
 .hotline-card { background:#eaf0e3; border:1px solid #b7c6a9; border-radius:14px; padding:28px; }
 .hotline-card .task-icon { font-size:1.6rem; background:#fff; margin-bottom:18px; }
 .hotline-card .eyebrow { margin-bottom:12px; }
@@ -188,11 +198,12 @@ textarea { min-height:164px; font-size:1.125rem; }
 @media print {
   body { background:white; color:black; font-size:12pt; }
   .wrap { width:100%; }
-  .site-header, .site-footer, .skip-link, #print-plan { display:none !important; }
+  .site-header, .site-footer, .skip-link, #print-plan, .help-form { display:none !important; }
   .page-heading { padding:0 0 12pt; }
   .page-heading h1 { font-size:24pt; }
   .recovery-layout, .follow-through { display:block; }
   .urgent-step, .hotline-card, .follow-through, .caution-note, .recovery-options details { background:white; padding:12pt; margin:12pt 0; break-inside:avoid; }
+  .payment-routes details { padding:6pt 12pt; margin:6pt 0; }
   .today-list { margin-top:12pt; }
   .source-note { font-size:10pt; }
   a { color:black; }

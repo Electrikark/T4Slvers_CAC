@@ -67,4 +67,24 @@ test('At most 3 reasons, each shown once', () => {
   assert.equal(new Set(Array.from(items, i => i.why)).size, items.length);
 });
 
+test('Each reason quotes the words in this message it is about', () => {
+  const giftText = 'Grandma, I’m in trouble. Please buy 3 Apple gift cards and send me the codes.';
+  const gift = whyItems(analyze(giftText), why, giftText);
+  assert.equal(gift[0].words, 'send me the codes');
+  const toll = whyItems(analyze('FasTrak: You have an unpaid toll of $4.15. Pay within 24 hours to avoid a fine: https://fastrak-ca-tolls.com/pay'), why);
+  assert.equal(toll[0].key, 'T1-DOMAIN');
+  assert.equal(toll[0].words, 'https://fastrak-ca-tolls.com/pay');
+  const locked = whyItems(analyze('Your account has been locked. Act now within 24 hours.'), why);
+  for (const item of locked) assert.ok(item.words && 'Your account has been locked. Act now within 24 hours.'.includes(item.words), JSON.stringify(item));
+});
+
+test('Several findings: each reason keeps its own words, in the order found', () => {
+  const text = 'Microsoft: Your computer is infected. Install AnyDesk now and read us the code we text you.';
+  const items = whyItems(analyze(text), why, text);
+  assert.deepEqual(Array.from(items.slice(0, 2), i => [i.key, i.words]), [['T1-REMOTE', 'Install AnyDesk'], ['T1-CODE', 'read us the code']]);
+  assert.ok(items.length >= 2, JSON.stringify(Array.from(items, i => i.key)));
+  for (const item of items) assert.ok(item.words && text.includes(item.words), JSON.stringify(item));
+  assert.equal(new Set(Array.from(items, i => i.words)).size, items.length);
+});
+
 console.log('Why explanations: ' + checks + '/' + checks);

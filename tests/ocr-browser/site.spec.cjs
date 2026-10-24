@@ -40,9 +40,9 @@ test('home leads to practice, a real result, and recovery without sending input'
 
 test('recovery choices, official contacts, and unsaved checklist are usable', async ({ page }) => {
   await page.goto(base + 'recover.html');
-  for (const id of ['money', 'password', 'identity', 'device']) {
+  for (const id of ['code', 'remote', 'giftcard', 'money', 'identity', 'other']) {
     await page.locator(`#${id} > summary`).click();
-    await expect(page.locator(`#${id} .detail-body`)).toBeVisible();
+    await expect(page.locator(`#${id} > .detail-body`)).toBeVisible();
   }
   await expect(page.locator('.hotline-number')).toHaveAttribute('href', 'tel:+18333728311');
   await expect(page.locator('.hotline-hours')).toContainText('10 a.m.–6 p.m. Eastern');
@@ -67,7 +67,7 @@ test('print opens all recovery choices and restores the reader’s previous choi
   await page.getByRole('button', { name: 'Print this help page' }).click();
   expect(await page.evaluate(() => window.printOpen)).toBe(true);
   await expect(page.locator('#money')).toHaveAttribute('open', '');
-  await expect(page.locator('#password')).not.toHaveAttribute('open', '');
+  await expect(page.locator('#code')).not.toHaveAttribute('open', '');
 });
 
 test('information and recovery remain available without JavaScript', async ({ browser }) => {
@@ -76,7 +76,7 @@ test('information and recovery remain available without JavaScript', async ({ br
   await page.goto('http://127.0.0.1:8381' + base);
   await page.getByRole('link', { name: /Something went wrong/ }).click();
   await page.locator('#money > summary').click();
-  await expect(page.locator('#money .detail-body')).toBeVisible();
+  await expect(page.locator('#money > .detail-body')).toBeVisible();
   await expect(page.locator('.hotline-number')).toBeVisible();
   await expect(page.locator('#print-plan')).toBeHidden();
   await page.getByRole('navigation').getByRole('link', { name: 'Learn the signs' }).click();

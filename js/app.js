@@ -137,16 +137,28 @@ function showAnnotations(text, result) {
   window.TFS.renderAnnotations(document, model, byId('annotated'), byId('annotation-notes'));
   // The main warning already sits under the result, so it is not repeated here.
   byId('annotated-section').hidden = model.notes.length === 0;
+  return model;
 }
 
-// "Why this is a warning sign": a plain reason for each rule found, with an official quote and its page.
-function showWhy(result) {
+// "Why this is a warning sign": a plain reason for each rule found, tied to the words in this
+// message and to their numbered mark, with an official quote and its page.
+function showWhy(result, model, text) {
   const why = window.TFS_WHY;
-  const items = why && window.TFS.whyItems ? window.TFS.whyItems(result, why) : [];
+  const items = why && window.TFS.whyItems ? window.TFS.whyItems(result, why, text) : [];
   byId('why-section').hidden = items.length === 0;
   byId('why-draft').hidden = !why || Boolean(why.approvedBy);
   byId('why-list').replaceChildren(...items.map(item => {
     const li = textElement('li', item.why);
+    if (item.words) {
+      const words = textElement('p', 'In your message: “' + item.words + '”', 'why-words');
+      const note = model && model.notes.find(n => n.ruleId === item.key);
+      if (note) {
+        const mark = textElement('a', 'See mark ' + note.n, 'why-mark');
+        mark.href = '#annotation-' + note.id;
+        words.append(' ', mark);
+      }
+      li.append(words);
+    }
     for (const quote of [item.official, item.also].filter(Boolean)) {
       const source = why.sources[quote.source];
       // Every source in data/why.js is an FTC publication (MilitaryConsumer.gov is run with the FTC).
@@ -175,7 +187,6 @@ function showResult(result, text) {
   byId('state-label').textContent = risk === 'high' && style.riskyLabel ? style.riskyLabel : style.label;
   byId('result-title').textContent = style.title;
   byId('result-description').textContent = result.description;
-  showWhy(result);
   byId('identity').textContent = result.claimedIdentity;
   byId('channel').textContent = result.channel;
   byId('inspected').textContent = result.inspected;
@@ -191,7 +202,7 @@ function showResult(result, text) {
   byId('asks').replaceChildren(...result.requestRisk.flags.map(flag => signalItem(flag, result)));
   byId('warnings').replaceChildren(...otherWarnings.map(warning => textElement('p', warning, 'warning')));
   byId('next-list').replaceChildren(...result.nextSteps.map(step => textElement('li', step)));
-  showAnnotations(text, result);
+  showWhy(result, showAnnotations(text, result), text);
   // Each new result starts with its full details folded away.
   byId('evidence-details').open = false;
   byId('self-check-details').open = false;
@@ -206,6 +217,8 @@ function clearResult() {
     byId(id).replaceChildren();
   }
   byId('annotated-section').hidden = true;
+  byId('why-section').hidden = true;
+  byId('why-draft').hidden = true;
   shownResult = null;
   resetSelfCheck();
 }
