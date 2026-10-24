@@ -1,0 +1,18 @@
+{
+  "frozen_at": "2026-10-24T00:22:31.185Z",
+  "gate": {
+    "seed": 20261023,
+    "depth": 2,
+    "budget": 60,
+    "today": "2026-10-22"
+  },
+  "knownBaselineGaps": [
+    "F-CODE-2",
+    "F-WIRE-2"
+  ],
+  "fingerprints": {
+    "adversarial/transforms.cjs": "212d20a5eb9bb1a3b5796cb108d83eddc5c4a526664c2e038d0c65d8c835285e",
+    "adversarial/seeds.cjs": "5c0df72c6caf568ef24b7239088cf7cb84a8deebb0d88485336e95a92d6331a4",
+    "adversarial/run.cjs": "2fc1d8cf6d8cf78b2e9248a2014d7c10745a1aa76762769728b0123b5c9c0d91"
+  }
+}
