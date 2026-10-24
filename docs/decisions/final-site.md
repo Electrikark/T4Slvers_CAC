@@ -43,7 +43,8 @@ only in the reference list and the app name.
 3. **Semantic search** ([help-search.md](help-search.md)) stays a separate experiment. The page uses
    keyword search (`SEARCH = 'keyword'`). Its freeze still holds (14 files and the card content
    unchanged), and the development scores reproduce on this branch: keyword 55/81 and 23/28, ML 59/81
-   and 24/28. Nothing on the page depends on the model. It loads only with `?search=ml`.
+   and 24/28. Nothing on the page depends on the model. It is offered as an opt-in "Try smarter
+   search" button that downloads it only when pressed ([help-search-opt-in.md](help-search-opt-in.md)).
 
 ## Validation on this branch (local)
 

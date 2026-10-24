@@ -4,11 +4,12 @@
 // textContent only.
 import { keywordSearch, mlSearch, loadModel } from './help-search.js';
 
-// Which search the page uses. Set by the volunteer test (docs/decisions/help-search.md):
-// 'keyword' unless the ML search meets the decision rule. "?search=ml" tries the ML search
-// for testing only.
+// Which search the page uses by default. Set by the volunteer test (docs/decisions/help-search.md):
+// 'keyword' unless the ML search meets the decision rule. Until then the ML search is opt-in:
+// it downloads only when the reader presses "Try smarter search", and only for that visit
+// (nothing is stored). docs/decisions/help-search-opt-in.md.
 const SEARCH = 'keyword';
-const method = new URLSearchParams(location.search).get('search') === 'ml' ? 'ml' : SEARCH;
+let method = SEARCH;
 
 const help = window.TFS_HELP;
 const byId = id => document.getElementById(id);
@@ -37,11 +38,21 @@ function suggestion(c) {
 // ML search is used only once the model is ready. Until then (or if it never loads) the page
 // uses keyword search straight away, so nobody waits on a download.
 let modelState = 'idle';
-function prepareModel() {
-  if (method !== 'ml' || modelState !== 'idle') return;
+function turnOnSmartSearch() {
+  if (modelState !== 'idle') return;
+  method = 'ml';
   modelState = 'loading';
-  loadModel().then(() => { modelState = 'ready'; })
-    .catch(() => { modelState = 'failed'; });
+  const button = byId('smart-search-on'), status = byId('smart-search-status');
+  button.disabled = true;
+  status.textContent = 'Downloading smarter search (about 50 MB). You can search now; the regular search answers until it is ready.';
+  loadModel().then(() => {
+    modelState = 'ready';
+    status.textContent = 'Smarter search is on for this visit. It is still being tested, so make sure the topic fits.';
+  }).catch(() => {
+    modelState = 'failed';
+    method = SEARCH;
+    status.textContent = 'Smarter search could not load. The regular search and every topic below still work.';
+  });
 }
 
 // Each search gets a number; a slower, older search never replaces a newer one's results.
@@ -56,7 +67,11 @@ async function find(event) {
   let results, used = 'keyword';
   if (method === 'ml' && modelState === 'ready') {
     try { results = await mlSearch(query, help); used = 'ml'; }
-    catch { modelState = 'failed'; results = keywordSearch(query, help); }
+    catch {
+      modelState = 'failed';
+      byId('smart-search-status').textContent = 'Smarter search stopped working. The regular search and every topic below still work.';
+      results = keywordSearch(query, help);
+    }
   } else {
     results = keywordSearch(query, help);
   }
@@ -75,7 +90,8 @@ function start() {
   if (!help || !byId('help-form')) return;
   byId('help-form').hidden = false;
   byId('help-form').addEventListener('submit', find);
-  byId('help-query').addEventListener('focus', prepareModel);
+  const smart = byId('smart-search-on');
+  if (smart) smart.addEventListener('click', turnOnSmartSearch);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
