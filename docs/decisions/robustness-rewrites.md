@@ -98,3 +98,10 @@ than removed, and the gate fails if one starts passing, so the list cannot go qu
 - A low escape rate says the rules hold under these rewrites. It does not say the rules cover the
   scams people receive. That is what the held-out message evaluation is for, and the two numbers
   must never be presented as the same kind of claim.
+
+## Update: engine 0.4.2 (Oct 23, 2026)
+
+The courtesy-word defect is fixed ([polite-wording.md](polite-wording.md)). At the same settings,
+escapes fell from 669 to 469 of 4,000, with no new escape and the same 12 false alarms. Every
+remaining failure is listed in `adversarial/known-failures.json`, and
+`tests/adversarial-known-node.cjs` fails on any new or vanished one.

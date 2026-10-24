@@ -240,6 +240,20 @@ test('E21 Test release refuses unapproved data, another input and changed engine
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('E23 Messages used by the rewrite tests or the courtesy-word fix can never be test rows', () => {
+  const { exposedTexts } = require('../eval/exposed-elsewhere.cjs');
+  const { textFingerprint } = require('../eval/test-access.cjs');
+  const texts = exposedTexts();
+  const seeds = require('../adversarial/seeds.cjs');
+  const known = require('../adversarial/known-failures.json');
+  // Every seed, every listed failure and every polite-wording case is collected.
+  assert.ok(texts.length >= seeds.fraud.length + seeds.legit.length + known.escapes.length + known.falseAlarms.length + 30);
+  const prints = new Set(texts.map(textFingerprint));
+  assert.ok(prints.has(textFingerprint('  ' + seeds.fraud[0].text.toUpperCase() + ' ')));
+  assert.ok(prints.has(textFingerprint('Kindly read me the verification code we just texted you.')));
+  assert.ok(prints.has(textFingerprint('They kindly sent us the wire transfer receipt yesterday.')));
+});
+
 test('E22 A test attempt is reserved once, including an interrupted attempt', () => {
   const { reserveTestRun, finishTestRun } = require('../eval/test-access.cjs');
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tfs-once-'));

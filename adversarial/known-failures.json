@@ -1,0 +1,4620 @@
+{
+ "note": "Rewrites that fail at the published settings. Regenerate with npm run robustness:known after a deliberate rule change.",
+ "settings": {
+  "seed": 20261023,
+  "depth": 3,
+  "budget": 500,
+  "today": "2026-10-22"
+ },
+ "engine": "0.4.2",
+ "store": "2026-10-18-five-org-draft",
+ "generator": {
+  "adversarial/transforms.cjs": "212d20a5eb9bb1a3b5796cb108d83eddc5c4a526664c2e038d0c65d8c835285e",
+  "adversarial/seeds.cjs": "5c0df72c6caf568ef24b7239088cf7cb84a8deebb0d88485336e95a92d6331a4",
+  "adversarial/run.cjs": "2fc1d8cf6d8cf78b2e9248a2014d7c10745a1aa76762769728b0123b5c9c0d91"
+ },
+ "counts": {
+  "fraudRewrites": 4000,
+  "escapes": 469,
+  "legitRewrites": 3477,
+  "falseAlarms": 12
+ },
+ "escapes": [
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "crlf-wrap",
+    "join-clauses"
+   ],
+   "text": "I am in a meeting and cannot talk, and please pick\r\nup four gift cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "signature",
+    "crlf-wrap",
+    "join-clauses"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up\r\nfour gift cards for the clients and text me photos of the backs, and ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "synonym"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and message me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "warning-prefix",
+    "synonym"
+   ],
+   "text": "Watch out for scam callers. I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "sms-wrap",
+    "greeting",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. Hello. I am in a meeting and cannot talk. Please pick up\nfour gift cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "signature",
+    "lookalike-letters"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the bаcks. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "join-clauses",
+    "nbsp",
+    "synonym"
+   ],
+   "text": "I am in a meeting and cannot talk, and please pick up four Apple cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "greeting",
+    "synonym"
+   ],
+   "text": "Hello. I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "zero-width",
+    "inner-spacing"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four gift  cards for the clients and text me photos​ of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "zero-width",
+    "sms-wrap",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. I am in a meeting and cannot talk. Please pick up four gift\ncards for the clients and te​xt me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "signature",
+    "sms-wrap",
+    "join-clauses"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four gift\ncards for the clients and text me photos of the backs, and thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "contraction"
+   ],
+   "text": "I am in a meeting and can't talk. Please pick up four Apple cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "inner-spacing",
+    "warning-suffix",
+    "filler-sentence"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four gift  cards for the clients and text me photos of the backs. This is a courtesy notice. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "greeting",
+    "zero-width",
+    "inner-spacing"
+   ],
+   "text": "Good morning. I am in a meeting and cannot talk. Please pick up four gift  cards for the clients and t​ext me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "warning-prefix",
+    "lookalike-letters",
+    "crlf-wrap"
+   ],
+   "text": "Fraud warning. I am in a meeting and cannot talk. Please pick up four gift\r\ncarԁs for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "urgency"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the backs. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "lookalike-letters",
+    "synonym",
+    "filler-sentence"
+   ],
+   "text": "I am in a meeting and cannot talk. Reference number 4471. Please pick up four Apple cards for the clients and tеxt me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "synonym"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the back panels.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "clause-punctuation"
+   ],
+   "text": "I am in a meeting and cannot talk! Please pick up four Apple cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "zero-width",
+    "crlf-wrap"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up\r\nfour gift ​cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "lookalike-letters",
+    "synonym"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the bаcks.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "warning-suffix",
+    "lookalike-letters"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the backs. Never sһare details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "zero-width",
+    "urgency",
+    "crlf-wrap"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four\r\ngift cards for the clients and text me photos of the​ backs. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "clause-punctuation",
+    "sms-wrap",
+    "inner-spacing"
+   ],
+   "text": "I am in a meeting and cannot talk, please pick up four\ngift-cards for the clients and text me photos of the backs.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "synonym",
+    "crlf-wrap",
+    "synonym"
+   ],
+   "text": "I am in a meeting and cannot talk. Please go get four gift\r\ncards for the clients and text me photos of the back panels.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "signature",
+    "synonym"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick up four Apple cards for the clients and text me photos of the backs. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-GIFT-2",
+   "chain": [
+    "warning-suffix",
+    "sms-wrap",
+    "clause-punctuation"
+   ],
+   "text": "I am in a meeting and cannot talk. Please pick\nup four gift cards for the clients and text me photos of the backs! Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "shout-case",
+    "join-clauses",
+    "greeting"
+   ],
+   "text": "Hi there. Wells Fargo security: we are sending a verification code to your phone, and read us that CODE to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "signature",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone; for your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "lookalike-letters",
+    "politeness",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a verification coԁe to your phone. Please read us that numbers to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "synonym",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification numbers to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "synonym",
+    "sms-wrap",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification numbers to your phone, read us that\ncode to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a security PIN to your phone. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "greeting",
+    "greeting"
+   ],
+   "text": "Hello. Good morning. Wells Fargo security: we are sending a verification code to your phone, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone. No action is needed on other items, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "zero-width",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verificati​on code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "nbsp",
+    "warning-prefix",
+    "purpose-clause"
+   ],
+   "text": "Watch out for scam callers. Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "signature",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder! Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and to avoid fraudsters, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "contraction"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you're the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone - read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "sms-wrap",
+    "zero-width",
+    "greeting"
+   ],
+   "text": "Hi there. Wells Fargo security: we are sending a verification code to your phone. Read us that\nc​ode to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "urgency",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a verification numbers to your phone. For your protection against scam texts, read us that code to confirm you are the account holder. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "filler-sentence",
+    "purpose-clause",
+    "fullwidth"
+   ],
+   "text": "Wells Fargo security: we are sending a ｖｅｒｉｆｉｃａｔｉｏｎ ｃｏｄｅ to your phone. This is a courtesy notice. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "sms-wrap",
+    "lookalike-letters",
+    "lookalike-letters"
+   ],
+   "text": "Wells Fargo security: we are sending a verification coԁe to your phone. Read\nus that сode to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification coԁe to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "lookalike-letters",
+    "clause-punctuation",
+    "greeting"
+   ],
+   "text": "Dear customer, Wells Fargo security: we are sending a verification сode to your phone, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "greeting",
+    "synonym",
+    "join-clauses"
+   ],
+   "text": "Dear customer, Wells Fargo security: we are sending a verification numbers to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-suffix"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone - read us that code to confirm you are the account holder. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "signature"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "warning-prefix",
+    "purpose-clause",
+    "warning-suffix"
+   ],
+   "text": "Beware of fraudsters. Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "Wells Fargo security: we are sending a verіfication code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "nbsp",
+    "lookalike-letters",
+    "sms-wrap"
+   ],
+   "text": "Wells Fargo security: we are sending a verіfication code to your phone. Read us\nthat code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "signature"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a verification numbers to your phone. This is a courtesy notice, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "greeting"
+   ],
+   "text": "Hi there. Wells Fargo security: we are sending a verification code to your phone - read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a security PIN to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "warning-prefix",
+    "join-clauses",
+    "signature"
+   ],
+   "text": "Fraud warning. Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "fullwidth",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. Wells Fargo security: we are sending a ｖｅｒｉｆｉｃａｔｉｏｎ ｃｏｄｅ to your phone - read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation",
+    "nbsp"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone - read us that cod​e to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation",
+    "signature"
+   ],
+   "text": "Wells Fargo security: we are sending a verificati​on code to your phone, read us that code to confirm you are the account holder. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "lookalike-letters",
+    "warning-suffix"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone - read us that codе to confirm you are the account holder. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verificatiоn code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "greeting",
+    "purpose-clause"
+   ],
+   "text": "Dear customer, Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "synonym",
+    "urgency",
+    "sms-wrap"
+   ],
+   "text": "Wells Fargo security: we are sending a verification numbers to your phone. Read us\nthat code to confirm you are the account holder. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "urgency",
+    "fullwidth",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that ｃｏｄｅ to confirm you are the account holder. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "warning-suffix",
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that codе to confirm you are the account holder. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "politeness",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and kindly read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "synonym",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a security PIN to your phone - read us that numbers to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "fullwidth",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a ｖｅｒｉｆｉｃａｔｉｏｎ ｃｏｄｅ to your phone. Read us that numbers to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and for your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "greeting"
+   ],
+   "text": "Hi there. Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. Beware of fraudsters. Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "urgency",
+    "crlf-wrap"
+   ],
+   "text": "Wells Fargo security: we are sending a verification\r\ncode to your phone - read us that code to confirm you are the account holder. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "greeting",
+    "zero-width"
+   ],
+   "text": "Good morning. Wells Fargo security: we are sending a verification c​ode to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "urgency",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, read us that code to confirm you are the account holder. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "crlf-wrap",
+    "zero-width",
+    "signature"
+   ],
+   "text": "Wells Fargo security: we are sending a verifica​tion code to your phone. Read\r\nus that code to confirm you are the account holder. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "nbsp",
+    "purpose-clause",
+    "warning-suffix"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification cоde to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "sms-wrap",
+    "warning-prefix",
+    "urgency"
+   ],
+   "text": "Fraud warning. Wells Fargo security: we are sending a verification code to your phone. Read\nus that code to confirm you are the account holder. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "contraction",
+    "join-clauses",
+    "signature"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you're the account holder. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "filler-sentence",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone. Reference number 4471 - read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "warning-suffix",
+    "join-clauses",
+    "shout-case"
+   ],
+   "text": "Wells Fargo security: we are sending a VERIFICATION CODE to your phone, and read us that code to confirm you are the account holder. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "warning-suffix"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "greeting",
+    "join-clauses"
+   ],
+   "text": "Dear customer, Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a verification numbers to your phone. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "Wells Fargo security: we are sending a verifіcation code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "contraction",
+    "crlf-wrap"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to\r\nyour phone - read us that code to confirm you're the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "urgency"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "lookalike-letters",
+    "purpose-clause",
+    "urgency"
+   ],
+   "text": "Wells Fargo security: we are sending a verificatiоn code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "fullwidth",
+    "own-request",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a ｖｅｒｉｆｉｃａｔｉｏｎ ｃｏｄｅ to your phone. we urge you to read us that numbers to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that c​ode to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "zero-width",
+    "contraction",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that c​ode to confirm you're the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "urgency",
+    "greeting"
+   ],
+   "text": "Dear customer, Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "urgency"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "contraction",
+    "purpose-clause",
+    "synonym"
+   ],
+   "text": "Wells Fargo security: we are sending a verification numbers to your phone. For your protection against scam texts, read us that code to confirm you're the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "zero-width",
+    "purpose-clause"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that c​ode to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that cod​e to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width",
+    "greeting"
+   ],
+   "text": "Hi there. Wells Fargo security: we are sending a verification ​code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "zero-width",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification c​ode to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "inner-spacing",
+    "purpose-clause"
+   ],
+   "text": "Wells Fargo security: we are sending a verification-code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "own-request",
+    "clause-punctuation",
+    "sms-wrap"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone - we need you\nto read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "warning-prefix",
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "Fraud warning. Wells Fargo security: we are sending a verification code to your phone, and for your protection against scam texts, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "zero-width",
+    "contraction",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verificatio​n code to your phone, and read us that code to confirm you're the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "Wells Fargo security: we are sending a v​erification code to your phone, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "fullwidth",
+    "join-clauses"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and to stay safe from criminals, read us that ｃｏｄｅ to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "warning-suffix",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder, criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "warning-prefix",
+    "crlf-wrap",
+    "join-clauses"
+   ],
+   "text": "Fraud warning. Wells\r\nFargo security: we are sending a verification code to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "urgency"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone. For your protection against scam texts, read us that code to confirm you are the account holder. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters",
+    "greeting"
+   ],
+   "text": "Hello. Wells Fargo security: we are sending a verification cоde to your phone, and read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, and read us that co​de to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "synonym",
+    "warning-suffix",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a security PIN to your phone - read us that code to confirm you are the account holder. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "clause-punctuation"
+   ],
+   "text": "Wells Fargo security: we are sending a verification code to your phone, to avoid fraudsters, read us that code to confirm you are the account holder.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CODE-1",
+   "chain": [
+    "purpose-clause",
+    "shout-case",
+    "urgency"
+   ],
+   "text": "Wells Fargo security: we are sending a VERIFICATION CODE to your phone. For your protection against scam texts, read us that code to confirm you are the account holder. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-prefix",
+    "clause-punctuation",
+    "join-clauses"
+   ],
+   "text": "Watch out for scam callers - IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "shout-case",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - SEND the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transfer right now to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - se​nd the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "synonym",
+    "fullwidth"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, forward the payment by ｗｉｒｅ ｔｒａｎｓｆｅｒ today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "sms-wrap",
+    "own-request"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. we urge you to forward the payment by wire transfer today\nto avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "zero-width",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your tax debt is overdue. Forward the payment by wire transfe​r today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "zero-width",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by w​ire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "crlf-wrap",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Senԁ the payment by wire\r\ntransfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "sms-wrap",
+    "politeness",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt\nis overdue, and just send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "signature",
+    "fullwidth"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by ｗｉｒｅ ｔｒａｎｓｆｅｒ today to avoid arrest. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by bank wire today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "nbsp",
+    "warning-suffix",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wir​e transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and ѕend the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-prefix",
+    "crlf-wrap",
+    "synonym"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your\r\ntax debt is overdue. Forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "politeness",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and kindly send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "greeting"
+   ],
+   "text": "Hello. IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "signature",
+    "lookalike-letters",
+    "purpose-clause"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by wire trаnsfer today to avoid arrest. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. To stay safe from criminals, forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, senԁ the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - to avoid fraudsters, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "nbsp",
+    "synonym",
+    "own-request"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. our team requests that you forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "greeting",
+    "fullwidth",
+    "purpose-clause"
+   ],
+   "text": "Good morning. IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by ｗｉｒｅ ｔｒａｎｓｆｅｒ today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "warning-suffix"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by wire transfer today to avoid arrest. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "signature",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue; for your protection against scam texts, send the payment by wire transfer today to avoid arrest. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width",
+    "fullwidth"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and ｓｅｎｄ the payment by wire tra​nsfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "filler-sentence"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. We value your business. For your protection against scam texts, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transf​er today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "signature",
+    "sms-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue\n- send the payment by wire transfer today to avoid arrest. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "warning-suffix",
+    "fullwidth"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, ｓｅｎｄ the payment by wire transfer today to avoid arrest. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. We value your business, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "signature",
+    "clause-punctuation",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - send the payment by wire transfer today to avoid arrest, and regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "greeting"
+   ],
+   "text": "Hello. IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "urgency",
+    "synonym",
+    "sms-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Send the\npayment by bank wire today to avoid arrest. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. IRS final notice: your tax debt is overdue, and send the payment by wirе transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "own-request",
+    "synonym",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. our team requests that you forward the payment by wire trans​fer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "purpose-clause"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "signature"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - send the payment by wire transfer today to avoid arrest. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "warning-prefix",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. Beware of fraudsters. IRS final notice: your tax debt is overdue. Forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by wіre transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "signature",
+    "urgency",
+    "crlf-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Send the payment\r\nby wire transfer today to avoid arrest. Ref 88421. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "zero-width",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by wire transfe​r today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "greeting"
+   ],
+   "text": "Dear customer, IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "signature",
+    "sms-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your\nprotection against scam texts, send the payment by wire transfer today to avoid arrest. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "crlf-wrap",
+    "synonym",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue! Send the\r\npayment by bank wire today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-prefix",
+    "join-clauses",
+    "signature"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "urgency"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by wire transfer today to avoid arrest. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "zero-width",
+    "lookalike-letters",
+    "crlf-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Sen​d the payment by\r\nwirе transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width",
+    "signature"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and s​end the payment by wire transfer today to avoid arrest. Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "zero-width",
+    "own-request",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. we need you to forward the payment by wire t​ransfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "filler-sentence",
+    "synonym",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. We value your business. Forward the payment by wire transfer right now to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "lookalike-letters",
+    "crlf-wrap",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is\r\noverdue, and send the payment by wire tranѕfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses",
+    "sms-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and no action is needed on other items. Send the payment by wire transfer\ntoday to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "politeness",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - just send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "greeting"
+   ],
+   "text": "Dear customer, IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-suffix",
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "sms-wrap",
+    "synonym",
+    "politeness"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Kindly forward\nthe payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-prefix",
+    "shout-case",
+    "purpose-clause"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your tax debt is overdue. For your protection against scam texts, send the payment by WIRE TRANSFER today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, sеnd the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "lookalike-letters",
+    "greeting"
+   ],
+   "text": "Hello. IRS final notice: your tax debt is overdue, send the payment by wire tranѕfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "zero-width",
+    "join-clauses",
+    "shout-case"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and SEND the payment by wi​re transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "urgency",
+    "politeness",
+    "sms-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Please send the payment by\nwire transfer today to avoid arrest. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wіre transfer right now to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "filler-sentence",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. This is a courtesy notice, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and s​end the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - send the payment by bank wire today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "crlf-wrap",
+    "lookalike-letters",
+    "warning-suffix"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Sеnd the payment\r\nby wire transfer today to avoid arrest. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-prefix",
+    "greeting",
+    "synonym"
+   ],
+   "text": "Good morning. Fraud warning. IRS final notice: your tax debt is overdue. Forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "own-request",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. we urge you to forward the payment by wire t​ransfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "filler-sentence",
+    "synonym",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Reference number 4471. Forward the payment by bank wire today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "fullwidth",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by ｗｉｒｅ ｔｒａｎｓｆｅｒ right now to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "sms-wrap",
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "IRS final notice:\nyour tax debt is overdue, and for your protection against scam texts, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transfеr today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. IRS final notice: your tax debt is overdue, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "shout-case",
+    "clause-punctuation",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, ѕEND the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and to avoid fraudsters, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-prefix",
+    "clause-punctuation"
+   ],
+   "text": "Fraud warning. IRS final notice: your tax debt is overdue, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "nbsp",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by wirе transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "lookalike-letters",
+    "filler-sentence"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. No action is needed on other items. For your protection against scam texts, send the payment by wire trаnsfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-suffix",
+    "join-clauses",
+    "crlf-wrap"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid\r\narrest. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "signature",
+    "join-clauses",
+    "signature"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest. - Support Team - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "politeness",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Just forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by wire transfеr today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "politeness",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. IRS final notice: your tax debt is overdue. Kindly forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, send the payment by wir​e transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "crlf-wrap",
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. IRS final notice: your tax debt is overdue, and send the payment by wire transfer\r\ntoday to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "clause-punctuation",
+    "synonym",
+    "sms-wrap"
+   ],
+   "text": "IRS final notice: your tax\ndebt is overdue, send the payment by wire transfer right now to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. Fraud warning. IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "sms-wrap",
+    "zero-width",
+    "purpose-clause"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. To avoid fraudsters, send the payment by\nwire tra​nsfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "signature",
+    "clause-punctuation",
+    "greeting"
+   ],
+   "text": "Good morning. IRS final notice: your tax debt is overdue - send the payment by wire transfer today to avoid arrest. Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "urgency",
+    "warning-prefix",
+    "crlf-wrap"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your tax debt is overdue. Send the payment\r\nby wire transfer today to avoid arrest. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "sms-wrap",
+    "signature",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Send\nthe payment by wire transfer today to avoid arrest, and thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "fullwidth",
+    "purpose-clause",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, se​nd the payment by ｗｉｒｅ ｔｒａｎｓｆｅｒ today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "sms-wrap",
+    "warning-prefix",
+    "politeness"
+   ],
+   "text": "Beware of fraudsters. IRS final notice: your tax debt is overdue. Just send the payment by wire\ntransfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "zero-width",
+    "purpose-clause",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. For your protection against scam texts, s​end the payment by wire trans​fer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "warning-suffix",
+    "crlf-wrap",
+    "purpose-clause"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. To stay safe from criminals, send the\r\npayment by wire transfer today to avoid arrest. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. IRS final notice: your tax debt is overdue, and to avoid fraudsters, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and senԁ the payment by bank wire today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "filler-sentence",
+    "synonym"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Reference number 4471. Forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. IRS final notice: your tax debt is overdue. Forward the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "greeting"
+   ],
+   "text": "Hi there. IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue. Forward the payment by wire transf​er today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "nbsp",
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and senԁ the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "join-clauses",
+    "urgency"
+   ],
+   "text": "IRS final notice: your tax debt is overdue, and send the payment by wire transfer today to avoid arrest. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "urgency",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - send the payment by wire transfer today to avoid arrest. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "synonym",
+    "greeting",
+    "join-clauses"
+   ],
+   "text": "Hello. IRS final notice: your tax debt is overdue, and send the payment by wire transfer right now to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "purpose-clause",
+    "clause-punctuation"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - to stay safe from criminals, send the payment by wire transfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-WIRE-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "IRS final notice: your tax debt is overdue - sen​d the payment by wire tran​sfer today to avoid arrest.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician at once.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "greeting",
+    "sms-wrap"
+   ],
+   "text": "Good morning. Microsoft alert: your computer is infected. Install\nAnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "warning-suffix",
+    "signature"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away. Criminals are active in your area. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Microsoft alert: your computer is infected, and instal​l AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "lookalike-letters",
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and to avoid fraudsters, install аnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected - install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "purpose-clause",
+    "urgency"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected. Reference number 4471, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "purpose-clause",
+    "join-clauses",
+    "nbsp"
+   ],
+   "text": "Microsoft alert: your computer is infected, and for your protection against scam texts, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. Microsoft alert: your computer is infected, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "warning-suffix",
+    "purpose-clause",
+    "warning-suffix"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away. Never share details with scammers. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses",
+    "shout-case"
+   ],
+   "text": "Microsoft alert: your computer is infected, and INSTALL AnyDеsk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "sms-wrap",
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "Microsoft\nalert: your computer is infected, install AnyD​esk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "zero-width",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and inst​all AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesк and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "filler-sentence",
+    "clause-punctuation",
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected, we value your business, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "warning-prefix",
+    "join-clauses",
+    "filler-sentence"
+   ],
+   "text": "Fraud warning. This is a courtesy notice. Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "purpose-clause",
+    "shout-case"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, install ANYDESK and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "urgency",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "lookalike-letters",
+    "greeting",
+    "join-clauses"
+   ],
+   "text": "Dear customer, Microsoft alert: your computer is infected, and inѕtall AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected, ins​tall AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation",
+    "lookalike-letters"
+   ],
+   "text": "Microsoft alert: your computer is infected - install AnyDеsk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "politeness",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and just install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "signature",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "Microsoft alert: your computer is infected, instal​l AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "signature",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "filler-sentence",
+    "purpose-clause",
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected. This is a courtesy notice - for your protection against scam texts, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install Anyԁesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected. We value your business, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-suffix"
+   ],
+   "text": "Microsoft alert: your computer is infected, install AnyDesk and share your session ID with our technician right away. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "zero-width",
+    "politeness",
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected - just install A​nyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "synonym",
+    "crlf-wrap",
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected - install AnyDesk\r\nand give your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "synonym",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and download AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "greeting"
+   ],
+   "text": "Hello. Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation",
+    "nbsp",
+    "greeting"
+   ],
+   "text": "Hello. Microsoft alert: your computer is infected - install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and ѕhare your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "crlf-wrap",
+    "lookalike-letters",
+    "own-request"
+   ],
+   "text": "Microsoft alert: your computer is infected. we urge you to install\r\nAnyDesк and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "lookalike-letters",
+    "purpose-clause"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, install AnyDesk and sharе your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "purpose-clause",
+    "zero-width",
+    "shout-case"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, in​stall AnyDesk and SHARE your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "greeting",
+    "join-clauses"
+   ],
+   "text": "Dear customer, Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters",
+    "synonym"
+   ],
+   "text": "Microsoft alert: your computer is infected, and inѕtall AnyDesk and share your session ID with our technician at once.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "zero-width",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and sha​re your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation",
+    "signature"
+   ],
+   "text": "Microsoft alert: your computer is infected - install AnyDesk and share your session ID with our technician right away. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "warning-prefix",
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Watch out for scam callers. Microsoft alert: your computer is infected, and install AnyDesk and shаre your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "fullwidth",
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install ＡｎｙＤｅｓｋ and shar​e your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "fullwidth",
+    "clause-punctuation",
+    "greeting"
+   ],
+   "text": "Dear customer, Microsoft alert: your computer is infected - Ｉｎｓｔａｌｌ AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width",
+    "greeting"
+   ],
+   "text": "Dear customer, Microsoft alert: your computer is infected, and install AnyDe​sk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "filler-sentence",
+    "purpose-clause",
+    "signature"
+   ],
+   "text": "Microsoft alert: your computer is infected. No action is needed on other items. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "nbsp",
+    "signature",
+    "purpose-clause"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "urgency",
+    "join-clauses",
+    "fullwidth"
+   ],
+   "text": "Microsoft alert: your computer is infected, and ｉｎｓｔａｌｌ AnyDesk and share your session ID with our technician right away. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "purpose-clause",
+    "zero-width"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, install AnyDesk and shar​e your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "purpose-clause",
+    "warning-suffix",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and for your protection against scam texts, install AnyDesk and share your session ID with our technician right away. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "greeting",
+    "purpose-clause"
+   ],
+   "text": "Dear customer, Microsoft alert: your computer is infected. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "greeting",
+    "purpose-clause"
+   ],
+   "text": "Hello. Microsoft alert: your computer is infected. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "greeting"
+   ],
+   "text": "Good morning. Fraud warning. Microsoft alert: your computer is infected, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "crlf-wrap",
+    "greeting"
+   ],
+   "text": "Good morning. Microsoft\r\nalert: your computer is infected, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "fullwidth",
+    "purpose-clause",
+    "synonym"
+   ],
+   "text": "Microsoft alert: your computer is infected. For your protection against scam texts, download ＡｎｙＤｅｓｋ and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDes​k and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-suffix",
+    "nbsp"
+   ],
+   "text": "Microsoft alert: your computer is infected - install AnyDesk and share your session ID with our technician right away. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and to avoid fraudsters, install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "shout-case",
+    "warning-prefix",
+    "join-clauses"
+   ],
+   "text": "Watch out for scam callers. Microsoft alert: your computer is infected, and install AnyDesk and SHARE your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "politeness",
+    "signature",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and just install AnyDesk and share your session ID with our technician right away. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and give your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses",
+    "clause-punctuation"
+   ],
+   "text": "Microsoft alert: your computer is infected, this is a courtesy notice, and install AnyDesk and share your session ID with our technician right away.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "synonym",
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Microsoft alert: your computer is infected, and install AnyDesk and ѕhare your session ID with our technician at once.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "signature",
+    "filler-sentence",
+    "purpose-clause"
+   ],
+   "text": "Microsoft alert: your computer is infected. Reference number 4471. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-1",
+   "chain": [
+    "filler-sentence",
+    "purpose-clause",
+    "warning-suffix"
+   ],
+   "text": "Microsoft alert: your computer is infected. We value your business. For your protection against scam texts, install AnyDesk and share your session ID with our technician right away. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-2",
+   "chain": [
+    "sms-wrap",
+    "lookalike-letters"
+   ],
+   "text": "Our specialist needs you to download\nTeamVіewer so we can take remote access and clean the virus.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-2",
+   "chain": [
+    "lookalike-letters",
+    "crlf-wrap"
+   ],
+   "text": "Our specialist\r\nneeds you to ԁownload TeamViewer so we can take remote access and clean the virus.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-2",
+   "chain": [
+    "lookalike-letters",
+    "crlf-wrap",
+    "urgency"
+   ],
+   "text": "Our specialist needs you to downlоad\r\nTeamViewer so we can take remote access and clean the virus. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-2",
+   "chain": [
+    "warning-prefix",
+    "politeness",
+    "crlf-wrap"
+   ],
+   "text": "Beware of fraudsters. Our\r\nspecialist needs you to just download TeamViewer so we can take remote access and clean the virus.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-2",
+   "chain": [
+    "sms-wrap",
+    "zero-width"
+   ],
+   "text": "Our specialist needs you\nto download TeamViewer so we can take r​emote access and clean the virus.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-REMOTE-2",
+   "chain": [
+    "warning-suffix",
+    "join-clauses",
+    "crlf-wrap"
+   ],
+   "text": "Our specialist\r\nneeds you to download TeamViewer so we can take remote access and clean the virus, and criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and cаll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "politeness",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and just call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "crlf-wrap",
+    "synonym"
+   ],
+   "text": "Warning: your device\r\nhas been locked by Windows Defender! Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "urgency",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - phone this toll-free number 1-888-555-0142 now for support. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "nbsp"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "nbsp",
+    "filler-sentence"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Reference number 4471. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "urgency",
+    "greeting"
+   ],
+   "text": "Good morning. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "nbsp",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. This is a courtesy notice. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "crlf-wrap",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device\r\nhas been locked by Windows Defender; call this toll-free number 1-888-555-0142 now for support. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Reference number 4471, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "sms-wrap",
+    "clause-punctuation",
+    "politeness"
+   ],
+   "text": "Warning: your device has been\nlocked by Windows Defender! Just call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "synonym"
+   ],
+   "text": "Watch out for scam callers. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "signature",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, c​all this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - to avoid fraudsters, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-suffix",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support. Never share details with scammers. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "join-clauses",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support, and never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "lookalike-letters",
+    "clause-punctuation",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. Warning: your device has been locked by Windows Defender - сall this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and ca​ll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "greeting"
+   ],
+   "text": "Dear customer, Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, call this toll-free number 1-888-555-0142 now for support. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "greeting",
+    "shout-case"
+   ],
+   "text": "Good morning. Warning: your device has been locked by Windows Defender, and CALL this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "sms-wrap",
+    "filler-sentence",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been\nlocked by Windows Defender. No action is needed on other items. C​all this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "crlf-wrap",
+    "lookalike-letters",
+    "greeting"
+   ],
+   "text": "Hi there. Warning: your device\r\nhas been locked by Windows Defender. Cаll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - ca​ll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "clause-punctuation",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, to stay safe from criminals, call this toll-free number 1-888-555-0142 now for support. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "greeting",
+    "synonym"
+   ],
+   "text": "Hi there. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "urgency",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "crlf-wrap",
+    "urgency",
+    "purpose-clause"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free\r\nnumber 1-888-555-0142 now for support. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "purpose-clause"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. We value your business. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "greeting",
+    "clause-punctuation"
+   ],
+   "text": "Dear customer, Warning: your device has been locked by Windows Defender, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "greeting",
+    "synonym",
+    "filler-sentence"
+   ],
+   "text": "Good morning. Warning: your device has been locked by Windows Defender. We value your business. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and сall this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "signature",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - ca​ll this toll-free number 1-888-555-0142 now for support. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "synonym",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Never shar​e details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "urgency",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support, and please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "filler-sentence"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Reference number 4471. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "filler-sentence"
+   ],
+   "text": "Fraud warning. Reference number 4471. Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "signature",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "greeting"
+   ],
+   "text": "Hello. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "crlf-wrap",
+    "urgency",
+    "lookalike-letters"
+   ],
+   "text": "Warning: your device\r\nhas been locked by Windows Defender. сall this toll-free number 1-888-555-0142 now for support. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "synonym"
+   ],
+   "text": "Fraud warning. Warning: your device has been locked by Windows Defender, and phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "signature",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support, and ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "lookalike-letters",
+    "join-clauses"
+   ],
+   "text": "Watch out for scam callers. Warning: your device has been locked by Windows Defender, and cаll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "sms-wrap",
+    "purpose-clause",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. For your protection against scam texts, cal​l this toll-free number\n1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. Watch out for scam callers. Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "filler-sentence",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. This is a courtesy notice. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "signature",
+    "shout-case"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and CALL this toll-free number 1-888-555-0142 now for support. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, call this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "zero-width",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and c​all this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "clause-punctuation",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, c​all this toll-free number 1-888-555-0142 now for support. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "shout-case",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. - Support Team",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "signature",
+    "synonym",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support, and thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "urgency",
+    "signature",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Act today. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender; phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "warning-suffix",
+    "fullwidth"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Never ｓｈａｒｅ details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "filler-sentence",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender! Reference number 4471. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "politeness",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Just phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "zero-width",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. Warning: your device has been locked by Windows Defender, and c​all this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "lookalike-letters",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - сall this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "greeting",
+    "synonym"
+   ],
+   "text": "Good morning. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "greeting",
+    "zero-width"
+   ],
+   "text": "Hello. Warning: your device has been locked by Windows Defender, and c​all this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "politeness",
+    "join-clauses"
+   ],
+   "text": "Beware of fraudsters. Warning: your device has been locked by Windows Defender, and kindly call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "greeting",
+    "join-clauses"
+   ],
+   "text": "Hello. Warning: your device has been locked by Windows Defender, and to stay safe from criminals, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses",
+    "filler-sentence"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. This is a courtesy notice. We value your business, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. This is a courtesy notice, and call this toll-free number 1-888-555-0142 now for support. Criminals are active in your area.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, call this toll-free number 1-888-555-0142 now for support. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "lookalike-letters"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - cаll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "warning-prefix",
+    "urgency"
+   ],
+   "text": "Watch out for scam callers. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "synonym",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. To stay safe from criminals, phone this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "signature",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "warning-suffix",
+    "filler-sentence"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. No action is needed on other items. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, call this toll-free number 1-888-555-0142 now for support. Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, c​all this toll-free number 1-888-555-0142 now for support. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "signature",
+    "lookalike-letters",
+    "crlf-wrap"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Cаll this toll-free\r\nnumber 1-888-555-0142 now for support. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "signature",
+    "sms-wrap",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. C​all this\ntoll-free number 1-888-555-0142 now for support. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "signature",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support. Criminals are active in your area. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. This is a courtesy notice, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "sms-wrap",
+    "politeness"
+   ],
+   "text": "Watch out for scam callers. Warning: your device has been locked by Windows Defender. Please call\nthis toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Ref 88421.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "lookalike-letters"
+   ],
+   "text": "Beware of fraudsters. Warning: your device has been locked by Windows Defender, and cаll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "politeness",
+    "synonym",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Kindly phone this toll-free number 1-888-555-0142 now for support. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "politeness",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Please phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix",
+    "shout-case"
+   ],
+   "text": "Beware of fraudsters. Warning: your device has been locked by Windows Defender, and CALL this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "signature",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "shout-case",
+    "lookalike-letters"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, CаLL this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "greeting",
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "Hi there. No action is needed on other items. Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "urgency",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "purpose-clause"
+   ],
+   "text": "Beware of fraudsters. Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. No action is needed on other items, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "zero-width"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and cal​l this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, ca​ll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "synonym",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and phone this toll-free number 1-888-555-0142 now for support. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. To avoid fraudsters, phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "purpose-clause"
+   ],
+   "text": "Fraud warning. Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "synonym",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and phone this toll-free number 1-888-555-0142 now for support. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "filler-sentence"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. This is a courtesy notice. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "warning-prefix"
+   ],
+   "text": "Watch out for scam callers. Warning: your device has been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "politeness",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Kindly phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "nbsp",
+    "filler-sentence",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. We value your business, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "filler-sentence",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. No action is needed on other items. Phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "urgency",
+    "clause-punctuation",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, call this toll-free number 1-888-555-0142 now for support, and this is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-suffix",
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support, and beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "sms-wrap",
+    "synonym"
+   ],
+   "text": "Fraud warning. Warning: your device has been locked by Windows Defender. Phone this toll-free number\n1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "zero-width",
+    "signature"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. For your protection against scam texts, ca​ll this toll-free number 1-888-555-0142 now for support. Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "synonym",
+    "clause-punctuation"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender - phone this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "greeting",
+    "synonym",
+    "signature"
+   ],
+   "text": "Dear customer, Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "sms-wrap",
+    "purpose-clause",
+    "join-clauses"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and for your protection against scam texts, call this\ntoll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "fullwidth",
+    "greeting"
+   ],
+   "text": "Good morning. Warning: your device has been locked by Windows Defender. For your protection against scam texts, ｃａｌｌ this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "greeting",
+    "signature",
+    "synonym"
+   ],
+   "text": "Hello. Warning: your device has been locked by Windows Defender. Phone this toll-free number 1-888-555-0142 now for support. Regards, Customer Care.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "warning-prefix",
+    "clause-punctuation"
+   ],
+   "text": "Watch out for scam callers. Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "urgency"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "join-clauses",
+    "lookalike-letters"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and to stay safe from criminals, cаll this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "join-clauses",
+    "greeting",
+    "sms-wrap"
+   ],
+   "text": "Dear customer, Warning: your device\nhas been locked by Windows Defender, and call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "urgency",
+    "join-clauses",
+    "synonym"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, and phone this toll-free number 1-888-555-0142 now for support. Please do this within 30 minutes.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "greeting"
+   ],
+   "text": "Hello. Warning: your device has been locked by Windows Defender. For your protection against scam texts, call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "purpose-clause",
+    "clause-punctuation",
+    "warning-suffix"
+   ],
+   "text": "Warning: your device has been locked by Windows Defender, for your protection against scam texts, call this toll-free number 1-888-555-0142 now for support. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-CALLBACK-1",
+   "chain": [
+    "clause-punctuation",
+    "warning-prefix"
+   ],
+   "text": "Beware of fraudsters. Warning: your device has been locked by Windows Defender - call this toll-free number 1-888-555-0142 now for support.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "filler-sentence",
+    "crlf-wrap",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. Grandma it is me. I am in trouble and I need money for bail right now. No action is needed on other\r\nitems. Please do not tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "filler-sentence",
+    "filler-sentence"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now. We value your business. No action is needed on other items. Please do not tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "signature",
+    "greeting",
+    "crlf-wrap"
+   ],
+   "text": "Hello. Grandma it is me. I am in trouble and I need money for bail right now. Please do not tell\r\nmom about this. Thank you.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "crlf-wrap",
+    "filler-sentence",
+    "filler-sentence"
+   ],
+   "text": "Grandma it is me. We value your business. We value your business. I am in trouble and I need money for bail right now. Please do not tell\r\nmom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "filler-sentence",
+    "crlf-wrap"
+   ],
+   "text": "Grandma it is me. No action is needed on other items. I am in trouble and I need money for bail right now. Please do not\r\ntell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "crlf-wrap",
+    "filler-sentence",
+    "greeting"
+   ],
+   "text": "Dear customer, Grandma it is me. I am in trouble and I need money for bail right now. We value your business. Please do\r\nnot tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "urgency",
+    "urgency",
+    "sms-wrap"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now. Please do not tell\nmom about this. This is urgent. Act today.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "greeting",
+    "clause-punctuation",
+    "crlf-wrap"
+   ],
+   "text": "Hello! Grandma it is me. I am in trouble and I need money for bail right now. Please do not\r\ntell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "filler-sentence",
+    "crlf-wrap",
+    "warning-suffix"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now. Reference number 4471. Please do\r\nnot tell mom about this. Beware of hackers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "crlf-wrap",
+    "greeting",
+    "warning-prefix"
+   ],
+   "text": "Fraud warning. Hello. Grandma it is me. I am in trouble and I need money for bail right now. Please do\r\nnot tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "filler-sentence",
+    "filler-sentence"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now. No action is needed on other items. This is a courtesy notice. Please do not tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "filler-sentence",
+    "filler-sentence"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now. This is a courtesy notice. No action is needed on other items. Please do not tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "crlf-wrap",
+    "filler-sentence",
+    "clause-punctuation"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now; this is a courtesy notice. Please\r\ndo not tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "join-clauses",
+    "crlf-wrap",
+    "urgency"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now, and please do\r\nnot tell mom about this. This is urgent.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "greeting",
+    "sms-wrap",
+    "clause-punctuation"
+   ],
+   "text": "Dear customer, Grandma it is me - i am in trouble and I need money for bail right now. Please do\nnot tell mom about this.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "crlf-wrap",
+    "warning-suffix",
+    "warning-suffix"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need\r\nmoney for bail right now. Please do not tell mom about this. Beware of hackers. Never share details with scammers.",
+   "got": "insufficient_evidence"
+  },
+  {
+   "seed": "F-COMBO-1",
+   "chain": [
+    "signature",
+    "filler-sentence",
+    "crlf-wrap"
+   ],
+   "text": "Grandma it is me. I am in trouble and I need money for bail right now. This is a courtesy notice. Please do not\r\ntell mom about this. Thank you.",
+   "got": "insufficient_evidence"
+  }
+ ],
+ "falseAlarms": [
+  {
+   "seed": "L-DELIVERY-1",
+   "chain": [
+    "greeting",
+    "politeness",
+    "crlf-wrap"
+   ],
+   "text": "Dear customer, USPS: your package is out for delivery today. Please give the delivery code to\r\nthe driver when he arrives.",
+   "tier1": [
+    "T1-CODE"
+   ]
+  },
+  {
+   "seed": "L-DELIVERY-1",
+   "chain": [
+    "signature",
+    "crlf-wrap",
+    "signature"
+   ],
+   "text": "USPS: your package is out for delivery today. Give the delivery code to the\r\ndriver when he arrives. Thank you. Ref 88421.",
+   "tier1": [
+    "T1-CODE"
+   ]
+  },
+  {
+   "seed": "L-DELIVERY-1",
+   "chain": [
+    "sms-wrap",
+    "greeting",
+    "join-clauses"
+   ],
+   "text": "Hi there, and USPS: your package is out for delivery today. Give the delivery code to\nthe driver when he arrives.",
+   "tier1": [
+    "T1-CODE"
+   ]
+  },
+  {
+   "seed": "L-DELIVERY-1",
+   "chain": [
+    "filler-sentence",
+    "sms-wrap",
+    "clause-punctuation"
+   ],
+   "text": "USPS: your package is out for delivery today. We value your business; give the delivery code to\nthe driver when he arrives.",
+   "tier1": [
+    "T1-CODE"
+   ]
+  },
+  {
+   "seed": "L-DELIVERY-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation",
+    "sms-wrap"
+   ],
+   "text": "USPS: your package is out for delivery today! Give the delivery cod​e to the\ndriver when he arrives.",
+   "tier1": [
+    "T1-CODE"
+   ]
+  },
+  {
+   "seed": "L-DELIVERY-1",
+   "chain": [
+    "crlf-wrap",
+    "greeting",
+    "join-clauses"
+   ],
+   "text": "Hello, and USPS: your package is out for delivery today. Give the delivery code to\r\nthe driver when he arrives.",
+   "tier1": [
+    "T1-CODE"
+   ]
+  },
+  {
+   "seed": "L-DELIVERY-1",
+   "chain": [
+    "lookalike-letters",
+    "sms-wrap",
+    "greeting"
+   ],
+   "text": "Hello. USPS: your package is out for delivery today. Give the delivery сode\nto the driver when he arrives.",
+   "tier1": [
+    "T1-CODE"
+   ]
+  },
+  {
+   "seed": "L-WARN-1",
+   "chain": [
+    "crlf-wrap",
+    "lookalike-letters"
+   ],
+   "text": "Chase fraud education: scammers posing as\r\nChase may ask you to pay with gіft cards. We never will. Call the number on the back of your card.",
+   "tier1": [
+    "T1-GIFT"
+   ]
+  },
+  {
+   "seed": "L-WARN-1",
+   "chain": [
+    "sms-wrap",
+    "signature",
+    "clause-punctuation"
+   ],
+   "text": "Chase fraud education: scammers posing as\nChase may ask you to pay with gift cards. We never will; call the number on the back of your card. Regards, Customer Care.",
+   "tier1": [
+    "T1-GIFT"
+   ]
+  },
+  {
+   "seed": "L-WARN-1",
+   "chain": [
+    "sms-wrap",
+    "filler-sentence",
+    "lookalike-letters"
+   ],
+   "text": "Chase fraud education: scammers posing as\nChase may ask you to pay with gift cards. We value your business. We never will. сall the number on the back of your card.",
+   "tier1": [
+    "T1-GIFT"
+   ]
+  },
+  {
+   "seed": "L-WARN-1",
+   "chain": [
+    "sms-wrap",
+    "join-clauses",
+    "greeting"
+   ],
+   "text": "Dear customer, Chase fraud education: scammers posing as\nChase may ask you to pay with gift cards, and we never will. Call the number on the back of your card.",
+   "tier1": [
+    "T1-GIFT"
+   ]
+  },
+  {
+   "seed": "L-WARN-1",
+   "chain": [
+    "zero-width",
+    "clause-punctuation",
+    "sms-wrap"
+   ],
+   "text": "Chase fraud education: scammers posing as\nChase may ask you to pay with gift card​s - we never will. Call the number on the back of your card.",
+   "tier1": [
+    "T1-GIFT"
+   ]
+  }
+ ]
+}
