@@ -6,7 +6,7 @@ A local workshop prototype with pasted text and a screenshot-reading preview. Pl
 
 The app compares contacts with a stored list and checks fixed English risk patterns. Screenshot text requires review and cannot produce Details Match. The app does not authenticate a sender or follow message links. Some legacy reference and parsing paths still need repair before release. Matching contact details do not establish that a message is real.
 
-Version **0.4.1** adds the [session safety repairs](docs/decisions/session-safety-repairs.md):
+Version **0.4.2** reads courtesy words in front of an instruction ("Kindly send", "Just send") the way it reads "Please" ([decision](docs/decisions/polite-wording.md)). Version 0.4.1 added the [session safety repairs](docs/decisions/session-safety-repairs.md):
 bounded code/pressure exceptions, consistent benign-code warnings, separate policy
 answers and unresolved checks, family-first guidance, contact/path fixes, and
 development-only default evaluation with literal-text export handling. The session-safety
@@ -98,7 +98,7 @@ window.TfsEngine.analyze(text, store, { declaredChannel: 'text' });
 // declaredChannel must be 'text', 'email', or 'unknown'.
 ```
 
-Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.4.1 and schema version 3.
+Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.4.2 and schema version 3.
 
 - `suspicious`: established Tier 1 takes priority over contact support, missing contacts, and uncertainty.
 - `details_match`: an explicit recognized sender, at least one contact verified for that sender, all contacts verified for that sender, and no findings or uncertainty. The adapter preserves legacy contact-verification semantics; this is not full v1.2 conformance.

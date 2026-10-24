@@ -28,8 +28,8 @@
   const REPORT_SUBJECT = /\b(?:scam{2}ers?|fraudsters?|criminals?|scam (?:callers?|texts?|emails?|messages?)|(?:an )?example (?:message|scam)|(?:beware of|watch (?:out )?for)\s+(?:texts?|messages?))(?:\s+(?:posing as|pretending to be|claiming to be|impersonating)\s+(?:the\s+)?(?!(?:we|our|and|who)\b)[a-z][\w-]*(?:\s+(?!(?:we|our|and|who|may|might|will|could|can|would|often|sometimes|usually|also|typically)\b)[a-z][\w-]*){0,2})?(?:\s+who\s+(?:calls?|texts?))?(?:\s+(?:may|might|will|could|can|would|often|sometimes|usually|also|typically)){0,3}\s*$/i;
   // "Ask you to", "tell you that you must", "demand that you", or "request: ...".
   const ASKING = /\b(?:ask(?:s|ing)?|tell(?:s|ing)?|demand(?:s|ing)?|request(?:s|ing)?|instruct(?:s|ing)?|urg(?:e|es|ing)|pressur(?:e|es|ing)|want(?:s|ing)?)\b(?:\s+(?:(?:you|us|me|them|victims|seniors|customers)\s+)?to\s+|\s+(?:(?:you\s+)?that\s+)?you\s+(?:(?:must|should|need to|have to)\s+)?|\s*:\s*)/gi;
-  const OWN_NEED = /\b(?:we|i|(?:our|the|your)\s+(?:[a-z][\w-]*\s+){0,2}(?:technician|team|agent|representative|specialist|support team|manager))\s+(?:(?:will|may)\s+)?need(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
-  const NEED_COMPLEMENT = /\bneed(?:s|ed)?\s+you\s+to\s*(?:please\s*)?$/i;
+  const OWN_NEED = /\b(?:we|i|(?:our|the|your)\s+(?:[a-z][\w-]*\s+){0,2}(?:technician|team|agent|representative|specialist|support team|manager))\s+(?:(?:will|may)\s+)?need(?:s|ed)?\s+you\s+to\s*(?:(?:please|kindly|just)\s*){0,2}$/i;
+  const NEED_COMPLEMENT = /\bneed(?:s|ed)?\s+you\s+to\s*(?:(?:please|kindly|just)\s*){0,2}$/i;
 
   function ownNeedBefore(prefix) {
     const need = prefix.match(OWN_NEED);
@@ -41,13 +41,13 @@
   const LOOK_BACK = 200;
   const SEGMENT_LIMIT = 500;
 
-  // Asking words that end right before the action ("ask you to [please]"). Indexes are into prefix.
+  // Asking words that end right before the action ("ask you to [please]", "ask you to kindly"). Indexes are into prefix.
   function askingBefore(prefix) {
     const asking = new RegExp(ASKING.source, 'gi');
     asking.lastIndex = Math.max(0, prefix.length - LOOK_BACK);
     let m;
     while ((m = asking.exec(prefix)) !== null) {
-      if (/^\s*(?:please\s*)?$/i.test(prefix.slice(m.index + m[0].length))) return m;
+      if (/^\s*(?:(?:please|kindly|just)\s*){0,2}$/i.test(prefix.slice(m.index + m[0].length))) return m;
     }
     return undefined;
   }
@@ -80,7 +80,7 @@
     }
     return names;
   }
-  const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|just|even|again)\s+){0,3}$/i;
+  const NEGATION = /\b(?:do not|don['’]t|dont|never|must not|will not|won['’]t|cannot|can['’]t)\s+(?:(?:ever|please|kindly|just|even|again)\s+){0,3}$/i;
   const PRESSURE = /\b(?:(?:do not|don['’]t|dont)\s+tell\s+(?:mom|dad|mother|father|your family|your bank|the bank|anyone|anybody)|keep (?:this|it) (?:between us|secret)|(?:do not|don['’]t|dont) hang up|stay on the line)\b/i;
   const URGENT = /\b(?:urgent(?:ly)?|right now|now|today|at once|act now|right away|im{2}ediately|asap|within \d{1,3}\s*(?:minutes?|hours?))\b/i;
   const THREAT = /\b(?:arrest(?:ed)?|jail|fines?|account(?:\s+\w+){0,3}\s+(?:closed|closure|locked|loss|compromised|frozen)|(?:freeze|close|lock) (?:this|your) (?:bank )?account|registration (?:suspension|hold)|lose (?:your )?(?:funds|money)|loss of (?:funds|money)|service disconnection|(?:device|computer)(?:\s+\w+){0,3}\s+locked)\b/i;
@@ -231,10 +231,25 @@
   const NAMED = /^\s*(?:(?:[Hh]i|[Hh]ey|[Dd]ear)\s+)?[A-Z][a-z]{1,20}\s*,\s*(?:please\s+)?$/;
   const addressedTo = rest => KIN.test(rest) || NAMED.test(rest);
 
+  // A courtesy word in front of an instruction leaves the instruction standing: "Kindly send",
+  // "Just send", "Please just send" and "needs you to kindly download" read as "please". The run
+  // only counts where an instruction can begin (the start, after a colon or comma, after
+  // "you to", or after "you must", "could you" and the like), so "I just sent" and
+  // "They kindly sent" keep their subject and stay statements.
+  const COURTESY_RUN = /(^\s*|[:,;]\s*|\byou\s+to\s+|\b(?:please|you must|you need to|you have to|you should|can you|could you|would you|will you)\s+)((?:(?:please|kindly|just)\s+)+)$/i;
+  // Longer polite forms of "could you": "Would you be so kind as to", "I'd appreciate it if you could".
+  const POLITE_ASK = /\b(?:would you be so kind as to|(?:i would|i['’]d|we would|we['’]d)\s+(?:really\s+)?appreciate (?:it )?if you (?:could|would|can))\s+$/i;
+  function courtesyAsPlease(prefix) {
+    const run = prefix.match(COURTESY_RUN);
+    return run ? prefix.slice(0, run.index) + run[1] + 'please ' : prefix;
+  }
+
   // Is the verb after `prefix` an instruction to the reader? "Please send", "Chase: Send",
   // "You must send", "To fix it, send". priorDemand also allows "... and send" after an earlier demand.
   function directAction(prefix, priorDemand, askers) {
     if (NEGATION.test(prefix) || /["“][^"”]*$/.test(prefix)) return false;
+    prefix = courtesyAsPlease(prefix);
+    if (POLITE_ASK.test(prefix)) prefix = prefix.replace(POLITE_ASK, 'could you ');
     const rest = prefix.replace(/^\s*[^:]{1,60}:\s*/, '');
     const asking = askingBefore(prefix);
     if (asking) return senderAsker(prefix.slice(0, asking.index), askers) && !isNegated(prefix, asking.index);

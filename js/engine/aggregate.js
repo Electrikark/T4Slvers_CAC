@@ -5,7 +5,7 @@
   'use strict';
   const T = root.TFS = root.TFS || {};
   const gate = root.TfsAssessment;
-  const VERSION = '0.4.1';
+  const VERSION = '0.4.2';
   const CHANNELS = { text: 'Text', email: 'Email', unknown: 'Not sure' };
   const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
