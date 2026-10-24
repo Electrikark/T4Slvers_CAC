@@ -7,8 +7,8 @@
    volunteer test descriptions are kept separately and never added here. */
 window.TFS_HELP = {
   version: '2026-10-22-draft',
-  approvedBy: null,
-  approvedOn: null,
+  approvedBy: 'Naman Raichura',
+  approvedOn: '2026-10-23',
   sources: {
     ftcScammed: { title: 'FTC: What To Do if You Were Scammed', url: 'https://consumer.ftc.gov/articles/what-do-if-you-were-scammed' },
     ftcHacked: { title: 'FTC: How To Recover Your Hacked Email or Social Media Account', url: 'https://consumer.ftc.gov/articles/how-recover-your-hacked-email-or-social-media-account' },

@@ -25,7 +25,7 @@ test('every topic is listed, opens official steps with sources, and several can 
   await page.goto(RECOVER);
   const topics = page.locator('#help-menu > details');
   await expect(topics).toHaveCount(6);
-  await expect(page.locator('#help-draft')).toBeVisible();
+  await expect(page.locator('#help-draft')).toHaveCount(0);
   await page.locator('#code > summary').click();
   await page.locator('#money > summary').click();
   await page.locator('#money-bank > summary').click();
@@ -173,7 +173,7 @@ test('a flagged result explains why, right under the result, quoting the request
   await expect(first.locator('.why-words')).toContainText('In your message: “send me the codes”');
   await expect(first.locator('.why-quote')).toContainText('No real business or government agency');
   await expect(first.locator('a.why-source')).toHaveAttribute('href', /consumer\.ftc\.gov/);
-  await expect(page.locator('#why-draft')).toBeVisible();
+  await expect(page.locator('#why-draft')).toBeHidden();
   const mark = first.locator('a.why-mark');
   const target = (await mark.getAttribute('href')).slice(1);
   await expect(page.locator('#' + target)).toBeAttached();
