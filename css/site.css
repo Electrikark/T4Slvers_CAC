@@ -136,6 +136,55 @@ textarea { min-height:164px; font-size:1.125rem; }
 .practice-panel blockquote { margin:0 0 24px; font-size:1.25rem; line-height:1.6; padding-left:20px; border-left:3px solid #829473; }
 .practice-panel .primary { font-size:1rem; }
 .practice-panel .small-note { font-size:1rem; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.page-heading .small-note { margin-top:16px; }
+.page-jumps { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px; }
+.page-jumps a { display:inline-flex; align-items:center; min-height:48px; padding:10px 18px; border:1px solid #738377; border-radius:999px; background:white; color:var(--teal); font-weight:700; text-decoration:none; }
+.page-jumps a:hover { background:var(--soft); text-decoration:underline; }
+.lesson-card:target, .guide-card:target { outline:3px solid var(--teal); outline-offset:3px; }
+.practice-round, .scam-guide { margin-top:56px; }
+.practice-round > h2, .scam-guide > h2, .alone-note h2 { font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:2rem; }
+.practice-round > .eyebrow, .scam-guide > .eyebrow { margin-bottom:12px; }
+.practice-list { list-style:none; padding:0; margin:0; display:grid; gap:20px; max-width:760px; }
+.practice-item, .practice-done { background:#eaf0e3; border:1px solid #b7c6a9; border-radius:14px; padding:28px; }
+.practice-count { margin:0 0 12px; font-size:1rem; font-weight:700; color:var(--muted); }
+.practice-message { margin:0 0 20px; padding:18px 20px; background:white; border:1px solid #c4cdbd; border-radius:12px 12px 12px 4px; font-size:1.25rem; line-height:1.6; }
+.practice-choices { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.practice-choices button { min-height:56px; font-size:1.0625rem; }
+.practice-choices button[aria-pressed="true"] { background:var(--teal); border-color:var(--teal); color:white; }
+.practice-choices button[aria-pressed="true"]::before { content:"\2713"; margin-right:8px; }
+.practice-feedback { margin:0 0 14px; font-size:1.125rem; font-weight:700; }
+.practice-answer { background:white; border:1px solid #96a38d; border-radius:10px; padding:0 20px; }
+.practice-answer summary { min-height:56px; padding:16px 0; font-size:1.0625rem; }
+.practice-answer[open] summary { border-bottom:1px solid var(--line); }
+.practice-verdict { margin:14px 0 8px; font-size:1.125rem; font-weight:700; }
+.practice-notes { margin:8px 0; padding-left:22px; }
+.practice-notes li { margin:10px 0; }
+.practice-quote { font-weight:700; }
+/* The words to notice are marked once the answer is open, so the marks do not give it away. */
+.practice-quote, .practice-item:has(.practice-answer[open]) .practice-mark { background:#fbe9b7; box-shadow:0 2px 0 #b98a24; border-radius:3px; padding:0 2px; }
+.practice-do { margin:12px 0 4px; }
+.detail-body .practice-do a.help-source { display:inline; min-height:0; padding:0; }
+.practice-next { margin-top:16px; min-width:220px; }
+.practice-done { max-width:760px; margin-top:20px; }
+.practice-done h3 { font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:1.75rem; margin:0 0 8px; }
+.practice-done p { font-size:1.0625rem; }
+.scam-guide .help-draft { max-width:760px; margin:0 0 16px; }
+.guide-list { max-width:820px; }
+.guide-list summary { font-size:1.1875rem; }
+.guide-list summary .guide-hook { display:block; margin:4px 0 0 18px; font-size:1rem; line-height:1.5; }
+.guide-card h3 { margin:22px 0 6px; font-size:1.0625rem; }
+.guide-example { margin:0; padding:14px 18px; background:var(--soft); border-left:3px solid #829473; font-size:1.125rem; line-height:1.6; }
+.guide-card .small-note { margin:6px 0 0; }
+.guide-signs { list-style:none; padding:0; margin:6px 0; display:flex; flex-wrap:wrap; gap:8px; }
+.detail-body .guide-signs a { display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid #96a38d; border-radius:999px; text-decoration:none; }
+.detail-body .guide-signs a:hover { background:var(--soft); text-decoration:underline; }
+.guide-links { margin-top:22px; padding-top:18px; border-top:1px solid var(--line); }
+.detail-body .guide-links .button-link { display:inline-flex; min-height:52px; padding:12px 20px; }
+.detail-body a.guide-recover { font-weight:700; margin-top:8px; }
+.alone-note { max-width:760px; margin-top:56px; padding:28px; background:#fcf5e5; border:1px solid #c9b88f; border-radius:14px; }
+.alone-note p { font-size:1.0625rem; }
+.alone-note .hotline-number { margin:12px 0; }
 .reading-page { max-width:800px; }
 .reading-page > section { padding:8px 0 28px; margin-bottom:24px; border-bottom:1px solid var(--line); }
 .reading-page h2 { font-size:1.5rem; }
@@ -190,18 +239,24 @@ textarea { min-height:164px; font-size:1.125rem; }
   .lesson-card { padding:24px; }
   .practice-panel { gap:24px; padding:24px; }
   .practice-panel .button-link { width:100%; }
+  .practice-item, .practice-done, .alone-note { padding:20px; }
+  .practice-message { font-size:1.125rem; padding:14px 16px; }
+  .practice-choices { grid-template-columns:1fr; }
+  .practice-next, .detail-body .guide-links .button-link { width:100%; }
+  .practice-round > h2, .scam-guide > h2, .alone-note h2 { font-size:1.75rem; }
   .site-footer { flex-direction:column; gap:18px; margin-top:32px; }
   .footer-note { text-align:left; }
 }
 @media (prefers-reduced-motion:reduce) { .task-card { transition:none; } }
 @media (forced-colors:active) {
-  .task-card, .lesson-card, .site-nav a, .recovery-options details, .hotline-card { border-color:CanvasText; }
+  .task-card, .lesson-card, .site-nav a, .recovery-options details, .hotline-card, .practice-item, .practice-answer, .page-jumps a { border-color:CanvasText; }
+  .practice-item:has(.practice-answer[open]) .practice-mark, .practice-quote { background:Mark; color:MarkText; }
   .site-nav a[aria-current="page"] { outline:2px solid Highlight; }
 }
 @media print {
   body { background:white; color:black; font-size:12pt; }
   .wrap { width:100%; }
-  .site-header, .site-footer, .skip-link, #print-plan, .help-form { display:none !important; }
+  .site-header, .site-footer, .skip-link, #print-plan, .help-form, .page-jumps, .practice-choices, .practice-next { display:none !important; }
   .page-heading { padding:0 0 12pt; }
   .page-heading h1 { font-size:24pt; }
   .recovery-layout, .follow-through { display:block; }
