@@ -1072,3 +1072,26 @@ summary span {
 button:disabled { opacity:0.65; cursor:default; }
 
 .ocr-image-link { display:block; min-height:48px; padding:10px 0; color:var(--teal); font-size:1.125rem; }
+
+/* "Already did something?" help */
+.help-after { margin:40px 0; padding:24px; border:1px solid #738377; border-radius:16px; background:#fff; }
+.help-after h2 { margin-top:0; }
+.help-draft { padding:8px 12px; border-radius:8px; background:#fff6e5; color:#5c3d00; }
+.help-topics { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0; }
+.help-topic { min-height:48px; padding:10px 16px; border:1px solid #738377; border-radius:10px; background:#fff; color:var(--ink); font:inherit; font-size:17px; text-align:left; cursor:pointer; }
+.help-topic:hover, .help-topic:focus-visible { border-color:var(--ink); }
+.help-form label { display:block; margin-top:16px; font-weight:600; }
+.help-search-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; }
+.help-search-row input { flex:1 1 240px; min-height:48px; padding:0 14px; border:1px solid #738377; border-radius:8px; font:inherit; font-size:17px; }
+.help-card { margin-top:16px; padding:18px; border-radius:12px; background:#f6f8f5; }
+.help-card h3 { margin-top:0; }
+.help-steps li { margin:10px 0; font-size:17px; line-height:1.45; }
+.help-source { display:block; margin-top:2px; font-size:14px; color:#4b5b4f; }
+
+/* "Why this is a warning sign" */
+.why { margin:18px 0; padding:18px 20px; border-radius:14px; background:#fff; border:1px solid #738377; }
+.why h2 { margin:0 0 8px; }
+.why-list { margin:0; padding-left:20px; }
+.why-list > li { margin:12px 0; font-size:18px; line-height:1.45; }
+.why-quote { margin:6px 0 0; font-size:15px; color:#33423a; }
+.why-source { font-size:14px; color:#4b5b4f; }
