@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#214e48">
   <meta name="description" content="Check English message text for risky requests and contact details on a local reference list. Review marked findings and choose an independent next step.">
-  <title>Check a message · Tech4All</title>
+  <title>Check a message · Safety4Seniors</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/site.css">
   <script defer src="js/engine/normalize.js"></script>
@@ -24,15 +24,17 @@
   <script defer src="js/selfCheck.js"></script>
   <script defer src="js/mockData.js"></script>
   <script defer src="js/annotate.js"></script>
+  <script defer src="data/why.js"></script>
+  <script defer src="js/why.js"></script>
   <script defer src="js/app.js"></script>
   <script type="module" src="js/ocr-ui.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header wrap">
-    <a class="brand" href="index.html" aria-label="Tech4All home">
-      <span class="brand-mark" aria-hidden="true">t<span>4</span>a</span>
-      <span>Tech4All<span class="brand-caption">A little clarity, before you click.</span></span>
+    <a class="brand" href="index.html" aria-label="Safety4Seniors home">
+      <span class="brand-mark" aria-hidden="true">s<span>4</span>s</span>
+      <span>Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
         <a href="index.html">Home</a>
@@ -110,6 +112,11 @@
           <p id="result-description"></p>
         </div>
       </div>
+      <section id="why-section" class="why" aria-labelledby="why-title" hidden>
+        <h2 id="why-title">Why this is a warning sign</h2>
+        <p id="why-draft" class="help-draft" hidden>Draft: these explanations are waiting for a person to check them against their sources.</p>
+        <ul id="why-list" class="why-list"></ul>
+      </section>
       <!-- Reading order for a quick decision: the result, the one thing to do first, what to do
            next, the message with its marks, then the full details for anyone who wants them. -->
       <section id="action-note" class="action-note" aria-labelledby="action-title">
@@ -201,9 +208,9 @@
     </details>
   </main>
   <footer class="wrap site-footer">
-    <div><a class="footer-brand" href="index.html">Tech4All</a><p>A little clarity, before you click.</p></div>
+    <div><a class="footer-brand" href="index.html">Safety4Seniors</a><p>A little clarity, before you click.</p></div>
     <div class="footer-links"><a href="about.html">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
-    <p class="footer-note">Workshop prototype · U.S. resources</p>
+    <p class="footer-note">Built from the Tech for Silvers workshops, a Tech4All initiative · Workshop prototype · U.S. resources</p>
   </footer>
 </body>
 </html>
