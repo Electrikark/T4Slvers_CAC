@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { storeFor } = require('../reporting-scope/setup.js');
-const URL_PATH = '/T4Slvers_CAC/';
+const URL_PATH = '/T4Slvers_CAC/check.html';
 
 async function open(page) {
   await page.goto(URL_PATH);
@@ -43,6 +43,28 @@ async function mockReader(page) {
   ` }));
 }
 const dummy = name => ({ name, mimeType: 'image/png', buffer: Buffer.from('synthetic fixture') });
+
+test('page explains screenshot limits and keeps next steps ahead of full evidence', async ({ page }) => {
+  await open(page);
+  const about = page.locator('details.demo-tools').filter({ hasText: 'What the results mean' });
+  await about.locator('summary').click();
+  await expect(about).toContainText('Screenshot text cannot produce Details Match, even after your review.');
+  await expect(about).not.toContainText('does not open links, read screenshots');
+  await page.locator('#channel-text').click();
+  await page.locator('#message').fill('Maria, buy me gift cards for my birthday and text me the codes.');
+  await page.locator('#check-button').click();
+  await expect(page.locator('#result-title')).toHaveText('Suspicious');
+  await expect(page.locator('#next-list')).toBeVisible();
+  await expect(page.locator('#checks')).toBeHidden();
+  expect(await page.locator('#next-list').evaluate(node => Boolean(
+    node.compareDocumentPosition(document.getElementById('evidence-details')) & Node.DOCUMENT_POSITION_FOLLOWING
+  ))).toBe(true);
+  await page.locator('#evidence-details > summary').click();
+  await expect(page.locator('#checks')).toBeVisible();
+  await page.locator('#back').click();
+  await page.locator('#check-button').click();
+  await expect(page.locator('#checks')).toBeHidden();
+});
 
 test('paste stays lazy and follows the existing Check path', async ({ page }) => {
   const vendor = [];
@@ -245,10 +267,10 @@ test('cancelling a real worker during startup terminates it before language load
 });
 
 test('invalid formats, image limits, root path and private-path isolation', async ({ page, request }) => {
-  await page.goto('/');
+  await page.goto('/check.html');
   await expect(page.locator('#ocr-button')).toBeVisible();
   for (const resource of ['.git/config', 'node_modules/tesseract.js/package.json', 'eval/data/messages.csv']) {
-    expect((await request.get(URL_PATH + resource)).status()).toBe(404);
+    expect((await request.get('/T4Slvers_CAC/' + resource)).status()).toBe(404);
   }
   await page.locator('#message').fill('Keep this text');
   await page.locator('#ocr-file').setInputFiles({ name: 'file.svg', mimeType: 'image/svg+xml', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>') });

@@ -1,28 +1,51 @@
-# Tech for Silvers
+# Safety4Seniors
+
+Built from the Tech for Silvers workshops, a Tech4All initiative.
 
 Rules v1.1 implements F1–F5 with tests-first stage logs. See [the progress and validation table](docs/rules-v1.1-progress.md). `--split dev` filters before engine analysis. On the revised 194-row dev corpus, fraud labeled Suspicious rose from 36/95 to 57/95 with 0/99 legitimate messages Suspicious and 7 legitimate messages carrying a Tier 2 warning. The dev set was used while writing these rules, about half its rows are synthetic, and no held-out split has been run, so this is not a field accuracy result.
 
-A local text-only workshop prototype. Plain HTML, CSS, and JavaScript; no package install, build step, account, backend, analytics, or external request is needed. This is the active build base for frozen spec v1.2.
+A local workshop prototype with pasted text and a screenshot-reading preview. Plain HTML, CSS, and JavaScript; the served app needs no account, backend, analytics, or message upload. Screenshot reading uses the included local OCR assets. Development checks require the pinned packages below.
 
-The app compares contacts with a stored list and checks fixed English risk patterns. It does not authenticate a sender, read images, follow links, or run AI extraction. Some legacy reference and parsing paths still need repair before release. Matching contact details do not establish that a message is real.
+The app compares contacts with a stored list and checks fixed English risk patterns. Screenshot text requires review and cannot produce Details Match. The app does not authenticate a sender or follow message links. Some legacy reference and parsing paths still need repair before release. Matching contact details do not establish that a message is real.
 
-Version **0.4.1** adds the [session safety repairs](docs/decisions/session-safety-repairs.md):
+Version **0.4.2** reads courtesy words in front of an instruction ("Kindly send", "Just send") the way it reads "Please" ([decision](docs/decisions/polite-wording.md)). Version 0.4.1 added the [session safety repairs](docs/decisions/session-safety-repairs.md):
 bounded code/pressure exceptions, consistent benign-code warnings, separate policy
 answers and unresolved checks, family-first guidance, contact/path fixes, and
-development-only default evaluation with literal-text export handling. The current
-suite has **1,183 shared checks**, plus 36 source-gate checks, 2 boundaries,
-15 evaluation checks and the app-element contract. Older counts below describe
-earlier checkpoints. These checks do not measure accuracy on public messages.
+development-only default evaluation with literal-text export handling. The session-safety
+checkpoint had **1,183 shared checks**, plus 36 source-gate checks, 2 boundaries,
+15 evaluation checks and the app-element contract. Current totals are printed by
+`npm test`; older counts below describe earlier checkpoints. These checks do not measure accuracy on public messages.
+
+## Site layout
+
+The start page now offers three tasks: check a message, get help after a scam,
+and learn warning signs. The checker lives at `check.html`; the engine, message
+text handling, and screenshot review rules stay together there. Recovery uses
+U.S. official resources and offers a printable plan without storing checklist
+choices. See [the site design and next-feature plan](docs/decisions/senior-site.md).
+
+| Page | Purpose |
+| --- | --- |
+| `index.html` | Start here; choose a task |
+| `check.html` | Paste or read a screenshot, review a result, choose a next step |
+| `recover.html` | Recovery steps, official hotline, reporting links, printable plan |
+| `learn.html` | Four warning signs and a made-up practice message |
+| `about.html` | Results, limits, screenshot handling, privacy |
+
+The pages use normal links and shared styles, with no router or new dependency.
+Recovery, learning, and source links also work with JavaScript disabled. The
+checker needs JavaScript. The browser suite covers all five pages and the
+GitHub Pages subpath; the test name retains its earlier OCR label.
 
 ## Run and test
 
-Open `index.html` in a modern browser, or serve this folder locally:
+Serve this folder over HTTP; screenshot preview needs a server rather than opening `index.html` as a local file:
 
 ```sh
 python3 -m http.server 8000 --bind 127.0.0.1
 ```
 
-Visit `http://localhost:8000`. Visit `/tests/run.html` on that server for browser test results; the page fetches the checked-in JSON fixture over HTTP. With Node installed:
+Visit `http://localhost:8000` for Home or `/check.html` for the checker. Visit `/tests/run.html` on that server for browser test results; the page fetches the checked-in JSON fixture over HTTP. With Node installed:
 
 ```sh
 npm test
@@ -34,7 +57,37 @@ node tests/run-node.cjs
 node tests/eval-tests.cjs
 ```
 
-Phase 2 adds 58 shared checks in five groups (trusted view A1-A11, sender attribution B1-B11, tier rules C13-C22 with N1, S1-S3, L1-L2, policy records D1-D11, annotations E1-E9), for 301 shared checks. Reporting-scope checks (RS1–RS37), 768 generated matrix rows and 45 hand-written rows, plus seven Tier 2/policy guards, eight [reviewed next-step advice checks](docs/decisions/reviewed-next-steps.md) and 40 [engine repair checks](docs/decisions/engine-defect-repairs.md) (R1–R6, A1–A5, B1–B10), and six [result wording checks](tests/page-wording-cases.js) (W1–W6) bring the shared total to 1,214. With 36 source-gate parity checks, 12 evaluation-harness checks, the app element contract, two boundary checks and two Node-only page copy and contrast checks, `npm test` runs 1,267 checks; see the [reporting-scope decision and execution checklist](docs/decisions/reporting-scope.md). The matrix covers 32 sentence templates in 11 surface variants plus record states, not 768 independent messages. It reads its checked-in JSON; it never generates expectations during tests. Run `node scripts/run-reporting-scope.cjs` for the suite pass rate by context, family and hand-row group. The Node runner also checks all 47 app element IDs against index.html before running the engine suite. There is also a Node-only boundary group: no engine file reads a raw record file, and no file that draws results uses `innerHTML`. A Node-only page group checks the English-only line on the form, 3:1 border contrast for the message box and choice buttons, and a check mark on the selected choice. Before Phase 2, the recorded eac1229 baseline passed all 111 checks, and there were 243 shared checks, including 14 for the self-check step (S1–S14), 38 for login requests (L1–L38) and 3 for review status (I18–I20): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 44 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), one unresolved card-number case, and two checks that a real website cannot outweigh a Tier 1 request in the same message. The Node runner also runs the 36 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every push to `main`. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
+For the full local checks, including screenshot reading:
+
+```sh
+npm ci --ignore-scripts
+npm test
+npm run check:ocr-assets
+npx playwright install chromium
+npm run test:ocr-browser
+```
+
+At the earlier Phase 2 checkpoint, 58 shared checks were added in five groups (trusted view A1-A11, sender attribution B1-B11, tier rules C13-C22 with N1, S1-S3, L1-L2, policy records D1-D11, annotations E1-E9), for 301 shared checks. Reporting-scope checks (RS1–RS37), 768 generated matrix rows and 45 hand-written rows, plus seven Tier 2/policy guards, eight [reviewed next-step advice checks](docs/decisions/reviewed-next-steps.md) and 40 [engine repair checks](docs/decisions/engine-defect-repairs.md) (R1–R6, A1–A5, B1–B10), and six [result wording checks](tests/page-wording-cases.js) (W1–W6) bring the shared total to 1,214. With 36 source-gate parity checks, 12 evaluation-harness checks, the app element contract, two boundary checks and two Node-only page copy and contrast checks, `npm test` ran 1,267 checks at that checkpoint; see the [reporting-scope decision and execution checklist](docs/decisions/reporting-scope.md). The matrix covers 32 sentence templates in 11 surface variants plus record states, not 768 independent messages. It reads its checked-in JSON; it never generates expectations during tests. Run `node scripts/run-reporting-scope.cjs` for the suite pass rate by context, family and hand-row group. The Node runner checks the current app element IDs against check.html before running the engine suite. There is also a Node-only boundary group: no engine file reads a raw record file, and no file that draws results uses `innerHTML`. A Node-only page group checks the English-only line on the form, 3:1 border contrast for the message box and choice buttons, and a check mark on the selected choice. Before Phase 2, the recorded eac1229 baseline passed all 111 checks, and there were 243 shared checks, including 14 for the self-check step (S1–S14), 38 for login requests (L1–L38) and 3 for review status (I18–I20): the original 111 (with contract updates), 33 gate and integration checks (U1–U15, E1, I1–I17), and 44 step-1 additions: input robustness and wording (N1–N10), T1-DOMAIN scope (D1–D8), T1-CODE scope (K1–K15), T1-CALLBACK scope (B1–B8), one unresolved card-number case, and two checks that a real website cannot outweigh a Tier 1 request in the same message. The Node runner also runs the 36 gate checks with the source gate and compares its assessment and trace with the browser wrapper. GitHub Actions (`.github/workflows/test.yml`) runs `npm test` on Node 22 and 24 for every pull request and every branch push. They test decisions, not field accuracy. The focused group exercises the real engine for C13, C17, C19 and related negative cases. It is not the full C01–C40 conformance pack.
+
+## Saving page changes to GitHub
+
+All five HTML pages, their scripts, styles and local OCR assets are tracked together. After
+editing the page or engine, run the checks above, inspect `git diff`, then save and
+push the intended files on a working branch. Saving a file alone does not upload
+it to GitHub. For example, when this branch contains only the intended changes:
+
+```sh
+git add index.html check.html recover.html learn.html about.html js css tests scripts eval/engine.cjs docs/decisions/senior-site.md README.md CONTRIBUTING.md
+git commit -m 'Keep the page aligned with the app'
+git push -u origin HEAD
+```
+
+GitHub Actions runs the page, engine, asset and browser checks on every branch
+push and every pull request. The checks validate behavior; they do not rewrite
+page text or publish the site. Keep the page explanations and screenshot limits
+aligned with the engine, and include any changed gate source and generated file
+in the same update. A pull request into the release branch keeps deployment a
+separate step.
 
 ## Field evaluation
 
@@ -47,7 +100,7 @@ window.TfsEngine.analyze(text, store, { declaredChannel: 'text' });
 // declaredChannel must be 'text', 'email', or 'unknown'.
 ```
 
-Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.4.1 and schema version 3.
+Missing or invalid channel choice is rejected. The form uses large Text / Email / Not sure buttons with none chosen by default. Not sure is valid. The result has engine version 0.4.2 and schema version 3.
 
 - `suspicious`: established Tier 1 takes priority over contact support, missing contacts, and uncertainty.
 - `details_match`: an explicit recognized sender, at least one contact verified for that sender, all contacts verified for that sender, and no findings or uncertainty. The adapter preserves legacy contact-verification semantics; this is not full v1.2 conformance.
@@ -97,7 +150,9 @@ In the order a message passes through them:
 
 | File | What it does |
 | --- | --- |
-| `index.html`, `css/styles.css` | The page: message box, Text / Email / Not sure, result view |
+| `index.html`, `check.html`, `recover.html`, `learn.html`, `about.html` | Separate pages for choosing a task, checking, recovery, learning, and limits |
+| `css/styles.css`, `css/site.css` | Existing checker styles and the shared site layout |
+| `js/site.js` | Optional recovery printing; no message or checklist storage |
 | `js/app.js` | Reads the form, shows the result, runs the "I checked it myself" step; decides nothing |
 | `js/engine/normalize.js` | Cleans the text; `riskView` keeps a map back to the original so quotes stay exact |
 | `js/engine/extract.js` | Finds links, email addresses and phone numbers; asks `sender.js` who the message names |

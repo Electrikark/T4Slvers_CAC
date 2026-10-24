@@ -1,218 +1,63 @@
-<!-- Trigger GitHub Pages deployment -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#214e48">
-  <meta name="description" content="Check English message text for risky requests and contact details on a local reference list. Review marked findings and choose an independent next step.">
-  <title>Tech for Silvers · A little clarity, before you click</title>
+  <meta name="description" content="Simple tools to check a message, find help after a scam, and learn warning signs. Built with older adults in mind.">
+  <title>A calmer next step · Safety4Seniors</title>
   <link rel="stylesheet" href="css/styles.css">
-  <script defer src="js/engine/normalize.js"></script>
-  <script defer src="js/engine/extract.js"></script>
-  <script defer src="js/engine/sender.js"></script>
-  <script defer src="js/engine/domain.js"></script>
-  <script defer src="js/engine/trusted.js"></script>
-  <script defer src="js/engine/risk.js"></script>
-  <script defer src="js/engine/policy.js"></script>
-  <script defer src="js/assessment-gate.js"></script>
-  <script defer src="js/engine/evidence.js"></script>
-  <script defer src="js/engine/aggregate.js"></script>
-  <script defer src="js/engine/copy.js"></script>
-  <script defer src="data/store.js"></script>
-  <script defer src="data/policies.js"></script>
-  <script defer src="js/selfCheck.js"></script>
-  <script defer src="js/mockData.js"></script>
-  <script defer src="js/annotate.js"></script>
-  <script defer src="js/app.js"></script>
-  <script type="module" src="js/ocr-ui.js"></script>
+  <link rel="stylesheet" href="css/site.css">
+  <script defer src="js/site.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header wrap">
-    <a class="brand" href="index.html" aria-label="Tech for Silvers home">
-      <span class="brand-mark" aria-hidden="true">t<span>4</span>s</span>
-      <span>Tech for Silvers<span class="brand-caption">A little clarity, before you click.</span></span>
+    <a class="brand" href="index.html" aria-label="Safety4Seniors home">
+      <span class="brand-mark" aria-hidden="true">s<span>4</span>s</span>
+      <span>Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
     </a>
-    <span class="prototype-tag">Workshop prototype</span>
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="check.html">Check a message</a>
+        <a href="recover.html">Get help after a scam</a>
+        <a href="learn.html">Learn the signs</a>
+    </nav>
   </header>
-
   <main id="main" class="wrap" tabindex="-1">
-    <noscript><p class="error">Turn on JavaScript to use this local prototype.</p></noscript>
-    <div class="prototype-note">
-      <span class="note-dot" aria-hidden="true"></span>
-      <p><strong>A second look, not a guarantee.</strong> This prototype checks English text for risky requests and compares contact details with a limited local list. It cannot confirm who sent a message.</p>
-    </div>
-
-    <section id="home" class="home-layout" aria-labelledby="home-title">
-      <div class="intro">
-        <p class="eyebrow">PAUSE. TAKE A CLOSER LOOK.</p>
-        <h1 id="home-title" tabindex="-1">Not sure what to do<br class="desktop-break"> about a message?</h1>
-        <p class="lead">Paste a message or link. We’ll help you look at the details and choose your next step.</p>
-        <div class="how-it-works">
-          <h2>A calmer next step.</h2>
-          <ol>
-            <li><span>1</span>Paste what you received.</li>
-            <li><span>2</span>Look at the evidence.</li>
-            <li><span>3</span>Choose a safer next step.</li>
-          </ol>
-        </div>
-        <p class="privacy"><span aria-hidden="true">↳</span> No account. No uploads to a server.<br>Your pasted text stays in this tab and is not saved by the app.</p>
+    <section class="welcome" aria-labelledby="welcome-title">
+      <div class="welcome-copy">
+        <p class="eyebrow">TAKE YOUR TIME. YOU HAVE OPTIONS.</p>
+        <h1 id="welcome-title">A little help.<br>A safer next step.</h1>
+        <p class="lead">A worrying message. An unexpected call. You do not have to figure it out alone.</p>
+        <a class="primary button-link" href="check.html">Check a message <span aria-hidden="true">→</span></a>
+        <p class="small-note">Free to use. No account needed.</p>
       </div>
-
-      <div class="submission-card">
-        <form id="submission-form" novalidate>
-          <h2>Let’s take a look</h2>
-          <fieldset id="channel-question" class="channel-question" aria-describedby="channel-hint error">
-            <legend>Where did you get this?</legend>
-            <div class="channel-options">
-              <button type="button" id="channel-text" class="option" aria-pressed="false">Text</button>
-              <button type="button" id="channel-email" class="option" aria-pressed="false">Email</button>
-              <button type="button" id="channel-unknown" class="option" aria-pressed="false">Not sure</button>
-            </div>
-            <p id="channel-hint" class="hint">Choose one before checking.</p>
-          </fieldset>
-          <div class="ocr-tools">
-            <button id="ocr-button" class="ocr-button full" type="button" hidden>Read text from a screenshot</button>
-            <input id="ocr-file" type="file" accept="image/png,image/jpeg" hidden>
-            <p id="ocr-status" class="hint" role="status" aria-live="polite" aria-atomic="true"></p>
-            <button id="ocr-cancel" class="text-button" type="button" hidden>Cancel reading</button>
-          </div>
-          <section id="ocr-confirm" class="ocr-preview" aria-labelledby="ocr-title" hidden>
-            <h3 id="ocr-title">Review screenshot text · Preview</h3>
-            <p>Check every word against the image. Fix missing words, links and phone numbers, especially “not” and “never”.</p>
-            <p id="ocr-warning" class="ocr-warning" hidden>This picture was hard to read. Words may be wrong or missing. Copy and paste the original message if you cannot check every word.</p>
-            <p class="hint">Line breaks are kept. Repair broken links or numbers yourself.</p>
-            <details><summary>Text first read from the image</summary><pre id="ocr-raw"></pre></details>
-            <button id="ocr-clear" class="text-button" type="button">Clear screenshot and paste instead</button>
-            <a id="ocr-open-image" class="ocr-image-link" target="_blank" rel="noopener">Open screenshot larger (new tab)</a>
-            <img id="ocr-image" alt="Your selected screenshot for comparison">
-          </section>
-          <div id="paste-panel">
-            <label for="message">Your message or link</label>
-            <textarea id="message" rows="5" placeholder="Paste the message or link here…" aria-describedby="input-hint character-count error" spellcheck="false" autocapitalize="off"></textarea>
-            <p id="character-count" class="character-count"></p>
-            <p id="input-hint" class="hint">Copy from the original text or email. Screenshot preview accepts PNG or JPEG images up to 12 MB. Leave out passwords, account details, and real verification codes. This checker reads messages written in English.</p>
-          </div>
-          <label id="ocr-review-label" class="ocr-review" hidden>
-            <input id="ocr-reviewed" type="checkbox">
-            <span>I compared the full text with the screenshot and fixed any errors.</span>
-          </label>
-          <p id="example-loaded" class="example-loaded" hidden></p>
-          <p id="error" class="error" role="alert"></p>
-          <button id="check-button" class="primary full" type="submit" aria-describedby="example-loaded">Check this <span aria-hidden="true">→</span></button>
-          <p class="form-footnote">Runs on this device · Nothing is sent anywhere</p>
-        </form>
+      <aside class="pause-card" aria-labelledby="pause-title">
+        <div class="pause-symbol" aria-hidden="true">Ⅱ</div>
+        <p class="eyebrow">A MOMENT TO BREATHE</p>
+        <h2 id="pause-title">A message can wait.</h2>
+        <ol class="pause-steps">
+          <li><span aria-hidden="true">1</span><div><strong>Pause.</strong><p>You do not need to reply right away.</p></div></li>
+          <li><span aria-hidden="true">2</span><div><strong>Take a second look.</strong><p>Use our checker or ask someone you trust.</p></div></li>
+          <li><span aria-hidden="true">3</span><div><strong>Choose your next step.</strong><p>Find help here if something went wrong.</p></div></li>
+        </ol>
+      </aside>
+    </section>
+    <section class="task-section" aria-labelledby="task-title">
+      <div class="section-heading"><h2 id="task-title">What would help you today?</h2><p>Start with what is happening now.</p></div>
+      <div class="task-grid">
+        <a class="task-card" href="check.html"><span class="task-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8l4 4v14H4V3h4Z"/><path d="M15 3v5h5M8 13h8M8 17h5"/></svg></span><h3>I received a message</h3><p>Look for risky requests in a text, email, or screenshot.</p><span class="card-action">Check a message <span aria-hidden="true">→</span></span></a>
+        <a class="task-card help-card" href="recover.html"><span class="task-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-9-5.5-9-12a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 6.5-9 12-9 12Z"/><path d="M8 12h8m-4-4v8"/></svg></span><h3>Something went wrong</h3><p>Find steps to take if you sent money or shared information.</p><span class="card-action">Get help after a scam <span aria-hidden="true">→</span></span></a>
+        <a class="task-card" href="learn.html"><span class="task-icon"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v15"/></svg></span><h3>I want to feel prepared</h3><p>Learn a few warning signs and practise with a made-up message.</p><span class="card-action">Learn the signs <span aria-hidden="true">→</span></span></a>
       </div>
     </section>
-
-    <section id="result" class="result" aria-labelledby="result-title" hidden>
-      <button id="back" type="button" class="text-button">← Back to your message</button>
-      <p class="eyebrow">YOUR LOCAL CHECK</p>
-      <p id="ocr-result-note" class="ocr-warning" hidden>This result checks text read from your image. Missing or wrong words can change it. Compare it with the screenshot before acting.</p>
-      <div id="result-banner" class="result-banner">
-        <span id="state-symbol" class="state-symbol" aria-hidden="true"></span>
-        <div>
-          <p id="state-label" class="state-label"></p>
-          <h1 id="result-title" tabindex="-1"></h1>
-          <p id="result-description"></p>
-        </div>
-      </div>
-      <!-- Reading order for a quick decision: the result, the one thing to do first, what to do
-           next, the message with its marks, then the full details for anyone who wants them. -->
-      <section id="action-note" class="action-note" aria-labelledby="action-title">
-        <div>
-          <h2 id="action-title">Before you act</h2>
-          <p id="action-lead"></p>
-        </div>
-      </section>
-      <section class="next-steps" aria-labelledby="next-title">
-        <h2 id="next-title" tabindex="-1">What to do next</h2>
-        <div id="warnings"></div>
-        <ol id="next-list"></ol>
-      </section>
-      <section id="annotated-section" class="annotated" aria-labelledby="annotated-title" hidden>
-        <h2 id="annotated-title">Your message, with what we noticed</h2>
-        <p class="annotated-key">Marked words are numbered. Each number has a note below. Press Tab to move between marks.</p>
-        <p id="annotated" class="annotated-message"></p>
-        <ol id="annotation-notes" class="annotation-notes"></ol>
-      </section>
-      <details id="evidence-details" class="evidence-details">
-        <summary>See everything we checked</summary>
-        <div class="evidence">
-          <section>
-            <h2>What this means</h2>
-            <p id="meaning"></p>
-          </section>
-          <section>
-            <h2>Claims to be</h2>
-            <p id="identity" class="identity"></p>
-          </section>
-          <section>
-            <h2>What we checked</h2>
-            <p id="channel"></p>
-            <p id="inspected" class="inspected"></p>
-          </section>
-          <section>
-            <h2>What we found</h2>
-            <ul id="checks" class="checks"></ul>
-            <template id="check-template"><li class="check-item"><span class="check-label"></span><p class="check-detail"></p><details class="check-source"><summary>About this check</summary><p class="source"></p></details></li></template>
-          </section>
-          <section id="asks-section" hidden>
-            <h2>Signals in the wording</h2>
-            <ul id="asks" class="checks asks"></ul>
-          </section>
-        </div>
-      </details>
-      <section id="self-check" class="self-check" aria-labelledby="self-check-title">
-        <h2 id="self-check-title">Did you check it yourself?</h2>
-        <p class="self-check-intro">Contact the person or organization using details you had before this message arrived, then record what you were told. This records your own check; it does not change the app’s result.</p>
-        <fieldset class="self-check-step">
-          <legend id="method-title" tabindex="-1">How did you check?</legend>
-          <div id="method-options" class="self-check-options"></div>
-        </fieldset>
-        <fieldset id="answer-step" class="self-check-step" hidden>
-          <legend id="answer-title" tabindex="-1">What did they tell you?</legend>
-          <div id="answer-options" class="self-check-options"></div>
-        </fieldset>
-        <div id="self-check-outcome" class="self-check-outcome" hidden>
-          <h3 id="outcome-title" tabindex="-1"></h3>
-          <ul id="outcome-lines"></ul>
-        </div>
-      </section>
-      <div class="result-bottom">
-        <p>Local text and contact checks only. No website was opened. The sender and caller were not verified.</p>
-        <button id="start-again" class="primary" type="button">Check another message <span aria-hidden="true">→</span></button>
-      </div>
-    </section>
-
-    <details class="demo-tools">
-      <summary>About this check <span>What the results mean</span></summary>
-      <div class="demo-inner">
-        <p>The app looks for fixed English patterns such as requests for gift-card codes, passwords, or remote access, and certain deceptive web addresses. It can miss risky messages.</p>
-        <ul>
-          <li><strong>Suspicious:</strong> a strong warning pattern was found. Pause before acting and use the next steps shown.</li>
-          <li><strong>Insufficient Evidence:</strong> the app cannot establish a contact match. Missing details, an unreviewed record, or a request that needs an independent check can cause this result.</li>
-          <li><strong>Details Match:</strong> contact details match reviewed records, with no findings or unresolved checks. This does not prove who sent the message.</li>
-        </ul>
-        <p>The current contact list is awaiting human review, so it cannot produce Details Match yet. A familiar or listed address does not cancel a risky request.</p>
-        <p>Choose Text, Email, or Not sure before each check. The app does not open links, read screenshots, or verify callers.</p>
-      </div>
-    </details>
-
-    <details class="demo-tools" id="demo-tools">
-      <summary>Demo examples <span>For workshop testing</span></summary>
-      <div class="demo-inner">
-        <p>These are made-up examples for practice. Load one, choose its listed channel, then choose “Check this.” Each example runs through the same local rules as your pasted text.</p>
-        <div id="scenario-buttons" class="scenario-buttons"></div>
-        <button type="button" id="reset" class="text-button">Reset for the next participant</button>
-      </div>
-    </details>
+    <aside class="plain-note"><strong>A second look, not a guarantee.</strong><p>The checker can miss scams. It cannot confirm who sent a message. <a href="about.html">See how it works.</a></p></aside>
   </main>
   <footer class="wrap site-footer">
-    <span>TECH FOR SILVERS</span>
-    <p>Thoughtful technology. A little more peace of mind.</p>
-    <span id="list-count">Local reference list</span>
+    <div><a class="footer-brand" href="index.html">Safety4Seniors</a><p>A little clarity, before you click.</p></div>
+    <div class="footer-links"><a href="about.html">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
+    <p class="footer-note">Built from the Tech for Silvers workshops, a Tech4All initiative · Workshop prototype · U.S. resources</p>
   </footer>
 </body>
 </html>

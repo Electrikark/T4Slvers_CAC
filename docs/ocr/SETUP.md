@@ -9,7 +9,7 @@ those tasks happened.
 
 ## Where the work lives
 
-- Preview folder: `/Users/namanraichura/.codex/worktrees/ocr-preview/Tech4Silvers-codex-worktree`
+- Preview folder: the repository root of the `ocr-preview` checkout
 - Branch: `ocr-preview`
 - Original Git base: `305cbdf3e7b66fc6e143fc6b29423a6fee8d0518`
 - Preview baseline: `075860496e91fa7c84138f26d8cfede47d685ecc`

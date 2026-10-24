@@ -10,7 +10,8 @@ const scripts = new Set();
 const modules = new Set();
 const problems = [];
 
-for (const page of ['index.html', 'tests/run.html']) {
+const pages = fs.readdirSync(root).filter(name => name.endsWith('.html')).concat('tests/run.html');
+for (const page of pages) {
   const html = fs.readFileSync(path.join(root, page), 'utf8');
   const ids = new Set();
   for (const match of html.matchAll(/\bid=["']([^"']+)["']/g)) {

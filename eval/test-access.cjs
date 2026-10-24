@@ -9,7 +9,9 @@ const RELEASE_FILES = [...new Set(require('./engine.cjs').FILES.concat([
   'src/assessment.js', 'eval/run.cjs', 'eval/engine.cjs', 'eval/test-access.cjs',
   'eval/metrics.cjs', 'eval/csv.cjs', 'eval/dataset.cjs', 'eval/dev-data.cjs',
   'eval/supplied-data.cjs', 'tests/eval-tests.cjs', 'tests/tier-cases.js',
-  'scripts/build-assessment.cjs', 'eval/publish-test-result.cjs', 'package.json'
+  'scripts/build-assessment.cjs', 'eval/publish-test-result.cjs', 'package.json',
+  'eval/exposed-elsewhere.cjs', 'adversarial/seeds.cjs', 'adversarial/known-failures.json',
+  'tests/polite-wording-cases.js'
 ]))];
 const digest = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const textFingerprint = text => digest(String(text).normalize('NFKC').trim().replace(/\s+/g, ' ').toLowerCase());
@@ -60,10 +62,15 @@ function verifyTestRelease(root, input, now = new Date()) {
   const [header, ...cells] = parseCsv(fs.readFileSync(input, 'utf8'));
   const entries = cells.map(row => Object.fromEntries(header.map((h, i) => [h, row[i]]))).filter(r => r.split === 'test');
   if (!entries.length) throw new Error('The frozen test input has no test rows.');
+  // Messages the rules were tuned or checked against outside eval/data (eval/exposed-elsewhere.cjs).
+  const elsewhere = new Set(require('./exposed-elsewhere.cjs').exposedTexts().map(textFingerprint));
   for (const r of entries) {
     if (!r.group_id) throw new Error('Every test row needs a reviewed family ID.');
     if (ledger.devIds.includes(r.id) || ledger.devFamilyIds.includes(r.group_id) || ledger.textHashes.includes(textFingerprint(r.text))) {
       throw new Error('Test input contains previously dev material: ' + r.id);
+    }
+    if (elsewhere.has(textFingerprint(r.text))) {
+      throw new Error('Test input contains a message already used by the rewrite tests or rule fixes: ' + r.id);
     }
   }
   const files = Object.entries(release.engineFiles || {});

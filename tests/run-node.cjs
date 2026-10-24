@@ -11,7 +11,7 @@ const files = [
   'data/store.js', 'data/policies.js', 'js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'tests/cases.js', 'tests/real-store-cases.js',
   'tests/regression-cases.js', 'tests/step1-cases.js', 'tests/assessment-cases.js', 'tests/self-check-cases.js',
   'tests/phase2-harness.js', 'tests/trusted-cases.js', 'tests/sender-cases.js', 'tests/tier-cases.js', 'tests/scope-cases.js',
-  'tests/reporting-scope/setup.js', 'tests/reporting-scope/matrix-cases.js', 'tests/next-steps-cases.js', 'tests/policy-cases.js', 'tests/annotate-cases.js', 'tests/rules-f1-cases.js', 'tests/rules-f2-cases.js', 'tests/rules-f3-cases.js', 'tests/rules-f4-cases.js', 'tests/rules-f5-cases.js', 'tests/rules-robustness-cases.js', 'tests/rules-v11b-cases.js', 'tests/rules-probe-oct18-cases.js', 'tests/repair-cases.js', 'tests/repair2-cases.js', 'tests/page-wording-cases.js', 'tests/session-repair-cases.js', 'tests/suite.js'
+  'tests/reporting-scope/setup.js', 'tests/reporting-scope/matrix-cases.js', 'tests/next-steps-cases.js', 'tests/policy-cases.js', 'tests/annotate-cases.js', 'tests/rules-f1-cases.js', 'tests/rules-f2-cases.js', 'tests/rules-f3-cases.js', 'tests/rules-f4-cases.js', 'tests/rules-f5-cases.js', 'tests/rules-robustness-cases.js', 'tests/rules-v11b-cases.js', 'tests/rules-probe-oct18-cases.js', 'tests/repair-cases.js', 'tests/repair2-cases.js', 'tests/page-wording-cases.js', 'tests/session-repair-cases.js', 'tests/polite-wording-cases.js', 'tests/suite.js'
 ];
 for (const file of files) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), context, { filename: file });
@@ -30,7 +30,7 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', 'js/engine'))) {
   if (/TFS_STORE|TFS_POLICIES/.test(text)) boundaryProblems.push(`js/engine/${file} reads a raw record file`);
 }
 // Message text is rendered with textContent only; no file that draws results may use innerHTML.
-for (const file of ['js/app.js', 'js/annotate.js', 'js/selfCheck.js']) {
+for (const file of ['js/app.js', 'js/annotate.js', 'js/selfCheck.js', 'js/help-ui.js', 'js/why.js']) {
   if (/innerHTML|outerHTML|insertAdjacentHTML|document\.write/.test(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'))) boundaryProblems.push(`${file} renders HTML strings`);
 }
 failures += boundaryProblems.length;
@@ -38,9 +38,9 @@ console.log(`Boundaries: ${boundaryProblems.length ? 'FAIL' : '2/2'}`);
 for (const problem of boundaryProblems) console.error(problem);
 // Page copy and contrast (repairs B7 and B9): file reads, so Node only.
 const pageProblems = [];
-const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, '..', 'check.html'), 'utf8');
 const css = fs.readFileSync(path.join(__dirname, '..', 'css/styles.css'), 'utf8');
-if (!html.includes('This checker reads messages written in English.')) pageProblems.push('B7: the English-only line is missing from index.html');
+if (!html.includes('This checker reads messages written in English.')) pageProblems.push('B7: the English-only line is missing from check.html');
 // WCAG 1.4.11: control borders need 3:1 against the white card.
 const luminance = hex => {
   const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(c => c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);

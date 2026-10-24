@@ -7,7 +7,7 @@ const root = path.join(__dirname, '..');
 const docs = path.join(root, 'docs/testing');
 const output = name => path.join(docs, name);
 const write = (name, lines) => fs.writeFileSync(output(name), lines.join('\n') + '\n');
-const link = (label, relative) => `[${label}](${path.join(root, relative)})`;
+const link = (label, relative) => `[${label}](${path.relative(docs, path.join(root, relative)).split(path.sep).join('/')})`;
 const sources = [
   ['usps','https://news.usps.com/2024/06/26/dont-get-smished/'],
   ['amazon','https://digprjsurvey.amazon.com/csad/help/node/T2W6VB0DExBF3oyVvx'],

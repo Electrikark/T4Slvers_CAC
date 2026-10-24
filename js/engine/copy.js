@@ -119,7 +119,7 @@
     if (check.code === 'phone_official' || check.code === 'phone_not_on_file') return 'Reference list of official phone numbers' + version;
     if (check.code === 'shortener_unresolvable') return 'List of known link shorteners' + version;
     if (check.code === 'free_email_address') return 'List of free email providers' + version;
-    return 'Tech for Silvers checker';
+    return 'Safety4Seniors checker';
   }
 
   // Each wording warning: its short label, and the advice shown under "What to do next".

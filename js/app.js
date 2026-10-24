@@ -137,6 +137,44 @@ function showAnnotations(text, result) {
   window.TFS.renderAnnotations(document, model, byId('annotated'), byId('annotation-notes'));
   // The main warning already sits under the result, so it is not repeated here.
   byId('annotated-section').hidden = model.notes.length === 0;
+  return model;
+}
+
+// "Why this is a warning sign": a plain reason for each rule found, tied to the words in this
+// message and to their numbered mark, with an official quote and its page.
+function showWhy(result, model, text) {
+  const why = window.TFS_WHY;
+  const items = why && window.TFS.whyItems ? window.TFS.whyItems(result, why, text) : [];
+  byId('why-section').hidden = items.length === 0;
+  byId('why-draft').hidden = !why || Boolean(why.approvedBy);
+  byId('why-list').replaceChildren(...items.map(item => {
+    const li = textElement('li', item.why);
+    if (item.words) {
+      const words = textElement('p', 'In your message: “' + item.words + '”', 'why-words');
+      const note = model && model.notes.find(n => n.ruleId === item.key);
+      if (note) {
+        const mark = textElement('a', 'See mark ' + note.n, 'why-mark');
+        mark.href = '#annotation-' + note.id;
+        words.append(' ', mark);
+      }
+      li.append(words);
+    }
+    for (const quote of [item.official, item.also].filter(Boolean)) {
+      const source = why.sources[quote.source];
+      // Every source in data/why.js is an FTC publication (MilitaryConsumer.gov is run with the FTC).
+      const p = textElement('p', 'The FTC says: “' + quote.quote + '”', 'why-quote');
+      if (source) {
+        const link = textElement('a', source.title, 'why-source');
+        link.href = source.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        p.append(' ', link);
+      }
+      li.append(p);
+    }
+    if (!item.official) li.append(textElement('p', 'Tech for Silvers advice', 'why-source'));
+    return li;
+  }));
 }
 
 function showResult(result, text) {
@@ -164,9 +202,10 @@ function showResult(result, text) {
   byId('asks').replaceChildren(...result.requestRisk.flags.map(flag => signalItem(flag, result)));
   byId('warnings').replaceChildren(...otherWarnings.map(warning => textElement('p', warning, 'warning')));
   byId('next-list').replaceChildren(...result.nextSteps.map(step => textElement('li', step)));
-  showAnnotations(text, result);
+  showWhy(result, showAnnotations(text, result), text);
   // Each new result starts with its full details folded away.
   byId('evidence-details').open = false;
+  byId('self-check-details').open = false;
 
   shownResult = result;
   resetSelfCheck();
@@ -174,10 +213,12 @@ function showResult(result, text) {
 }
 
 function clearResult() {
-  for (const id of ['result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
+  for (const id of ['why-list', 'result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
     byId(id).replaceChildren();
   }
   byId('annotated-section').hidden = true;
+  byId('why-section').hidden = true;
+  byId('why-draft').hidden = true;
   shownResult = null;
   resetSelfCheck();
 }
@@ -250,3 +291,14 @@ for (const [id, example] of Object.entries(window.demoScenarios)) {
 byId('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations · Website list ${window.TFS_STORE.version}`;
 resetSelfCheck();
 updateCount();
+
+// Only a fixed made-up example can be loaded by a link; no message text travels in a URL.
+if (new URLSearchParams(window.location.search).get('example') === 'family') {
+  startOver();
+  byId('message').value = 'Grandma, please buy 3 Apple gift cards and send me the codes.';
+  updateCount();
+  byId('example-loaded').textContent = 'Made-up practice message. Choose Text, then Check this message when you are ready.';
+  byId('example-loaded').hidden = false;
+  byId('channel-text').focus();
+  window.history.replaceState(null, '', window.location.pathname);
+}

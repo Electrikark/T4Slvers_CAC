@@ -1,5 +1,5 @@
 // Contact conflicts block a match; only established Tier 1 risk yields Suspicious.
-/* Tech for Silvers engine: the 20 must-pass cases and the fixture store they run against.
+/* Safety4Seniors engine: the 20 must-pass cases and the fixture store they run against.
    A case asserts only the fields it lists. codes are matched against checks[].code.
    Plain script that sets window globals, because browsers block fetch() on file:// pages. */
 window.TFS_FIXTURE_STORE = {

@@ -77,9 +77,9 @@ test('E10 Counts and rates from stubbed results', () => {
 });
 test('E11 The real engine and list load, and report how many records are reviewed', () => {
   // The same engine files as the page, in the same order, so the evaluation measures the app.
-  const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, '../check.html'), 'utf8');
   const pageFiles = [...html.matchAll(/<script defer src="([^"]+)"/g)].map(m => m[1])
-    .filter(f => !['js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'js/app.js'].includes(f));
+    .filter(f => !['js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'js/app.js', 'data/help-cards.js', 'data/why.js', 'js/why.js'].includes(f));
   assert.deepEqual(FILES, pageFiles);
   const loaded = loadEngine();
   assert.equal(loaded.analyze('Grandma, please buy 3 Apple gift cards and send me the codes.', 'text').assessment, 'suspicious');
@@ -238,6 +238,20 @@ test('E21 Test release refuses unapproved data, another input and changed engine
     fs.writeFileSync(engine, 'fixture'); fs.writeFileSync(input, 'changed');
     assert.throws(() => verifyTestRelease(dir, input, day), /input changed/);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('E23 Messages used by the rewrite tests or the courtesy-word fix can never be test rows', () => {
+  const { exposedTexts } = require('../eval/exposed-elsewhere.cjs');
+  const { textFingerprint } = require('../eval/test-access.cjs');
+  const texts = exposedTexts();
+  const seeds = require('../adversarial/seeds.cjs');
+  const known = require('../adversarial/known-failures.json');
+  // Every seed, every listed failure and every polite-wording case is collected.
+  assert.ok(texts.length >= seeds.fraud.length + seeds.legit.length + known.escapes.length + known.falseAlarms.length + 30);
+  const prints = new Set(texts.map(textFingerprint));
+  assert.ok(prints.has(textFingerprint('  ' + seeds.fraud[0].text.toUpperCase() + ' ')));
+  assert.ok(prints.has(textFingerprint('Kindly read me the verification code we just texted you.')));
+  assert.ok(prints.has(textFingerprint('They kindly sent us the wire transfer receipt yesterday.')));
 });
 
 test('E22 A test attempt is reserved once, including an interrupted attempt', () => {
