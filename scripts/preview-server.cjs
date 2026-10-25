@@ -7,7 +7,7 @@ const portAt = process.argv.indexOf('--port');
 const port = portAt < 0 ? 8381 : Number(process.argv[portAt + 1]);
 if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid port');
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.onnx': 'application/octet-stream',
-  '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.wasm': 'application/wasm', '.gz': 'application/gzip' };
+  '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.json': 'application/json', '.wasm': 'application/wasm', '.gz': 'application/gzip' };
 const prefix = '/T4Slvers_CAC/';
 http.createServer((request, response) => {
   if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405).end(); return; }
@@ -18,7 +18,7 @@ http.createServer((request, response) => {
   name = name.startsWith(prefix) ? name.slice(prefix.length) : name.slice(1);
   if (!name) name = 'index.html';
   if (name.includes('\0') || name.split('/').some(part => part.startsWith('.')) ||
-      !(/^(index|check|recover|learn|about)\.html$/.test(name) || /^(css|js|data|vendor|tests)\//.test(name)) || /\.cjs$/.test(name) ||
+      !(/^(index|check|recover|learn|about)\.html$/.test(name) || name === 'assets/identity/pause-message.svg' || /^(css|js|data|vendor|tests)\//.test(name)) || /\.cjs$/.test(name) ||
       // The embedding runtime's loader is the only .mjs file served.
       (/\.mjs$/.test(name) && !/^vendor\/minilm\/lib\/[\w.-]+\.mjs$/.test(name))) {
     response.writeHead(404).end(); return;

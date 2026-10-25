@@ -45,9 +45,9 @@ function steps(card, help, pad) {
 
 function topic(card, help, pad) {
   const lines = [`${pad}<details id="${escape(card.id)}" class="help-topic-card">`,
-    `${pad}  <summary>${escape(card.title)}</summary>`,
+    `${pad}  <summary>${escape(card.title)}${card.summary ? `<span class="topic-first">${escape(card.summary)}</span>` : ''}</summary>`,
     `${pad}  <div class="detail-body">`];
-  if (card.summary) lines.push(`${pad}    <p class="help-summary">${escape(card.summary)}</p>`);
+
   if (card.steps) lines.push(...steps(card, help, pad + '    '));
   if (card.children) {
     lines.push(`${pad}    <p class="help-choose">${escape(card.choose || 'Choose one.')}</p>`,

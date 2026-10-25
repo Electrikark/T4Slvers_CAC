@@ -48,13 +48,14 @@ test('page explains screenshot limits and keeps next steps ahead of full evidenc
   await open(page);
   const about = page.locator('details.demo-tools').filter({ hasText: 'What the results mean' });
   await about.locator('summary').click();
-  await expect(about).toContainText('Screenshot text cannot produce Details Match, even after your review.');
+  await expect(about).toContainText('Screenshot text cannot establish a match to reviewed records, even after your review.');
   await expect(about).not.toContainText('does not open links, read screenshots');
   await page.locator('#channel-text').click();
   await page.locator('#message').fill('Maria, buy me gift cards for my birthday and text me the codes.');
   await page.locator('#check-button').click();
-  await expect(page.locator('#result-title')).toHaveText('Suspicious');
-  await expect(page.locator('#next-list')).toBeVisible();
+  await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
+  await expect(page.locator('#action-groups')).toBeVisible();
+  await expect(page.locator('#next-list')).toBeHidden();
   await expect(page.locator('#checks')).toBeHidden();
   expect(await page.locator('#next-list').evaluate(node => Boolean(
     node.compareDocumentPosition(document.getElementById('evidence-details')) & Node.DOCUMENT_POSITION_FOLLOWING
@@ -73,7 +74,7 @@ test('paste stays lazy and follows the existing Check path', async ({ page }) =>
   await page.locator('#channel-text').click();
   await page.locator('#message').fill('Chase: Buy gift cards to pay the fee.');
   await page.locator('#check-button').click();
-  await expect(page.locator('#result-title')).toHaveText('Suspicious');
+  await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
   await expect(page.locator('#ocr-result-note')).toBeHidden();
   expect(vendor).toEqual([]);
   expect(await page.evaluate(() => window.analysisCalls)).toBe(1);
@@ -106,10 +107,11 @@ test('real cold and warm OCR uses only local assets, requires review, and never 
   await expect(page.locator('#check-button')).toBeDisabled();
   await page.locator('#ocr-reviewed').check();
   await page.locator('#check-button').click();
-  await expect(page.locator('#result-title')).toHaveText('Suspicious');
+  await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
   await expect(page.locator('#ocr-result-note')).toBeVisible();
-  await expect(page.locator('#checks')).toContainText('read from an image');
   expect(await page.evaluate(() => document.activeElement.id)).toBe('result-title');
+  await page.locator('#evidence-details > summary').click();
+  await expect(page.locator('#checks')).toContainText('read from an image');
   for (const part of ['tesseract.min.js', 'worker.min.js', '/core/', '/lang/eng.traineddata.gz']) expect(requests.some(url => url.includes(part))).toBe(true);
   const downloads = requests.filter(url => url.includes('/vendor/')).length;
   await page.locator('#back').click();
@@ -131,7 +133,7 @@ test('real JPEG reading cannot produce Details Match even with a fictional revie
   await upload(page, file);
   await page.locator('#ocr-reviewed').check();
   await page.locator('#check-button').click();
-  await expect(page.locator('#result-title')).toHaveText('Insufficient Evidence');
+  await expect(page.locator('#result-title')).toHaveText('There isn’t enough information');
   await expect(page.locator('#checks')).toContainText('cannot establish a contact-details match');
 });
 

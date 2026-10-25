@@ -37,6 +37,16 @@ Recovery, learning, and source links also work with JavaScript disabled. The
 checker needs JavaScript. The browser suite covers all five pages and the
 GitHub Pages subpath; the test name retains its earlier OCR label.
 
+## Clear-action interface
+
+The five pages use the [clear-action design standard](docs/decisions/clear-action-ui.md).
+Results keep supported behaviors, protective steps, and relevant limits visible.
+Background opens beneath question labels. Matching labels name the exact detail
+checked; the internal assessment keys stay unchanged. The display layer lives in
+`js/result-view.js`, with shared layout in `css/ui.css`.
+The [visual identity](docs/decisions/visual-identity.md) defines type, color roles,
+and the local message-and-pause mark used across all five pages.
+
 ## Run and test
 
 Serve this folder over HTTP; screenshot preview needs a server rather than opening `index.html` as a local file:

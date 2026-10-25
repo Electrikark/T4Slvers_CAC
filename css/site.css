@@ -104,7 +104,19 @@ textarea { min-height:164px; font-size:1.125rem; }
 .no-one-available { border-top:1px solid var(--line); }
 .no-one-available > summary { padding:14px 0; min-height:52px; font-size:1.0625rem; color:var(--teal); }
 .no-one-body p { margin:0 0 10px; font-size:1rem; }
-.trusted-hotline { font-size:1.25rem; font-weight:700; white-space:nowrap; }
+.helpline-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:16px 0; }
+.helpline-option { min-width:0; padding:22px; border:1px solid var(--line); border-radius:10px; background:white; }
+.helpline-first { background:#f3f6ee; border-color:#96a38d; }
+.helpline-option h3 { font-size:1.25rem; line-height:1.4; margin:0 0 14px; }
+.helpline-intro { font-weight:700; color:var(--teal); }
+.helpline-call { display:flex; align-items:center; justify-content:center; min-height:52px; padding:12px 10px; margin:16px 0 12px; background:var(--teal); color:white; border:1px solid var(--teal); border-radius:8px; font-size:1.125rem; font-weight:700; text-align:center; text-decoration:none; }
+.helpline-call:hover { background:#183c35; text-decoration:underline; }
+.helpline-hours span { color:var(--muted); }
+.helpline-source { display:inline-block; padding:10px 0; font-size:1rem; }
+.no-one-body .helpline-other { margin-top:20px; }
+.helpline-stack { display:grid; align-content:start; gap:20px; min-width:0; }
+.helpline-stack .helpline-option h2 { font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:2rem; margin:0 0 16px; }
+.helpline-stack .helpline-option p { font-size:1.0625rem; }
 .urgent-step { display:flex; gap:14px; background:#fcf2df; border:1px solid #b99657; border-radius:12px; padding:24px; margin:0 0 36px; }
 .urgent-step h2 { font-size:1.25rem; margin:0 0 8px; }
 .urgent-step p { margin:0; max-width:900px; }
@@ -183,7 +195,7 @@ textarea { min-height:164px; font-size:1.125rem; }
 .practice-notes li { margin:10px 0; }
 .practice-quote { font-weight:700; }
 /* The words to notice are marked once the answer is open, so the marks do not give it away. */
-.practice-quote, .practice-item:has(.practice-answer[open]) .practice-mark { background:#fbe9b7; box-shadow:0 2px 0 #b98a24; border-radius:3px; padding:0 2px; }
+.practice-quote, .practice-item:has(.practice-answer[open]) .practice-mark { background:#fbe9b7; text-decoration:underline; text-decoration-color:#b98a24; text-decoration-thickness:2px; border-radius:3px; padding:0 2px; }
 .practice-do { margin:12px 0 4px; }
 .detail-body .practice-do a.help-source { display:inline; min-height:0; padding:0; }
 .practice-next { margin-top:16px; min-width:220px; }
@@ -262,7 +274,8 @@ textarea { min-height:164px; font-size:1.125rem; }
   .practice-panel .button-link { width:100%; }
   .practice-item, .practice-done, .alone-note { padding:20px; }
   .trusted-help { padding:0 18px; }
-  .trusted-routes { grid-template-columns:1fr; }
+  .trusted-routes, .helpline-options { grid-template-columns:1fr; }
+  .helpline-option { padding:16px; }
   .trusted-route { padding:16px; }
   .trusted-help > summary h2 { font-size:1.3125rem; }
   .practice-message { font-size:1.125rem; padding:14px 16px; }
@@ -292,3 +305,12 @@ textarea { min-height:164px; font-size:1.125rem; }
   a { color:black; }
   a[href^="https:"]::after { content:" (" attr(href) ")"; font-size:9pt; overflow-wrap:anywhere; }
 }
+
+/* Short helpline cards keep extra detail one tap away. */
+.helpline-details { border-top:1px solid var(--line); margin-top:16px; }
+.helpline-details > summary { min-height:48px; padding:12px 0; color:var(--teal); font-size:1rem; }
+.helpline-details p { margin:0 0 12px; }
+.helpline-stack .helpline-intro, .helpline-footnote { margin:0; }
+.helpline-stack .hotline-card { background:white; border-color:var(--line); padding:22px; }
+.helpline-stack .hotline-number.helpline-call { color:white; font-size:1.125rem; letter-spacing:normal; margin:16px 0 12px; }
+.helpline-stack .helpline-details .small-note { margin:8px 0; padding:0; border:0; }
