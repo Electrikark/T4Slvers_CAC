@@ -37,6 +37,11 @@ Recovery, learning, and source links also work with JavaScript disabled. The
 checker needs JavaScript. The browser suite covers all five pages and the
 GitHub Pages subpath; the test name retains its earlier OCR label.
 
+Recovery search [loads its local language tools automatically](docs/decisions/automatic-help-search.md).
+Keyword suggestions stay available while the roughly 50 MB download prepares
+and if it fails. Descriptions stay on the device. The language model's benefit
+over keyword search on fresh user descriptions has not yet been established.
+
 ## Clear-action interface
 
 The five pages use the [clear-action design standard](docs/decisions/clear-action-ui.md).
