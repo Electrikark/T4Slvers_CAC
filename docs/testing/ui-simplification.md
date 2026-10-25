@@ -45,11 +45,28 @@ In another terminal:
 node scripts/capture-ui-pass.cjs http://127.0.0.1:8387 after
 ```
 
+## Tutorial illustrations
+
+Three compact drawings now sit beside the steps they explain:
+
+- **Copy the message:** selection handles and a copy symbol show that the first and last words belong in the selection.
+- **Take a screenshot:** a frame keeps the entire made-up message in view.
+- **Review the words:** a side-by-side example highlights a missing “not” and asks the reader to fix the box before checking.
+
+The drawings use HTML text and a small inline SVG, so labels can wrap and enlarge. They use the existing palette, work without scripts, and add no downloads. They are labelled illustrations, with no phone menus or claimed device checks. Actual app-screen pictures and the gate for unchecked phone-screen pictures remain intact.
+
+![Select all the message words](ui-simplification/illustration-copy-message.png)
+
+![Keep the whole message in the screenshot](ui-simplification/illustration-take-screenshot.png)
+
+![Compare every word, including not](ui-simplification/illustration-review-screenshot.png)
+
 ## Validation
 
 - `npm test`: passed, including all 16 how-to honesty and label checks. Assertions tied to removed inline steps now verify their linked destinations. The missing-button sabotage test still rejects a label that exists only in generated help.
 - `npm run check:ocr-assets`: passed, 21 local assets verified.
-- `TFS_TEST_PORT=8393 npm run test:ocr-browser`: 61 passed. This is the same Playwright suite as `npx playwright test`.
+- `TFS_TEST_PORT=8393 npm run test:ocr-browser`: 62 passed. This is the same Playwright suite as `npx playwright test`.
+- The added drawing check covers all three illustrations without scripts, all four widths at 200% text, forced colors and print.
 - Browser coverage includes phone choices across all guides, both iPhone layouts, no storage, stable focus and scroll, no-script fallback, new-tab guide links, unchanged typed-message results, unchanged screenshot review state, all six practice feedback cases, example replacement, keyboard focus, forced colors, reduced motion and print visibility.
 - Visual review covered all six pages at four widths. Text at 200% exposed existing footer and checklist overflow at 320px; both were repaired. Practice feedback has 11.17:1 foreground/background contrast.
 - Review pictures were regenerated through the real screenshot reader with `node scripts/capture-howto.cjs`, then the guide HTML was rebuilt from its generator.

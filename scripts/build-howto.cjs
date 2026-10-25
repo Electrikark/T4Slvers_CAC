@@ -149,6 +149,27 @@ function counts(data, today) {
   return { total, checked };
 }
 
+// Small concept diagrams use real HTML text so it can wrap and enlarge with the page.
+// Phone-screen captures still pass through the separate checked-device gate above.
+function illustration(data, id, pad) {
+  const item = data.illustrations && data.illustrations[id];
+  if (!item) return [];
+  const icon = '<svg class="howto-drawing-icon" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="15" y="6" width="25" height="30" rx="2"/><path d="M8 14H6v28h26v-2M21 15h13M21 22h13M21 29h8"/></svg>';
+  let drawing;
+  if (item.kind === 'selection') {
+    drawing = `<div class="howto-selection"><p class="drawing-label">Message words</p><p class="selected-words"><span>${escape(item.message)}</span></p><div class="drawing-copy">${icon}<span>All the words, ready to copy</span></div></div>`;
+  } else if (item.kind === 'frame') {
+    drawing = `<div class="howto-frame"><p class="drawing-label">Made-up message</p><p>${escape(item.message)}</p><span class="frame-corner frame-top" aria-hidden="true"></span><span class="frame-corner frame-bottom" aria-hidden="true"></span></div>`;
+  } else if (item.kind === 'compare') {
+    drawing = `<div class="howto-compare"><div><p class="drawing-label">Your picture</p><p>${escape(item.before)} <mark>${escape(item.word)}</mark> ${escape(item.after)}</p></div><div><p class="drawing-label">Words the app read</p><p>${escape(item.before)} <span class="missing-word">[missing]</span> ${escape(item.after)}</p></div></div>`;
+  } else {
+    throw new Error('Unknown illustration kind: ' + item.kind);
+  }
+  return [`${pad}<figure class="howto-illustration" data-illustration="${escape(id)}" aria-labelledby="${escape(id)}-drawing-caption">`,
+    `${pad}  <p class="drawing-kicker">Illustration</p>`, `${pad}  ${drawing}`,
+    `${pad}  <figcaption id="${escape(id)}-drawing-caption">${escape(item.caption)}</figcaption>`, `${pad}</figure>`];
+}
+
 function helpBlock(data, today) {
   const pad = '    ';
   const [start, end] = MARK('howto');
@@ -185,6 +206,7 @@ function helpBlock(data, today) {
       const stageId = stage.ids.length > 1 ? 'copy-message' : stage.ids[0];
       lines.push(`${pad}  <section class="howto-stage" aria-labelledby="${stageId}-stage-title">`,
         `${pad}    <h3 id="${stageId}-stage-title"><span class="step-number">${index + 1}</span> ${escape(stage.title)}</h3>`);
+      lines.push(...illustration(data, stageId, pad + '    '));
       for (const id of stage.ids) {
         const guide = data.guides.find(g => g.id === id);
         if (!guide) throw new Error('Unknown guide ' + id);

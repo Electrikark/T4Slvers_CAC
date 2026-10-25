@@ -288,3 +288,47 @@ test('help links also preserve screenshot review and original image text', async
   await expect(page.locator('#ocr-reviewed')).not.toBeChecked();
   await expect(page.locator('#check-button')).toBeDisabled();
 });
+
+test('tutorial drawings stay readable without scripts, with enlarged text and in print', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, reducedMotion: 'reduce' });
+  let page = await context.newPage();
+  await page.goto(TEST_ORIGIN + HELP);
+  let drawings = page.locator('.howto-illustration');
+  await expect(drawings).toHaveCount(3);
+  await expect(page.locator('[data-illustration="review-screenshot"]')).toContainText('Here, the reader missed “not”');
+  await expect(page.locator('#howto-status')).toContainText('0 of 13');
+  for (const drawing of await drawings.all()) await expect(drawing).toBeVisible();
+  await context.close();
+  // Style injection needs scripts enabled; the no-script rendering check above stays separate.
+  page = await browser.newPage({ reducedMotion: 'reduce' });
+  await page.goto(TEST_ORIGIN + HELP);
+  drawings = page.locator('.howto-illustration');
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const size of [18, 36]) {
+      await page.addStyleTag({ content: `html { font-size:${size}px !important; }` });
+      for (const drawing of await drawings.all()) {
+        await expect(drawing).toBeVisible();
+        const box = await drawing.boundingBox();
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(width);
+        expect(await drawing.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    }
+  }
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.addStyleTag({ content: 'html { font-size:18px !important; }' });
+  for (const drawing of await drawings.all()) {
+    await drawing.screenshot({ path: `test-results/ui-pass/illustration-${await drawing.getAttribute('data-illustration')}-390.png` });
+  }
+  for (const media of [{ forcedColors: 'active' }, { forcedColors: 'none', media: 'print' }]) {
+    await page.emulateMedia(media);
+    for (const drawing of await drawings.all()) {
+      await expect(drawing.locator('figcaption')).toBeVisible();
+      await expect(drawing.locator('.drawing-kicker')).toHaveText('Illustration');
+    }
+    await page.locator('[data-illustration="review-screenshot"]').screenshot({ path: `test-results/ui-pass/illustration-review-${media.media || 'forced-colors'}.png` });
+  }
+  await page.close();
+});
