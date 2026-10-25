@@ -3,7 +3,7 @@
 (function (root) {
   'use strict';
   const ACTIONS = {
-    codes: ['Keep the code private', 'Do not send or read out a sign-in code, PIN, or password. Contact the service through its official app or a number you already have.'],
+    codes: ['Keep the code private', 'Do not send or read out a sign-in code, PIN, or password. Contact the company or agency through its official app or a phone number you already know.'],
     gifts: ['Keep gift cards and their codes', 'Do not buy gift cards for this request or share their numbers or codes. Check with the person using a number you already know.'],
     money: ['Pause before paying', 'Do not send money until you check the request through a contact method you already trust. For a family emergency, call the person on their saved number.'],
     device: ['Keep control of your device', 'Do not install remote-access software or let the requester control your device. Use a support contact you already trust.'],
@@ -85,7 +85,7 @@
         : group && group.reasons.length ? null : result.description);
       add(key, reason, words, 'finding:' + index + ':' + finding.ruleId);
     }
-    const limits = ['We cannot verify who sent this message. This check can miss scams.'];
+    const limits = ['We cannot verify who sent this message.', 'This check can miss scams. A result without warning signs does not prove a message is safe.'];
     if (result.claimSource === 'implicit') limits.push('An address points to a listed organization, but the message does not explicitly name it as the sender.');
     for (const check of result.checks) {
       if (check.status === 'SUPPORTS') continue;
@@ -104,10 +104,11 @@
     if (!groups.size) add('contact', 'No warning pattern was found in this text. That does not establish that the message is safe.', null, 'no-pattern');
     const risky = result.requestRisk.flags.length > 0 || result.assessment === 'suspicious';
     return {
+      warning: risky,
       title: matched ? titleForMatch(result) : risky ? 'This message has warning signs' : 'There isn’t enough information',
       label: result.assessment === 'suspicious' ? 'Strong warning' : matched ? 'Written details only' : 'Check before acting',
       groups: [...groups.values()], limits: unique(limits.filter(Boolean)),
-      description: matched ? 'Only the details named below matched reviewed records.' : risky ? 'Check what it asks you to do, then take the protective steps below.' : 'Use another contact method before acting on this message.',
+      description: matched ? 'Only the details named below matched reviewed records.' : risky ? [...groups.values()][0].action : 'Use another contact method before acting on this message.',
       screenshot: result.inputSource === 'screenshot'
     };
   }

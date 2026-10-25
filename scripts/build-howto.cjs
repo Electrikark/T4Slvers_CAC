@@ -72,7 +72,7 @@ function figure(data, key, pad) {
   if (!fs.existsSync(file)) throw new Error('Missing picture file ' + picture.file + ' (run node scripts/capture-howto.cjs)');
   const size = pngSize(file);
   // Pictures are shown at most half size so text in them matches the page's own text size.
-  return `${pad}<figure class="howto-figure"><img src="${escape(picture.file)}" width="${Math.round(size.width / 2)}" height="${Math.round(size.height / 2)}" loading="lazy" alt="${escape(picture.alt)}"></figure>`;
+  return `${pad}<figure class="howto-figure"><a class="enlarge-picture" href="${escape(picture.file)}" target="_blank" rel="noopener" aria-label="Enlarge tutorial picture (new tab)"><img src="${escape(picture.file)}" width="${Math.round(size.width / 2)}" height="${Math.round(size.height / 2)}" loading="lazy" alt="${escape(picture.alt)}"></a><figcaption><a href="${escape(picture.file)}" target="_blank" rel="noopener">Enlarge picture (new tab)</a></figcaption></figure>`;
 }
 
 function stepList(steps, data, pad, { pictures }) {
@@ -258,7 +258,7 @@ function practiceBlock(data, pad, today) {
     `${pad}  <section id="practice-screenshot" class="howto-guide" aria-labelledby="practice-screenshot-title">`,
     `${pad}    <h3 id="practice-screenshot-title">Practice with a screenshot</h3>`,
     `${pad}    <p>This picture shows a made-up scam message. Save it, then choose it in the checker as if it were your own screenshot.</p>`,
-    `${pad}    <figure class="howto-figure practice-picture"><img src="${escape(shot.file)}" width="${Math.round(size.width / 2)}" height="${Math.round(size.height / 2)}" alt="${escape(shot.alt)}"></figure>`,
+    `${pad}    <figure class="howto-figure practice-picture"><img src="${escape(shot.file)}" width="${Math.round(size.width / 2)}" height="${Math.round(size.height / 2)}" alt="${escape(shot.alt)}"><figcaption><a href="${escape(shot.file)}" target="_blank" rel="noopener">Enlarge practice picture (new tab)</a></figcaption></figure>`,
     `${pad}    <p class="howto-choose">1. Save the picture.</p>`,
     `${pad}    <div class="howto-devices">`,
     ...shot.devices.flatMap(dev => device('practice-save', dev, data, pad + '      ', { prefix: '', today })),

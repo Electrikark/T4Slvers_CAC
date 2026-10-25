@@ -7,6 +7,7 @@ const MAX_CHARS = window.TFS.MAX_CHARS;
 
 let chosenChannel = null;
 let shownResult = null;
+const annotationDetails = new Map();
 
 // The label line says in plain words what the title means and does not mean.
 const RESULT_STYLES = {
@@ -162,9 +163,59 @@ function signalItem(flag, result) {
 // The person's own message with each finding marked. Text nodes only: pasted markup stays text.
 function showAnnotations(text, result) {
   const model = window.TFS.annotate(text, result, window.TFS_STORE);
-  window.TFS.renderAnnotations(document, model, byId('annotated'), byId('annotation-notes'));
-  // The main warning already sits under the result, so it is not repeated here.
-  byId('annotated-section').hidden = model.notes.length === 0;
+  const message = byId('annotated');
+  const notes = byId('annotation-notes');
+  message.replaceChildren();
+  notes.replaceChildren();
+  annotationDetails.clear();
+  const controls = [];
+  const relevant = note => note.kind !== 'list' && !note.ruleId.startsWith('contact:');
+  const used = new Set();
+  model.segments.forEach((segment, index) => {
+    const highlight = segment.highlight === null ? null : model.highlights[segment.highlight];
+    const linked = highlight ? model.notes.filter(note => highlight.notes.includes(note.n) && relevant(note)) : [];
+    if (!linked.length) { message.append(document.createTextNode(segment.text)); return; }
+    linked.forEach(note => used.add(note.n));
+    const button = textElement('button', segment.text, 'ann ann-' + highlight.kind);
+    button.type = 'button';
+    button.id = 'message-mark-' + index;
+    button.setAttribute('aria-label', 'Explain highlighted words: ' + segment.text);
+    button.setAttribute('aria-controls', linked.map(note => 'annotation-' + note.id).join(' '));
+    button.setAttribute('aria-expanded', 'false');
+    button.dataset.rules = linked.map(note => note.ruleId).join(' ');
+    button.addEventListener('click', () => {
+      linked.forEach(note => { annotationDetails.get(note.id).open = true; });
+      annotationDetails.get(linked[0].id).querySelector('summary').focus();
+    });
+    controls.push({ button, linked });
+    message.append(button);
+  });
+  // Keep every evidence note available, including contact gaps that must not look like scam proof.
+  model.notes.forEach(note => {
+    const detail = document.createElement('details');
+    detail.id = 'annotation-' + note.id;
+    annotationDetails.set(note.id, detail);
+    detail.className = 'annotation-explanation';
+    const words = model.highlights.filter(h => h.notes.includes(note.n)).map(h => h.text).join(' / ');
+    const heading = textElement('summary', (relevant(note) ? 'Why flag ' : 'What did we find about ') + '“' + words + '”?');
+    detail.append(heading, textElement('p', note.text));
+    const origin = controls.find(control => control.linked.some(n => n.n === note.n));
+    if (origin) {
+      const back = textElement('button', 'Back to highlighted words', 'text-button');
+      back.type = 'button';
+      back.addEventListener('click', () => origin.button.focus());
+      detail.append(back);
+    }
+    detail.addEventListener('toggle', () => controls.forEach(control => {
+      control.button.setAttribute('aria-expanded', String(control.linked.every(n => annotationDetails.get(n.id)?.open)));
+    }));
+    notes.append(detail);
+  });
+  byId('annotation-hint').textContent = used.size
+    ? 'Select highlighted words to open their explanation below. Unmarked words are not proof of safety.'
+    : 'No specific warning phrase was marked. This does not prove the message is safe.';
+  byId('annotated-section').hidden = false;
+  byId('annotation-explanations').hidden = model.notes.length === 0;
   return model;
 }
 
@@ -181,8 +232,14 @@ function showWhy(result, model, text) {
       const words = textElement('p', 'In your message: “' + item.words + '”', 'why-words');
       const note = model && model.notes.find(n => n.ruleId === item.key);
       if (note) {
-        const mark = textElement('a', 'See mark ' + note.n, 'why-mark');
+        const mark = textElement('a', 'Open this explanation', 'why-mark');
         mark.href = '#annotation-' + note.id;
+        mark.addEventListener('click', event => {
+          event.preventDefault();
+          const detail = annotationDetails.get(note.id);
+          detail.open = true;
+          detail.querySelector('summary').focus();
+        });
         words.append(' ', mark);
       }
       li.append(words);
@@ -211,7 +268,9 @@ function showResult(result, text) {
   const risk = result.requestRisk.level;
   const view = window.TfsResultView.build(result, text);
   byId('result-banner').className = `result-banner ${style.css}${risk !== 'none' ? ' risky' : ''}`;
-  byId('state-symbol').textContent = style.symbol;
+  byId('result-banner').classList.toggle('warning-result', view.warning);
+  byId('state-symbol').textContent = view.warning ? '⚠' : style.symbol;
+  byId('result-first-step').hidden = !view.warning;
   // "Suspicious" already is the strong warning; only an unresolved result needs the risk named.
   byId('state-label').textContent = view.label;
   byId('result-title').textContent = view.title;
@@ -244,10 +303,10 @@ function showResult(result, text) {
   byId('next-list').replaceChildren(...result.nextSteps.map(step => textElement('li', step)));
   showWhy(result, showAnnotations(text, result), text);
   // Each new result starts with its full details folded away.
+  byId('result-detail-limits').open = false;
   byId('evidence-details').open = false;
   byId('followup-details').open = false;
   byId('why-section').open = false;
-  byId('annotated-section').open = false;
   byId('self-check-details').open = false;
   // The protective steps stay visible; extra help starts folded for each new result.
   byId('trusted-help').open = false;
@@ -260,10 +319,12 @@ function showResult(result, text) {
 }
 
 function clearResult() {
+  annotationDetails.clear();
   for (const id of ['action-groups', 'visible-limits', 'why-list', 'result-title', 'result-scope', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
     byId(id).replaceChildren();
   }
   byId('annotated-section').hidden = true;
+  byId('annotation-explanations').hidden = true;
   byId('why-section').hidden = true;
   byId('why-draft').hidden = true;
   byId('request-status').textContent = '';

@@ -39,6 +39,19 @@ window.TFS_GUIDE = {
 
   scams: [
     {
+      id: 'government', title: 'IRS and government impersonation',
+      hook: 'Someone says they are from Social Security, the IRS or Medicare, and threatens arrest unless you act now.',
+      example: { text: 'Social Security Administration: Your benefits are suspended. Call (202) 555-0199 today or a warrant will be issued for your arrest.', channel: 'unknown' },
+      why: 'Threats are meant to frighten you into acting before you can think or ask anyone.',
+      signs: [1, 2, 4],
+      steps: [
+        { text: 'Scammers use real agency names, like Social Security, the IRS or Medicare. A real name does not prove who is calling.', source: 'ftcAvoid' },
+        { text: 'Do not give personal or financial information to someone who contacted you out of the blue.', source: 'ftcAvoid' },
+        { text: 'Hang up. If you are worried, call the agency using the number on its official website or on a letter you already have.', source: null }
+      ],
+      recover: 'identity'
+    },
+    {
       id: 'family', title: 'A grandchild or relative in trouble',
       hook: 'A call or text from “your grandchild” who needs money fast, and asks you not to tell anyone.',
       example: { text: 'Grandma, please buy 3 Apple gift cards and send me the codes.', channel: 'text' },
@@ -116,19 +129,6 @@ window.TFS_GUIDE = {
       recover: 'money'
     },
     {
-      id: 'government', title: 'A call from “the government”',
-      hook: 'Someone says they are from Social Security, the IRS or Medicare, and threatens arrest unless you act now.',
-      example: { text: 'Social Security Administration: Your benefits are suspended. Call (202) 555-0199 today or a warrant will be issued for your arrest.', channel: 'unknown' },
-      why: 'Threats are meant to frighten you into acting before you can think or ask anyone.',
-      signs: [1, 2, 4],
-      steps: [
-        { text: 'Scammers use real agency names, like Social Security, the IRS or Medicare. A real name does not prove who is calling.', source: 'ftcAvoid' },
-        { text: 'Do not give personal or financial information to someone who contacted you out of the blue.', source: 'ftcAvoid' },
-        { text: 'Hang up. If you are worried, call the agency using the number on its official website or on a letter you already have.', source: null }
-      ],
-      recover: 'identity'
-    },
-    {
       id: 'prize', title: '“You won! Just pay a fee.”',
       hook: 'A call or message says you won a lottery, sweepstakes or prize, but you must pay first to collect it.',
       example: { text: 'Congratulations! You won $850,000 in the National Sweepstakes. Wire the $199 processing fee by Western Union today to claim it.', channel: 'unknown' },
@@ -159,13 +159,13 @@ window.TFS_GUIDE = {
   practice: [
     {
       id: 'practice-1', from: 'A text message', scam: true,
-      text: 'Grandpa, it’s me. I got in a car accident and need $2,000 for bail right now. Please don’t tell Mom.',
+      text: 'Medicare: Your card will be cancelled today. Reply with your Medicare number and date of birth to keep your benefits.',
       marks: [
-        { words: 'Grandpa, it’s me.', note: 'It says “it’s me” instead of a name. Anyone can write that.' },
-        { words: 'right now', note: 'A rush, so you do not stop to check.' },
-        { words: 'Please don’t tell Mom.', note: 'Keeping it secret stops you from checking with the family.' }
+        { words: 'Medicare:', note: 'A real agency’s name can be copied by anyone.' },
+        { words: 'cancelled today', note: 'A threat with a deadline.' },
+        { words: 'Reply with your Medicare number and date of birth', note: 'A request for personal details you did not expect.' }
       ],
-      todo: { text: 'Call your grandchild, or their parent, on the number you already have.', source: 'ftcFamily' }
+      todo: { text: 'Do not reply. If you are worried, call Medicare at 1-800-MEDICARE (1-800-633-4227).', source: null }
     },
     {
       id: 'practice-2', from: 'A text message', scam: false,
@@ -184,13 +184,13 @@ window.TFS_GUIDE = {
     },
     {
       id: 'practice-4', from: 'A text message', scam: true,
-      text: 'Medicare: Your card will be cancelled today. Reply with your Medicare number and date of birth to keep your benefits.',
+      text: 'Grandpa, it’s me. I got in a car accident and need $2,000 for bail right now. Please don’t tell Mom.',
       marks: [
-        { words: 'Medicare:', note: 'A real agency’s name can be copied by anyone.' },
-        { words: 'cancelled today', note: 'A threat with a deadline.' },
-        { words: 'Reply with your Medicare number and date of birth', note: 'A request for personal details you did not expect.' }
+        { words: 'Grandpa, it’s me.', note: 'It says “it’s me” instead of a name. Anyone can write that.' },
+        { words: 'right now', note: 'A rush, so you do not stop to check.' },
+        { words: 'Please don’t tell Mom.', note: 'Keeping it secret stops you from checking with the family.' }
       ],
-      todo: { text: 'Do not reply. If you are worried, call Medicare at 1-800-MEDICARE (1-800-633-4227).', source: null }
+      todo: { text: 'Call your grandchild, or their parent, on the number you already have.', source: 'ftcFamily' }
     },
     {
       id: 'practice-5', from: 'A text from your daughter’s usual number', scam: false,

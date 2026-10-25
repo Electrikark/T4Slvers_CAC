@@ -18,7 +18,7 @@ http.createServer((request, response) => {
   name = name.startsWith(prefix) ? name.slice(prefix.length) : name.slice(1);
   if (!name) name = 'index.html';
   if (name.includes('\0') || name.split('/').some(part => part.startsWith('.')) ||
-      !(/^(index|check|recover|learn|about|help)\.html$/.test(name) || name === 'assets/identity/pause-message.svg' || /^assets\/how-to\/[\w-]+\.png$/.test(name) || /^(css|js|data|vendor|tests)\//.test(name)) || /\.cjs$/.test(name) ||
+      !(/^(index|check|recover|learn|about|help)\.html$/.test(name) || ['assets/identity/pause-message.svg', 'assets/identity/guide-symbols.svg'].includes(name) || /^assets\/how-to\/[\w-]+\.png$/.test(name) || /^(css|js|data|vendor|tests)\//.test(name)) || /\.cjs$/.test(name) ||
       // The embedding runtime's loader is the only .mjs file served.
       (/\.mjs$/.test(name) && !/^vendor\/minilm\/lib\/[\w.-]+\.mjs$/.test(name))) {
     response.writeHead(404).end(); return;

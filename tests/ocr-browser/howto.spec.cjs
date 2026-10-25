@@ -332,3 +332,20 @@ test('tutorial drawings stay readable without scripts, with enlarged text and in
   }
   await page.close();
 });
+
+
+test('tutorial pictures open larger and screenshot action requests the native picker', async ({ page }) => {
+  await page.goto(TEST_ORIGIN + HELP);
+  const link = page.locator('.enlarge-picture').first();
+  const popupEvent = page.waitForEvent('popup');
+  await link.click();
+  const popup = await popupEvent;
+  await popup.waitForLoadState();
+  expect(popup.url()).toContain('/assets/how-to/review-');
+  await popup.close();
+  await page.goto(TEST_ORIGIN + '/T4Slvers_CAC/check.html');
+  const chooserEvent = page.waitForEvent('filechooser');
+  await page.locator('#ocr-button').click();
+  const chooser = await chooserEvent;
+  expect(chooser.isMultiple()).toBe(false);
+});

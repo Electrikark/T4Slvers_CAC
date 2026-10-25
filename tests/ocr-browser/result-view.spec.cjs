@@ -10,6 +10,7 @@ test('With all panels closed, code and payment findings retain their actions and
   await check(page, 'Chase: Please send us your login code. Buy gift cards and send me the codes.');
   await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
   await expect(page.locator('#result-scope')).toBeVisible();
+  await expect(page.locator('#result-description')).toContainText('Do not send or read out');
   await expect(page.locator('#result-scope')).toContainText('cannot verify who sent');
   await expect(page.locator('[data-action="codes"]')).toContainText('Do not send or read out');
   await expect(page.locator('[data-action="gifts"]')).toContainText('Do not buy gift cards');
@@ -53,6 +54,10 @@ test('A fictional reviewed record yields an exact website label, with no sender 
 test('Explanation controls work by keyboard and every new check folds them again', async ({page}) => {
   await check(page, 'Grandma, please buy 3 Apple gift cards and send me the codes.');
   const why = page.locator('#why-section > summary');
+  await page.locator('#result-detail-limits > summary').focus();
+  await expect(page.locator('#result-detail-limits > summary')).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#visible-limits')).toBeVisible();
   await page.keyboard.press('Tab');
   await expect(why).toBeFocused();
   await page.keyboard.press('Enter');
@@ -77,4 +82,54 @@ test('A recovery first step is readable with its full plan closed', async ({page
   await expect(page.locator('#giftcard .topic-first')).toContainText('Call the gift card company');
   await expect(page.locator('#giftcard > .detail-body')).toBeHidden();
   await expect(page.locator('.urgent-step')).toBeVisible();
+});
+
+
+test('warning signs stay amber even when sender evidence is incomplete', async ({ page }) => {
+  await check(page, 'Please act now. Keep this secret from your family.');
+  await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
+  await expect(page.locator('#result-banner')).toHaveClass(/warning-result/);
+  await expect(page.locator('#state-symbol')).toHaveText('⚠');
+  await expect(page.locator('#result-first-step')).toBeVisible();
+  await expect(page.locator('#result-first-step')).toContainText('Do not click, reply, or call');
+  await expect(page.locator('#action-groups')).toContainText('keep it secret');
+  expect(await page.locator('#result-banner').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(255, 240, 204)');
+  await check(page, 'See you at lunch on Sunday!');
+  await expect(page.locator('#result-banner')).not.toHaveClass(/warning-result/);
+  await expect(page.locator('#result-first-step')).toBeHidden();
+});
+
+test('message highlights preserve text and open every linked reason by keyboard', async ({ page }) => {
+  const text = 'Grandma, please buy 3 Apple gift cards and send me the codes.\nPlease act now. Keep this secret.';
+  await check(page, text);
+  await expect(page.locator('#annotated')).toHaveText(text, { useInnerText: false });
+  expect(await page.locator('#annotated').textContent()).toBe(text);
+  expect(await page.locator('#result-banner').evaluate(el => el.nextElementSibling.id)).toBe('annotated-section');
+  const mark = page.locator('#annotated button').first();
+  const ids = (await mark.getAttribute('aria-controls')).split(' ');
+  await mark.focus();
+  await page.keyboard.press('Enter');
+  for (const id of ids) await expect(page.locator('#' + id)).toHaveAttribute('open', '');
+  await expect(page.locator('#' + ids[0] + ' > summary')).toBeFocused();
+  await page.locator('#' + ids[0]).getByRole('button', { name:'Back to highlighted words' }).click();
+  await expect(mark).toBeFocused();
+  await page.locator('#back').click();
+  await page.locator('#check-button').click();
+  await expect(page.locator('#annotation-notes details[open]')).toHaveCount(0);
+  for (const width of [320,390,1280]) {
+    await page.setViewportSize({width,height:900});
+    await page.addStyleTag({content:'html { font-size:36px !important; }'});
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  }
+});
+
+test('unmarked text and pasted markup never become safety claims or active message links', async ({ page }) => {
+  const text = '<img src=x onerror="alert(1)">\nPlease act now. Keep this secret. https://example.invalid';
+  await check(page, text);
+  expect(await page.locator('#annotated').textContent()).toBe(text);
+  await expect(page.locator('#annotated img, #annotated a, #annotated script')).toHaveCount(0);
+  await expect(page.locator('#annotation-hint')).toContainText('not proof of safety');
+  await check(page, 'See you at lunch on Sunday!');
+  await expect(page.locator('#annotated button')).toHaveCount(0);
+  await expect(page.locator('#annotation-hint')).toContainText('does not prove');
 });

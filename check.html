@@ -42,11 +42,17 @@
       <span class="brand-name">Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
-        <a href="index.html">Home</a>
-        <a href="check.html" aria-current="page">Check a message</a>
-        <a href="recover.html">Get help after a scam</a>
-        <a href="learn.html">Learn the signs</a>
-        <a href="help.html">How to use</a>
+      <a href="check.html" aria-current="page">Check</a>
+      <a href="recover.html">Get help</a>
+      <details class="site-menu">
+        <summary>Menu</summary>
+        <div class="menu-links">
+          <a href="index.html">Home</a>
+          <a href="learn.html">Learn the signs</a>
+          <a href="help.html">How to use</a>
+          <a href="about.html">About &amp; privacy</a>
+        </div>
+      </details>
     </nav>
   </header>
 
@@ -54,9 +60,8 @@
     <noscript><p class="error">Turn on JavaScript to use this local prototype.</p></noscript>
     <section id="home" class="checker-layout" aria-labelledby="home-title">
       <div class="page-heading checker-heading">
-          <h1 id="home-title" tabindex="-1">Let’s look at it together.</h1>
-        <p class="lead">Check a text, email, or screenshot. Find a next step you can take.</p>
-        <p class="scope-note">This check can miss scams. It cannot confirm the sender.</p>
+          <h1 id="home-title" tabindex="-1">Check a message</h1>
+        <p class="entry-instruction">Paste the text or email you are unsure about. You can also upload a screenshot.</p>
       </div>
       <div class="submission-card">
         <form id="submission-form" novalidate>
@@ -114,7 +119,7 @@
           <p id="example-loaded" class="example-loaded" hidden></p>
           <p id="error" class="error" role="alert"></p>
           <button id="check-button" class="primary full" type="submit" aria-describedby="example-loaded">Check this message</button>
-          <p class="form-footnote">Message checks run on this device. Your text is not uploaded.</p>
+          <p class="form-footnote">Your text stays on this device. This check can miss scams and cannot confirm the sender.</p>
         </form>
       </div>
     </section>
@@ -128,19 +133,29 @@
         <div>
           <p id="state-label" class="state-label"></p>
           <h1 id="result-title" tabindex="-1"></h1>
+          <p id="result-first-step" hidden>Do not click, reply, or call any number in the message. Use contact details you already trust.</p>
           <p id="result-description"></p>
           <p id="result-scope" class="result-scope"></p>
         </div>
       </div>
+      <section id="annotated-section" class="annotated" aria-labelledby="annotated-title" hidden>
+        <h2 id="annotated-title">Words behind this result</h2>
+        <p id="annotation-hint" class="annotated-key">Select highlighted words to open their explanation below. Unmarked words are not proof of safety.</p>
+        <p id="annotated" class="annotated-message" aria-describedby="annotation-hint"></p>
+      </section>
       <section id="action-note" class="action-note" aria-labelledby="action-title">
         <h2 id="action-title">What to do next</h2>
         <p id="action-lead" hidden></p>
         <ol id="action-groups" class="action-groups"></ol>
       </section>
-      <aside class="result-limits" aria-labelledby="limits-title">
-        <h2 id="limits-title">What remains unknown</h2>
+      <section id="annotation-explanations" aria-labelledby="annotation-explanations-title" hidden>
+        <h2 id="annotation-explanations-title">Explain the marked words</h2>
+        <div id="annotation-notes" class="annotation-notes"></div>
+      </section>
+      <details id="result-detail-limits" class="result-limits">
+        <summary id="limits-title">What this check could not verify</summary>
         <ul id="visible-limits"></ul>
-      </aside>
+      </details>
       <details id="why-section" class="why" hidden>
         <summary id="why-title">Why are these behaviors risky?</summary>
         <p id="why-draft" class="help-draft" hidden>Draft: these explanations are waiting for a person to check them against their sources.</p>
@@ -217,12 +232,6 @@
         <ol id="next-list"></ol>
       </details>
       <aside class="recovery-link"><strong>Already sent money or shared information?</strong><a href="recover.html">Find steps to take now</a></aside>
-      <details id="annotated-section" class="annotated evidence-details" hidden>
-        <summary id="annotated-title">Where did you find this in my message?</summary>
-        <p class="annotated-key">Marked words are numbered. Each number has a note below. Press Tab to move between marks.</p>
-        <p id="annotated" class="annotated-message"></p>
-        <ol id="annotation-notes" class="annotation-notes"></ol>
-      </details>
       <details id="evidence-details" class="evidence-details">
         <summary>What did the check look at?</summary>
         <div class="evidence">
@@ -299,7 +308,7 @@
   </main>
   <footer class="wrap site-footer">
     <div><a class="footer-brand" href="index.html">Safety4Seniors</a><p>A little clarity, before you click.</p></div>
-    <div class="footer-links"><a href="about.html">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
+    <div class="footer-links"><a href="https://pranilraichura.com/tech4silvers/" target="_blank" rel="noopener noreferrer">Tech4Silvers workshops (new tab)</a><a href="about.html">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
     <p class="footer-note">A Tech4All project · Workshop prototype · U.S. help resources</p>
   </footer>
 </body>
