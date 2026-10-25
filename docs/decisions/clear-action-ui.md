@@ -42,8 +42,8 @@ It does not decide, mutate, or replace the assessment, evidence, or trace.
 
 The home page offers checking, recovery, and learning. Recovery keeps urgent
 payment guidance visible, shows each topic's brief action in its closed row,
-and retains full source-linked steps and six payment routes. The optional
-meaning-search download is folded; keyword search stays available at once.
+and retains full source-linked steps and six payment routes. Language search
+loads automatically; keyword search stays available at once while it prepares.
 Learning keeps warning signs and protective steps together, with practice beside
 them on desktop and the longer guide below. About shows capabilities, limits, and local processing
 first, followed by optional background.

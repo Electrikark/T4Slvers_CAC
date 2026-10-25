@@ -139,9 +139,6 @@ textarea { min-height:164px; font-size:1.125rem; }
 .payment-routes summary { font-size:1.0625rem; min-height:56px; padding:14px 0; }
 .help-form { margin:0 0 20px; }
 .help-form .hint { margin:4px 0; }
-.smart-search { margin-top:16px; padding-top:14px; border-top:1px solid var(--line); }
-.smart-search button { display:block; width:100%; min-height:48px; text-align:center; }
-.smart-search-note { display:block; font-weight:400; font-size:0.95em; }
 .hotline-card { background:#eaf0e3; border:1px solid #b7c6a9; border-radius:14px; padding:28px; }
 .hotline-card .task-icon { font-size:1.6rem; background:#fff; margin-bottom:18px; }
 .hotline-card .eyebrow { margin-bottom:12px; }
