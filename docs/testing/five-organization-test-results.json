@@ -1,7 +1,7 @@
 {
-  "referenceDate": "2026-10-18",
+  "referenceDate": "2026-10-24",
   "timezone": "America/Los_Angeles",
-  "expiresAfter": "2027-01-16",
+  "expiresAfter": "2027-01-22",
   "expirySemantics": "reviewDue is the last eligible date; excluded the following day",
   "scenarioOnly": true,
   "checks": 36,
@@ -43,7 +43,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -63,7 +64,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -83,7 +85,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -122,7 +125,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Wells Fargo using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -142,7 +146,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Wells Fargo using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -162,7 +167,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Wells Fargo using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -201,7 +207,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact USPS using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -221,7 +228,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact USPS using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -241,7 +249,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact USPS using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -279,7 +288,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Amazon using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -299,7 +309,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Amazon using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -319,7 +330,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Amazon using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -358,7 +370,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Social Security Administration using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -378,7 +391,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Social Security Administration using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     },
@@ -398,7 +412,8 @@
       "websiteShown": false,
       "nextSteps": [
         "Contact Social Security Administration using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type a website address you already know, or use their official app.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "passed": true
     }
@@ -545,7 +560,7 @@
       "passed": true
     },
     {
-      "id": "actual-store-remains-draft",
+      "id": "actual-store-is-reviewed",
       "passed": true
     }
   ],
@@ -583,39 +598,40 @@
           "status": "SUPPORTS",
           "code": "domain_official",
           "detail": "chase.com matches a website address on file for Chase. The page, redirects, and sender have not been checked.",
-          "source": "Local list: Chase → chase.com (list version 2026-10-18-five-org-draft). Review status: Human review pending",
+          "source": "Local list: Chase → chase.com (list version 2026-10-24-five-org-reviewed). Review status: 2 of 2 contacts reviewed by Test scenario only; not a human approval",
           "target": "chase.com"
         }
       ],
       "nextSteps": [
         "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
         "If you need their website, type chase.com yourself instead of tapping a link.",
-        "If you already shared information or paid, call your bank right away and ask a trusted person for help."
+        "If you already shared information or paid, call your bank right away and ask a trusted person for help.",
+        "You can report it: forward a fake text to 7726 (SPAM), and report fraud at reportfraud.ftc.gov.",
+        "It’s fine to ask someone you trust, such as a family member, friend or caregiver, to look at it with you."
       ],
       "meaning": "A contact detail matches our stored list, but that cannot cancel this warning. Real addresses can be copied into a fake message. Check independently before acting."
     },
     "actualStore": {
       "message": "Chase: Information is available at https://chase.com.",
-      "assessment": "insufficient_evidence",
+      "assessment": "details_match",
       "trace": {
-        "rules": [],
-        "blockedBy": [
-          "NO_VERIFIED_CONTACT",
-          "UNRESOLVED_OR_OUT_OF_SCOPE_CONTACT"
-        ]
+        "rules": [
+          "DM_ALL_CONDITIONS"
+        ],
+        "blockedBy": []
       },
       "checks": [
         {
-          "status": "UNKNOWN",
-          "code": "reference_needs_review",
-          "detail": "chase.com is listed for Chase, but its source record still needs review. We cannot count it as a match.",
-          "source": "Local list: Chase → chase.com (list version 2026-10-18-five-org-draft). Review status: Human review pending",
+          "status": "SUPPORTS",
+          "code": "domain_official",
+          "detail": "chase.com matches a website address on file for Chase. The page, redirects, and sender have not been checked.",
+          "source": "Local list: Chase → chase.com (list version 2026-10-24-five-org-reviewed). Review status: 2 of 2 contacts reviewed by Naman Raichura",
           "target": "chase.com"
         }
       ],
       "nextSteps": [
         "Contact Chase using a number you already trust, such as the one on your card, bill or statement.",
-        "If you need their website, type a website address you already know, or use their official app."
+        "If you need their website, type chase.com yourself instead of tapping a link."
       ]
     }
   }

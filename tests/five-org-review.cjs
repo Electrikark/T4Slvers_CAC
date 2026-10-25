@@ -1,4 +1,4 @@
-// Real-source data stays draft. Approved/expired/rejected copies are test scenarios only.
+// Approved/expired/rejected copies are test scenarios; the real five-organization data is reviewed.
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
@@ -97,18 +97,28 @@ for (const row of review.organizations) {
     assert.ok(!result.nextSteps.join(' ').includes(row.domain));
   });
 }
-check('actual-store-remains-draft', () => {
-  assert.equal(context.TFS.buildTrustedView(context.TFS_STORE, day).trusted.length, 0);
+/* The five organizations are now reviewed in data/store.js by one named volunteer,
+   under the dated single-reviewer exception in RELEASE.md. This check holds the real
+   file to the same evidence the scenarios above assume: a named reviewer, a source page
+   per contact, dates that agree with docs/testing/five-organization-review.json, and a
+   90-day window. */
+check('actual-store-is-reviewed', () => {
+  const trusted = context.TFS.buildTrustedView(context.TFS_STORE, day).trusted;
+  assert.equal(trusted.length, 9, 'nine reviewed contacts across the five organizations');
+  assert.ok(review.reviewer && !/REVIEWER(?:_\d+)?_NAME/.test(review.reviewer), 'a named reviewer');
   for (const row of review.organizations) {
     const org = context.TFS_STORE.orgs.find(o => o.id === row.id);
-    assert.ok(org.contacts.every(r => r.status === 'draft' && r.sourceUrl && r.reviewedBy === review.reviewer));
+    assert.ok(org.contacts.every(r => r.status === 'reviewed' && r.sourceUrl &&
+      r.reviewedBy === review.reviewer));
     assert.ok(org.contacts.every(r => r.checkedOn === day && r.reviewDue === review.reviewDue));
+    // The contacts carry their own review; no organization-wide shortcut is used.
     assert.equal(org.humanReview, undefined);
+    assert.equal(org.humanReviewDraft, undefined, 'a reviewed organization must not still claim review is pending');
   }
   assert.equal((Date.parse(review.reviewDue) - Date.parse(day)) / 86400000, 90);
   const message = 'Chase: Information is available at https://chase.com.';
   const actual = run(message, context.TFS_STORE);
-  assert.equal(actual.assessment, 'insufficient_evidence', 'actual draft is not an approval');
+  assert.equal(actual.assessment, 'details_match', 'reviewed records support a match');
   chase.actualStore = {message, assessment:actual.assessment, trace:actual.trace,
     checks:actual.checks, nextSteps:actual.nextSteps};
 });

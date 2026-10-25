@@ -1,11 +1,15 @@
-# Decision: smarter search as an opt-in button
+# Decision: smart search mode, turned on by the reader
 
-Status: **done on `final-site`, Oct 23, 2026. Chosen by Naman.**
+**Historical:** superseded on October 24, 2026 by
+[automatic help search](automatic-help-search.md), at Naman's request. The
+activation button is removed; the implementation below records the earlier state.
+
+Status: **done on `final-site`, Oct 23, 2026. Chosen by Naman.** Reworded as a mode the reader
+turns on, no longer labelled experimental, Oct 23, 2026. Chosen by Naman.
 
 ## What changed
 
-The recovery page's search now has a button: **"Try smarter search (experimental · about 50 MB
-download)"**. Pressing it downloads the all-MiniLM-L6-v2 model from this site (`vendor/minilm`,
+The recovery page's search now has a button: **"Turn on smart search mode (about 50 MB download)"**. Pressing it downloads the all-MiniLM-L6-v2 model from this site (`vendor/minilm`,
 about 51 MB) and uses the ML search (`mlSearch` in `js/help-search.js`) for the rest of that visit.
 Nothing is stored, so the next visit starts with keyword search again.
 
@@ -28,11 +32,12 @@ on the card examples, and 24/28 vs 23/28 on the challenge set. That gap is too s
 exposed, to be evidence.
 
 The download is the other reason. About 50 MB is a real cost for someone on a phone right after a
-scam. So the reader chooses it, and the button says the size and that it is experimental.
+scam. So the reader chooses it, and the button says the size.
 
 ## What this does not change
 
 - `js/help-search.js`, its settings, `experiments/help-search/` and `help-search.md` are untouched,
   so the freeze for the volunteer test still holds.
-- When the ML search is mentioned anywhere, it must be described as experimental and not yet tested
-  on fresh descriptions.
+- On the page it is called "smart search mode", a mode the reader turns on for that visit. It is
+  not labelled experimental there. In project documents it is still described as not yet tested on
+  fresh descriptions, since that test has not been run.

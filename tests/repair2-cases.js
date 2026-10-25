@@ -133,45 +133,47 @@
   });
 
   add('Repair B3: why a listed record cannot count', function (t) {
+    // Citi is on the real list and still unreviewed, so these cases control the review
+    // state themselves. Chase, Wells Fargo, USPS, SSA and Amazon now carry real reviews.
     var DAY = '2026-10-12';
     var REVIEW = { reviewer: 'Fictional test reviewer', date: '2026-10-01', reviewDue: '2026-12-31', sourceUrl: 'https://example.invalid/review' };
     function storeWith(org) { var s = copy(window.TFS_STORE); s.orgs = s.orgs.map(function (o) { return o.id === org.id ? org : o; }); return s; }
     function detailFor(r, host) { return r.checks.filter(function (c) { return c.target === host; })[0]; }
     t.test('B3a An unreviewed record still says it needs review', function () {
-      var r = analyze(t, 'Chase: see https://chase.com', null, { today: DAY });
-      t.assert(detailFor(r, 'chase.com').detail.indexOf('still needs review') >= 0, 'unreviewed wording');
+      var r = analyze(t, 'Citi: see https://citi.com', null, { today: DAY });
+      t.assert(detailFor(r, 'citi.com').detail.indexOf('still needs review') >= 0, 'unreviewed wording');
     });
     t.test('B3b An expired review says so', function () {
-      var org = orgCopy('chase');
+      var org = orgCopy('citi');
       org.humanReview = copy(REVIEW); org.humanReview.reviewDue = '2026-10-11';
       (org.sources || []).forEach(function (s) { s.check = 'Reviewed'; });
-      var r = analyze(t, 'Chase: see https://chase.com', storeWith(org), { today: DAY });
-      var c = detailFor(r, 'chase.com');
+      var r = analyze(t, 'Citi: see https://citi.com', storeWith(org), { today: DAY });
+      var c = detailFor(r, 'citi.com');
       t.same(c.code, 'reference_needs_review', 'code unchanged');
       t.assert(c.detail.indexOf('review') >= 0 && c.detail.indexOf('expired') >= 0, 'expired wording: ' + c.detail);
       t.assert(c.detail.indexOf('still needs review') < 0, 'expired record called unreviewed');
     });
     t.test('B3c A conflict says two organizations list it', function () {
-      var a = orgCopy('chase'), b = orgCopy('bankofamerica');
+      var a = orgCopy('citi'), b = orgCopy('bankofamerica');
       a.humanReview = copy(REVIEW); b.humanReview = copy(REVIEW);
       (a.sources || []).concat(b.sources || []).forEach(function (s) { s.check = 'Reviewed'; });
-      b.officialDomains = b.officialDomains.concat(['chase.com']);
+      b.officialDomains = b.officialDomains.concat(['citi.com']);
       var s = storeWith(a); s.orgs = s.orgs.map(function (o) { return o.id === b.id ? b : o; });
-      var c = detailFor(analyze(t, 'Chase: see https://chase.com', s, { today: DAY }), 'chase.com');
+      var c = detailFor(analyze(t, 'Citi: see https://citi.com', s, { today: DAY }), 'citi.com');
       t.assert(c.detail.indexOf('another organization') >= 0, 'conflict wording: ' + c.detail);
     });
     t.test('B3d A record missing review details says so', function () {
-      var org = orgCopy('chase');
+      var org = orgCopy('citi');
       org.humanReview = copy(REVIEW); delete org.humanReview.sourceUrl;
       (org.sources || []).forEach(function (s) { s.check = 'Reviewed'; delete s.url; });
-      var c = detailFor(analyze(t, 'Chase: see https://chase.com', storeWith(org), { today: DAY }), 'chase.com');
+      var c = detailFor(analyze(t, 'Citi: see https://citi.com', storeWith(org), { today: DAY }), 'citi.com');
       t.assert(c.detail.indexOf('missing review details') >= 0, 'missing-field wording: ' + c.detail);
     });
     t.test('B3e A human review is shown as the review status', function () {
-      var org = orgCopy('chase');
+      var org = orgCopy('citi');
       org.humanReview = copy(REVIEW);
       (org.sources || []).forEach(function (s) { s.check = 'Reviewed'; });
-      var c = detailFor(analyze(t, 'Chase: see https://chase.com', storeWith(org), { today: DAY }), 'chase.com');
+      var c = detailFor(analyze(t, 'Citi: see https://citi.com', storeWith(org), { today: DAY }), 'citi.com');
       t.same(c.status, 'SUPPORTS', 'reviewed record supports');
       t.assert(c.source.indexOf('Reviewed by Fictional test reviewer on 2026-10-01') >= 0, 'review status: ' + c.source);
       t.assert(c.source.indexOf('awaiting human review') < 0, 'automated status shown after a human review');
@@ -255,7 +257,7 @@
     // is a sender there. data/store.js lists it as a strict alias: only "Chase" counts.
     var CHANNEL = { Text: 'text', Email: 'email', 'Not sure': 'unknown' };
     var EXPECTED = { bank: 'suspicious', code: 'suspicious', phone: 'insufficient_evidence', support: 'suspicious',
-      toll: 'suspicious', family: 'suspicious', delivery: 'insufficient_evidence' };
+      toll: 'suspicious', family: 'suspicious', delivery: 'details_match' };
     t.test('B10a Every demo gives its hand-decided verdict on the real list', function () {
       t.same(Object.keys(window.demoScenarios).sort(), Object.keys(EXPECTED).sort(), 'demo list');
       Object.keys(EXPECTED).forEach(function (key) {

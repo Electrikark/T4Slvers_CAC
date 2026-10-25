@@ -212,8 +212,9 @@ window.runAssessmentTests = function (gate) {
     });
   });
   test('I18 Unreviewed reference records cannot support a match', function () {
-    // data/store.js records carry an automated check only; none is human-reviewed yet.
-    var r = engine.analyze('USPS: Your package is out for delivery. Track it at https://tools.usps.com/go/TrackConfirmAction', window.TFS_STORE, { declaredChannel: 'text' });
+    // Citi's records in data/store.js carry an automated check only, with no human review.
+    // (Chase, Wells Fargo, USPS, SSA and Amazon have been reviewed; the rest have not.)
+    var r = engine.analyze('Citi: Your statement is ready. View it at https://citi.com/statements', window.TFS_STORE, { declaredChannel: 'text' });
     assert(engine.validateResult(r), 'invalid result');
     same(r.assessment, 'insufficient_evidence', 'assessment');
     same(r.checks.map(function (c) { return c.code; }), ['reference_needs_review'], 'codes');

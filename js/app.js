@@ -10,10 +10,9 @@ let shownResult = null;
 
 // The label line says in plain words what the title means and does not mean.
 const RESULT_STYLES = {
-  suspicious: { css: 'mismatch', title: 'Suspicious', label: 'Strong warning · Pause before acting', symbol: '!' },
-  details_match: { css: 'match', title: 'Details Match', label: 'Contact details only · The sender is not confirmed', symbol: '=' },
-  insufficient_evidence: { css: 'unknown', title: 'Insufficient Evidence', label: 'We can’t tell from this message alone · Pause before acting', symbol: '?',
-    riskyLabel: 'We can’t tell from this message alone · Warning signs in what it asks' }
+  suspicious: { css: 'mismatch', symbol: '!' },
+  details_match: { css: 'match', symbol: '=' },
+  insufficient_evidence: { css: 'unknown', symbol: '?' }
 };
 // Same words as the annotation labels, so one state has one name.
 const CHECK_LABELS = { SUPPORTS: 'On our reviewed list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
@@ -29,6 +28,8 @@ function textElement(tag, text, className) {
 function showScreen(name) {
   byId('home').hidden = name !== 'home';
   byId('result').hidden = name !== 'result';
+  byId('checker-limits').hidden = name !== 'home';
+  byId('demo-tools').hidden = name !== 'home';
   byId(name === 'home' ? 'home-title' : 'result-title').focus();
 }
 
@@ -92,6 +93,8 @@ function checkMessage(event) {
 
 // Clears everything the last person entered or saw, for a shared workshop device.
 function startOver() {
+  hideExampleConfirm();
+  exampleText = null;
   byId('submission-form').reset();
   clearResult();
   chooseChannel(null);
@@ -101,14 +104,39 @@ function startOver() {
   showScreen('home');
 }
 
-function loadExample(id) {
+// The text a loaded example put in the box, so loading another one can tell whether the
+// box now holds the person's own words.
+let exampleText = null;
+let pendingExample = null;
+
+function placeExample(id) {
   startOver();
   const example = window.demoScenarios[id];
   byId('message').value = example.input;
+  exampleText = example.input;
   updateCount();
   byId('example-loaded').textContent = `Loaded: ${example.label}. Example channel: ${example.channelLabel}. Choose that channel before checking.`;
   byId('example-loaded').hidden = false;
   byId('check-button').focus();
+}
+
+function hideExampleConfirm() {
+  pendingExample = null;
+  byId('example-confirm').hidden = true;
+}
+
+// Never replace a person's own message without asking: an example is one tap away from
+// wiping a real message someone was about to check.
+function loadExample(id) {
+  const current = byId('message').value;
+  if (current.trim() && current !== exampleText) {
+    pendingExample = id;
+    byId('example-confirm').hidden = false;
+    byId('example-keep').focus();
+    return;
+  }
+  hideExampleConfirm();
+  placeExample(id);
 }
 
 /* ---------- The result ---------- */
@@ -181,12 +209,14 @@ function showResult(result, text) {
   byId('ocr-result-note').hidden = result.inputSource !== 'screenshot';
   const style = RESULT_STYLES[result.assessment];
   const risk = result.requestRisk.level;
+  const view = window.TfsResultView.build(result, text);
   byId('result-banner').className = `result-banner ${style.css}${risk !== 'none' ? ' risky' : ''}`;
   byId('state-symbol').textContent = style.symbol;
   // "Suspicious" already is the strong warning; only an unresolved result needs the risk named.
-  byId('state-label').textContent = risk === 'high' && style.riskyLabel ? style.riskyLabel : style.label;
-  byId('result-title').textContent = style.title;
-  byId('result-description').textContent = result.description;
+  byId('state-label').textContent = view.label;
+  byId('result-title').textContent = view.title;
+  byId('result-description').textContent = view.description;
+  byId('result-scope').textContent = view.limits[0];
   byId('identity').textContent = result.claimedIdentity;
   byId('channel').textContent = result.channel;
   byId('inspected').textContent = result.inspected;
@@ -196,6 +226,16 @@ function showResult(result, text) {
   const [lead, ...otherWarnings] = result.actionWarnings;
   byId('action-lead').textContent = lead;
   byId('action-note').classList.toggle('high-risk', risk === 'high');
+  byId('action-groups').replaceChildren(...view.groups.map(group => {
+    const item = textElement('li', '', 'action-group');
+    item.dataset.action = group.id;
+    item.append(textElement('h3', group.title));
+    const reasons = textElement('ul', '', 'group-reasons');
+    reasons.replaceChildren(...group.reasons.map(reason => textElement('li', reason)));
+    item.append(reasons, textElement('p', group.action, 'protective-step'));
+    return item;
+  }));
+  byId('visible-limits').replaceChildren(...view.limits.slice(1).map(limit => textElement('li', limit)));
 
   byId('checks').replaceChildren(...result.checks.map(checkItem));
   byId('asks-section').hidden = result.requestRisk.flags.length === 0;
@@ -205,7 +245,14 @@ function showResult(result, text) {
   showWhy(result, showAnnotations(text, result), text);
   // Each new result starts with its full details folded away.
   byId('evidence-details').open = false;
+  byId('followup-details').open = false;
+  byId('why-section').open = false;
+  byId('annotated-section').open = false;
   byId('self-check-details').open = false;
+  // The protective steps stay visible; extra help starts folded for each new result.
+  byId('trusted-help').open = false;
+  byId('no-one-available').open = false;
+  byId('request-status').textContent = '';
 
   shownResult = result;
   resetSelfCheck();
@@ -213,12 +260,13 @@ function showResult(result, text) {
 }
 
 function clearResult() {
-  for (const id of ['why-list', 'result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
+  for (const id of ['action-groups', 'visible-limits', 'why-list', 'result-title', 'result-scope', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
     byId(id).replaceChildren();
   }
   byId('annotated-section').hidden = true;
   byId('why-section').hidden = true;
   byId('why-draft').hidden = true;
+  byId('request-status').textContent = '';
   shownResult = null;
   resetSelfCheck();
 }
@@ -267,6 +315,31 @@ function resetSelfCheck() {
   byId('self-check-outcome').hidden = true;
 }
 
+/* ---------- Ask someone you trust (never changes the result) ---------- */
+
+// Only the fixed request is shared or copied, never the person's message. The app the
+// person picks sends it; this page sends nothing.
+const helpRequest = () => byId('trusted-request').textContent;
+
+async function shareRequest() {
+  try {
+    await navigator.share({ text: helpRequest() });
+    byId('request-status').textContent = '';
+  } catch (error) {
+    // Closing the share menu is a choice, not a failure.
+    if (error.name !== 'AbortError') byId('request-status').textContent = 'Sharing did not open. You can copy the request instead, or read it to them on the phone.';
+  }
+}
+
+async function copyRequest() {
+  try {
+    await navigator.clipboard.writeText(helpRequest());
+    byId('request-status').textContent = 'Copied. Paste it into a message to someone you trust.';
+  } catch {
+    byId('request-status').textContent = 'Copying did not work. You can select the request above and copy it, or read it to them on the phone.';
+  }
+}
+
 /* ---------- Wiring ---------- */
 
 for (const channel of CHANNELS) byId(`channel-${channel}`).addEventListener('click', () => chooseChannel(channel));
@@ -281,7 +354,21 @@ byId('back').addEventListener('click', () => {
   byId('message').focus();
 });
 byId('start-again').addEventListener('click', startOver);
+// Each button shows only where this browser can do it; the request stays readable either way.
+byId('share-request').hidden = typeof navigator.share !== 'function';
+byId('copy-request').hidden = !(navigator.clipboard && typeof navigator.clipboard.writeText === 'function');
+byId('share-request').addEventListener('click', shareRequest);
+byId('copy-request').addEventListener('click', copyRequest);
 byId('reset').addEventListener('click', startOver);
+byId('example-replace').addEventListener('click', () => {
+  const id = pendingExample;
+  hideExampleConfirm();
+  if (id) placeExample(id);
+});
+byId('example-keep').addEventListener('click', () => {
+  hideExampleConfirm();
+  byId('message').focus();
+});
 for (const [id, example] of Object.entries(window.demoScenarios)) {
   const button = textElement('button', example.label);
   button.type = 'button';
@@ -292,13 +379,19 @@ byId('list-count').textContent = `${window.TFS_STORE.orgs.length} organizations 
 resetSelfCheck();
 updateCount();
 
-// Only a fixed made-up example can be loaded by a link; no message text travels in a URL.
-if (new URLSearchParams(window.location.search).get('example') === 'family') {
+// Only a fixed made-up example from the scam guide (data/scam-guide.js) can be loaded by a link;
+// no message text travels in a URL. Loading it neither chooses the channel nor runs the check.
+const CHANNEL_NAMES = { text: 'Text', email: 'Email', unknown: 'Not sure' };
+const exampleId = new URLSearchParams(window.location.search).get('example');
+const practice = window.TFS_GUIDE && window.TFS_GUIDE.scams.find(s => s.id === exampleId);
+if (practice) {
   startOver();
-  byId('message').value = 'Grandma, please buy 3 Apple gift cards and send me the codes.';
+  byId('message').value = practice.example.text;
+  exampleText = practice.example.text;
   updateCount();
-  byId('example-loaded').textContent = 'Made-up practice message. Choose Text, then Check this message when you are ready.';
+  const channel = practice.example.channel;
+  byId('example-loaded').textContent = `Made-up practice message. Choose ${CHANNEL_NAMES[channel]}, then Check this message when you are ready.`;
   byId('example-loaded').hidden = false;
-  byId('channel-text').focus();
+  byId(`channel-${channel}`).focus();
   window.history.replaceState(null, '', window.location.pathname);
 }

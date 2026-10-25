@@ -4,12 +4,9 @@
 // textContent only.
 import { keywordSearch, mlSearch, loadModel } from './help-search.js';
 
-// Which search the page uses by default. Set by the volunteer test (docs/decisions/help-search.md):
-// 'keyword' unless the ML search meets the decision rule. Until then the ML search is opt-in:
-// it downloads only when the reader presses "Try smarter search", and only for that visit
-// (nothing is stored). docs/decisions/help-search-opt-in.md.
-const SEARCH = 'keyword';
-let method = SEARCH;
+// Language search starts with the page. Keyword results remain available while the local
+// model loads or a language search is pending. This product choice is not accuracy evidence.
+// docs/decisions/automatic-help-search.md; the frozen scorer stays in help-search.js.
 
 const help = window.TFS_HELP;
 const byId = id => document.getElementById(id);
@@ -31,51 +28,35 @@ function suggestion(c) {
   b.className = 'help-topic';
   b.textContent = 'Suggested: ' + c.title;
   b.dataset.topic = c.id;
-  b.addEventListener('click', () => openTopic(c.id));
+  b.addEventListener('click', () => { latest++; openTopic(c.id); });
   return b;
 }
 
-// ML search is used only once the model is ready. Until then (or if it never loads) the page
-// uses keyword search straight away, so nobody waits on a download.
+// Preparing the local model never blocks the menu or the first search results.
 let modelState = 'idle';
-function turnOnSmartSearch() {
+async function prepareSearch() {
   if (modelState !== 'idle') return;
-  method = 'ml';
   modelState = 'loading';
-  const button = byId('smart-search-on'), status = byId('smart-search-status');
-  button.disabled = true;
-  status.textContent = 'Downloading smarter search (about 50 MB). You can search now; the regular search answers until it is ready.';
-  loadModel().then(() => {
+  const status = byId('smart-search-status');
+  status.textContent = 'Preparing search on your device (about 50 MB download). You can search now.';
+  try {
+    await loadModel();
     modelState = 'ready';
-    status.textContent = 'Smarter search is on for this visit. It is still being tested, so make sure the topic fits.';
-  }).catch(() => {
+    status.textContent = 'Search is ready.';
+    if (lastSearch) enhance(lastSearch);
+  } catch {
     modelState = 'failed';
-    method = SEARCH;
-    status.textContent = 'Smarter search could not load. The regular search and every topic below still work.';
-  });
+    status.textContent = 'The extra language tools could not load. You can still search and use every topic below.';
+  }
 }
 
-// Each search gets a number; a slower, older search never replaces a newer one's results.
+// A late result must not replace a newer query or a topic the reader already chose.
 let latest = 0;
-async function find(event) {
-  event.preventDefault();
-  const mine = ++latest;
-  const query = byId('help-query').value.trim();
+let lastSearch = null;
+const isCurrent = search => search.id === latest && search.query === byId('help-query').value.trim();
+
+function showSuggestions(results, used) {
   const out = byId('help-suggestions');
-  out.replaceChildren();
-  if (!query) { byId('help-status').textContent = 'Type a few words about what happened, or open a topic below.'; return; }
-  let results, used = 'keyword';
-  if (method === 'ml' && modelState === 'ready') {
-    try { results = await mlSearch(query, help); used = 'ml'; }
-    catch {
-      modelState = 'failed';
-      byId('smart-search-status').textContent = 'Smarter search stopped working. The regular search and every topic below still work.';
-      results = keywordSearch(query, help);
-    }
-  } else {
-    results = keywordSearch(query, help);
-  }
-  if (mine !== latest) return;
   out.replaceChildren();
   out.dataset.method = used;
   if (!results.length) {
@@ -86,12 +67,48 @@ async function find(event) {
   results.forEach(r => out.append(suggestion(card(r.id))));
 }
 
+async function enhance(search) {
+  if (modelState !== 'ready' || !isCurrent(search)) return;
+  byId('help-status').textContent = 'Checking for related topics. You can choose a suggestion or a topic below now.';
+  try {
+    const results = await mlSearch(search.query, help);
+    if (isCurrent(search)) showSuggestions(results, 'ml');
+  } catch {
+    if (!isCurrent(search)) return;
+    modelState = 'failed';
+    byId('smart-search-status').textContent = 'The extra language tools stopped working. You can still search and use every topic below.';
+    showSuggestions(keywordSearch(search.query, help), 'keyword');
+  }
+}
+
+function find(event) {
+  event.preventDefault();
+  const query = byId('help-query').value.trim();
+  const search = { id: ++latest, query };
+  lastSearch = query ? search : null;
+  showSuggestions(query ? keywordSearch(query, help) : [], 'keyword');
+  if (!query) {
+    byId('help-status').textContent = 'Type a few words about what happened, or open a topic below.';
+    return;
+  }
+  enhance(search);
+}
+
 function start() {
   if (!help || !byId('help-form')) return;
   byId('help-form').hidden = false;
   byId('help-form').addEventListener('submit', find);
-  const smart = byId('smart-search-on');
-  if (smart) smart.addEventListener('click', turnOnSmartSearch);
+  // Keep a result stable from the start of interaction, including keyboard focus.
+  for (const event of ['focusin', 'pointerdown']) {
+    byId('help-suggestions').addEventListener(event, () => { latest++; });
+  }
+  byId('help-query').addEventListener('input', () => {
+    latest++;
+    lastSearch = null;
+    byId('help-suggestions').replaceChildren();
+    byId('help-status').textContent = '';
+  });
+  prepareSearch();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

@@ -3,41 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#214e48">
+  <meta name="theme-color" content="#183f38">
+  <link rel="icon" href="assets/identity/pause-message.svg" type="image/svg+xml">
   <meta name="description" content="What this prototype checks, what its results mean, screenshot limitations, and how it handles your text.">
   <title>About &amp; privacy · Safety4Seniors</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/ui.css">
   <script defer src="js/site.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header wrap">
     <a class="brand" href="index.html" aria-label="Safety4Seniors home">
-      <span class="brand-mark" aria-hidden="true">s<span>4</span>s</span>
-      <span>Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
+      <img class="brand-mark" src="assets/identity/pause-message.svg" width="48" height="48" alt="">
+      <span class="brand-name">Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="check.html">Check a message</a>
         <a href="recover.html">Get help after a scam</a>
         <a href="learn.html">Learn the signs</a>
+        <a href="help.html">How to use</a>
     </nav>
   </header>
   <main id="main" class="wrap" tabindex="-1">
-    <div class="page-heading"><p class="eyebrow">ABOUT &amp; PRIVACY</p><h1>A second look, with clear limits.</h1><p class="lead">Safety4Seniors is a workshop prototype for checking messages and finding a useful next step. It was built from the Tech for Silvers workshops, a Tech4All initiative.</p></div>
+    <div class="page-heading"><p class="eyebrow">ABOUT &amp; PRIVACY</p><h1>A second look, with clear limits.</h1><p class="lead">Understand what the check can tell you, what stays unknown, and how your text is handled.</p></div>
+    <div class="about-essentials">
+      <section class="about-essential"><h2>What it looks for</h2><p>Risky requests in English text and contact details on a limited stored list.</p></section>
+      <section class="about-essential"><h2>What it cannot establish</h2><p>Who sent a message, or whether it is real. It can miss scams and flag honest messages.</p></section>
+      <section class="about-essential"><h2>Your message stays here</h2><p>Your text and screenshots are processed on this device. No account or saved message history.</p></section>
+    </div>
     <div class="reading-page">
-      <section><h2>What the checker does</h2><p>It looks for fixed English patterns, such as requests for gift-card codes, passwords, sign-in codes, remote access, and urgent callbacks. It also compares extracted contact details with a limited local reference list.</p><p>It can miss scams and flag honest messages. It does not open message links, verify a sender or caller, or know what happened outside the text you provide.</p></section>
-      <section id="results"><h2>What the results mean</h2><dl class="result-definitions"><div><dt>Suspicious</dt><dd>A strong warning pattern was found. Pause and follow the next steps shown.</dd></div><div><dt>Insufficient Evidence</dt><dd>The app cannot establish a contact match. Missing details, an unreviewed record, screenshot text, or an unresolved check can cause this result. It does not mean the message is harmless.</dd></div><div><dt>Details Match</dt><dd>Contact details match reviewed records, with no findings or unresolved checks. This does not prove who sent the message.</dd></div></dl><p class="scope-note">The current contact list is awaiting human review, so it cannot produce Details Match yet. A listed address never cancels a risky request.</p></section>
-      <section><h2>Reading a screenshot</h2><p>The screenshot tool reads English text from PNG or JPEG images on your device. Compare every word with the image and fix errors before checking. Missing words, especially “not” or “never,” can change the result.</p><p>Screenshot text cannot produce Details Match, even after your review.</p></section>
-      <section id="privacy"><h2>Your text and privacy</h2><p>No account, analytics, or message history. The checker does not upload or save your message or screenshot. Processing happens in your browser. Use “Check another message” to clear the current check on a shared device.</p><p>The site and screenshot-reading files must first load onto your device. The app does not promise that every page will work offline. Official help links and phone calls leave this site; those services have their own privacy practices.</p><p>Leave out passwords, account numbers, and real sign-in codes. Paper copies you print may contain private details, so keep them somewhere safe.</p></section>
-      <section><h2>What this site can help with</h2><p>Use the checker when you are unsure, the recovery page when something went wrong, and the learning page to practise. The site cannot recover funds or file a report for you. Its U.S. help links lead to official services.</p><a class="secondary button-link" href="check.html">Go to the message checker <span aria-hidden="true">→</span></a></section>
+      <section id="results"><h2>What the results mean</h2>
+        <dl class="result-definitions">
+          <div><dt>This message has warning signs</dt><dd>The text contains a risky request or warning pattern. The visible reasons name what was found; follow the protective steps shown.</dd></div>
+          <div><dt>There isn’t enough information</dt><dd>The check cannot establish a match to reviewed records. Missing details, an unresolved check, or screenshot text can cause this result. Use another contact method before acting.</dd></div>
+          <div><dt>A named detail matches our records</dt><dd>The result names exactly what matched: a website address, an email domain, or a phone number. It does not establish the sender’s identity or inspect the destination page.</dd></div>
+        </dl>
+        <p class="scope-note">The current contact list is awaiting human review, so it cannot establish a match to reviewed records yet. A listed address never cancels a risky request.</p>
+      </section>
+      <details class="about-more"><summary>What does the check look at?</summary><p>It uses fixed English patterns for requests such as sharing sign-in codes, paying with gift cards, or allowing remote access. It compares extracted website addresses, email domains, and phone numbers with a limited local list.</p><p>It does not open message links, inspect redirects or hidden links, verify callers, or know what happened outside the text you provide.</p></details>
+      <details class="about-more"><summary>What changes when I use a screenshot?</summary><p>The screenshot tool reads English text from PNG or JPEG images on your device. Compare every word with the image and fix errors before checking. Missing words, especially “not” or “never,” can change the result.</p><p>Screenshot text cannot establish a match to reviewed records, even after your review.</p></details>
+      <details id="privacy" class="about-more"><summary>How is my text handled?</summary><p>The checker does not upload or save your message or screenshot. There is no analytics or message history. Use “Check another message” to clear the current check on a shared device.</p><p>Leave out passwords, account numbers, and real sign-in codes. Paper copies may contain private details; keep them somewhere secure.</p><p>The site, screenshot reader, and recovery search tools first need to load onto your device. Every page may not work offline. Official help links and phone calls leave this site and have their own privacy practices.</p><p>Sharing or copying a request for help uses only the fixed request shown, never your message. The app you choose sends it and may keep a copy.</p></details>
+      <details class="about-more"><summary>Who built this, and who is it for?</summary><p>Safety4Seniors is a workshop prototype built from the Tech for Silvers workshops, a Tech4All initiative. Its help resources are for the United States.</p><p>The site can help you choose a next step. It cannot recover funds or file a report for you.</p></details>
+      <p><a class="primary button-link" href="check.html">Check a message</a></p>
     </div>
   </main>
   <footer class="wrap site-footer">
     <div><a class="footer-brand" href="index.html">Safety4Seniors</a><p>A little clarity, before you click.</p></div>
     <div class="footer-links"><a href="about.html" aria-current="page">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
-    <p class="footer-note">Built from the Tech for Silvers workshops, a Tech4All initiative · Workshop prototype · U.S. resources</p>
+    <p class="footer-note">A Tech4All project · Workshop prototype · U.S. help resources</p>
   </footer>
 </body>
 </html>

@@ -5,12 +5,24 @@
   var add = window.TFS_PHASE2.add;
   var TODAY = '2026-10-19';
   function copy(value) { return JSON.parse(JSON.stringify(value)); }
-  // The real list with one fictional reviewed record, so Details Match can be reached.
+  /* The real list with one fictional reviewed record, so Details Match can be reached.
+     The fixture sets every Chase contact field itself rather than leaning on whatever
+     review dates data/store.js happens to carry: a real review date later than TODAY
+     would otherwise silently drop the record and fail these cases for the wrong reason. */
+  var FIXTURE_REVIEW = {
+    reviewer: 'Test fixture (fictional record)', date: '2026-10-12', reviewDue: '2099-12-31', sourceUrl: 'https://example.invalid/fixture-record'
+  };
   function reviewedStore() {
     var store = copy(window.TFS_STORE);
-    store.orgs.filter(function (o) { return o.id === 'chase'; })[0].humanReview = {
-      reviewer: 'Test fixture (fictional record)', date: '2026-10-12', reviewDue: '2099-12-31', sourceUrl: 'https://example.invalid/fixture-record'
-    };
+    var org = store.orgs.filter(function (o) { return o.id === 'chase'; })[0];
+    org.humanReview = copy(FIXTURE_REVIEW);
+    (org.contacts || []).forEach(function (c) {
+      c.status = 'reviewed';
+      c.reviewedBy = FIXTURE_REVIEW.reviewer;
+      c.sourceUrl = FIXTURE_REVIEW.sourceUrl;
+      c.checkedOn = FIXTURE_REVIEW.date;
+      c.reviewDue = FIXTURE_REVIEW.reviewDue;
+    });
     return store;
   }
   function analyze(t, text, store) {
@@ -60,7 +72,8 @@
     });
 
     t.test('W6 Review status is plain words, never the store\'s internal note', function () {
-      var r = analyze(t, 'Chase: Your statement is ready at https://chase.com');
+      // Citi: an organization on the real list that no person has reviewed yet.
+      var r = analyze(t, 'Citi: Your statement is ready at https://citi.com');
       var source = r.checks[0].source;
       t.assert(source.indexOf('No person has reviewed it yet') >= 0, 'plain review status missing: ' + source);
       t.assert(!/automated check(?: by|; awaiting human review)/i.test(source), 'internal review note shown: ' + source);

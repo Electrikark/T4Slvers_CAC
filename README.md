@@ -29,13 +29,28 @@ choices. See [the site design and next-feature plan](docs/decisions/senior-site.
 | `index.html` | Start here; choose a task |
 | `check.html` | Paste or read a screenshot, review a result, choose a next step |
 | `recover.html` | Recovery steps, official hotline, reporting links, printable plan |
-| `learn.html` | Four warning signs and a made-up practice message |
+| `learn.html` | Four warning signs, made-up practice messages one at a time, and a guide to common scams |
 | `about.html` | Results, limits, screenshot handling, privacy |
 
 The pages use normal links and shared styles, with no router or new dependency.
 Recovery, learning, and source links also work with JavaScript disabled. The
 checker needs JavaScript. The browser suite covers all five pages and the
 GitHub Pages subpath; the test name retains its earlier OCR label.
+
+Recovery search [loads its local language tools automatically](docs/decisions/automatic-help-search.md).
+Keyword suggestions stay available while the roughly 50 MB download prepares
+and if it fails. Descriptions stay on the device. The language model's benefit
+over keyword search on fresh user descriptions has not yet been established.
+
+## Clear-action interface
+
+The five pages use the [clear-action design standard](docs/decisions/clear-action-ui.md).
+Results keep supported behaviors, protective steps, and relevant limits visible.
+Background opens beneath question labels. Matching labels name the exact detail
+checked; the internal assessment keys stay unchanged. The display layer lives in
+`js/result-view.js`, with shared layout in `css/ui.css`.
+The [visual identity](docs/decisions/visual-identity.md) defines type, color roles,
+and the local message-and-pause mark used across all five pages.
 
 ## Run and test
 
@@ -153,7 +168,7 @@ In the order a message passes through them:
 | `index.html`, `check.html`, `recover.html`, `learn.html`, `about.html` | Separate pages for choosing a task, checking, recovery, learning, and limits |
 | `css/styles.css`, `css/site.css` | Existing checker styles and the shared site layout |
 | `js/site.js` | Optional recovery printing; no message or checklist storage |
-| `js/app.js` | Reads the form, shows the result, runs the "I checked it myself" step; decides nothing |
+| `js/app.js` | Reads the form, shows the result, runs the "I checked it myself" step and the share or copy of the request for help ([decision](docs/decisions/trusted-help.md)); decides nothing |
 | `js/engine/normalize.js` | Cleans the text; `riskView` keeps a map back to the original so quotes stay exact |
 | `js/engine/extract.js` | Finds links, email addresses and phone numbers; asks `sender.js` who the message names |
 | `js/engine/sender.js` | Sender attribution from labels, direct statements, affirmative "from" and sign-offs |
@@ -169,6 +184,7 @@ In the order a message passes through them:
 | `js/selfCheck.js` | "I checked it myself" outcomes; never changes the result |
 | `data/store.js` | The organization list: 49 organizations, none human-reviewed yet |
 | `js/mockData.js` | The seven demo examples |
+| `data/scam-guide.js`, `scripts/build-learn.cjs`, `js/learn.js` | The scam guide and practice messages; the script that writes them into `learn.html`; the one-at-a-time practice. See [the learn page decision](docs/decisions/learn-guide.md) |
 | `tests/` | `npm test` runs everything here; `tests/run.html` shows the same checks in a browser |
 | `eval/` | Field evaluation on real messages (`npm run eval`); `tests/eval-tests.cjs` checks the tool itself |
 
