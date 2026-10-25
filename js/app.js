@@ -206,6 +206,11 @@ function showResult(result, text) {
   // Each new result starts with its full details folded away.
   byId('evidence-details').open = false;
   byId('self-check-details').open = false;
+  // Asking someone is open under every result that is not a match; under a match it stays
+  // one tap away. It never changes the result.
+  byId('trusted-help').open = result.assessment !== 'details_match';
+  byId('no-one-available').open = false;
+  byId('request-status').textContent = '';
 
   shownResult = result;
   resetSelfCheck();
@@ -219,6 +224,7 @@ function clearResult() {
   byId('annotated-section').hidden = true;
   byId('why-section').hidden = true;
   byId('why-draft').hidden = true;
+  byId('request-status').textContent = '';
   shownResult = null;
   resetSelfCheck();
 }
@@ -267,6 +273,31 @@ function resetSelfCheck() {
   byId('self-check-outcome').hidden = true;
 }
 
+/* ---------- Ask someone you trust (never changes the result) ---------- */
+
+// Only the fixed request is shared or copied, never the person's message. The app the
+// person picks sends it; this page sends nothing.
+const helpRequest = () => byId('trusted-request').textContent;
+
+async function shareRequest() {
+  try {
+    await navigator.share({ text: helpRequest() });
+    byId('request-status').textContent = '';
+  } catch (error) {
+    // Closing the share menu is a choice, not a failure.
+    if (error.name !== 'AbortError') byId('request-status').textContent = 'Sharing did not open. You can copy the request instead, or read it to them on the phone.';
+  }
+}
+
+async function copyRequest() {
+  try {
+    await navigator.clipboard.writeText(helpRequest());
+    byId('request-status').textContent = 'Copied. Paste it into a message to someone you trust.';
+  } catch {
+    byId('request-status').textContent = 'Copying did not work. You can select the request above and copy it, or read it to them on the phone.';
+  }
+}
+
 /* ---------- Wiring ---------- */
 
 for (const channel of CHANNELS) byId(`channel-${channel}`).addEventListener('click', () => chooseChannel(channel));
@@ -281,6 +312,11 @@ byId('back').addEventListener('click', () => {
   byId('message').focus();
 });
 byId('start-again').addEventListener('click', startOver);
+// Each button shows only where this browser can do it; the request stays readable either way.
+byId('share-request').hidden = typeof navigator.share !== 'function';
+byId('copy-request').hidden = !(navigator.clipboard && typeof navigator.clipboard.writeText === 'function');
+byId('share-request').addEventListener('click', shareRequest);
+byId('copy-request').addEventListener('click', copyRequest);
 byId('reset').addEventListener('click', startOver);
 for (const [id, example] of Object.entries(window.demoScenarios)) {
   const button = textElement('button', example.label);

@@ -6,7 +6,7 @@
     "build:gate": "node scripts/build-assessment.cjs",
     "build:recover": "node scripts/build-recover.cjs",
     "build:learn": "node scripts/build-learn.cjs",
-    "test": "node tests/page-scripts.cjs && node scripts/build-assessment.cjs --check && node tests/app-elements.cjs && node tests/run-node.cjs && node tests/eval-tests.cjs && node tests/five-org-review.cjs && node tests/ocr-node.cjs && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tests/help-node.mjs && node tests/why-node.cjs && node scripts/build-recover.cjs --check && node tests/recover-node.cjs && node scripts/build-learn.cjs --check && node tests/learn-node.cjs && node tests/adversarial-node.cjs && node tests/adversarial-known-node.cjs",
+    "test": "node tests/page-scripts.cjs && node scripts/build-assessment.cjs --check && node tests/app-elements.cjs && node tests/run-node.cjs && node tests/eval-tests.cjs && node tests/five-org-review.cjs && node tests/ocr-node.cjs && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON tests/help-node.mjs && node tests/why-node.cjs && node scripts/build-recover.cjs --check && node tests/recover-node.cjs && node scripts/build-learn.cjs --check && node tests/learn-node.cjs && node tests/trusted-help-node.cjs && node tests/adversarial-node.cjs && node tests/adversarial-known-node.cjs",
     "eval": "node eval/run.cjs",
     "robustness": "node adversarial/run.cjs",
     "robustness:freeze": "node adversarial/freeze.cjs",

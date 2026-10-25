@@ -153,7 +153,7 @@ In the order a message passes through them:
 | `index.html`, `check.html`, `recover.html`, `learn.html`, `about.html` | Separate pages for choosing a task, checking, recovery, learning, and limits |
 | `css/styles.css`, `css/site.css` | Existing checker styles and the shared site layout |
 | `js/site.js` | Optional recovery printing; no message or checklist storage |
-| `js/app.js` | Reads the form, shows the result, runs the "I checked it myself" step; decides nothing |
+| `js/app.js` | Reads the form, shows the result, runs the "I checked it myself" step and the share or copy of the request for help ([decision](docs/decisions/trusted-help.md)); decides nothing |
 | `js/engine/normalize.js` | Cleans the text; `riskView` keeps a map back to the original so quotes stay exact |
 | `js/engine/extract.js` | Finds links, email addresses and phone numbers; asks `sender.js` who the message names |
 | `js/engine/sender.js` | Sender attribution from labels, direct statements, affirmative "from" and sign-offs |
