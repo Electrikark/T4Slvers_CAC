@@ -22,3 +22,9 @@ experiments/help-search/out/
 # Robustness run output. The report is regenerated from the frozen generator, so it is not
 # source; commit a single dated copy if a judge-facing number needs to live in the repo.
 adversarial/results/
+
+# Discovery tool: reports, review exports and embedding caches hold message text or vectors derived
+# from it (not anonymous). Only code, docs and fictional fixtures under discovery/ are tracked.
+discovery/out/
+discovery/.cache/
+discovery/**/review-*.json

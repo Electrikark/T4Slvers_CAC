@@ -15,7 +15,11 @@
     "check:ocr-assets": "node scripts/copy-tesseract.cjs --check",
     "test:ocr": "node tests/ocr-node.cjs",
     "test:ocr-browser": "playwright test",
-    "preview:ocr": "node scripts/preview-server.cjs"
+    "preview:ocr": "node scripts/preview-server.cjs",
+    "discovery": "node discovery/cli.cjs",
+    "discovery:check": "node discovery/check.cjs",
+    "discovery:test": "node discovery/tests/discovery-node.cjs && node discovery/tests/review-browser.cjs",
+    "discovery:calibrate": "node discovery/calibrate.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",
