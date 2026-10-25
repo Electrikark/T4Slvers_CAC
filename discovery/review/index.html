@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<!-- Developer tool. It loads only files you pick; it makes no network requests and renders message
+     text as text (never as HTML), so links in messages are not clickable. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'none'; connect-src 'none'; font-src 'none'; media-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Discovery Review</title>
+<link rel="stylesheet" href="review.css">
+</head>
+<body>
+<header class="top">
+  <div class="title">
+    <h1>Discovery review</h1>
+    <p class="sub">Experimental developer tool · outside the senior app and the verdict path · groups are candidates, not findings</p>
+  </div>
+  <div class="loaders">
+    <label class="file">Load findings.json<input id="load-findings" type="file" accept=".json,application/json"></label>
+    <label class="file secondary">Load review export<input id="load-review" type="file" accept=".json,application/json" disabled></label>
+  </div>
+</header>
+
+<div id="message" class="banner" role="status" hidden></div>
+
+<section id="empty" class="empty">
+  <h2>Load a report</h2>
+  <p>Pick <code>findings.json</code> from a folder written by <code>npm run discovery</code>. The file stays in this browser; nothing is uploaded.</p>
+  <p>Decisions are saved in this browser for that run and can be exported, imported and reset.</p>
+</section>
+
+<main id="app" hidden>
+  <section class="runbar" aria-label="Run">
+    <div id="run-info" class="run-info"></div>
+    <div class="controls">
+      <label class="reviewer">Reviewer <input id="reviewer" type="text" maxlength="200" placeholder="not recorded" autocomplete="off"></label>
+      <div class="mode" role="radiogroup" aria-label="View">
+        <label><input type="radio" name="mode" value="ungrouped" checked> Ungrouped queue</label>
+        <label><input type="radio" name="mode" value="grouped"> Grouped view</label>
+      </div>
+      <button id="freeze" type="button">Freeze ungrouped notes</button>
+      <button id="export-review" type="button">Export review</button>
+      <button id="export-drafts" type="button">Export issue drafts</button>
+      <button id="export-summary" type="button">Export summary</button>
+      <button id="reset" type="button" class="danger">Reset review</button>
+    </div>
+    <div id="counters" class="counters" aria-live="polite"></div>
+    <details class="limits">
+      <summary>Limits of this tool</summary>
+      <ul id="notices"></ul>
+    </details>
+  </section>
+
+  <div class="panes">
+    <section class="list-pane" aria-label="Candidates">
+      <div id="queue-tools" class="tools">
+        <label>Show
+          <select id="filter">
+            <option value="baseline">Fraud-labeled, no Tier 1 span overlaps (baseline)</option>
+            <option value="suspicious-uncovered">Suspicious messages: spans no Tier 1 covers</option>
+            <option value="fraud">All fraud-labeled</option>
+            <option value="legit">Legitimate controls</option>
+            <option value="unlabeled">Unlabeled</option>
+            <option value="reviewer">Reviewer-created</option>
+            <option value="decided">With an outcome</option>
+            <option value="all">All candidates</option>
+          </select>
+        </label>
+      </div>
+      <div id="list" class="list"></div>
+    </section>
+    <section id="detail" class="detail-pane" aria-label="Candidate detail">
+      <p class="hint">Pick a candidate or a group.</p>
+    </section>
+  </div>
+</main>
+
+<script src="shared.js"></script>
+<script src="review.js"></script>
+</body>
+</html>
