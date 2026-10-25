@@ -15,7 +15,7 @@ A panel on `check.html`, directly after "Before you act" and before "What to do 
   message. For a family emergency, reach the person on a number you already have; for a bank or
   company, use its official app or the number on your card or statement.
 - **No one available? View other ways to get help.** Contact the organization through its own
-  channel, or the National Elder Fraud Hotline with its real purpose and limits.
+  channel, AARP for guidance about a possible scam, or the National Elder Fraud Hotline for reporting support. Both show hours and service limits.
 
 It is open under every Suspicious or Insufficient Evidence result, and folded (one tap away) under
 Details Match. It never changes the result.
@@ -37,8 +37,8 @@ Details Match. It never changes the result.
 - **Hotline limits.** From the [Stop Elder Fraud FAQ](https://ovc.ojp.gov/program/stop-elder-fraud/faqs)
   (checked Oct 24, 2026): age 60 or older, suspected financial fraud, case managers who help report
   it and give resources and referrals; it does not investigate, and cannot promise money back.
-  Monday–Friday, 10 a.m.–6 p.m. Eastern, closed on some holidays. It is not a service that checks
-  messages, and the panel says so.
+  Monday–Friday, 10 a.m.–6 p.m. Eastern, closed on some holidays. The panel describes its reporting
+  role without claiming that people must have confirmed losses before calling.
 
 ## Validation
 
@@ -52,3 +52,37 @@ Details Match. It never changes the result.
 Not established here: whether an older adult can find the panel, choose a trusted contact route
 and ask for help without assistance. That needs a small usability test, and the panel alone does
 not show that it prevents fraud.
+
+## AARP addition: local preview, October 24, 2026
+
+AARP appears first under "No one available?" and above the federal hotline on the recovery page.
+Its call link uses `tel:+18779083360`; the federal link remains `tel:+18333728311`.
+Both numbers stay visible on devices without a phone app. Each card links to its official service details.
+No new JavaScript, stored contact details, or message sharing was added. Asking for help never changes the result.
+
+AARP: free guidance for a possible scam, no membership needed, Monday–Friday, 8 a.m.–8 p.m. Eastern.
+It does not investigate cases or recover money. Federal hotline: reporting support for suspected financial
+fraud involving adults age 60 or older, with no claim that a loss must already be confirmed.
+The panel provides guidance outside service hours and routes people who sent money to recovery steps.
+
+Sources checked October 24, 2026:
+- https://www.aarp.org/money/scams-fraud/helpline/
+- https://www-cg.aarp.org/money/scams-fraud/helpline/?intcmp=fwn-scm-map-promo
+- https://ovc.ojp.gov/program/stop-elder-fraud/faqs
+
+The recovery topics remain drafts with `approvedBy` and `approvedOn` unchanged.
+Their AARP text and source were updated in data/help-cards.js, then recover.html was regenerated.
+
+Validation: `npm test` passed. The 12 existing trusted-help and site browser checks passed, including
+share/copy fallbacks, result preservation, mobile page layouts, enlarged text, and recovery access
+without JavaScript. The first browser run could not launch Chromium inside the sandbox; the rerun
+outside that restriction passed. The checker was also rendered and inspected in the in-app browser.
+No calls were placed. Actual phone dialer handoff and older-adult usability have not been tested.
+Nothing has been pushed or deployed; this preview awaits the user's review.
+
+### Readability pass
+
+Shortened both helpline cards after user review. The first view keeps each service’s purpose,
+number, hours, cost, and age eligibility visible. Native “Service details” disclosures hold
+service limits, official links, languages, and source dates; they work without JavaScript.
+Repeated headings and long explanations were removed. Payment and emergency routes remain visible.

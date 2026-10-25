@@ -10,10 +10,9 @@ let shownResult = null;
 
 // The label line says in plain words what the title means and does not mean.
 const RESULT_STYLES = {
-  suspicious: { css: 'mismatch', title: 'Suspicious', label: 'Strong warning · Pause before acting', symbol: '!' },
-  details_match: { css: 'match', title: 'Details Match', label: 'Contact details only · The sender is not confirmed', symbol: '=' },
-  insufficient_evidence: { css: 'unknown', title: 'Insufficient Evidence', label: 'We can’t tell from this message alone · Pause before acting', symbol: '?',
-    riskyLabel: 'We can’t tell from this message alone · Warning signs in what it asks' }
+  suspicious: { css: 'mismatch', symbol: '!' },
+  details_match: { css: 'match', symbol: '=' },
+  insufficient_evidence: { css: 'unknown', symbol: '?' }
 };
 // Same words as the annotation labels, so one state has one name.
 const CHECK_LABELS = { SUPPORTS: 'On our reviewed list', CONTRADICTS: 'Details conflict', UNKNOWN: 'Still unresolved' };
@@ -29,6 +28,8 @@ function textElement(tag, text, className) {
 function showScreen(name) {
   byId('home').hidden = name !== 'home';
   byId('result').hidden = name !== 'result';
+  byId('checker-limits').hidden = name !== 'home';
+  byId('demo-tools').hidden = name !== 'home';
   byId(name === 'home' ? 'home-title' : 'result-title').focus();
 }
 
@@ -181,12 +182,14 @@ function showResult(result, text) {
   byId('ocr-result-note').hidden = result.inputSource !== 'screenshot';
   const style = RESULT_STYLES[result.assessment];
   const risk = result.requestRisk.level;
+  const view = window.TfsResultView.build(result, text);
   byId('result-banner').className = `result-banner ${style.css}${risk !== 'none' ? ' risky' : ''}`;
   byId('state-symbol').textContent = style.symbol;
   // "Suspicious" already is the strong warning; only an unresolved result needs the risk named.
-  byId('state-label').textContent = risk === 'high' && style.riskyLabel ? style.riskyLabel : style.label;
-  byId('result-title').textContent = style.title;
-  byId('result-description').textContent = result.description;
+  byId('state-label').textContent = view.label;
+  byId('result-title').textContent = view.title;
+  byId('result-description').textContent = view.description;
+  byId('result-scope').textContent = view.limits[0];
   byId('identity').textContent = result.claimedIdentity;
   byId('channel').textContent = result.channel;
   byId('inspected').textContent = result.inspected;
@@ -196,6 +199,16 @@ function showResult(result, text) {
   const [lead, ...otherWarnings] = result.actionWarnings;
   byId('action-lead').textContent = lead;
   byId('action-note').classList.toggle('high-risk', risk === 'high');
+  byId('action-groups').replaceChildren(...view.groups.map(group => {
+    const item = textElement('li', '', 'action-group');
+    item.dataset.action = group.id;
+    item.append(textElement('h3', group.title));
+    const reasons = textElement('ul', '', 'group-reasons');
+    reasons.replaceChildren(...group.reasons.map(reason => textElement('li', reason)));
+    item.append(reasons, textElement('p', group.action, 'protective-step'));
+    return item;
+  }));
+  byId('visible-limits').replaceChildren(...view.limits.slice(1).map(limit => textElement('li', limit)));
 
   byId('checks').replaceChildren(...result.checks.map(checkItem));
   byId('asks-section').hidden = result.requestRisk.flags.length === 0;
@@ -205,10 +218,12 @@ function showResult(result, text) {
   showWhy(result, showAnnotations(text, result), text);
   // Each new result starts with its full details folded away.
   byId('evidence-details').open = false;
+  byId('followup-details').open = false;
+  byId('why-section').open = false;
+  byId('annotated-section').open = false;
   byId('self-check-details').open = false;
-  // Asking someone is open under every result that is not a match; under a match it stays
-  // one tap away. It never changes the result.
-  byId('trusted-help').open = result.assessment !== 'details_match';
+  // The protective steps stay visible; extra help starts folded for each new result.
+  byId('trusted-help').open = false;
   byId('no-one-available').open = false;
   byId('request-status').textContent = '';
 
@@ -218,7 +233,7 @@ function showResult(result, text) {
 }
 
 function clearResult() {
-  for (const id of ['why-list', 'result-title', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
+  for (const id of ['action-groups', 'visible-limits', 'why-list', 'result-title', 'result-scope', 'result-description', 'identity', 'channel', 'inspected', 'meaning', 'checks', 'asks', 'warnings', 'next-list', 'action-lead', 'annotated', 'annotation-notes']) {
     byId(id).replaceChildren();
   }
   byId('annotated-section').hidden = true;

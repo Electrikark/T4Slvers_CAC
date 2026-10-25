@@ -79,7 +79,7 @@ test('E11 The real engine and list load, and report how many records are reviewe
   // The same engine files as the page, in the same order, so the evaluation measures the app.
   const html = fs.readFileSync(path.join(__dirname, '../check.html'), 'utf8');
   const pageFiles = [...html.matchAll(/<script defer src="([^"]+)"/g)].map(m => m[1])
-    .filter(f => !['js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'js/app.js', 'data/help-cards.js', 'data/why.js', 'js/why.js', 'data/scam-guide.js'].includes(f));
+    .filter(f => !['js/selfCheck.js', 'js/mockData.js', 'js/annotate.js', 'js/app.js', 'js/result-view.js', 'data/help-cards.js', 'data/why.js', 'js/why.js', 'data/scam-guide.js'].includes(f));
   assert.deepEqual(FILES, pageFiles);
   const loaded = loadEngine();
   assert.equal(loaded.analyze('Grandma, please buy 3 Apple gift cards and send me the codes.', 'text').assessment, 'suspicious');

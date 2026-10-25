@@ -14,7 +14,7 @@ window.TFS_HELP = {
     ftcHacked: { title: 'FTC: How To Recover Your Hacked Email or Social Media Account', url: 'https://consumer.ftc.gov/articles/how-recover-your-hacked-email-or-social-media-account' },
     ftcGift: { title: 'FTC: Avoiding and Reporting Gift Card Scams', url: 'https://consumer.ftc.gov/articles/avoiding-and-reporting-gift-card-scams' },
     ftcSpam: { title: 'FTC: How To Recognize and Report Spam Text Messages', url: 'https://consumer.ftc.gov/articles/how-recognize-and-report-spam-text-messages' },
-    aarp: { title: 'AARP Fraud Watch Network Helpline', url: 'https://www.aarp.org/states/illinois/fraud-protection/' }
+    aarp: { title: 'AARP Fraud Watch Network Helpline', url: 'https://www.aarp.org/money/scams-fraud/helpline/' }
   },
   cards: [
     {
@@ -145,7 +145,7 @@ window.TFS_HELP = {
       steps: [
         { text: 'Do not reply to the message or call the number in it.', source: null },
         { text: 'Forward a scam text to 7726 (SPAM), and report it at ReportFraud.ftc.gov.', source: 'ftcSpam' },
-        { text: 'Call the AARP Fraud Watch Network Helpline at 877-908-3360 (weekdays, free) to talk it through.', source: 'aarp' },
+        { text: 'Call the AARP Fraud Watch Network Helpline at 877-908-3360 (Monday–Friday, 8 a.m.–8 p.m. Eastern) for free guidance about a possible scam. No AARP membership needed.', source: 'aarp' },
         { text: 'It is fine to ask someone you trust to help you.', source: null }
       ],
       examples: [
