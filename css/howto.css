@@ -1,0 +1,72 @@
+/* How-to guides: help.html, and the help beside the message box on check.html.
+   Large text, 48px tap targets, and nothing that moves on its own. */
+.howto-page .page-heading { padding-bottom:20px; }
+.howto-status { max-width:760px; margin:0 0 28px; padding:12px 16px; border-radius:8px; background:#fff6e5; color:#5c3d00; font-size:1.0625rem; }
+.howto-group { max-width:760px; margin:0 0 48px; }
+.howto-group > h2 { font-size:1.75rem; margin:0 0 20px; padding-top:12px; border-top:1px solid var(--line); }
+.howto-guide { margin:0 0 32px; }
+.howto-guide h3 { font-size:1.375rem; margin:0 0 8px; }
+.howto-goal, .howto-why { font-size:1.125rem; line-height:1.6; margin:0 0 14px; }
+.howto-safety { font-size:1.0625rem; line-height:1.55; margin:0 0 14px; padding:12px 16px; border-left:5px solid #b4561a; background:#fdf1e8; border-radius:0 8px 8px 0; }
+.howto-choose { font-size:1.0625rem; font-weight:700; margin:0 0 8px; }
+.howto-devices { display:grid; gap:10px; margin:0 0 14px; }
+.howto-device { border:1px solid #96a38d; border-radius:10px; background:white; }
+.howto-device > summary { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; min-height:56px; padding:12px 16px; font-size:1.125rem; }
+.howto-device > summary .howto-app { margin:0; font-size:1rem; font-weight:400; color:var(--muted); }
+.howto-device[open] > summary { border-bottom:1px solid var(--line); }
+.howto-device-body { padding:4px 16px 16px; }
+.howto-steps { margin:10px 0 0; padding-left:28px; font-size:1.125rem; line-height:1.6; }
+.howto-steps > li { margin:0 0 12px; padding-left:4px; }
+.howto-steps > li > p { margin:0 0 10px; }
+.howto-steps a { font-weight:700; }
+.howto-checked, .howto-unchecked { font-size:1rem; line-height:1.5; margin:12px 0 0; padding:10px 12px; border-radius:8px; }
+.howto-checked { background:var(--soft); }
+.howto-unchecked { background:#fff6e5; color:#5c3d00; }
+.howto-tips { font-size:1.0625rem; line-height:1.55; padding-left:24px; color:var(--muted); }
+.howto-tips li + li { margin-top:8px; }
+.howto-figure { margin:4px 0 14px; }
+.howto-figure img { display:block; max-width:100%; height:auto; border:1px solid #b9c3b2; border-radius:10px; background:white; }
+.practice-label { margin:20px 0 6px; font-size:.9375rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
+.practice-source { margin:0 0 20px; padding:16px 18px; border:2px dashed #96a38d; border-radius:12px; background:white; font-size:1.25rem; line-height:1.6; -webkit-user-select:text; user-select:text; }
+.howto-page textarea { width:100%; font-size:1.125rem; }
+.practice-actions { display:flex; flex-wrap:wrap; gap:10px; margin:4px 0 10px; }
+.practice-actions button { min-height:52px; }
+.practice-result { min-height:1.5em; font-size:1.125rem; line-height:1.55; font-weight:700; }
+.practice-result:empty { min-height:0; margin:0; }
+.howto-limit { font-size:1rem; line-height:1.55; color:var(--muted); }
+.practice-picture img { max-width:min(390px, 100%); }
+.howto-ready { max-width:760px; align-items:center; }
+.howto-ready .button-link { min-height:52px; padding:12px 22px; }
+
+/* The short help beside the message box. Closed until asked for, and it never covers the box. */
+.howto-inline { margin:0 0 18px; border:1px solid #96a38d; border-radius:10px; background:#fbfcf8; }
+.howto-inline > summary { display:flex; align-items:center; min-height:52px; padding:12px 16px; font-size:1.0625rem; color:var(--teal); }
+.howto-inline[open] > summary { border-bottom:1px solid var(--line); }
+.howto-inline-body { padding:8px 16px 16px; }
+.howto-inline-note { margin:4px 0 14px; font-size:1rem; color:var(--muted); }
+.howto-inline .howto-guide { margin:0 0 20px; }
+.howto-inline .howto-guide h3 { font-size:1.1875rem; }
+.howto-inline .howto-steps { font-size:1.0625rem; }
+.howto-more { font-size:1rem; line-height:1.5; margin:8px 0 0; }
+.howto-more a { display:inline-flex; align-items:center; min-height:48px; font-weight:700; }
+.howto-more span { display:block; color:var(--muted); }
+.ocr-tools .howto-inline { margin-top:12px; }
+
+@media (max-width:760px) {
+  .howto-device-body, .howto-inline-body { padding-left:12px; padding-right:12px; }
+  .howto-steps { padding-left:24px; }
+  .practice-actions button, .howto-ready .button-link { width:100%; }
+}
+@media (forced-colors:active) {
+  .howto-device, .howto-inline, .practice-source, .howto-figure img { border-color:CanvasText; }
+  .howto-safety { border-left-color:CanvasText; }
+}
+@media print {
+  .howto-device, .howto-inline { border-color:#999; }
+  .practice-actions { display:none !important; }
+}
+
+/* Asking before an example replaces the person's own words (check.html, demo examples). */
+.example-confirm { margin:14px 0; padding:14px 16px; border:2px solid #b4561a; border-radius:10px; background:#fdf1e8; font-size:1.0625rem; }
+.example-confirm p { margin:0 0 10px; font-weight:700; }
+.example-confirm button { margin:4px 8px 4px 0; }

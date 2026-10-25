@@ -93,6 +93,8 @@ function checkMessage(event) {
 
 // Clears everything the last person entered or saw, for a shared workshop device.
 function startOver() {
+  hideExampleConfirm();
+  exampleText = null;
   byId('submission-form').reset();
   clearResult();
   chooseChannel(null);
@@ -102,14 +104,39 @@ function startOver() {
   showScreen('home');
 }
 
-function loadExample(id) {
+// The text a loaded example put in the box, so loading another one can tell whether the
+// box now holds the person's own words.
+let exampleText = null;
+let pendingExample = null;
+
+function placeExample(id) {
   startOver();
   const example = window.demoScenarios[id];
   byId('message').value = example.input;
+  exampleText = example.input;
   updateCount();
   byId('example-loaded').textContent = `Loaded: ${example.label}. Example channel: ${example.channelLabel}. Choose that channel before checking.`;
   byId('example-loaded').hidden = false;
   byId('check-button').focus();
+}
+
+function hideExampleConfirm() {
+  pendingExample = null;
+  byId('example-confirm').hidden = true;
+}
+
+// Never replace a person's own message without asking: an example is one tap away from
+// wiping a real message someone was about to check.
+function loadExample(id) {
+  const current = byId('message').value;
+  if (current.trim() && current !== exampleText) {
+    pendingExample = id;
+    byId('example-confirm').hidden = false;
+    byId('example-keep').focus();
+    return;
+  }
+  hideExampleConfirm();
+  placeExample(id);
 }
 
 /* ---------- The result ---------- */
@@ -333,6 +360,15 @@ byId('copy-request').hidden = !(navigator.clipboard && typeof navigator.clipboar
 byId('share-request').addEventListener('click', shareRequest);
 byId('copy-request').addEventListener('click', copyRequest);
 byId('reset').addEventListener('click', startOver);
+byId('example-replace').addEventListener('click', () => {
+  const id = pendingExample;
+  hideExampleConfirm();
+  if (id) placeExample(id);
+});
+byId('example-keep').addEventListener('click', () => {
+  hideExampleConfirm();
+  byId('message').focus();
+});
 for (const [id, example] of Object.entries(window.demoScenarios)) {
   const button = textElement('button', example.label);
   button.type = 'button';
@@ -351,6 +387,7 @@ const practice = window.TFS_GUIDE && window.TFS_GUIDE.scams.find(s => s.id === e
 if (practice) {
   startOver();
   byId('message').value = practice.example.text;
+  exampleText = practice.example.text;
   updateCount();
   const channel = practice.example.channel;
   byId('example-loaded').textContent = `Made-up practice message. Choose ${CHANNEL_NAMES[channel]}, then Check this message when you are ready.`;

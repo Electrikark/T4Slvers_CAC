@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const base = '/T4Slvers_CAC/';
-const pages = ['index.html', 'check.html', 'recover.html', 'learn.html', 'about.html'];
+const pages = ['index.html', 'check.html', 'recover.html', 'learn.html', 'help.html', 'about.html'];
 
 test('home leads to practice, a real result, and recovery without sending input', async ({ page }) => {
   const outside = [], errors = [];
