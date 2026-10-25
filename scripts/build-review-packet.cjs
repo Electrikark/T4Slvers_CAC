@@ -1,0 +1,452 @@
+/* Build the human-review packet: one page that puts every draft contact record beside its
+ * official source link, collects the exact supporting passage and two independent reviewers,
+ * and emits the JSON to paste into data/store.js.
+ *
+ * Why: docs/reference-review-guide.md says the review is "the part the code cannot do for
+ * you", and RELEASE.md requires two distinct trained volunteers per contact. Neither the
+ * store nor the matcher enforces that. This page does: it refuses to emit
+ * status "reviewed" unless a passage is present and two DIFFERENT reviewer names with
+ * their own dates are recorded. Nothing is prefilled, and the page cannot invent a review.
+ *
+ *   node scripts/build-review-packet.cjs            # writes docs/testing/review-packet.html
+ *   node scripts/build-review-packet.cjs --check    # fails if the page is stale
+ */
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+
+const ROOT = path.join(__dirname, '..');
+const OUT = path.join(ROOT, 'docs', 'testing', 'review-packet.html');
+
+// --- read the draft contacts straight out of the store ------------------------------
+
+function loadStore() {
+  const context = vm.createContext({});
+  context.window = context;
+  vm.runInContext(fs.readFileSync(path.join(ROOT, 'data', 'store.js'), 'utf8'), context, {
+    filename: 'data/store.js'
+  });
+  return context.TFS_STORE;
+}
+
+const store = loadStore();
+
+// docs/reference-review-guide.md: "HSBC, Royal Mail and E-ZPass stay outside this scope."
+// They are shown so the page matches the store, but they are not offered for review.
+const OUT_OF_SCOPE = new Set(['hsbc', 'royalmail', 'ezpass']);
+
+const orgs = (store.orgs || [])
+  .filter(o => Array.isArray(o.contacts) && o.contacts.length)
+  .map(o => ({
+    id: o.id,
+    name: o.displayName || o.id,
+    outOfScope: OUT_OF_SCOPE.has(o.id),
+    contacts: o.contacts.map((c, i) => ({
+      key: `${o.id}:${c.kind}:${i}`,
+      kind: c.kind,
+      value: c.value,
+      scope: c.scope,
+      purpose: c.purpose || null,
+      status: c.status,
+      sourceUrl: c.sourceUrl || null,
+      researchedOn: c.checkedOn || null
+    }))
+  }));
+
+const draftCount = orgs.reduce(
+  (n, o) => n + (o.outOfScope ? 0 : o.contacts.filter(c => c.status === 'draft').length),
+  0
+);
+
+// --- the page -----------------------------------------------------------------------
+
+const DATA = JSON.stringify({ storeVersion: store.version, orgs }, null, 1);
+
+const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference review packet</title>
+<style>
+  :root {
+    --bg: #fbfaf8; --panel: #ffffff; --ink: #1d1b19; --muted: #5d5853;
+    --line: #e2ddd6; --accent: #1f5f4f; --warn: #8a3b12; --ok: #1f5f4f;
+    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171614; --panel: #1f1e1b; --ink: #f0ece6; --muted: #a9a29a;
+      --line: #35332e; --accent: #7fc4ae; --warn: #e0a27a; --ok: #7fc4ae;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171614; --panel: #1f1e1b; --ink: #f0ece6; --muted: #a9a29a;
+    --line: #35332e; --accent: #7fc4ae; --warn: #e0a27a; --ok: #7fc4ae;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: 0 16px 80px;
+  }
+  .wrap { max-width: 50rem; margin: 0 auto; }
+  header { padding: 32px 0 8px; }
+  h1 { font-size: 1.5rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 0.95rem; margin: 0; }
+  .note {
+    border-left: 3px solid var(--accent); padding: 10px 14px; margin: 20px 0;
+    background: var(--panel); font-size: 0.93rem;
+  }
+  .note strong { display: block; margin-bottom: 3px; }
+  details.rules { margin: 18px 0; font-size: 0.9rem; color: var(--muted); }
+  details.rules summary { cursor: pointer; color: var(--ink); }
+  .org { margin: 30px 0 0; }
+  .org > h2 {
+    font-size: 1.05rem; margin: 0 0 10px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .rec {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 16px; margin: 0 0 14px;
+  }
+  .rec-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .val { font-family: var(--mono); font-size: 1rem; font-weight: 600; }
+  .kind {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); border: 1px solid var(--line); border-radius: 99px;
+    padding: 1px 8px;
+  }
+  .meta { color: var(--muted); font-size: 0.85rem; margin: 6px 0 0; }
+  .meta a { color: var(--accent); }
+  label { display: block; font-size: 0.85rem; color: var(--muted); margin: 12px 0 4px; }
+  textarea, input {
+    width: 100%; background: var(--bg); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+    font: inherit;
+  }
+  textarea { min-height: 72px; resize: vertical; font-size: 0.93rem; }
+  .pair { display: grid; grid-template-columns: 1fr 10.5rem; gap: 10px; }
+  @media (max-width: 34rem) { .pair { grid-template-columns: 1fr; } }
+  .verdict { margin: 12px 0 0; font-size: 0.9rem; font-weight: 600; }
+  .verdict.draft { color: var(--warn); }
+  .verdict.reviewed { color: var(--ok); }
+  .why { font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+  .out { margin: 40px 0 0; }
+  pre {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px; overflow-x: auto; font-family: var(--mono); font-size: 0.8rem;
+    white-space: pre; margin: 0;
+  }
+  button {
+    font: inherit; font-weight: 600; background: var(--accent); color: var(--bg);
+    border: 0; border-radius: 6px; padding: 9px 16px; cursor: pointer; margin: 0 8px 0 0;
+  }
+  .tally { color: var(--muted); font-size: 0.9rem; margin: 10px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Reference review packet</h1>
+  <p class="sub">Store <code>${store.version}</code> &middot; ${draftCount} contact records in draft</p>
+</header>
+
+<div class="note">
+  <strong>This page does not review anything. You do.</strong>
+  For each record: open its source page, find the sentence that actually supports the value,
+  paste that sentence in, and sign it. A record only becomes <code>reviewed</code> when a
+  passage is present and two different people have each signed with their own date.
+</div>
+
+<details class="rules">
+  <summary>What the gate checks</summary>
+  <ul>
+    <li>A passage must be present. A page that merely loads is not evidence.</li>
+    <li>Two reviewer names, and they must differ. One person checking twice is one review.</li>
+    <li>Each reviewer records their own check date. The review-due date is that date plus 90 days.</li>
+    <li>Anything short of all three stays <code>draft</code>, and the engine keeps excluding it.</li>
+  </ul>
+  <p>Typed values stay in this page only. Nothing is uploaded and nothing is saved between
+  visits &mdash; copy the output before you close the tab.</p>
+</details>
+
+<div id="orgs"></div>
+
+<div class="out">
+  <h2>Output</h2>
+  <p class="tally" id="tally"></p>
+  <p>
+    <button id="copy-json" type="button">Copy contacts JSON</button>
+    <button id="copy-log" type="button">Copy review log</button>
+  </p>
+  <pre id="json"></pre>
+</div>
+</div>
+
+<script id="packet" type="application/json">${DATA}</script>
+<script>
+(function () {
+  'use strict';
+  var packet = JSON.parse(document.getElementById('packet').textContent);
+  var state = {};
+
+  function plus90(iso) {
+    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(iso)) return null;
+    var d = new Date(iso + 'T00:00:00Z');
+    if (isNaN(d.getTime())) return null;
+    d.setUTCDate(d.getUTCDate() + 90);
+    return d.toISOString().slice(0, 10);
+  }
+
+  // The gate. Returns { ok, reason }.
+  function gate(s, contact) {
+    if (contact && contact.outOfScope) {
+      return { ok: false, reason: 'outside the review scope for this release' };
+    }
+    if (!s) return { ok: false, reason: 'nothing recorded yet' };
+    if (!contact || !contact.sourceUrl) {
+      return { ok: false, reason: 'no official source page recorded — find one first' };
+    }
+    if (!s.passage || s.passage.trim().length < 15) {
+      return { ok: false, reason: 'no supporting passage from the source page' };
+    }
+    var n1 = (s.r1name || '').trim(), n2 = (s.r2name || '').trim();
+    if (!n1 || !n2) return { ok: false, reason: 'needs two reviewers' };
+    if (n1.toLowerCase() === n2.toLowerCase()) {
+      return { ok: false, reason: 'both reviewers are the same person — that is one review' };
+    }
+    if (!plus90(s.r1date) || !plus90(s.r2date)) {
+      return { ok: false, reason: 'each reviewer needs their own check date (YYYY-MM-DD)' };
+    }
+    return { ok: true, reason: '' };
+  }
+
+  function field(labelText, el) {
+    var l = document.createElement('label');
+    l.textContent = labelText;
+    var frag = document.createDocumentFragment();
+    frag.appendChild(l);
+    frag.appendChild(el);
+    return frag;
+  }
+
+  var host = document.getElementById('orgs');
+  // Looked up before the records are built: each record calls sync() as it is created,
+  // and sync() renders the output.
+  var jsonEl = document.getElementById('json');
+  var tallyEl = document.getElementById('tally');
+  var lastJson = '', lastLog = '';
+
+  packet.orgs.forEach(function (org) {
+    var sec = document.createElement('section');
+    sec.className = 'org';
+    var h = document.createElement('h2');
+    h.textContent = org.name + ' (' + org.id + ')' + (org.outOfScope ? ' — outside this release' : '');
+    sec.appendChild(h);
+
+    if (org.outOfScope) {
+      var oos = document.createElement('p');
+      oos.className = 'meta';
+      oos.textContent =
+        'The review guide keeps this organization outside the current scope. ' +
+        'Its records are listed so this page matches the store; they are not for review here.';
+      sec.appendChild(oos);
+    }
+
+    org.contacts.forEach(function (c) {
+      c.outOfScope = org.outOfScope;
+      state[c.key] = { passage: '', r1name: '', r1date: '', r2name: '', r2date: '' };
+
+      var box = document.createElement('div');
+      box.className = 'rec';
+
+      var head = document.createElement('div');
+      head.className = 'rec-head';
+      var kind = document.createElement('span');
+      kind.className = 'kind';
+      kind.textContent = c.kind;
+      var val = document.createElement('span');
+      val.className = 'val';
+      val.textContent = c.value;
+      head.appendChild(val);
+      head.appendChild(kind);
+      box.appendChild(head);
+
+      var meta = document.createElement('p');
+      meta.className = 'meta';
+      if (c.purpose) {
+        meta.appendChild(document.createTextNode('Labelled on the source as: ' + c.purpose + ' '));
+      }
+      if (c.sourceUrl) {
+        var a = document.createElement('a');
+        a.href = c.sourceUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = 'Open the source page';
+        meta.appendChild(a);
+        meta.appendChild(document.createTextNode(' — ' + c.sourceUrl));
+      } else {
+        meta.appendChild(document.createTextNode('No source URL recorded. Find one before reviewing.'));
+      }
+      if (c.researchedOn) {
+        meta.appendChild(document.createElement('br'));
+        meta.appendChild(document.createTextNode(
+          'Researched ' + c.researchedOn + '. That is a research date, not your check date.'
+        ));
+      }
+      box.appendChild(meta);
+
+      var ta = document.createElement('textarea');
+      ta.placeholder = 'Paste the exact sentence from that page that supports this value.';
+      box.appendChild(field('Supporting passage, copied from the source page', ta));
+
+      var mk = function (ph, type) {
+        var i = document.createElement('input');
+        i.type = type || 'text';
+        i.placeholder = ph;
+        return i;
+      };
+      var r1n = mk('Reviewer 1 name'), r1d = mk('YYYY-MM-DD', 'date');
+      var r2n = mk('Reviewer 2 name'), r2d = mk('YYYY-MM-DD', 'date');
+
+      var p1 = document.createElement('div');
+      p1.className = 'pair';
+      p1.appendChild(r1n);
+      p1.appendChild(r1d);
+      box.appendChild(field('First reviewer and the day they checked it', p1));
+
+      var p2 = document.createElement('div');
+      p2.className = 'pair';
+      p2.appendChild(r2n);
+      p2.appendChild(r2d);
+      box.appendChild(field('Second reviewer, a different person, and their own day', p2));
+
+      var verdict = document.createElement('p');
+      verdict.className = 'verdict draft';
+      box.appendChild(verdict);
+
+      function sync() {
+        var s = state[c.key];
+        s.passage = ta.value;
+        s.r1name = r1n.value; s.r1date = r1d.value;
+        s.r2name = r2n.value; s.r2date = r2d.value;
+        var g = gate(s, c);
+        verdict.className = 'verdict ' + (g.ok ? 'reviewed' : 'draft');
+        verdict.textContent = g.ok ? 'reviewed' : 'stays draft';
+        if (!g.ok) {
+          var why = document.createElement('span');
+          why.className = 'why';
+          why.textContent = ' — ' + g.reason;
+          verdict.appendChild(why);
+        }
+        render();
+      }
+      [ta, r1n, r1d, r2n, r2d].forEach(function (el) {
+        if (c.outOfScope) el.disabled = true;
+        el.addEventListener('input', sync);
+      });
+      sync();
+
+      sec.appendChild(box);
+    });
+
+    host.appendChild(sec);
+  });
+
+  function render() {
+    var out = {}, log = [], ready = 0, total = 0;
+
+    packet.orgs.forEach(function (org) {
+      var contacts = org.contacts.map(function (c) {
+        total++;
+        var s = state[c.key];
+        var g = gate(s, c);
+        var rec = {
+          kind: c.kind,
+          value: c.value,
+          scope: c.scope,
+          status: g.ok ? 'reviewed' : 'draft',
+          sourceUrl: c.sourceUrl,
+          checkedOn: g.ok ? s.r1date : c.researchedOn,
+          reviewDue: g.ok ? plus90(s.r1date) : null,
+          reviewedBy: g.ok ? s.r1name.trim() : null
+        };
+        if (c.purpose) rec.purpose = c.purpose;
+        if (g.ok) {
+          ready++;
+          log.push({
+            org: org.id,
+            kind: c.kind,
+            value: c.value,
+            sourceUrl: c.sourceUrl,
+            passage: s.passage.trim(),
+            reviewers: [
+              { name: s.r1name.trim(), checkedOn: s.r1date },
+              { name: s.r2name.trim(), checkedOn: s.r2date }
+            ]
+          });
+        }
+        return rec;
+      });
+      out[org.id] = { contacts: contacts };
+    });
+
+    lastJson = JSON.stringify(out, null, 2);
+    lastLog = JSON.stringify(
+      { storeVersion: packet.storeVersion, reviewLog: log },
+      null, 2
+    );
+    jsonEl.textContent = lastJson;
+    tallyEl.textContent = ready + ' of ' + total +
+      ' records pass the gate. The rest stay draft and the engine keeps excluding them' +
+      (ready === 0 ? ', so Details Match stays unreachable.' : '.');
+  }
+
+  function copy(text, btn) {
+    var done = function () {
+      var old = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(function () { btn.textContent = old; }, 1200);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () {});
+      return;
+    }
+    var t = document.createElement('textarea');
+    t.value = text;
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(t);
+  }
+
+  document.getElementById('copy-json').addEventListener('click', function () {
+    copy(lastJson, this);
+  });
+  document.getElementById('copy-log').addEventListener('click', function () {
+    copy(lastLog, this);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
+`;
+
+if (process.argv.includes('--check')) {
+  const current = fs.existsSync(OUT) ? fs.readFileSync(OUT, 'utf8') : '';
+  if (current !== html) {
+    console.error('docs/testing/review-packet.html is stale. Run: node scripts/build-review-packet.cjs');
+    process.exit(1);
+  }
+  console.log('review-packet.html matches data/store.js');
+  process.exit(0);
+}
+
+fs.mkdirSync(path.dirname(OUT), { recursive: true });
+fs.writeFileSync(OUT, html);
+console.log(`wrote ${path.relative(ROOT, OUT)} — ${orgs.length} organizations, ${draftCount} draft records`);
