@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Discovery fixtures test exact source offsets, including CRLF inside a message: keep their bytes.
+discovery/fixtures/*.csv -text
