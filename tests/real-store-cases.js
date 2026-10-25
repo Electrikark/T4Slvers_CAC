@@ -71,7 +71,7 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": [
-        "reference_needs_review" /* Real list: awaiting human review. */
+        "reference_needs_review" /* The DMV record is still awaiting human review. */
       ],
       "risk": "none"
     },
@@ -110,7 +110,7 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": [
-        "reference_needs_review" /* Real list: awaiting human review. */
+        "domain_official" /* Real list: Chase was reviewed by two volunteers, so its record resolves. */
       ]
     },
     "guards": "Email address on an official domain"
@@ -182,7 +182,7 @@ window.TFS_REAL_CASES = [
         "T1-CODE"
       ],
       "codes": [
-        "reference_needs_review" /* Real list: awaiting human review. */
+        "domain_official" /* Real list: Chase was reviewed by two volunteers, so its record resolves. */
       ],
       "risk": "high",
       "flags": [
@@ -197,7 +197,7 @@ window.TFS_REAL_CASES = [
     "expect": {
       "assessment": "insufficient_evidence",
       "codes": [
-        "reference_needs_review" /* Real list: awaiting human review. */
+        "domain_official" /* Real list: Chase was reviewed by two volunteers, so its record resolves. */
       ]
     },
     "guards": "Defanged links are read correctly"

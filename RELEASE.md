@@ -10,7 +10,7 @@ Record both reviewers' real names, actual review dates, source URLs, decisions a
 
 Until both reviews are documented and any disagreement is resolved, keep workbook status Draft and contact `status: "draft"`. After both approve, the workbook may say Approved and the contact may use `status: "reviewed"`. Set `reviewedBy` to the documented first reviewer, preserve the second review in the linked review log, set `checkedOn` to the actual completed review date, and set `reviewDue` to 90 calendar days later. A due date is inclusive; the next day is expired. Recheck on source changes and after expiry.
 
-The current contact matcher requires one nonempty `reviewedBy` field; **it does not automatically enforce this two-person release gate**. The release owner must check both documented reviews before changing contact status or approving a build. Detection-policy records separately require distinct `reviewed_by` and `second_reviewer` fields in the existing policy engine. Approving contact records does not approve an organization detection policy.
+The current contact matcher requires one nonempty `reviewedBy` field and rejects template values such as `REVIEWER_NAME`; **it does not automatically enforce this two-person release gate**. `tests/review-placeholders.cjs`, part of `npm test`, checks that every reviewed contact names a reviewer, cites an https source page, carries a real check date and a 90-day due date that has not passed, and agrees with the review record and the saved test report. It checks one reviewer, not two. The release owner must check both documented reviews before changing contact status or approving a build. Detection-policy records separately require distinct `reviewed_by` and `second_reviewer` fields in the existing policy engine. Approving contact records does not approve an organization detection policy.
 
 ## Release checklist
 
@@ -22,9 +22,22 @@ The current contact matcher requires one nonempty `reviewedBy` field; **it does 
 - Keep the USPS tracking quote as documentation with its source conditions. Do not turn it into a broader detection rule or activate the existing draft policy.
 - Record the tested build/commit and the complete human review log for the exact pilot build. A build with pending review is not approved for live-record Details Match.
 
+## Single-reviewer exception (October 24, 2026)
+
+On October 24, 2026 the release owner, Naman Raichura, approved one exception to the two-volunteer rule above.
+
+- **Scope.** Only the nine contacts of the five organizations listed in `docs/testing/five-organization-review.json`: Chase, Wells Fargo, USPS, the Social Security Administration and Amazon. Every other organization, and every contact added later, follows the two-volunteer rule.
+- **Reason.** A second trained volunteer could not complete an independent review before the Congressional App Challenge submission.
+- **What the one review must still do.** One named trained volunteer opens each exact official source URL and confirms its value, purpose, scope and surrounding source wording, the same check this file asks of each of the two volunteers.
+- **How it is recorded.** Run `python3 scripts/record-review.py --reviewer "<name>" --date <YYYY-MM-DD>` after the review. It writes the reviewer, the actual review date and the 90-day due date into `data/store.js`, the review record, workbook columns K, L, N and O, and the regenerated test report, then runs the review gate and `tests/review-artifact-consistency.py`. Workbook column M records no second review; none took place.
+- **When it ends.** On the contacts' recorded `reviewDue` date, or as soon as a source page changes, whichever comes first. Re-review after that follows the two-volunteer rule.
+- **What it does not approve.** No organization detection policy. Policies still require distinct `reviewed_by` and `second_reviewer` fields.
+
+Public descriptions of the app, including the competition submission, say that these records were checked by one reviewer.
+
 ## October 19, 2026 pilot
 
-All five organizations currently remain Draft, with no recorded human approvals. Hypothetical approved fixtures test software behavior only; label them as simulated data and keep them separate from live-record validation.
+At the time of this pilot, all five organizations remained Draft, with no recorded human approvals. The single-reviewer exception above changes that for later builds. Hypothetical approved fixtures test software behavior only; label them as simulated data and keep them separate from live-record validation.
 
 If both volunteers' reviews cannot be completed before the pilot, keep the records Draft and record: **"Details Match was not evaluated with approved real-organization records; those records remained Draft."** If a separately labeled simulated three-outcome usability exercise is run, report it separately.
 

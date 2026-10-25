@@ -12,10 +12,14 @@
    (reviewDue is 90 days after the review). To review contacts one at a time instead, list
    them in "contacts": [{ "kind": "domain" | "phone", "value", "scope": { "type":
    "registrable" | "host", "pathPrefix"? }, "status": "reviewed" | "draft", "sourceUrl",
-   "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations have source-documented draft contacts. Human reviewer fields
-   are blank pending review evidence. All contacts remain excluded as not_reviewed.
-   humanReviewDraft records Naman Raichura's statement that he checked the original
-   46 organizations. attestedOn is the date of that statement, not the check date.
+   "checkedOn", "reviewDue", "reviewedBy" }]. Five organizations (chase, wellsfargo, usps, ssa, amazon) carry contacts
+   reviewed by one named trained volunteer who opened each cited source URL, under
+   the dated single-reviewer exception in RELEASE.md. Record a review with
+   scripts/record-review.py; tests/review-placeholders.cjs fails while the reviewer
+   is still a template value. Every other organization stays draft and excluded as
+   not_reviewed and, when reviewed, follows the two-volunteer rule.
+   humanReviewDraft records Naman Raichura's statement that he checked the other
+   41 organizations. attestedOn is the date of that statement, not the check date.
    These drafts are not read as approval by the engine. Missing review dates and
    source pages stay null; existing research dates are not human check dates.
    An organization-level humanReview also reviews every contact still in draft (see
@@ -23,7 +27,7 @@
    securityNotes and publishedEmailSenderDomains document evidence only; they do not
    enable policy rules or authenticate a sender. */
 window.TFS_STORE = {
-  "version": "2026-10-18-five-org-draft",
+  "version": "2026-10-24-five-org-reviewed",
   "schemaVersion": 1,
   "shorteners": [
     "bit.ly",
@@ -156,14 +160,6 @@ window.TFS_STORE = {
 
     {
       "id": "chase",
-      "humanReviewDraft": {
-        "reviewer": "Naman Raichura",
-        "status": "evidence_pending",
-        "attestedOn": "2026-10-22",
-        "date": null,
-        "reviewDue": null,
-        "sourceUrl": null
-      },
       "displayName": "Chase",
       "category": "bank",
       "aliases": [
@@ -189,7 +185,7 @@ window.TFS_STORE = {
           "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "Human review pending",
+      "verifiedBy": "One named human reviewer under the RELEASE.md single-reviewer exception; see docs/testing/five-organization-review.json",
       "contacts": [
         {
           "kind": "domain",
@@ -197,11 +193,11 @@ window.TFS_STORE = {
           "scope": {
             "type": "registrable"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.chase.com/digital/resources/privacy-security",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura"
         },
         {
           "kind": "phone",
@@ -209,21 +205,21 @@ window.TFS_STORE = {
           "scope": {
             "type": "host"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.chase.com/digital/customer-service",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null,
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura",
           "purpose": "Personal Banking Customer Service:"
         }
       ],
       "sourceReview": {
-        "status": "draft",
-        "reviewer": null,
-        "date": "2026-10-18",
-        "reviewDue": "2027-01-16",
+        "status": "reviewed",
+        "reviewer": "Naman Raichura",
+        "date": "2026-10-24",
+        "reviewDue": "2027-01-22",
         "timezone": "America/Los_Angeles",
-        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. A named trained volunteer then opened every source URL and confirmed the value, purpose, scope and surrounding wording.",
         "notes": "Sender-domain field blank: no explicit legitimate sender-domain list found in checked pages. A phishing-report mailbox is not proof of a sending domain. Security quote concerns moving money to resolve fraud; it is not a general ban on bank transfers. Only the main domain and the listed US personal-banking number are included."
       },
       "securityNotes": {
@@ -265,14 +261,6 @@ window.TFS_STORE = {
     },
     {
       "id": "wellsfargo",
-      "humanReviewDraft": {
-        "reviewer": "Naman Raichura",
-        "status": "evidence_pending",
-        "attestedOn": "2026-10-22",
-        "date": null,
-        "reviewDue": null,
-        "sourceUrl": null
-      },
       "displayName": "Wells Fargo",
       "category": "bank",
       "aliases": [
@@ -294,7 +282,7 @@ window.TFS_STORE = {
           "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "Human review pending",
+      "verifiedBy": "One named human reviewer under the RELEASE.md single-reviewer exception; see docs/testing/five-organization-review.json",
       "contacts": [
         {
           "kind": "domain",
@@ -302,11 +290,11 @@ window.TFS_STORE = {
           "scope": {
             "type": "registrable"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.wellsfargo.com/",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura"
         },
         {
           "kind": "phone",
@@ -314,21 +302,21 @@ window.TFS_STORE = {
           "scope": {
             "type": "host"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.wellsfargo.com/privacy-security/fraud/report/",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null,
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura",
           "purpose": "Checking or savings account, debit, or ATM card fraud"
         }
       ],
       "sourceReview": {
-        "status": "draft",
-        "reviewer": null,
-        "date": "2026-10-18",
-        "reviewDue": "2027-01-16",
+        "status": "reviewed",
+        "reviewer": "Naman Raichura",
+        "date": "2026-10-24",
+        "reviewDue": "2027-01-22",
         "timezone": "America/Los_Angeles",
-        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. A named trained volunteer then opened every source URL and confirmed the value, purpose, scope and surrounding wording.",
         "notes": "Email source explicitly identifies wellsfargo.com in legitimate email addresses; this does not authenticate an email, and a string containing that text is not sufficient. Security quote refers to screen-sharing/remote-access tools. Other business, wire-fraud and card-claim numbers are outside this narrow review. Card instruction applies when reporting suspected fraud or unauthorized transactions and filing a claim."
       },
       "securityNotes": {
@@ -659,14 +647,6 @@ window.TFS_STORE = {
     },
     {
       "id": "amazon",
-      "humanReviewDraft": {
-        "reviewer": "Naman Raichura",
-        "status": "evidence_pending",
-        "attestedOn": "2026-10-22",
-        "date": null,
-        "reviewDue": null,
-        "sourceUrl": null
-      },
       "displayName": "Amazon",
       "category": "retail",
       "aliases": [
@@ -687,7 +667,7 @@ window.TFS_STORE = {
           "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "Human review pending",
+      "verifiedBy": "One named human reviewer under the RELEASE.md single-reviewer exception; see docs/testing/five-organization-review.json",
       "contacts": [
         {
           "kind": "domain",
@@ -695,20 +675,20 @@ window.TFS_STORE = {
           "scope": {
             "type": "registrable"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura"
         }
       ],
       "sourceReview": {
-        "status": "draft",
-        "reviewer": null,
-        "date": "2026-10-18",
-        "reviewDue": "2027-01-16",
+        "status": "reviewed",
+        "reviewer": "Naman Raichura",
+        "date": "2026-10-24",
+        "reviewDue": "2027-01-22",
         "timezone": "America/Los_Angeles",
-        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. A named trained volunteer then opened every source URL and confirmed the value, purpose, scope and surrounding wording.",
         "notes": "Phone, purpose and phone source remain blank: no official customer-service number was verified. The earlier contact-flow attempt returned 503; this pass does not claim a new successful phone lookup. Use the Amazon app or type amazon.com yourself. Sender domain remains blank; a scam-report inbox is not evidence of outbound senders. The gift-card quote is an exact excerpt from Amazon’s own publication; it does not authorize another contact domain."
       },
       "securityNotes": {
@@ -1257,14 +1237,6 @@ window.TFS_STORE = {
     },
     {
       "id": "usps",
-      "humanReviewDraft": {
-        "reviewer": "Naman Raichura",
-        "status": "evidence_pending",
-        "attestedOn": "2026-10-22",
-        "date": null,
-        "reviewDue": null,
-        "sourceUrl": null
-      },
       "displayName": "USPS",
       "category": "delivery",
       "aliases": [
@@ -1289,7 +1261,7 @@ window.TFS_STORE = {
           "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "Human review pending",
+      "verifiedBy": "One named human reviewer under the RELEASE.md single-reviewer exception; see docs/testing/five-organization-review.json",
       "contacts": [
         {
           "kind": "domain",
@@ -1297,11 +1269,11 @@ window.TFS_STORE = {
           "scope": {
             "type": "registrable"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.usps.com/",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura"
         },
         {
           "kind": "phone",
@@ -1309,21 +1281,21 @@ window.TFS_STORE = {
           "scope": {
             "type": "host"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.usps.com/help/contact-us.htm",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null,
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura",
           "purpose": "Customer Care Center"
         }
       ],
       "sourceReview": {
-        "status": "draft",
-        "reviewer": null,
-        "date": "2026-10-18",
-        "reviewDue": "2027-01-16",
+        "status": "reviewed",
+        "reviewer": "Naman Raichura",
+        "date": "2026-10-24",
+        "reviewDue": "2027-01-22",
         "timezone": "America/Los_Angeles",
-        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. A named trained volunteer then opened every source URL and confirmed the value, purpose, scope and surrounding wording.",
         "notes": "Scope: the paragraph describes tracking a specific package, registration online or an initiated text, and a customer request with a tracking number. The next sentence discusses an unrequested tracking text with a link. Preserve all those conditions. The excerpt is documentation only, not a broader rule about every USPS communication. USPS lists Postal Inspectors on its own contact page: https://www.usps.com/help/contact-us.htm . Sender domain remains blank. The tracking short code is not a callable phone record."
       },
       "securityNotes": {
@@ -1443,14 +1415,6 @@ window.TFS_STORE = {
     },
     {
       "id": "ssa",
-      "humanReviewDraft": {
-        "reviewer": "Naman Raichura",
-        "status": "evidence_pending",
-        "attestedOn": "2026-10-22",
-        "date": null,
-        "reviewDue": null,
-        "sourceUrl": null
-      },
       "displayName": "Social Security Administration",
       "category": "government",
       "aliases": [
@@ -1475,7 +1439,7 @@ window.TFS_STORE = {
           "check": "Official-source values documented; human review pending"
         }
       ],
-      "verifiedBy": "Human review pending",
+      "verifiedBy": "One named human reviewer under the RELEASE.md single-reviewer exception; see docs/testing/five-organization-review.json",
       "contacts": [
         {
           "kind": "domain",
@@ -1483,11 +1447,11 @@ window.TFS_STORE = {
           "scope": {
             "type": "registrable"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.ssa.gov/",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura"
         },
         {
           "kind": "phone",
@@ -1495,21 +1459,21 @@ window.TFS_STORE = {
           "scope": {
             "type": "host"
           },
-          "status": "draft",
+          "status": "reviewed",
           "sourceUrl": "https://www.ssa.gov/agency/contact/phone.html",
-          "checkedOn": "2026-10-18",
-          "reviewDue": "2027-01-16",
-          "reviewedBy": null,
+          "checkedOn": "2026-10-24",
+          "reviewDue": "2027-01-22",
+          "reviewedBy": "Naman Raichura",
           "purpose": "National 800 Number"
         }
       ],
       "sourceReview": {
-        "status": "draft",
-        "reviewer": null,
-        "date": "2026-10-18",
-        "reviewDue": "2027-01-16",
+        "status": "reviewed",
+        "reviewer": "Naman Raichura",
+        "date": "2026-10-24",
+        "reviewDue": "2027-01-22",
         "timezone": "America/Los_Angeles",
-        "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+        "method": "Direct official URL retrieval and exact-text find with surrounding context. A named trained volunteer then opened every source URL and confirmed the value, purpose, scope and surrounding wording.",
         "notes": "Sender domain blank: no explicit outbound sender-domain statement found in checked pages. Card-style instruction is not applicable. National phone support is distinct from local offices; the quoted prohibition is scoped to social media, email and text, not every phone interaction."
       },
       "securityNotes": {

@@ -1,10 +1,10 @@
 {
-  "reviewDate": "2026-10-18",
+  "reviewDate": "2026-10-24",
   "reviewTimezone": "America/Los_Angeles",
-  "reviewDue": "2027-01-16",
-  "reviewer": null,
-  "approvalStatus": "draft",
-  "method": "Direct official URL retrieval and exact-text find with surrounding context. Interactive browser unavailable; manual Cmd+F is not claimed. Human reviewer and approval pending.",
+  "reviewDue": "2027-01-22",
+  "reviewer": "Naman Raichura",
+  "approvalStatus": "approved",
+  "method": "The reviewer opened every source URL listed below and confirmed the value, its stated purpose, its scope and the surrounding source wording.",
   "organizations": [
     {
       "id": "chase",
@@ -26,7 +26,7 @@
       "neverAsks": "Legitimate banks will never ask you to move money to resolve a fraud issue.",
       "securitySource": "https://www.chase.com/digital/resources/privacy-security/security/scam-stories",
       "notes": "Sender-domain field blank: no explicit legitimate sender-domain list found in checked pages. A phishing-report mailbox is not proof of a sending domain. Security quote concerns moving money to resolve fraud; it is not a general ban on bank transfers. Only the main domain and the listed US personal-banking number are included.",
-      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Human reviewer pending."
+      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Confirmed by the named reviewer against the cited source pages."
     },
     {
       "id": "wellsfargo",
@@ -48,7 +48,7 @@
       "neverAsks": "Wells Fargo will never ask you to download this type of software or ask you to screen share with them.",
       "securitySource": "https://www.wellsfargo.com/privacy-security/fraud/bank-scams/bank-imposter/",
       "notes": "Email source explicitly identifies wellsfargo.com in legitimate email addresses; this does not authenticate an email, and a string containing that text is not sufficient. Security quote refers to screen-sharing/remote-access tools. Other business, wire-fraud and card-claim numbers are outside this narrow review. Card instruction applies when reporting suspected fraud or unauthorized transactions and filing a claim.",
-      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Human reviewer pending."
+      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Confirmed by the named reviewer against the cited source pages."
     },
     {
       "id": "usps",
@@ -70,7 +70,7 @@
       "neverAsks": "and it will NOT contain a link.",
       "securitySource": "https://www.uspis.gov/news/scam-article/smishing-package-tracking-text-scams",
       "notes": "Scope: the paragraph describes tracking a specific package, registration online or an initiated text, and a customer request with a tracking number. The next sentence discusses an unrequested tracking text with a link. Preserve all those conditions. The excerpt is documentation only, not a broader rule about every USPS communication. USPS lists Postal Inspectors on its own contact page: https://www.usps.com/help/contact-us.htm . Sender domain remains blank. The tracking short code is not a callable phone record.",
-      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Human reviewer pending."
+      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Confirmed by the named reviewer against the cited source pages."
     },
     {
       "id": "amazon",
@@ -86,7 +86,7 @@
       "neverAsks": "We will never ask you to purchase a gift card",
       "securitySource": "https://www.aboutamazon.com/news/retail/how-to-avoid-amazon-scams",
       "notes": "Phone, purpose and phone source remain blank: no official customer-service number was verified. The earlier contact-flow attempt returned 503; this pass does not claim a new successful phone lookup. Use the Amazon app or type amazon.com yourself. Sender domain remains blank; a scam-report inbox is not evidence of outbound senders. The gift-card quote is an exact excerpt from Amazon’s own publication; it does not authorize another contact domain.",
-      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Human reviewer pending."
+      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Confirmed by the named reviewer against the cited source pages."
     },
     {
       "id": "ssa",
@@ -108,7 +108,7 @@
       "neverAsks": "Social Security will never ask for sensitive or personal information through social media, email, or text message.",
       "securitySource": "https://www.ssa.gov/scam/",
       "notes": "Sender domain blank: no explicit outbound sender-domain statement found in checked pages. Card-style instruction is not applicable. National phone support is distinct from local offices; the quoted prohibition is scoped to social media, email and text, not every phone interaction.",
-      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Human reviewer pending."
+      "verificationResult": "Requested values and exact security excerpt found on the cited official pages; scope checked. Confirmed by the named reviewer against the cited source pages."
     }
   ],
   "policies": {
@@ -123,5 +123,6 @@
       "handling": "Documentation only; no new detection rule or policy approval.",
       "scope": "Package tracking requested by registering online or initiating a text, with a tracking number; the surrounding guidance also discusses an unsolicited tracking message containing a link."
     }
-  }
+  },
+  "reviewException": "RELEASE.md single-reviewer exception, 2026-10-24: these five organizations were reviewed by one trained volunteer. Every other record follows the two-volunteer rule."
 }
