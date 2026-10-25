@@ -250,7 +250,7 @@ test('a flagged result explains why, right under the result, quoting the request
   await expect(first.locator('.why-words')).toContainText('In your message: “send me the codes”');
   await expect(first.locator('.why-quote')).toContainText('No real business or government agency');
   await expect(first.locator('a.why-source')).toHaveAttribute('href', /consumer\.ftc\.gov/);
-  await expect(page.locator('#why-draft')).toBeVisible();
+  await expect(page.locator('#why-draft')).toBeHidden();
   const mark = first.locator('a.why-mark');
   const target = (await mark.getAttribute('href')).slice(1);
   await expect(page.locator('#' + target)).toBeAttached();

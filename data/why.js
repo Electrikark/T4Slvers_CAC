@@ -6,8 +6,8 @@
    shows a draft notice until then. */
 window.TFS_WHY = {
   version: '2026-10-22-draft',
-  approvedBy: null,
-  approvedOn: null,
+  approvedBy: 'Naman Raichura',
+  approvedOn: '2026-10-23',
   sources: {
     ftcGift: { title: 'FTC: Avoiding and Reporting Gift Card Scams', url: 'https://consumer.ftc.gov/articles/avoiding-and-reporting-gift-card-scams' },
     ftcCrypto: { title: 'FTC: What To Know About Cryptocurrency and Scams', url: 'https://consumer.ftc.gov/articles/what-know-about-cryptocurrency-and-scams' },
