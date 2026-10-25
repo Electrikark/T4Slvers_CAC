@@ -138,9 +138,7 @@ textarea { margin-top:10px; min-height:178px; font-size:1rem; background:white; 
 .section-intro { font-size:.95rem; margin:8px 0 22px; }
 .help-form { padding:0 0 22px; background:transparent; border:0; border-bottom:1px solid var(--line); border-radius:0; }
 .help-form label { font-size:.98rem; }
-.smart-search { margin-top:12px; padding-top:10px; }
-.smart-search > summary { font-size:.88rem; min-height:44px; padding:10px 0; }
-.smart-search button { margin-top:12px; font-size:.9rem; }
+.help-form .search-status { border-top:1px solid var(--line); margin-top:14px; padding-top:12px; }
 .recovery-options { gap:0; }
 .recovery-options > details { border:0; border-top:1px solid var(--line); padding:0; border-radius:0; background:transparent; }
 .payment-routes details { border:0; border-left:2px solid var(--line); padding:0 0 0 18px; border-radius:0; background:transparent; }

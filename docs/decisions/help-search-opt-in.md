@@ -1,5 +1,9 @@
 # Decision: smart search mode, turned on by the reader
 
+**Historical:** superseded on October 24, 2026 by
+[automatic help search](automatic-help-search.md), at Naman's request. The
+activation button is removed; the implementation below records the earlier state.
+
 Status: **done on `final-site`, Oct 23, 2026. Chosen by Naman.** Reworded as a mode the reader
 turns on, no longer labelled experimental, Oct 23, 2026. Chosen by Naman.
 
