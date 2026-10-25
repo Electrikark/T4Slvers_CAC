@@ -6,7 +6,7 @@
    examples: short descriptions used to build and tune the search (development only). The
    volunteer test descriptions are kept separately and never added here. */
 window.TFS_HELP = {
-  version: '2026-10-22-draft',
+  version: '2026-10-24-draft',
   approvedBy: null,
   approvedOn: null,
   sources: {
@@ -14,7 +14,9 @@ window.TFS_HELP = {
     ftcHacked: { title: 'FTC: How To Recover Your Hacked Email or Social Media Account', url: 'https://consumer.ftc.gov/articles/how-recover-your-hacked-email-or-social-media-account' },
     ftcGift: { title: 'FTC: Avoiding and Reporting Gift Card Scams', url: 'https://consumer.ftc.gov/articles/avoiding-and-reporting-gift-card-scams' },
     ftcSpam: { title: 'FTC: How To Recognize and Report Spam Text Messages', url: 'https://consumer.ftc.gov/articles/how-recognize-and-report-spam-text-messages' },
-    aarp: { title: 'AARP Fraud Watch Network Helpline', url: 'https://www.aarp.org/money/scams-fraud/helpline/' }
+    aarp: { title: 'AARP Fraud Watch Network Helpline', url: 'https://www.aarp.org/money/scams-fraud/helpline/' },
+    itrc: { title: 'ITRC: Identity recovery support', url: 'https://www.idtheftcenter.org/about-us/' },
+    itrcContact: { title: 'ITRC: Contact and hours', url: 'https://www.idtheftcenter.org/contact-us/' }
   },
   cards: [
     {
@@ -133,6 +135,17 @@ window.TFS_HELP = {
         { text: 'If someone has already used your information, report it at IdentityTheft.gov and follow the recovery plan it gives you.', source: 'ftcScammed' },
         { text: 'If it has not been used, or you are not sure, go to IdentityTheft.gov/databreach and follow the steps there.', source: 'ftcScammed' }
       ],
+      support: {
+        title: 'Need help protecting your identity?',
+        name: 'Identity Theft Resource Center (ITRC)',
+        description: 'Free guidance if your personal details were exposed or used by someone else.',
+        phone: '+18884005530',
+        phoneLabel: '1-888-400-5530',
+        hours: 'Monday–Friday, 6 a.m.–5 p.m. Pacific / 9 a.m.–8 p.m. Eastern.',
+        source: 'itrc',
+        contactSource: 'itrcContact',
+        checkedOn: 'October 24, 2026'
+      },
       examples: [
         'I gave them my Social Security number', 'I told them my date of birth and address', 'I filled out a form with my personal information',
         'I gave my Medicare number', 'they have my social', 'I sent a picture of my driver license', 'I gave my bank account number',

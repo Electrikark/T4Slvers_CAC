@@ -49,6 +49,18 @@ function topic(card, help, pad) {
     `${pad}  <div class="detail-body">`];
 
   if (card.steps) lines.push(...steps(card, help, pad + '    '));
+  if (card.support) {
+    const support = card.support;
+    const source = help.sources[support.source], contact = help.sources[support.contactSource];
+    if (!source || !contact) throw new Error(card.id + ': unknown support source');
+    lines.push(`${pad}    <section class="topic-support" aria-labelledby="${escape(card.id)}-support-title">`,
+      `${pad}      <h3 id="${escape(card.id)}-support-title">${escape(support.title)}</h3>`,
+      `${pad}      <p><strong>${escape(support.name)}</strong><br>${escape(support.description)}</p>`,
+      `${pad}      <a class="helpline-call" href="tel:${escape(support.phone)}" aria-label="Call ${escape(support.name)} at ${escape(support.phoneLabel)}">Call ${escape(support.phoneLabel)}</a>`,
+      `${pad}      <p class="helpline-hours">${escape(support.hours)}</p>`,
+      `${pad}      <p class="small-note"><a class="help-source" href="${escape(source.url)}">${escape(source.title)} ↗</a><br><a class="help-source" href="${escape(contact.url)}">${escape(contact.title)} ↗</a><br>Service details checked ${escape(support.checkedOn)}.</p>`,
+      `${pad}    </section>`);
+  }
   if (card.children) {
     lines.push(`${pad}    <p class="help-choose">${escape(card.choose || 'Choose one.')}</p>`,
       `${pad}    <div class="payment-routes">`);
