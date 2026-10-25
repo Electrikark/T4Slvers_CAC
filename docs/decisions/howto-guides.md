@@ -16,7 +16,7 @@ been measured. The pilot notes record that two of nine people asked for help, no
 | Guide data | `data/how-to.js` | One source for every guide, step and picture |
 | Generator | `scripts/build-howto.cjs` | Writes `help.html` and the help beside the box on `check.html`; `--check` runs in `npm test` |
 | Full guides | `help.html` ("How to use" in the navigation) | Copy a text, copy an email, paste, take a screenshot, choose a screenshot, check the words read from a screenshot, practice |
-| Help beside the box | `check.html`, `#help-paste` and `#help-screenshot` | The same steps, opened in place, so the message and the channel choice stay as they are |
+| Help beside the box | `check.html`, `#help-paste` | One disclosure offers text and screenshot routes to `help.html` in a new tab, preserving the message, channel and screenshot review |
 | Pictures of our screens | `assets/how-to/review-*.png`, made by `scripts/capture-howto.cjs` | Taken from the real check page after the real reader reads the practice picture |
 | Practice | `help.html#practice`, `js/howto.js` | Copy and paste into a practice box that says whether the whole message arrived; a practice screenshot to save and choose in the real checker; a link that loads a made-up example |
 | Example loader | `js/app.js`, `#example-confirm` | Asks before an example replaces the person's own words |
@@ -43,8 +43,8 @@ No engine file changed. Page code did change (`js/app.js`, `check.html`), and pa
 what text reaches the engine, so a page-only change can still change a result. Checked in a real
 browser:
 
-- Opening and closing both help panels leaves the message, the channel choice and the full result
-  text identical to the same check without them.
+- Opening and closing the shared help control leaves the message, the channel choice and the full
+  result text identical to the same check without it. Both guide links open in a separate tab.
 - Opening the screenshot help during review does not tick the review box or unlock Check.
 - The practice picture goes through the real reader, the guide's instruction (delete the extra
   lines) is followed, and the result is the same warning as for the typed message.
@@ -58,6 +58,16 @@ Messages or Mail. It rehearses pressing, holding and pasting, and checking that 
 arrived. It does not show that someone can move between their messaging app and the browser, and the
 page says this. "Open a made-up example in the checker" fills the box for the reader, so it shows a
 result but is not copy practice; the page says that too.
+
+## UI refinement
+
+The guides now follow two numbered routes: copy then paste, or take, choose and review a screenshot.
+One optional phone choice filters all 13 device guides, including both iPhone button layouts and
+practice. It saves nothing. With scripts off, both phones stay visible and the choice is hidden.
+Print shows both phones, even after a filter choice. The guide body and its safety text stay in HTML.
+
+The shared palette, Georgia headings, hairline dividers and forest practice panel replace separate
+card styles. See [the UI review](../testing/ui-simplification.md) for visual evidence and checks.
 
 ## Not done
 

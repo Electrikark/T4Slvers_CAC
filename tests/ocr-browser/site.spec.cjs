@@ -1,3 +1,4 @@
+const TEST_ORIGIN = `http://127.0.0.1:${process.env.TFS_TEST_PORT || 8381}`;
 const { test, expect } = require('@playwright/test');
 const base = '/T4Slvers_CAC/';
 const pages = ['index.html', 'check.html', 'recover.html', 'learn.html', 'help.html', 'about.html'];
@@ -6,7 +7,7 @@ test('home leads to practice, a real result, and recovery without sending input'
   const outside = [], errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/*', route => {
-    if (new URL(route.request().url()).origin !== 'http://127.0.0.1:8381') {
+    if (new URL(route.request().url()).origin !== TEST_ORIGIN) {
       outside.push(route.request().url()); return route.abort();
     }
     return route.continue();
@@ -80,7 +81,7 @@ test('print opens all recovery choices and restores the reader’s previous choi
 test('information and recovery remain available without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:8381' + base);
+  await page.goto(TEST_ORIGIN + base);
   await page.getByRole('link', { name: /Something went wrong/ }).click();
   await page.locator('#money > summary').click();
   await expect(page.locator('#money > .detail-body')).toBeVisible();
@@ -90,6 +91,7 @@ test('information and recovery remain available without JavaScript', async ({ br
   await expect(page.locator('#identity a[href="tel:+18884005530"]')).toBeVisible();
   await expect(page.locator('#identity .help-steps')).toContainText('IdentityTheft.gov');
   await expect(page.locator('#identity .topic-support a[href="https://www.idtheftcenter.org/contact-us/"]')).toBeVisible();
+  await page.locator('.site-menu > summary').click();
   await page.getByRole('navigation').getByRole('link', { name: 'Learn the signs' }).click();
   await expect(page.getByRole('heading', { name: 'A pause is a powerful habit.' })).toBeVisible();
   await context.close();
@@ -114,10 +116,12 @@ test('all pages fit a narrow phone and a desktop with clear current-page navigat
       await expect(page.locator('h1:visible')).toHaveCount(1);
       await expect(page.locator('[aria-current="page"]')).toHaveCount(1);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      await page.locator('.site-menu > summary').click();
       for (const link of await page.locator('.site-nav a').all()) {
         const box = await link.boundingBox();
         expect(box.height).toBeGreaterThanOrEqual(48);
       }
+      await page.locator('.site-menu > summary').click();
       if (width === 390 || width === 1280) {
         await page.screenshot({ path: `test-results/site-${name.replace('.html', '')}-${width}.png`, fullPage: true });
       }
@@ -125,7 +129,7 @@ test('all pages fit a narrow phone and a desktop with clear current-page navigat
       const hrefs = await page.locator('a[href], link[href], script[src]').evaluateAll(nodes => nodes.map(node => node.href || node.src));
       for (const href of new Set(hrefs)) {
         const url = new URL(href);
-        if (url.origin !== 'http://127.0.0.1:8381') continue;
+        if (url.origin !== TEST_ORIGIN) continue;
         const result = await request.get(url.href);
         expect(result.status(), href).toBe(200);
         if (url.hash && url.pathname === new URL(page.url()).pathname) {
@@ -156,4 +160,81 @@ test('unknown practice parameters cannot fill private text or auto-run a check',
   await page.locator('#start-again').click();
   await expect(page.locator('#message')).toHaveValue('');
   await expect(page.locator('#channel-email')).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('all six pages fit narrow and wide screens with text enlarged to 200 percent', async ({ page }) => {
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const name of pages) {
+      await page.goto(base + name);
+      if (name === 'check.html') await page.locator('#help-paste > summary').click();
+      for (const size of [18, 36]) {
+        await page.addStyleTag({ content: `html { font-size:${size}px !important; }` });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth), `${name}, ${width}px, text ${size}px`).toBeLessThanOrEqual(width);
+      }
+    }
+  }
+});
+
+
+test('mobile task access is early and the menu works by keyboard', async ({ page }) => {
+  await page.setViewportSize({ width:390, height:844 });
+  await page.goto(base);
+  expect((await page.locator('.site-header').boundingBox()).height).toBeLessThan(180);
+  const action = await page.locator('.welcome .primary').boundingBox();
+  expect(action.y + action.height).toBeLessThan(650);
+  await expect(page.locator('.site-nav > a[href="recover.html"]')).toBeVisible();
+  const menu = page.locator('.site-menu > summary');
+  await menu.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.menu-links a[href="help.html"]')).toBeVisible();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.menu-links a[href="help.html"]')).toBeHidden();
+  await page.goto(base + 'check.html');
+  const input = await page.locator('#message').boundingBox();
+  expect(input.y).toBeLessThan(600);
+  expect(input.height).toBeGreaterThanOrEqual(150);
+  await expect(page.locator('#input-hint')).toBeVisible();
+  for (const selector of ['#channel-text', '#ocr-button', '#check-button']) {
+    const box = await page.locator(selector).boundingBox();
+    expect(box.height).toBeGreaterThanOrEqual(48);
+    expect(box.width).toBeGreaterThanOrEqual(48);
+  }
+});
+
+test('rendered reading, action and warning colors retain contrast', async ({ page }) => {
+  for (const [name, selectors] of [
+    ['index.html', ['body', '.welcome .lead', '.welcome .primary', '.site-nav > a']],
+    ['check.html', ['#input-hint', '#check-button', '#channel-text']],
+    ['recover.html', ['.urgent-step', '.help-draft', '.helpline-call']]
+  ]) {
+    await page.goto(base + name);
+    for (const selector of selectors) {
+      const ratio = await page.locator(selector).first().evaluate(el => {
+        const color = value => value.match(/[\d.]+/g).map(Number);
+        const luminance = rgb => rgb.slice(0,3).map(v => v / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum,v,i) => sum + v * [.2126,.7152,.0722][i],0);
+        let bg, node = el;
+        while (node) { bg = color(getComputedStyle(node).backgroundColor); if (bg.length === 3 || bg[3] === 1) break; node = node.parentElement; }
+        const a = luminance(color(getComputedStyle(el).color));
+        const b = luminance(bg && bg.length === 3 || bg && bg[3] === 1 ? bg : [255,255,255]);
+        return (Math.max(a,b) + .05) / (Math.min(a,b) + .05);
+      });
+      expect(ratio, name + ': ' + selector).toBeGreaterThanOrEqual(4.5);
+    }
+  }
+});
+
+test('family-review essentials keep readable text and government guidance first', async ({ page, request }) => {
+  expect((await request.get(base + 'assets/identity/guide-symbols.svg')).status()).toBe(200);
+  for (const name of pages) {
+    await page.goto(base + name);
+    const small = await page.locator('body').evaluate(body => [...body.querySelectorAll('*')].filter(el =>
+      el.getBoundingClientRect().height && [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()) &&
+      parseFloat(getComputedStyle(el).fontSize) < 16
+    ).map(el => el.textContent.slice(0, 45)));
+    expect(small, name).toEqual([]);
+  }
+  await page.goto(base + 'learn.html');
+  await expect(page.locator('.guide-card').first()).toHaveAttribute('id', 'scam-government');
+  await expect(page.locator('#signs .guide-symbol')).toHaveCount(4);
 });

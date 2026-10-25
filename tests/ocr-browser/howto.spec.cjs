@@ -1,3 +1,4 @@
+const TEST_ORIGIN = `http://127.0.0.1:${process.env.TFS_TEST_PORT || 8381}`;
 // The how-to guides in a real browser: help.html, the help beside the message box, the practice,
 // and the example loader. These check this app's own screens. Steps that happen in a phone's own
 // apps cannot be checked here; the pages say so (see tests/howto-node.cjs).
@@ -12,7 +13,7 @@ const PRACTICE_PNG = path.join(__dirname, '../../assets/how-to/practice-screensh
 function watch(page) {
   const outside = [], errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:8381/')) outside.push(r.url()); });
+  page.on('request', r => { if (!r.url().startsWith((TEST_ORIGIN + '/'))) outside.push(r.url()); });
   return { outside, errors };
 }
 
@@ -27,13 +28,11 @@ test('the help page offers each guide by phone, and says no phone has been check
   await page.goto(HELP);
   await expect(page.locator('h1')).toHaveText('Getting a message into the checker');
   await expect(page.locator('#howto-status')).toContainText('0 of');
-  // Every device starts closed; the reader chooses one and every step is then on screen at once.
-  await expect(page.locator('details.howto-device[open]')).toHaveCount(0);
-  await page.locator('#copy-text-iphone > summary').click();
+  await expect(page.locator('#phone-choice')).toBeVisible();
   await expect(page.locator('#copy-text-iphone .howto-steps li')).toHaveCount(4);
   await expect(page.locator('#copy-text-iphone .howto-steps li').nth(3)).toBeVisible();
   await expect(page.locator('#copy-text-iphone .howto-unchecked')).toBeVisible();
-  await expect(page.locator('#copy-text-android')).not.toHaveAttribute('open', '');
+  await expect(page.locator('#copy-text-android .howto-steps')).toBeVisible();
   // The screenshot review guide shows the app's own screens.
   await expect(page.locator('#review-screenshot img')).toHaveCount(3);
   for (const img of await page.locator('#review-screenshot img').all()) {
@@ -48,8 +47,9 @@ test('the help page offers each guide by phone, and says no phone has been check
 test('the help page works with JavaScript off, and hides only the practice feedback', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:8381' + HELP);
-  await page.locator('#take-screenshot-iphone-faceid > summary').click();
+  await page.goto(TEST_ORIGIN + HELP);
+  await expect(page.locator('#phone-choice')).toBeHidden();
+  for (const device of await page.locator('[data-phone]').all()) await expect(device).toBeVisible();
   await expect(page.locator('#take-screenshot-iphone-faceid .howto-steps')).toBeVisible();
   await expect(page.locator('#practice-box')).toBeVisible();
   await expect(page.locator('#practice-test')).toBeHidden();
@@ -67,20 +67,18 @@ test('opening the help beside the box keeps the message, the choice, and the res
   await page.click('#check-button');
   const plain = await resultText(page);
 
-  // The same message, with both help panels opened and closed on the way.
+  // The same message, with the shared help opened and closed on the way.
   await page.goto(CHECK);
   await page.locator('#channel-text').click();
   await page.fill('#message', message);
   await page.locator('#help-paste > summary').click();
   await expect(page.locator('#help-paste')).toHaveAttribute('open', '');
-  await page.locator('#inline-paste-iphone > summary').click();
-  await expect(page.locator('#inline-paste-iphone .howto-steps')).toBeVisible();
-  await page.locator('#help-screenshot > summary').click();
+  await expect(page.locator('.howto-routes a')).toHaveCount(2);
+  await expect(page.locator('.howto-inline')).toHaveCount(1);
   await expect(page.locator('#message')).toHaveValue(message);
   await expect(page.locator('#channel-text')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#result')).toBeHidden();
   await page.locator('#help-paste > summary').click();
-  await page.locator('#help-screenshot > summary').click();
   await page.click('#check-button');
   expect(await resultText(page)).toBe(plain);
   await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
@@ -92,12 +90,44 @@ test('opening the help beside the box keeps the message, the choice, and the res
   expect(seen.errors).toEqual([]);
 });
 
-test('the full-guide link from the box points at a real section of the help page', async ({ page }) => {
-  await page.goto(CHECK);
-  await page.locator('#help-paste > summary').click();
-  await page.locator('#help-paste .howto-more a').click();
-  await expect(page).toHaveURL(/help\.html#text-and-email$/);
-  await expect(page.locator('#text-and-email')).toBeInViewport();
+for (const route of ['text-and-email', 'screenshots']) {
+  test(`the ${route} guide opens separately and preserves the checker`, async ({ page }) => {
+    await page.goto(CHECK);
+    await page.locator('#channel-text').click();
+    await page.fill('#message', 'My original message stays here.');
+    await page.locator('#help-paste > summary').click();
+    const opened = page.waitForEvent('popup');
+    await page.locator(`.howto-routes a[href="help.html#${route}"]`).click();
+    const guide = await opened;
+    await expect(guide).toHaveURL(new RegExp(`help\\.html#${route}$`));
+    await expect(guide.locator(`#${route}`)).toBeInViewport();
+    await expect(page.locator('#message')).toHaveValue('My original message stays here.');
+    await expect(page.locator('#channel-text')).toHaveAttribute('aria-pressed', 'true');
+    await guide.close();
+  });
+}
+
+test('one phone choice filters every guide without storage, focus or scroll changes', async ({ page }) => {
+  await page.goto(HELP);
+  await expect(page.locator('[data-phone]')).toHaveCount(13);
+  for (const phone of ['iphone', 'android', 'both']) {
+    const button = page.locator(`[data-phone-choice="${phone}"]`);
+    await button.focus();
+    const before = await page.evaluate(() => window.scrollY);
+    await button.press('Space');
+    await expect(button).toBeFocused();
+    expect(await page.evaluate(() => window.scrollY)).toBe(before);
+    await expect(button).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('[data-phone-choice][aria-pressed="true"]')).toHaveCount(1);
+    for (const device of await page.locator('[data-phone]').all()) {
+      if (phone === 'both' || await device.getAttribute('data-phone') === phone) await expect(device).toBeVisible();
+      else await expect(device).toBeHidden();
+    }
+    expect(await page.evaluate(() => localStorage.length + sessionStorage.length + document.cookie.length)).toBe(0);
+  }
+  await page.locator('[data-phone-choice="iphone"]').click();
+  await page.reload();
+  await expect(page.locator('[data-phone-choice="both"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('copy-and-paste practice says whether the whole message arrived, without checking it', async ({ page, context }) => {
@@ -110,9 +140,9 @@ test('copy-and-paste practice says whether the whole message arrived, without ch
 
   // A real select, copy and paste, the way a person does it.
   await page.locator('#practice-source').click({ clickCount: 3 });
-  await page.keyboard.press('Control+C');
+  await page.keyboard.press('ControlOrMeta+C');
   await page.locator('#practice-box').click();
-  await page.keyboard.press('Control+V');
+  await page.keyboard.press('ControlOrMeta+V');
   await page.locator('#practice-test').click();
   await expect(result).toHaveText('It worked. The whole practice message is in the box.');
 
@@ -155,7 +185,7 @@ test('the practice screenshot goes through the real reader and review, and gets 
   expect(read).toMatch(/Unknown number/);
   await expect(page.locator('#check-button')).toBeDisabled();
   // Opening the screenshot help during review changes nothing about the review.
-  await page.locator('#help-screenshot > summary').click();
+  await page.locator('#help-paste > summary').click();
   await expect(page.locator('#check-button')).toBeDisabled();
   await expect(page.locator('#ocr-reviewed')).not.toBeChecked();
   // Follow the guide: delete the extra lines, tick the box, then check.
@@ -217,4 +247,105 @@ test('loading an example asks before replacing the person’s own words', async 
   await page.locator('#reset').click();
   await expect(confirm).toBeHidden();
   await expect(page.locator('#message')).toHaveValue('');
+});
+
+test('help remains readable in print and forced colors, with visible keyboard focus', async ({ page }) => {
+  await page.goto(HELP);
+  await page.keyboard.press('Tab');
+  await expect(page.locator('.skip-link')).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#main')).toBeFocused();
+  await page.keyboard.press('Tab');
+  const iphone = page.locator('[data-phone-choice="iphone"]');
+  await expect(iphone).toBeFocused();
+  expect(await iphone.evaluate(el => getComputedStyle(el).outlineStyle)).not.toBe('none');
+  await page.keyboard.press('Space');
+  await expect(iphone).toHaveAttribute('aria-pressed', 'true');
+  await page.emulateMedia({ forcedColors: 'active', reducedMotion: 'reduce' });
+  await expect(iphone).toBeVisible();
+  expect(await page.locator('html').evaluate(el => getComputedStyle(el).scrollBehavior)).toBe('auto');
+  await page.emulateMedia({ media: 'print', forcedColors: 'none' });
+  await expect(page.locator('#phone-choice')).toBeHidden();
+  for (const device of await page.locator('[data-phone]').all()) await expect(device).toBeVisible();
+});
+
+test('help links also preserve screenshot review and original image text', async ({ page }) => {
+  await page.goto(CHECK);
+  await page.locator('#channel-text').click();
+  await page.locator('#ocr-file').setInputFiles(PRACTICE_PNG);
+  await expect(page.locator('#ocr-status')).toContainText('Text is ready to review', { timeout: 120000 });
+  const original = await page.locator('#message').inputValue();
+  const raw = await page.locator('#ocr-raw').textContent();
+  await page.locator('#help-paste > summary').click();
+  const opened = page.waitForEvent('popup');
+  await page.locator('.howto-routes a[href="help.html#screenshots"]').click();
+  const guide = await opened;
+  await expect(guide.locator('#screenshots')).toBeInViewport();
+  await guide.close();
+  await expect(page.locator('#message')).toHaveValue(original);
+  await expect(page.locator('#ocr-raw')).toHaveText(raw);
+  await expect(page.locator('#submission-form')).toHaveAttribute('data-input-source', 'screenshot');
+  await expect(page.locator('#ocr-reviewed')).not.toBeChecked();
+  await expect(page.locator('#check-button')).toBeDisabled();
+});
+
+test('tutorial drawings stay readable without scripts, with enlarged text and in print', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, reducedMotion: 'reduce' });
+  let page = await context.newPage();
+  await page.goto(TEST_ORIGIN + HELP);
+  let drawings = page.locator('.howto-illustration');
+  await expect(drawings).toHaveCount(3);
+  await expect(page.locator('[data-illustration="review-screenshot"]')).toContainText('Here, the reader missed “not”');
+  await expect(page.locator('#howto-status')).toContainText('0 of 13');
+  for (const drawing of await drawings.all()) await expect(drawing).toBeVisible();
+  await context.close();
+  // Style injection needs scripts enabled; the no-script rendering check above stays separate.
+  page = await browser.newPage({ reducedMotion: 'reduce' });
+  await page.goto(TEST_ORIGIN + HELP);
+  drawings = page.locator('.howto-illustration');
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const size of [18, 36]) {
+      await page.addStyleTag({ content: `html { font-size:${size}px !important; }` });
+      for (const drawing of await drawings.all()) {
+        await expect(drawing).toBeVisible();
+        const box = await drawing.boundingBox();
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(width);
+        expect(await drawing.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+      }
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    }
+  }
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.addStyleTag({ content: 'html { font-size:18px !important; }' });
+  for (const drawing of await drawings.all()) {
+    await drawing.screenshot({ path: `test-results/ui-pass/illustration-${await drawing.getAttribute('data-illustration')}-390.png` });
+  }
+  for (const media of [{ forcedColors: 'active' }, { forcedColors: 'none', media: 'print' }]) {
+    await page.emulateMedia(media);
+    for (const drawing of await drawings.all()) {
+      await expect(drawing.locator('figcaption')).toBeVisible();
+      await expect(drawing.locator('.drawing-kicker')).toHaveText('Illustration');
+    }
+    await page.locator('[data-illustration="review-screenshot"]').screenshot({ path: `test-results/ui-pass/illustration-review-${media.media || 'forced-colors'}.png` });
+  }
+  await page.close();
+});
+
+
+test('tutorial pictures open larger and screenshot action requests the native picker', async ({ page }) => {
+  await page.goto(TEST_ORIGIN + HELP);
+  const link = page.locator('.enlarge-picture').first();
+  const popupEvent = page.waitForEvent('popup');
+  await link.click();
+  const popup = await popupEvent;
+  await popup.waitForLoadState();
+  expect(popup.url()).toContain('/assets/how-to/review-');
+  await popup.close();
+  await page.goto(TEST_ORIGIN + '/T4Slvers_CAC/check.html');
+  const chooserEvent = page.waitForEvent('filechooser');
+  await page.locator('#ocr-button').click();
+  const chooser = await chooserEvent;
+  expect(chooser.isMultiple()).toBe(false);
 });

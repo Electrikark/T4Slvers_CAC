@@ -3,6 +3,22 @@
    Without JavaScript the practice box still works for pasting; only the feedback is missing. */
 (function () {
   'use strict';
+  const choice = document.getElementById('phone-choice');
+  if (choice) {
+    const buttons = [...choice.querySelectorAll('[data-phone-choice]')];
+    const devices = [...document.querySelectorAll('[data-phone]')];
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const phone = button.dataset.phoneChoice;
+      buttons.forEach(other => {
+        const active = other === button;
+        other.setAttribute('aria-pressed', String(active));
+        other.classList.toggle('active', active);
+      });
+      devices.forEach(device => { device.hidden = phone !== 'both' && device.dataset.phone !== phone; });
+    }));
+    choice.hidden = false;
+  }
+
   const source = document.getElementById('practice-source');
   const box = document.getElementById('practice-box');
   const test = document.getElementById('practice-test');

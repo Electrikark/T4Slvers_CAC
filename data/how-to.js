@@ -21,6 +21,24 @@
    no timers, no "simply", no "just". */
 window.TFS_HOWTO = {
   version: '2026-10-24-draft',
+  // Concept drawings explain an action. They are not phone screens or device-check evidence.
+  illustrations: {
+    'copy-message': {
+      kind: 'selection',
+      message: 'Your book is ready. Pick it up at the desk.',
+      caption: 'Select the whole message, from the first word to the last. Then copy it.'
+    },
+    'take-screenshot': {
+      kind: 'frame',
+      message: 'Your book is ready. Pick it up at the desk.',
+      caption: 'Keep every line of the message inside the picture. Include the start and the end.'
+    },
+    'review-screenshot': {
+      kind: 'compare',
+      before: 'Do', word: 'not', after: 'share this code.',
+      caption: 'Here, the reader missed “not”. Fix the words in the box before checking.'
+    }
+  },
   guides: [
     {
       id: 'copy-text', kind: 'phone', inline: 'paste',

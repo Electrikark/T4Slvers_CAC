@@ -44,8 +44,10 @@ function steps(card, help, pad) {
 }
 
 function topic(card, help, pad) {
+  const symbol = ({ code: 'key', remote: 'device', giftcard: 'card', money: 'card', identity: 'person', other: 'message' })[card.id] || 'shield';
+  const icon = `<svg class="guide-symbol" aria-hidden="true" focusable="false"><use href="assets/identity/guide-symbols.svg#${symbol}"></use></svg>`;
   const lines = [`${pad}<details id="${escape(card.id)}" class="help-topic-card">`,
-    `${pad}  <summary>${escape(card.title)}${card.summary ? `<span class="topic-first">${escape(card.summary)}</span>` : ''}</summary>`,
+    `${pad}  <summary>${icon}${escape(card.title)}${card.summary ? `<span class="topic-first">${escape(card.summary)}</span>` : ''}</summary>`,
     `${pad}  <div class="detail-body">`];
 
   if (card.steps) lines.push(...steps(card, help, pad + '    '));

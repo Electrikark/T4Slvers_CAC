@@ -21,23 +21,29 @@
       <span class="brand-name">Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
-        <a href="index.html">Home</a>
-        <a href="check.html">Check a message</a>
-        <a href="recover.html">Get help after a scam</a>
-        <a href="learn.html" aria-current="page">Learn the signs</a>
-        <a href="help.html">How to use</a>
+      <a href="check.html">Check</a>
+      <a href="recover.html">Get help</a>
+      <details class="site-menu">
+        <summary>Menu</summary>
+        <div class="menu-links">
+          <a href="index.html">Home</a>
+          <a href="learn.html" aria-current="page">Learn the signs</a>
+          <a href="help.html">How to use</a>
+          <a href="about.html">About &amp; privacy</a>
+        </div>
+      </details>
     </nav>
   </header>
   <main id="main" class="wrap learn-page" tabindex="-1">
-    <div class="page-heading"><p class="eyebrow">LEARN THE SIGNS</p><h1>A pause is a powerful habit.</h1><p class="lead">You do not need to spot every trick. Start with these four warning signs.</p><p class="small-note">Take your time. Nothing you choose on this page is saved or sent.</p></div>
+    <div class="page-heading"><h1>A pause is a powerful habit.</h1><p class="lead">You do not need to spot every trick. Start with these four warning signs.</p><p class="small-note">Take your time. Nothing you choose on this page is saved or sent.</p></div>
     <nav class="page-jumps" aria-label="On this page"><a href="#signs">Four warning signs</a><a href="#practice">Practice</a><a href="#guide">Scam guide</a></nav>
     <div class="signs-column">
       <div class="section-heading"><h2>Four warning signs</h2><p>Notice the request. Choose a protective step.</p></div>
     <section id="signs" class="learning-grid" aria-label="Four warning signs">
-      <article id="sign-1" class="lesson-card"><h3>“Do this right now.”</h3><p>Pressure to act before you can think is a warning sign.</p><p class="lesson-action"><strong>Try this:</strong> Stop the conversation. Take time to check.</p></article>
-      <article id="sign-2" class="lesson-card"><h3>“You know who I am.”</h3><p>A familiar name or caller ID can be copied. It does not prove who is contacting you.</p><p class="lesson-action"><strong>Try this:</strong> Call the person or organization using details you already had.</p></article>
-      <article id="sign-3" class="lesson-card"><h3>“Pay this way.”</h3><p>An unexpected demand for gift-card codes, crypto, or a money transfer deserves a pause.</p><p class="lesson-action"><strong>Try this:</strong> Check the request independently before paying.</p></article>
-      <article id="sign-4" class="lesson-card"><h3>“There’s a problem. Or a prize.”</h3><p>A sudden threat, account problem, or prize fee may be a way to get money or personal details.</p><p class="lesson-action"><strong>Try this:</strong> Open the service’s app yourself. Ask someone you trust.</p></article>
+      <article id="sign-1" class="lesson-card"><h3><svg class="guide-symbol" aria-hidden="true" focusable="false"><use href="assets/identity/guide-symbols.svg#clock"></use></svg>“Do this right now.”</h3><p>Pressure to act before you can think is a warning sign.</p><p class="lesson-action"><strong>Try this:</strong> Stop the conversation. Take time to check.</p></article>
+      <article id="sign-2" class="lesson-card"><h3><svg class="guide-symbol" aria-hidden="true" focusable="false"><use href="assets/identity/guide-symbols.svg#person"></use></svg>“You know who I am.”</h3><p>A familiar name or caller ID can be copied. It does not prove who is contacting you.</p><p class="lesson-action"><strong>Try this:</strong> Call the person or organization using details you already had.</p></article>
+      <article id="sign-3" class="lesson-card"><h3><svg class="guide-symbol" aria-hidden="true" focusable="false"><use href="assets/identity/guide-symbols.svg#card"></use></svg>“Pay this way.”</h3><p>An unexpected demand for gift-card codes, crypto, or a money transfer deserves a pause.</p><p class="lesson-action"><strong>Try this:</strong> Check the request independently before paying.</p></article>
+      <article id="sign-4" class="lesson-card"><h3><svg class="guide-symbol" aria-hidden="true" focusable="false"><use href="assets/identity/guide-symbols.svg#warning"></use></svg>“There’s a problem. Or a prize.”</h3><p>A sudden threat, account problem, or prize fee may be a way to get money or personal details.</p><p class="lesson-action"><strong>Try this:</strong> Open the company’s official app yourself. Ask someone you trust.</p></article>
     </section>
     <p class="source-note">Adapted from the <a href="https://consumer.ftc.gov/articles/how-avoid-scam">FTC guide to avoiding scams ↗</a>. These are warning signs, not a complete list.</p>
     </div>
@@ -49,7 +55,7 @@
       <ol class="practice-list">
         <li id="practice-1" class="practice-item" data-scam="true">
           <p class="practice-count">Message 1 of 6 · A text message</p>
-          <blockquote class="practice-message"><span class="practice-mark">Grandpa, it’s me.</span> I got in a car accident and need $2,000 for bail <span class="practice-mark">right now</span>. <span class="practice-mark">Please don’t tell Mom.</span></blockquote>
+          <blockquote class="practice-message"><span class="practice-mark">Medicare:</span> Your card will be <span class="practice-mark">cancelled today</span>. <span class="practice-mark">Reply with your Medicare number and date of birth</span> to keep your benefits.</blockquote>
           <div class="practice-choices" hidden>
             <button type="button" class="secondary" data-choice="pause" aria-pressed="false">I would pause</button>
             <button type="button" class="secondary" data-choice="ordinary" aria-pressed="false">It looks ordinary</button>
@@ -60,11 +66,11 @@
             <div class="detail-body">
               <p class="practice-verdict">This one is a scam.</p>
               <ul class="practice-notes">
-                <li><span class="practice-quote">“Grandpa, it’s me.”</span> It says “it’s me” instead of a name. Anyone can write that.</li>
-                <li><span class="practice-quote">“right now”</span> A rush, so you do not stop to check.</li>
-                <li><span class="practice-quote">“Please don’t tell Mom.”</span> Keeping it secret stops you from checking with the family.</li>
+                <li><span class="practice-quote">“Medicare:”</span> A real agency’s name can be copied by anyone.</li>
+                <li><span class="practice-quote">“cancelled today”</span> A threat with a deadline.</li>
+                <li><span class="practice-quote">“Reply with your Medicare number and date of birth”</span> A request for personal details you did not expect.</li>
               </ul>
-              <p class="practice-do"><strong>What to do:</strong> Call your grandchild, or their parent, on the number you already have. <a class="help-source" href="https://www.bulkorder.ftc.gov/sites/bulkorder.ftc.gov/files/publications/934a-pio-grandkidfamilyscams-tearsheet-aug_2023-508.pdf">Source: FTC: Grandkid and family emergency scams (tear sheet) ↗</a></p>
+              <p class="practice-do"><strong>What to do:</strong> Do not reply. If you are worried, call Medicare at 1-800-MEDICARE (1-800-633-4227). <span class="help-source own-advice">Tech for Silvers advice</span></p>
             </div>
           </details>
           <button type="button" class="primary practice-next" hidden>Next message</button>
@@ -109,7 +115,7 @@
         </li>
         <li id="practice-4" class="practice-item" data-scam="true">
           <p class="practice-count">Message 4 of 6 · A text message</p>
-          <blockquote class="practice-message"><span class="practice-mark">Medicare:</span> Your card will be <span class="practice-mark">cancelled today</span>. <span class="practice-mark">Reply with your Medicare number and date of birth</span> to keep your benefits.</blockquote>
+          <blockquote class="practice-message"><span class="practice-mark">Grandpa, it’s me.</span> I got in a car accident and need $2,000 for bail <span class="practice-mark">right now</span>. <span class="practice-mark">Please don’t tell Mom.</span></blockquote>
           <div class="practice-choices" hidden>
             <button type="button" class="secondary" data-choice="pause" aria-pressed="false">I would pause</button>
             <button type="button" class="secondary" data-choice="ordinary" aria-pressed="false">It looks ordinary</button>
@@ -120,11 +126,11 @@
             <div class="detail-body">
               <p class="practice-verdict">This one is a scam.</p>
               <ul class="practice-notes">
-                <li><span class="practice-quote">“Medicare:”</span> A real agency’s name can be copied by anyone.</li>
-                <li><span class="practice-quote">“cancelled today”</span> A threat with a deadline.</li>
-                <li><span class="practice-quote">“Reply with your Medicare number and date of birth”</span> A request for personal details you did not expect.</li>
+                <li><span class="practice-quote">“Grandpa, it’s me.”</span> It says “it’s me” instead of a name. Anyone can write that.</li>
+                <li><span class="practice-quote">“right now”</span> A rush, so you do not stop to check.</li>
+                <li><span class="practice-quote">“Please don’t tell Mom.”</span> Keeping it secret stops you from checking with the family.</li>
               </ul>
-              <p class="practice-do"><strong>What to do:</strong> Do not reply. If you are worried, call Medicare at 1-800-MEDICARE (1-800-633-4227). <span class="help-source own-advice">Tech for Silvers advice</span></p>
+              <p class="practice-do"><strong>What to do:</strong> Call your grandchild, or their parent, on the number you already have. <a class="help-source" href="https://www.bulkorder.ftc.gov/sites/bulkorder.ftc.gov/files/publications/934a-pio-grandkidfamilyscams-tearsheet-aug_2023-508.pdf">Source: FTC: Grandkid and family emergency scams (tear sheet) ↗</a></p>
             </div>
           </details>
           <button type="button" class="primary practice-next" hidden>Next message</button>
@@ -181,6 +187,33 @@
       <p class="section-intro">Open a pattern to see an example and a protective step. Being fooled says nothing about you.</p>
       <p id="guide-draft" class="help-draft">Draft: this guide and the practice notes are waiting for a person to check them against their sources.</p>
       <div class="recovery-options guide-list">
+        <details id="scam-government" class="help-topic-card guide-card">
+          <summary>IRS and government impersonation<span class="guide-hook">Someone says they are from Social Security, the IRS or Medicare, and threatens arrest unless you act now.</span></summary>
+          <div class="detail-body">
+            <h3>What it can sound like</h3>
+            <blockquote class="guide-example">“Social Security Administration: Your benefits are suspended. Call (202) 555-0199 today or a warrant will be issued for your arrest.”</blockquote>
+            <p class="small-note">A made-up example.</p>
+            <h3>Why it works</h3>
+            <p>Threats are meant to frighten you into acting before you can think or ask anyone.</p>
+            <h3>Warning signs it uses</h3>
+            <ul class="guide-signs">
+              <li><a href="#sign-1">1 · “Do this right now.”</a></li>
+              <li><a href="#sign-2">2 · “You know who I am.”</a></li>
+              <li><a href="#sign-4">4 · “There’s a problem. Or a prize.”</a></li>
+            </ul>
+            <h3>What to do</h3>
+            <ol class="help-steps">
+              <li>Scammers use real agency names, like Social Security, the IRS or Medicare. A real name does not prove who is calling. <a class="help-source" href="https://consumer.ftc.gov/articles/how-avoid-scam">Source: FTC: How To Avoid a Scam ↗</a></li>
+              <li>Do not give personal or financial information to someone who contacted you out of the blue. <a class="help-source" href="https://consumer.ftc.gov/articles/how-avoid-scam">Source: FTC: How To Avoid a Scam ↗</a></li>
+              <li>Hang up. If you are worried, call the agency using the number on its official website or on a letter you already have. <span class="help-source own-advice">Tech for Silvers advice</span></li>
+            </ol>
+            <div class="guide-links">
+              <a class="secondary button-link" href="check.html?example=government">Try this message in the checker<span class="sr-only">: IRS and government impersonation</span></a>
+              <p class="small-note">It loads into the checker. Choose Not sure, then check it when you are ready.</p>
+              <a class="guide-recover" href="recover.html#identity">If this already happened to you<span class="sr-only">: IRS and government impersonation</span></a>
+            </div>
+          </div>
+        </details>
         <details id="scam-family" class="help-topic-card guide-card">
           <summary>A grandchild or relative in trouble<span class="guide-hook">A call or text from “your grandchild” who needs money fast, and asks you not to tell anyone.</span></summary>
           <div class="detail-body">
@@ -338,33 +371,6 @@
             </div>
           </div>
         </details>
-        <details id="scam-government" class="help-topic-card guide-card">
-          <summary>A call from “the government”<span class="guide-hook">Someone says they are from Social Security, the IRS or Medicare, and threatens arrest unless you act now.</span></summary>
-          <div class="detail-body">
-            <h3>What it can sound like</h3>
-            <blockquote class="guide-example">“Social Security Administration: Your benefits are suspended. Call (202) 555-0199 today or a warrant will be issued for your arrest.”</blockquote>
-            <p class="small-note">A made-up example.</p>
-            <h3>Why it works</h3>
-            <p>Threats are meant to frighten you into acting before you can think or ask anyone.</p>
-            <h3>Warning signs it uses</h3>
-            <ul class="guide-signs">
-              <li><a href="#sign-1">1 · “Do this right now.”</a></li>
-              <li><a href="#sign-2">2 · “You know who I am.”</a></li>
-              <li><a href="#sign-4">4 · “There’s a problem. Or a prize.”</a></li>
-            </ul>
-            <h3>What to do</h3>
-            <ol class="help-steps">
-              <li>Scammers use real agency names, like Social Security, the IRS or Medicare. A real name does not prove who is calling. <a class="help-source" href="https://consumer.ftc.gov/articles/how-avoid-scam">Source: FTC: How To Avoid a Scam ↗</a></li>
-              <li>Do not give personal or financial information to someone who contacted you out of the blue. <a class="help-source" href="https://consumer.ftc.gov/articles/how-avoid-scam">Source: FTC: How To Avoid a Scam ↗</a></li>
-              <li>Hang up. If you are worried, call the agency using the number on its official website or on a letter you already have. <span class="help-source own-advice">Tech for Silvers advice</span></li>
-            </ol>
-            <div class="guide-links">
-              <a class="secondary button-link" href="check.html?example=government">Try this message in the checker<span class="sr-only">: A call from “the government”</span></a>
-              <p class="small-note">It loads into the checker. Choose Not sure, then check it when you are ready.</p>
-              <a class="guide-recover" href="recover.html#identity">If this already happened to you<span class="sr-only">: A call from “the government”</span></a>
-            </div>
-          </div>
-        </details>
         <details id="scam-prize" class="help-topic-card guide-card">
           <summary>“You won! Just pay a fee.”<span class="guide-hook">A call or message says you won a lottery, sweepstakes or prize, but you must pay first to collect it.</span></summary>
           <div class="detail-body">
@@ -429,7 +435,7 @@
   </main>
   <footer class="wrap site-footer">
     <div><a class="footer-brand" href="index.html">Safety4Seniors</a><p>A little clarity, before you click.</p></div>
-    <div class="footer-links"><a href="about.html">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
+    <div class="footer-links"><a href="https://pranilraichura.com/tech4silvers/" target="_blank" rel="noopener noreferrer">Tech4Silvers workshops (new tab)</a><a href="about.html">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
     <p class="footer-note">A Tech4All project · Workshop prototype · U.S. help resources</p>
   </footer>
 </body>

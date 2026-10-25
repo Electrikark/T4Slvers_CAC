@@ -81,14 +81,15 @@ ok('the shipped pages claim no phone check', () => {
   assert.doesNotMatch(help + check, /class="howto-checked"/);
 });
 
-ok('every unchecked phone guide says so, on both pages', () => {
+ok('every unchecked phone guide says so, and both checker routes lead to those guides', () => {
   const devices = data.guides.filter(g => g.kind === 'phone').flatMap(g => g.devices.map(d => [g, d]));
   for (const [guide, dev] of devices) {
-    const helpBlock = help.split(`id="${guide.id}-${dev.id}"`)[1].split('</details>')[0];
+    const helpBlock = help.split(`id="${guide.id}-${dev.id}"`)[1].split('</section>')[0];
     assert.match(helpBlock, /Not yet checked on a phone/, `${guide.id}-${dev.id}`);
     if (guide.inline) {
-      const inline = check.split(`id="inline-${guide.id}-${dev.id}"`)[1].split('</details>')[0];
-      assert.match(inline, /Not yet checked on a phone/, `inline ${guide.id}-${dev.id}`);
+      const route = guide.inline === 'paste' ? 'text-and-email' : 'screenshots';
+      assert.ok(check.includes(`href="help.html#${route}"`), `route for ${guide.id}`);
+      assert.ok(help.includes(`id="${route}"`), `destination for ${guide.id}`);
     }
   }
 });
@@ -101,8 +102,8 @@ ok('a label quoted by a guide but missing from check.html stops the build', () =
   // Removing the real button must fail even though the generated help still quotes its label.
   const noButton = check.replace('>Or use a screenshot</button>', '><!-- Or use a screenshot --></button>');
   assert.notEqual(noButton, check);
-  assert.ok(noButton.includes('“Or use a screenshot”'), 'the generated help still quotes the label');
-  assert.throws(() => build.render({ help, check: noButton, data, today: TODAY }), /Or use a screenshot/);
+  const quotedOnlyInHelp = noButton.replace('<!-- howto-paste:end -->', '<p>“Or use a screenshot”</p><!-- howto-paste:end -->');
+  assert.throws(() => build.render({ help, check: quotedOnlyInHelp, data, today: TODAY }), /Or use a screenshot/);
 });
 
 ok('every quoted label in a step is a real label, a phone menu word, or a guide title', () => {

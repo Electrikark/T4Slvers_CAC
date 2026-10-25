@@ -70,7 +70,7 @@ async function appPictures(browser) {
   await page.locator('#ocr-file').setInputFiles(path.join(OUT, 'practice-screenshot.png'));
   await page.locator('#ocr-confirm').waitFor({ state: 'visible', timeout: 120000 });
   // A thick outline marks the part a step is about. It exists only in these pictures.
-  await page.addStyleTag({ content: '.howto-mark { outline:4px solid #c25e00 !important; outline-offset:3px; border-radius:6px; }' });
+  await page.addStyleTag({ content: '.howto-mark { outline:4px solid var(--caution-line) !important; outline-offset:3px; border-radius:6px; }' });
   const mark = async selector => page.evaluate(s => {
     document.querySelectorAll('.howto-mark').forEach(el => el.classList.remove('howto-mark'));
     if (s) document.querySelector(s).classList.add('howto-mark');
