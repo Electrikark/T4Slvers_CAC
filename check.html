@@ -118,14 +118,49 @@
         <p id="why-draft" class="help-draft" hidden>Draft: these explanations are waiting for a person to check them against their sources.</p>
         <ul id="why-list" class="why-list"></ul>
       </section>
-      <!-- Reading order for a quick decision: the result, the one thing to do first, what to do
-           next, the message with its marks, then the full details for anyone who wants them. -->
+      <!-- Reading order for a quick decision: the result, the one thing to do first, who to ask,
+           what to do next, the message with its marks, then the full details for anyone who wants them. -->
       <section id="action-note" class="action-note" aria-labelledby="action-title">
         <div>
           <h2 id="action-title">Before you act</h2>
           <p id="action-lead"></p>
         </div>
       </section>
+      <!-- Asking someone never changes the result. Only the fixed request below is shared or
+           copied, never the person's message: it could hold private details or a harmful link. -->
+      <details id="trusted-help" class="trusted-help" open>
+        <summary><h2 id="trusted-title">You don’t have to decide alone.</h2></summary>
+        <div class="trusted-body">
+          <p class="trusted-intro">Before sending money or sharing a code, ask someone you already know and trust.</p>
+          <div class="trusted-routes">
+            <section class="trusted-route" aria-labelledby="trusted-call-title">
+              <h3 id="trusted-call-title">Call someone you trust</h3>
+              <p>Open your phone’s Contacts and use their saved number. Don’t use a new number supplied in the message.</p>
+            </section>
+            <section class="trusted-route" aria-labelledby="trusted-ask-title">
+              <h3 id="trusted-ask-title">Ask for help by message</h3>
+              <p id="trusted-request" class="trusted-request">I received a message and want help checking it before I act. Can you call me?</p>
+              <div class="trusted-actions">
+                <button id="share-request" class="secondary" type="button" hidden>Share this request</button>
+                <button id="copy-request" class="secondary" type="button" hidden>Copy this request</button>
+              </div>
+              <p id="request-status" class="request-status" role="status" aria-live="polite"></p>
+              <p class="small-note">Only this request is shared, not your message. The app you choose sends it and may keep a copy.</p>
+            </section>
+          </div>
+          <p class="trusted-limit">Someone you trust can help you think it through, but they cannot confirm who sent the message. For a family emergency, reach the person yourself on a number you already have. For a bank or other company, use its official app or the number on your card or statement.</p>
+          <details id="no-one-available" class="no-one-available">
+            <summary>No one available? View other ways to get help.</summary>
+            <div class="no-one-body">
+              <p><strong>Contact the organization yourself.</strong> Use its official app, a website address you type yourself, or the number on your card, bill or statement. Don’t use the contact details in the message.</p>
+              <p><strong>National Elder Fraud Hotline:</strong> <a class="trusted-hotline" href="tel:+18333728311">833-372-8311</a></p>
+              <p>Free U.S. help for people age 60 or older with suspected financial fraud. A case manager can help you report it and find resources and referrals. It does not check messages, and it cannot promise to get money back.</p>
+              <p>Monday–Friday, 10 a.m.–6 p.m. Eastern. Closed on some holidays. Not an emergency service; if you are in danger, call 911.</p>
+              <p><a href="recover.html#hotline">More about the hotline</a></p>
+            </div>
+          </details>
+        </div>
+      </details>
       <section class="next-steps" aria-labelledby="next-title">
         <h2 id="next-title" tabindex="-1">What to do next</h2>
         <div id="warnings"></div>

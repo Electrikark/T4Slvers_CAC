@@ -84,6 +84,27 @@ textarea { min-height:164px; font-size:1.125rem; }
 .result .self-check { margin:0 0 20px; border:0; background:none; padding:12px 0; }
 .recovery-link { display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 20px; border:1px solid #c9b88f; background:#fcf5e5; padding:20px 24px; border-radius:10px; margin-top:24px; }
 .recovery-link a { min-height:44px; display:inline-flex; align-items:center; font-weight:700; }
+.trusted-help { margin-top:20px; padding:0 26px; background:white; border:1px solid #96a38d; border-radius:12px; }
+.trusted-help > summary { display:list-item; padding:18px 0; min-height:60px; }
+.trusted-help > summary h2 { display:inline; font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:1.5rem; }
+.trusted-help[open] > summary { border-bottom:1px solid var(--line); }
+.trusted-body { padding:4px 0 22px; }
+.trusted-intro { margin:16px 0; font-size:1.0625rem; }
+.trusted-routes { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.trusted-route { padding:20px; background:#f3f6ee; border:1px solid var(--line); border-radius:10px; }
+.trusted-route h3 { font-size:1.125rem; margin:0 0 8px; }
+.trusted-route p { margin:0; }
+.trusted-request { margin:0 0 14px !important; padding:12px 14px; background:white; border-left:3px solid #829473; font-size:1.0625rem; line-height:1.55; }
+.trusted-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.trusted-actions button { flex:1 1 180px; }
+.request-status { margin:10px 0 0 !important; font-weight:700; }
+.request-status:empty { display:none; }
+.trusted-route .small-note { margin-top:10px; }
+.trusted-limit { margin:18px 0 10px; color:var(--muted); font-size:1rem; }
+.no-one-available { border-top:1px solid var(--line); }
+.no-one-available > summary { padding:14px 0; min-height:52px; font-size:1.0625rem; color:var(--teal); }
+.no-one-body p { margin:0 0 10px; font-size:1rem; }
+.trusted-hotline { font-size:1.25rem; font-weight:700; white-space:nowrap; }
 .urgent-step { display:flex; gap:14px; background:#fcf2df; border:1px solid #b99657; border-radius:12px; padding:24px; margin:0 0 36px; }
 .urgent-step h2 { font-size:1.25rem; margin:0 0 8px; }
 .urgent-step p { margin:0; max-width:900px; }
@@ -240,6 +261,10 @@ textarea { min-height:164px; font-size:1.125rem; }
   .practice-panel { gap:24px; padding:24px; }
   .practice-panel .button-link { width:100%; }
   .practice-item, .practice-done, .alone-note { padding:20px; }
+  .trusted-help { padding:0 18px; }
+  .trusted-routes { grid-template-columns:1fr; }
+  .trusted-route { padding:16px; }
+  .trusted-help > summary h2 { font-size:1.3125rem; }
   .practice-message { font-size:1.125rem; padding:14px 16px; }
   .practice-choices { grid-template-columns:1fr; }
   .practice-next, .detail-body .guide-links .button-link { width:100%; }
