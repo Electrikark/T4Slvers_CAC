@@ -10,7 +10,7 @@ The checker now has one **How to add a message** disclosure. It offers two route
 | Learn | Removed the repeated page label. Kept its warning signs, practice flow and optional guide details. |
 | Recovery | Removed the repeated page label and made the support note sentence case. Fixed checklist wrapping at enlarged text sizes. Kept urgent action, topic plans and U.S. scope. |
 | About | Removed the repeated page label. Kept result meanings, limits and privacy disclosures. |
-| Shared styles | Added a 1% heading inset and 6–8px panel offsets on wide screens. Improved footer wrapping and tap height. Narrow layouts retain stable alignment. |
+| Shared styles | Added 2–6px heading and footer offsets across all six pages. At widths above 760px, alternate task rows, lessons and guide stages have a slight inset; side panels have 3–8px vertical offsets. Controls keep their shared alignment. Print stays aligned. Improved footer wrapping and tap height. |
 
 All proposed label and Home task-row fixes were applied. Broader cuts to Learn, Recovery and About were skipped: their longer material is already optional, and each section answers a distinct safety or privacy question. The guide sidebar stays in normal flow; a fixed phone filter far down the page could make the viewport jump when the page becomes shorter.
 
@@ -44,6 +44,14 @@ In another terminal:
 ```sh
 node scripts/capture-ui-pass.cjs http://127.0.0.1:8387 after
 ```
+
+## Alignment refinement
+
+The offsets use two bounded spacing tokens. Every page heading, including the checker heading,
+now has a tiny inset relative to the content below it. Footer links sit a few pixels below the
+brand. Wider layouts also have light offsets between reading groups and side panels. On narrow
+screens only the heading and footer offsets apply. There are no rotations, animations or shifts
+between individual form controls, and the offsets do not apply to print.
 
 ## Tutorial illustrations
 

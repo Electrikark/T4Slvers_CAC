@@ -282,12 +282,18 @@ textarea { margin-top:10px; min-height:178px; font-size:1rem; background:white; 
   .detail-body .topic-support .helpline-call { background:white; color:black; border-color:black; }
 }
 
-/* Small spacing offsets on wide screens keep the reading edge calm and consistent. */
+/* Tiny, bounded offsets between reading groups; controls keep their shared alignment. */
 .eyebrow.sentence-note { text-transform:none; letter-spacing:0; font-size:.9rem; font-weight:400; }
-@media (min-width:1001px) {
-  main > .page-heading,.welcome-copy { padding-inline-start:1%; }
-  .home-check,.learn-page > .practice-round,.recovery-layout > aside { margin-top:8px; }
-  .about-essential:nth-child(2) { padding-top:6px; }
+@media screen {
+  :root { --alignment-nudge:clamp(2px,.5vw,6px); --panel-offset:clamp(3px,.65vw,8px); }
+  main .page-heading,.welcome-copy { padding-inline-start:var(--alignment-nudge); }
+  .site-footer .footer-links { padding-top:var(--alignment-nudge); }
+}
+@media screen and (min-width:761px) {
+  .home-check,.learn-page > .practice-round,.recovery-layout > aside { margin-top:var(--panel-offset); }
+  .task-row:nth-child(even),.lesson-card:nth-child(even) { padding-inline-start:var(--alignment-nudge); }
+  .about-essential:nth-child(2),.howto-sidebar,.today-list { padding-top:var(--alignment-nudge); }
+  .howto-stage:nth-of-type(even) { padding-inline-start:var(--alignment-nudge); }
 }
 /* Let long labels wrap when readers enlarge text on a narrow screen. */
 .site-footer > div,.follow-through > div,.today-list label > span { min-width:0; max-width:100%; }
