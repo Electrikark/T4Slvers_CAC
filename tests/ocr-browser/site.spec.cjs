@@ -45,6 +45,12 @@ test('recovery choices, official contacts, and unsaved checklist are usable', as
     await page.locator(`#${id} > summary`).click();
     await expect(page.locator(`#${id} > .detail-body`)).toBeVisible();
   }
+  const identityHelp = page.locator('#identity .topic-support');
+  await expect(identityHelp.getByRole('link', { name: /Call Identity Theft Resource Center/ })).toHaveAttribute('href', 'tel:+18884005530');
+  await expect(identityHelp).toContainText('Free guidance');
+  await expect(identityHelp).toContainText('6 a.m.–5 p.m. Pacific / 9 a.m.–8 p.m. Eastern');
+  await expect(page.locator('.topic-support')).toHaveCount(1);
+  await page.locator('#identity').screenshot({ path: 'test-results/itrc-identity-phone.png' });
   await expect(page.locator('.hotline-number')).toHaveAttribute('href', 'tel:+18333728311');
   await expect(page.locator('.hotline-hours')).toContainText('10 a.m.–6 p.m. Eastern');
   await expect(page.locator('#hotline')).toContainText('age 60 or older');
@@ -80,6 +86,10 @@ test('information and recovery remain available without JavaScript', async ({ br
   await expect(page.locator('#money > .detail-body')).toBeVisible();
   await expect(page.locator('.hotline-number')).toBeVisible();
   await expect(page.locator('#print-plan')).toBeHidden();
+  await page.locator('#identity > summary').click();
+  await expect(page.locator('#identity a[href="tel:+18884005530"]')).toBeVisible();
+  await expect(page.locator('#identity .help-steps')).toContainText('IdentityTheft.gov');
+  await expect(page.locator('#identity .topic-support a[href="https://www.idtheftcenter.org/contact-us/"]')).toBeVisible();
   await page.getByRole('navigation').getByRole('link', { name: 'Learn the signs' }).click();
   await expect(page.getByRole('heading', { name: 'A pause is a powerful habit.' })).toBeVisible();
   await context.close();

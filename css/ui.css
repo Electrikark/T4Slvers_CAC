@@ -151,6 +151,11 @@ textarea { margin-top:10px; min-height:178px; font-size:1rem; background:white; 
 .detail-body { font-size:.95rem; }
 .detail-body .help-steps { padding-left:22px; }
 .detail-body a.help-source { display:inline; font-size:.8rem; }
+.topic-support { border-top:1px solid var(--control-line); margin-top:24px; padding-top:20px; }
+.topic-support h3 { margin:0 0 12px; font-size:1.1rem; }
+.topic-support p { margin:10px 0; }
+.detail-body .topic-support .helpline-call { display:inline-flex; min-height:52px; padding:12px 18px; margin:8px 0; }
+.topic-support .small-note { font-size:.85rem; }
 .help-draft { font-size:.85rem; color:var(--caution-ink); background:var(--caution-bg); border-radius:4px; }
 .helpline-option,.hotline-card { border-radius:8px; padding:22px; background:var(--sheet); border-color:var(--line); }
 .helpline-first { background:var(--soft); border-color:#a8b49d; }
@@ -275,4 +280,6 @@ textarea { margin-top:10px; min-height:178px; font-size:1rem; background:white; 
   .home-check,.about-essentials,.learn-page > .practice-round { background:white; color:black; }
   .home-check *,.learn-page > .practice-round * { color:black!important; border-color:#555!important; }
   .action-group,.result-limits,.urgent-step,.help-topic-card,.helpline-option { background:white; break-inside:avoid; box-shadow:none; }
+  .topic-support { break-inside:avoid; }
+  .detail-body .topic-support .helpline-call { background:white; color:black; border-color:black; }
 }
