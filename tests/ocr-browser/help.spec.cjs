@@ -1,3 +1,4 @@
+const TEST_ORIGIN = `http://127.0.0.1:${process.env.TFS_TEST_PORT || 8381}`;
 // Recovery topics and their search on recover.html, and "Why this is a warning sign" on check.html.
 // The topics are plain HTML written from data/help-cards.js: no download and no JavaScript needed.
 // Language search starts with the page; loading and failure leave the menu and keyword
@@ -70,7 +71,7 @@ test('a suggested payment route opens inside "I sent money or paid"', async ({ p
 
 test('language search loads automatically from this site and runs without an activation control', async ({ page }) => {
   const outside = [];
-  page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:8381/')) outside.push(r.url()); });
+  page.on('request', r => { if (!r.url().startsWith((TEST_ORIGIN + '/'))) outside.push(r.url()); });
   const model = modelRequests(page);
   await page.goto(RECOVER);
   await expect(page.locator('#smart-search-on')).toHaveCount(0);
@@ -206,7 +207,7 @@ test('without JavaScript every topic still opens and the search is not shown', a
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   const model = modelRequests(page);
-  await page.goto('http://127.0.0.1:8381' + RECOVER);
+  await page.goto(TEST_ORIGIN + RECOVER);
   await expect(page.locator('#help-form')).toBeHidden();
   await page.locator('#money > summary').click();
   await page.locator('#money-crypto > summary').click();

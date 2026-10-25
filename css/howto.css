@@ -1,72 +1,93 @@
-/* How-to guides: help.html, and the help beside the message box on check.html.
-   Large text, 48px tap targets, and nothing that moves on its own. */
-.howto-page .page-heading { padding-bottom:20px; }
-.howto-status { max-width:760px; margin:0 0 28px; padding:12px 16px; border-radius:8px; background:#fff6e5; color:#5c3d00; font-size:1.0625rem; }
-.howto-group { max-width:760px; margin:0 0 48px; }
-.howto-group > h2 { font-size:1.75rem; margin:0 0 20px; padding-top:12px; border-top:1px solid var(--line); }
-.howto-guide { margin:0 0 32px; }
-.howto-guide h3 { font-size:1.375rem; margin:0 0 8px; }
-.howto-goal, .howto-why { font-size:1.125rem; line-height:1.6; margin:0 0 14px; }
-.howto-safety { font-size:1.0625rem; line-height:1.55; margin:0 0 14px; padding:12px 16px; border-left:5px solid #b4561a; background:#fdf1e8; border-radius:0 8px 8px 0; }
-.howto-choose { font-size:1.0625rem; font-weight:700; margin:0 0 8px; }
-.howto-devices { display:grid; gap:10px; margin:0 0 14px; }
-.howto-device { border:1px solid #96a38d; border-radius:10px; background:white; }
-.howto-device > summary { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; min-height:56px; padding:12px 16px; font-size:1.125rem; }
-.howto-device > summary .howto-app { margin:0; font-size:1rem; font-weight:400; color:var(--muted); }
-.howto-device[open] > summary { border-bottom:1px solid var(--line); }
-.howto-device-body { padding:4px 16px 16px; }
-.howto-steps { margin:10px 0 0; padding-left:28px; font-size:1.125rem; line-height:1.6; }
+/* Guides use the shared reading palette; the forest panel is a place to practise. */
+.howto-layout { display:grid; grid-template-columns:minmax(0, 1fr) minmax(240px, .42fr); gap:44px; align-items:start; }
+.howto-main { grid-column:1; grid-row:1; min-width:0; }
+.howto-sidebar { grid-column:2; grid-row:1; min-width:0; }
+.howto-sidebar fieldset { border:0; padding:0; margin:0 0 24px; min-width:0; }
+.howto-sidebar legend { font-size:1rem; font-weight:700; margin-bottom:12px; }
+.phone-options { display:flex; flex-wrap:wrap; gap:8px; }
+.phone-options .option { flex:1 1 auto; }
+.howto-sidebar .page-jumps { display:flex; flex-direction:column; align-items:stretch; gap:0; margin:0 0 24px; }
+.howto-sidebar .page-jumps a { border-bottom:1px solid var(--line); padding:12px 0; }
+.howto-status { margin:0; color:var(--caution-ink); font-size:.9rem; line-height:1.6; }
+.howto-group { margin:0 0 44px; }
+.howto-group h2,.howto-group h3 { font-family:Georgia,'Times New Roman',serif; font-weight:400; }
+.howto-group > h2 { font-size:1.75rem; margin:0 0 20px; }
+.howto-stage { border-top:1px solid var(--line); padding-top:20px; }
+.howto-stage > h3 { display:flex; align-items:baseline; gap:8px; font-size:1.35rem; margin:0 0 18px; }
+.howto-stage .step-number { flex-shrink:0; font-family:Arial,Helvetica,sans-serif; margin:0; }
+.howto-guide { margin:0 0 28px; }
+.howto-guide > h3 { font-size:1.35rem; margin:0 0 14px; }
+.howto-guide > h4 { font-size:1.1rem; margin:0 0 12px; }
+.howto-goal,.howto-why { font-size:1rem; line-height:1.6; margin:0 0 16px; }
+.howto-safety { font-size:.95rem; line-height:1.6; margin:0 0 18px; padding:8px 12px; border-left:3px solid var(--caution-line); background:var(--caution-bg); color:var(--caution-ink); }
+.howto-choose { font-size:1rem; font-weight:700; margin:0 0 12px; }
+.howto-device { border:0; border-top:1px solid var(--line); padding:16px 0; }
+.howto-device h4,.howto-device h5 { display:flex; flex-wrap:wrap; gap:4px 12px; font-family:Arial,Helvetica,sans-serif; font-weight:700; font-size:1rem; line-height:1.6; margin:0 0 10px; }
+.howto-app { font-weight:400; color:var(--muted); }
+.howto-steps { margin:10px 0 0; padding-left:28px; font-size:1rem; line-height:1.65; }
 .howto-steps > li { margin:0 0 12px; padding-left:4px; }
 .howto-steps > li > p { margin:0 0 10px; }
 .howto-steps a { font-weight:700; }
-.howto-checked, .howto-unchecked { font-size:1rem; line-height:1.5; margin:12px 0 0; padding:10px 12px; border-radius:8px; }
-.howto-checked { background:var(--soft); }
-.howto-unchecked { background:#fff6e5; color:#5c3d00; }
-.howto-tips { font-size:1.0625rem; line-height:1.55; padding-left:24px; color:var(--muted); }
+.howto-checked,.howto-unchecked { font-size:.9rem; line-height:1.55; margin:12px 0 0; }
+.howto-checked { color:var(--muted); }
+.howto-unchecked { color:var(--caution-ink); }
+.howto-tips { font-size:.95rem; line-height:1.6; padding-left:24px; color:var(--muted); }
 .howto-tips li + li { margin-top:8px; }
-.howto-figure { margin:4px 0 14px; }
-.howto-figure img { display:block; max-width:100%; height:auto; border:1px solid #b9c3b2; border-radius:10px; background:white; }
-.practice-label { margin:20px 0 6px; font-size:.9375rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
-.practice-source { margin:0 0 20px; padding:16px 18px; border:2px dashed #96a38d; border-radius:12px; background:white; font-size:1.25rem; line-height:1.6; -webkit-user-select:text; user-select:text; }
-.howto-page textarea { width:100%; font-size:1.125rem; }
+.howto-figure { margin:12px 0 18px; }
+.howto-figure img { display:block; max-width:100%; height:auto; border:1px solid var(--line); background:var(--sheet); }
+.howto-practice { padding:28px; background:var(--forest); color:var(--on-forest); border:1px solid var(--forest); border-radius:10px; }
+.howto-practice .howto-guide { padding-top:22px; border-top:1px solid var(--sage); }
+.howto-practice .howto-guide:last-child { margin-bottom:0; }
+.howto-practice .howto-device { border-color:var(--sage); }
+.howto-practice .howto-app,.howto-practice .howto-unchecked,.howto-practice .hint,.howto-practice .howto-limit { color:var(--sage); }
+.howto-practice a { color:var(--on-forest); }
+.practice-label { margin:20px 0 8px; font-size:.95rem; font-weight:700; }
+.practice-source { margin:0 0 20px; padding:16px 18px; border-left:3px solid var(--sage); background:var(--sheet); color:var(--ink); font-size:1.1rem; line-height:1.65; -webkit-user-select:text; user-select:text; }
+.howto-page textarea { width:100%; font-size:1rem; background:var(--sheet); color:var(--ink); }
 .practice-actions { display:flex; flex-wrap:wrap; gap:10px; margin:4px 0 10px; }
-.practice-actions button { min-height:52px; }
-.practice-result { min-height:1.5em; font-size:1.125rem; line-height:1.55; font-weight:700; }
-.practice-result:empty { min-height:0; margin:0; }
-.howto-limit { font-size:1rem; line-height:1.55; color:var(--muted); }
+.howto-practice .primary,.howto-practice .secondary { background:var(--sheet); border-color:var(--sheet); color:var(--forest); }
+.howto-practice .primary:hover,.howto-practice .secondary:hover { background:var(--sage); border-color:var(--sage); }
+.howto-practice :is(a,button,textarea):focus-visible { outline:3px solid var(--on-forest); outline-offset:4px; }
+.practice-result { color:var(--on-forest); font-size:1rem; line-height:1.65; font-weight:700; }
+.practice-result:empty { margin:0; }
+.howto-limit { font-size:.9rem; line-height:1.6; }
 .practice-picture img { max-width:min(390px, 100%); }
 .howto-ready { max-width:760px; align-items:center; }
 .howto-ready .button-link { min-height:52px; padding:12px 22px; }
 
-/* The short help beside the message box. Closed until asked for, and it never covers the box. */
-.howto-inline { margin:0 0 18px; border:1px solid #96a38d; border-radius:10px; background:#fbfcf8; }
-.howto-inline > summary { display:flex; align-items:center; min-height:52px; padding:12px 16px; font-size:1.0625rem; color:var(--teal); }
-.howto-inline[open] > summary { border-bottom:1px solid var(--line); }
-.howto-inline-body { padding:8px 16px 16px; }
-.howto-inline-note { margin:4px 0 14px; font-size:1rem; color:var(--muted); }
-.howto-inline .howto-guide { margin:0 0 20px; }
-.howto-inline .howto-guide h3 { font-size:1.1875rem; }
-.howto-inline .howto-steps { font-size:1.0625rem; }
-.howto-more { font-size:1rem; line-height:1.5; margin:8px 0 0; }
-.howto-more a { display:inline-flex; align-items:center; min-height:48px; font-weight:700; }
-.howto-more span { display:block; color:var(--muted); }
-.ocr-tools .howto-inline { margin-top:12px; }
-
-@media (max-width:760px) {
-  .howto-device-body, .howto-inline-body { padding-left:12px; padding-right:12px; }
-  .howto-steps { padding-left:24px; }
-  .practice-actions button, .howto-ready .button-link { width:100%; }
-}
-@media (forced-colors:active) {
-  .howto-device, .howto-inline, .practice-source, .howto-figure img { border-color:CanvasText; }
-  .howto-safety { border-left-color:CanvasText; }
-}
-@media print {
-  .howto-device, .howto-inline { border-color:#999; }
-  .practice-actions { display:none !important; }
-}
-
-/* Asking before an example replaces the person's own words (check.html, demo examples). */
-.example-confirm { margin:14px 0; padding:14px 16px; border:2px solid #b4561a; border-radius:10px; background:#fdf1e8; font-size:1.0625rem; }
+/* One quiet disclosure, with two routes. Native disclosure also works without scripts. */
+.howto-inline { margin:0 0 18px; border:0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); border-radius:0; background:transparent; }
+.howto-inline > summary { display:list-item; min-height:54px; padding:14px 4px; font-size:1rem; font-weight:700; color:var(--forest); }
+.howto-inline-body { padding:0 4px 16px; }
+.howto-inline-note { margin:0 0 12px; font-size:.9rem; color:var(--muted); }
+.howto-routes { display:grid; }
+.howto-routes a { display:block; padding:12px 0; min-height:48px; border-top:1px solid var(--line); font-weight:700; }
+.howto-routes .small-note { display:block; margin:4px 0 0; font-size:.85rem; font-weight:400; color:var(--muted); }
+.example-confirm { margin:14px 0; padding:14px 16px; border:1px solid var(--caution-line); border-left-width:3px; background:var(--caution-bg); color:var(--caution-ink); font-size:1rem; }
 .example-confirm p { margin:0 0 10px; font-weight:700; }
 .example-confirm button { margin:4px 8px 4px 0; }
+
+@media (max-width:1000px) {
+  .howto-layout { display:flex; flex-direction:column; gap:28px; }
+  .howto-sidebar,.howto-main { width:100%; }
+  .howto-sidebar .page-jumps { flex-direction:row; flex-wrap:wrap; gap:8px 22px; margin-bottom:16px; }
+}
+@media (max-width:760px) {
+  .howto-steps { padding-left:24px; }
+  .howto-practice { padding:20px 16px; }
+  .practice-actions button,.howto-ready .button-link { width:100%; }
+}
+@media (forced-colors:active) {
+  .howto-practice,.practice-source,.howto-figure img,.example-confirm { border:1px solid CanvasText; }
+  .howto-safety { border-left-color:CanvasText; }
+  .howto-practice :is(a,button,textarea):focus-visible { outline-color:Highlight; }
+}
+@media print {
+  .howto-layout { display:block; }
+  .howto-sidebar { position:static; }
+  #phone-choice,.howto-sidebar nav,.practice-actions,.howto-ready { display:none !important; }
+  .howto-device[hidden] { display:block !important; }
+  .howto-practice { background:white; border-color:black; }
+  .howto-practice * { color:black !important; border-color:#555 !important; }
+  .howto-figure { break-inside:avoid; }
+}

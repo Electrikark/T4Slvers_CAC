@@ -1,6 +1,6 @@
 # How-to guides: checking the steps on a real phone
 
-The guides in `help.html` and beside the message box on `check.html` describe two kinds of steps:
+The guides in `help.html`, linked from beside the message box on `check.html`, describe two kinds of steps:
 
 - **Steps on this app's own screens** (the review of screenshot text). These are checked by
   `tests/ocr-browser/howto.spec.cjs` and the label check in `scripts/build-howto.cjs`. Nothing to do
@@ -21,7 +21,7 @@ A family member's phone is fine for a check, as long as the record names that ph
 ## How to check one guide
 
 1. Open the deployed site on the phone (or `npm run preview:ocr` on the same Wi-Fi).
-2. Open **How to use**, choose the guide and the device, and follow each step exactly as written,
+2. Open **How to use**, choose your phone near the top, then choose the guide, and follow each step exactly as written,
    with a made-up message (the practice message or one you text to yourself).
 3. If any step does not match the screen, **fix the step text in `data/how-to.js` first**, then
    follow it again from the start. Do not record a check for steps you changed after following them.

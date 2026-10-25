@@ -1,3 +1,4 @@
+const TEST_ORIGIN = `http://127.0.0.1:${process.env.TFS_TEST_PORT || 8381}`;
 const { test, expect } = require('@playwright/test');
 const base = '/T4Slvers_CAC/';
 const pages = ['index.html', 'check.html', 'recover.html', 'learn.html', 'help.html', 'about.html'];
@@ -6,7 +7,7 @@ test('home leads to practice, a real result, and recovery without sending input'
   const outside = [], errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.route('**/*', route => {
-    if (new URL(route.request().url()).origin !== 'http://127.0.0.1:8381') {
+    if (new URL(route.request().url()).origin !== TEST_ORIGIN) {
       outside.push(route.request().url()); return route.abort();
     }
     return route.continue();
@@ -80,7 +81,7 @@ test('print opens all recovery choices and restores the reader’s previous choi
 test('information and recovery remain available without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:8381' + base);
+  await page.goto(TEST_ORIGIN + base);
   await page.getByRole('link', { name: /Something went wrong/ }).click();
   await page.locator('#money > summary').click();
   await expect(page.locator('#money > .detail-body')).toBeVisible();
@@ -125,7 +126,7 @@ test('all pages fit a narrow phone and a desktop with clear current-page navigat
       const hrefs = await page.locator('a[href], link[href], script[src]').evaluateAll(nodes => nodes.map(node => node.href || node.src));
       for (const href of new Set(hrefs)) {
         const url = new URL(href);
-        if (url.origin !== 'http://127.0.0.1:8381') continue;
+        if (url.origin !== TEST_ORIGIN) continue;
         const result = await request.get(url.href);
         expect(result.status(), href).toBe(200);
         if (url.hash && url.pathname === new URL(page.url()).pathname) {
@@ -156,4 +157,18 @@ test('unknown practice parameters cannot fill private text or auto-run a check',
   await page.locator('#start-again').click();
   await expect(page.locator('#message')).toHaveValue('');
   await expect(page.locator('#channel-email')).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('all six pages fit narrow and wide screens with text enlarged to 200 percent', async ({ page }) => {
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const name of pages) {
+      await page.goto(base + name);
+      if (name === 'check.html') await page.locator('#help-paste > summary').click();
+      for (const size of [18, 36]) {
+        await page.addStyleTag({ content: `html { font-size:${size}px !important; }` });
+        expect(await page.evaluate(() => document.documentElement.scrollWidth), `${name}, ${width}px, text ${size}px`).toBeLessThanOrEqual(width);
+      }
+    }
+  }
 });

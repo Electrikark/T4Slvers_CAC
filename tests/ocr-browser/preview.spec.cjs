@@ -1,3 +1,4 @@
+const TEST_ORIGIN = `http://127.0.0.1:${process.env.TFS_TEST_PORT || 8381}`;
 const { test, expect } = require('@playwright/test');
 const { storeFor } = require('../reporting-scope/setup.js');
 const URL_PATH = '/T4Slvers_CAC/check.html';
@@ -85,7 +86,7 @@ test('real cold and warm OCR uses only local assets, requires review, and never 
   await context.route('**/*', route => {
     const request = route.request();
     requests.push(request.url());
-    if (new URL(request.url()).origin !== 'http://127.0.0.1:8381') { outside.push(request.url()); return route.abort(); }
+    if (new URL(request.url()).origin !== TEST_ORIGIN) { outside.push(request.url()); return route.abort(); }
     return route.continue();
   });
   page.on('pageerror', error => errors.push(error.message));

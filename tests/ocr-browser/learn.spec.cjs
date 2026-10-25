@@ -1,3 +1,4 @@
+const TEST_ORIGIN = `http://127.0.0.1:${process.env.TFS_TEST_PORT || 8381}`;
 // The learn page in a browser: the practice goes one message at a time, the guide's examples
 // load into the checker and get a warning there, and nothing is stored or sent.
 const { test, expect } = require('@playwright/test');
@@ -6,7 +7,7 @@ const LEARN = '/T4Slvers_CAC/learn.html';
 test('practice shows one message at a time, answers gently, and can start again', async ({ page }) => {
   const outside = [], errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:8381/')) outside.push(r.url()); });
+  page.on('request', r => { if (!r.url().startsWith((TEST_ORIGIN + '/'))) outside.push(r.url()); });
   await page.goto(LEARN);
   const items = page.locator('.practice-item');
   const total = await items.count();
@@ -85,7 +86,7 @@ test('every guide card opens, links to its warning signs, and to a recovery topi
 test('without JavaScript every practice message and its answer can be read', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto('http://127.0.0.1:8381' + LEARN);
+  await page.goto(TEST_ORIGIN + LEARN);
   const total = await page.locator('.practice-item').count();
   await expect(page.locator('.practice-item:visible')).toHaveCount(total);
   await expect(page.locator('.practice-choices:visible')).toHaveCount(0);

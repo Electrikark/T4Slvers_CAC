@@ -1,3 +1,4 @@
+const TEST_ORIGIN = `http://127.0.0.1:${process.env.TFS_TEST_PORT || 8381}`;
 // "You don't have to decide alone" under a result: open for a warning or an unresolved result,
 // sharing and copying only the fixed request, a fallback when sharing is missing or fails, and
 // the result left exactly as it was.
@@ -35,7 +36,7 @@ async function checkMessage(page, text, channel = 'text') {
 test('the optional trusted-help panel follows the protective steps and shares only the request', async ({ page }) => {
   const outside = [], errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:8381/')) outside.push(r.url()); });
+  page.on('request', r => { if (!r.url().startsWith((TEST_ORIGIN + '/'))) outside.push(r.url()); });
   await stubShare(page);
   await checkMessage(page, MESSAGE);
   await expect(page.locator('#result-title')).toHaveText('This message has warning signs');

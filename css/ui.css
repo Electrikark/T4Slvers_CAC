@@ -281,3 +281,20 @@ textarea { margin-top:10px; min-height:178px; font-size:1rem; background:white; 
   .topic-support { break-inside:avoid; }
   .detail-body .topic-support .helpline-call { background:white; color:black; border-color:black; }
 }
+
+/* Small spacing offsets on wide screens keep the reading edge calm and consistent. */
+.eyebrow.sentence-note { text-transform:none; letter-spacing:0; font-size:.9rem; font-weight:400; }
+@media (min-width:1001px) {
+  main > .page-heading,.welcome-copy { padding-inline-start:1%; }
+  .home-check,.learn-page > .practice-round,.recovery-layout > aside { margin-top:8px; }
+  .about-essential:nth-child(2) { padding-top:6px; }
+}
+/* Let long labels wrap when readers enlarge text on a narrow screen. */
+.site-footer > div,.follow-through > div,.today-list label > span { min-width:0; max-width:100%; }
+.site-footer a,.follow-through h2,.follow-through button { overflow-wrap:anywhere; }
+.footer-links { width:fit-content; }
+.footer-links a,.footer-brand { min-height:48px; }
+.footer-brand { display:inline-flex; align-items:center; }
+@media (max-width:760px) { .follow-through { grid-template-columns:minmax(0,1fr); } }
+.today-list { grid-template-columns:minmax(0,1fr); }
+.today-list label { min-width:0; overflow-wrap:anywhere; }

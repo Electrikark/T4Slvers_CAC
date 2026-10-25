@@ -9,8 +9,8 @@
    - a phone guide claims it was checked on a phone but the record is incomplete or made up
    - an app guide quotes a button or label that is not on check.html
    - a picture is named that does not exist on disk
-   Everything is plain HTML: <details> opens without JavaScript, nothing moves on its own, and
-   every step is visible at once once a device is chosen, so the reader sets the pace. */
+   Every phone guide is plain HTML and visible without JavaScript. The optional phone filter
+   narrows the guides without storing a choice or moving focus. */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
@@ -88,19 +88,19 @@ function stepList(steps, data, pad, { pictures }) {
   return lines;
 }
 
-function device(guideId, dev, data, pad, { prefix, today }) {
+function device(guideId, dev, data, pad, { prefix, today, deviceHeading = 4 }) {
   const problem = checkProblem(dev, today);
   if (problem && problem !== 'not checked') throw new Error(`${guideId}/${dev.id}: ${problem}`);
   const checked = !problem;
-  const lines = [`${pad}<details id="${prefix}${escape(guideId)}-${escape(dev.id)}" class="howto-device">`,
-    `${pad}  <summary>${escape(dev.label)}<span class="howto-app">${escape(dev.app)}</span></summary>`,
+  const lines = [`${pad}<section id="${prefix}${escape(guideId)}-${escape(dev.id)}" class="howto-device" data-phone="${dev.id.startsWith('iphone') ? 'iphone' : 'android'}" aria-labelledby="${prefix}${escape(guideId)}-${escape(dev.id)}-title">`,
+    `${pad}  <h${deviceHeading} id="${prefix}${escape(guideId)}-${escape(dev.id)}-title">${escape(dev.label)}<span class="howto-app">${escape(dev.app)}</span></h${deviceHeading}>`,
     `${pad}  <div class="howto-device-body">`];
   // Pictures of a phone's own screens are only shown for a setup someone actually checked.
   lines.push(...stepList(dev.steps, data, pad + '    ', { pictures: checked }));
   lines.push(checked
     ? `${pad}    <p class="howto-checked">Checked on one ${escape(dev.checked.phone)}, ${escape(dev.checked.system)}, ${escape(dev.checked.app)}, on ${longDate(dev.checked.on)}. Other phones and versions may look different.</p>`
     : `${pad}    <p class="howto-unchecked">Not yet checked on a phone. Your screens may look different. If a step does not match, ask someone to help.</p>`);
-  lines.push(`${pad}  </div>`, `${pad}</details>`);
+  lines.push(`${pad}  </div>`, `${pad}</section>`);
   return lines;
 }
 
@@ -108,7 +108,7 @@ function guideBody(guide, data, pad, options) {
   const lines = [];
   if (guide.safety) lines.push(`${pad}<p class="howto-safety"><strong>Careful:</strong> ${escape(guide.safety)}</p>`);
   if (guide.kind === 'phone') {
-    lines.push(`${pad}<p class="howto-choose">Choose your phone.</p>`, `${pad}<div class="howto-devices">`);
+    lines.push(`${pad}<div class="howto-devices">`);
     for (const dev of guide.devices) lines.push(...device(guide.id, dev, data, pad + '  ', options));
     lines.push(`${pad}</div>`);
   } else if (guide.kind === 'app') {
@@ -153,34 +153,55 @@ function helpBlock(data, today) {
   const pad = '    ';
   const [start, end] = MARK('howto');
   const groups = [
-    { id: 'text-and-email', title: 'Copy and paste a text or email', ids: ['copy-text', 'copy-email', 'paste'] },
-    { id: 'screenshots', title: 'Use a screenshot', ids: ['take-screenshot', 'choose-screenshot', 'review-screenshot'] }
+    { id: 'text-and-email', title: 'Copy and paste the words', stages: [
+      { title: 'Copy the message', ids: ['copy-text', 'copy-email'] },
+      { title: 'Paste it into the checker', ids: ['paste'] }
+    ] },
+    { id: 'screenshots', title: 'Use a screenshot', stages: [
+      { title: 'Take a screenshot', ids: ['take-screenshot'] },
+      { title: 'Choose it in the checker', ids: ['choose-screenshot'] },
+      { title: 'Check the words the app read', ids: ['review-screenshot'] }
+    ] }
   ];
   const { total, checked } = counts(data, today);
-  const lines = [pad + start];
-  lines.push(`${pad}<nav class="page-jumps" aria-label="On this page">`,
-    ...groups.map(g => `${pad}  <a href="#${g.id}">${escape(g.title)}</a>`),
-    `${pad}  <a href="#practice">Practice</a>`, `${pad}</nav>`);
-  lines.push(`${pad}<p id="howto-status" class="howto-status">${checked} of ${total} phone guides have been checked on a real phone so far. Guides that have not are marked.</p>`);
+  const lines = [pad + start, `${pad}<div class="howto-layout">`,
+    `${pad}<aside class="howto-sidebar" aria-label="Guide choices">`,
+    `${pad}  <fieldset id="phone-choice" hidden>`,
+    `${pad}    <legend>Choose your phone once</legend>`,
+    `${pad}    <div class="phone-options">`,
+    ...[['iphone', 'iPhone'], ['android', 'Android'], ['both', 'Show both']].map(([id, label]) =>
+      `${pad}      <button type="button" class="option${id === 'both' ? ' active' : ''}" data-phone-choice="${id}" aria-pressed="${id === 'both'}">${label}</button>`),
+    `${pad}    </div>`, `${pad}  </fieldset>`,
+    `${pad}  <nav class="page-jumps" aria-label="On this page">`,
+    ...groups.map(g => `${pad}    <a href="#${g.id}">${escape(g.title)}</a>`),
+    `${pad}    <a href="#practice">Practice</a>`, `${pad}  </nav>`,
+    `${pad}  <p id="howto-status" class="howto-status">${checked} of ${total} phone guides have been checked on a real phone so far. Guides that have not are marked.</p>`,
+    `${pad}</aside>`, `${pad}<div class="howto-main">`];
   for (const group of groups) {
     lines.push(`${pad}<section id="${group.id}" class="howto-group" aria-labelledby="${group.id}-title">`,
       `${pad}  <h2 id="${group.id}-title">${escape(group.title)}</h2>`);
-    for (const id of group.ids) {
-      const guide = data.guides.find(g => g.id === id);
-      if (!guide) throw new Error('Unknown guide ' + id);
-      lines.push(`${pad}  <section id="${guide.id}" class="howto-guide" aria-labelledby="${guide.id}-title">`,
-        `${pad}    <h3 id="${guide.id}-title">${escape(guide.title)}</h3>`,
-        `${pad}    <p class="howto-goal">${escape(guide.goal)}</p>`,
-        ...guideBody(guide, data, pad + '    ', { prefix: '', today, full: true }),
-        `${pad}  </section>`);
+    if (group.id === 'screenshots') lines.push(`${pad}  <p>Use this route if copying does not work.</p>`);
+    for (const [index, stage] of group.stages.entries()) {
+      const stageId = stage.ids.length > 1 ? 'copy-message' : stage.ids[0];
+      lines.push(`${pad}  <section class="howto-stage" aria-labelledby="${stageId}-stage-title">`,
+        `${pad}    <h3 id="${stageId}-stage-title"><span class="step-number">${index + 1}</span> ${escape(stage.title)}</h3>`);
+      for (const id of stage.ids) {
+        const guide = data.guides.find(g => g.id === id);
+        if (!guide) throw new Error('Unknown guide ' + id);
+        const alternative = stage.ids.length > 1;
+        lines.push(`${pad}    <section id="${guide.id}" class="howto-guide" aria-labelledby="${alternative ? guide.id + '-title' : stageId + '-stage-title'}">`);
+        if (alternative) lines.push(`${pad}      <h4 id="${guide.id}-title">${id === 'copy-text' ? 'From a text message' : 'Or from an email'}</h4>`);
+        lines.push(...guideBody(guide, data, pad + '      ', { prefix: '', today, full: true, deviceHeading: alternative ? 5 : 4 }),
+          `${pad}    </section>`);
+      }
+      lines.push(`${pad}  </section>`);
     }
     lines.push(`${pad}</section>`);
   }
-  const listed = new Set(groups.flatMap(g => g.ids));
+  const listed = new Set(groups.flatMap(g => g.stages.flatMap(stage => stage.ids)));
   const unlisted = data.guides.filter(g => !listed.has(g.id)).map(g => g.id);
   if (unlisted.length) throw new Error('Guides not placed on help.html: ' + unlisted.join(', '));
-  lines.push(...practiceBlock(data, pad, today));
-  lines.push(pad + end);
+  lines.push(...practiceBlock(data, pad, today), `${pad}</div>`, `${pad}</div>`, pad + end);
   return lines.join('\n');
 }
 
@@ -190,7 +211,7 @@ function practiceBlock(data, pad, today) {
   if (!fs.existsSync(path.join(ROOT, shot.file))) throw new Error('Missing practice picture ' + shot.file + ' (run node scripts/capture-howto.cjs)');
   const size = pngSize(path.join(ROOT, shot.file));
   const lines = [
-    `${pad}<section id="practice" class="howto-group" aria-labelledby="practice-title">`,
+    `${pad}<section id="practice" class="howto-group howto-practice" aria-labelledby="practice-title">`,
     `${pad}  <h2 id="practice-title">Practice with made-up messages</h2>`,
     `${pad}  <p class="howto-goal">Try each step here first, at your own pace. Nothing you do in practice is saved or sent.</p>`,
     `${pad}  <section id="practice-paste" class="howto-guide" aria-labelledby="practice-paste-title">`,
@@ -216,7 +237,7 @@ function practiceBlock(data, pad, today) {
     `${pad}    <h3 id="practice-screenshot-title">Practice with a screenshot</h3>`,
     `${pad}    <p>This picture shows a made-up scam message. Save it, then choose it in the checker as if it were your own screenshot.</p>`,
     `${pad}    <figure class="howto-figure practice-picture"><img src="${escape(shot.file)}" width="${Math.round(size.width / 2)}" height="${Math.round(size.height / 2)}" alt="${escape(shot.alt)}"></figure>`,
-    `${pad}    <p class="howto-choose">1. Save the picture. Choose your phone.</p>`,
+    `${pad}    <p class="howto-choose">1. Save the picture.</p>`,
     `${pad}    <div class="howto-devices">`,
     ...shot.devices.flatMap(dev => device('practice-save', dev, data, pad + '      ', { prefix: '', today })),
     `${pad}    </div>`,
@@ -237,24 +258,18 @@ function practiceBlock(data, pad, today) {
 }
 
 function inlineBlock(data, place, today) {
-  const pad = place === 'paste' ? '            ' : '            ';
+  const pad = '            ';
   const [start, end] = MARK('howto-' + place);
-  const title = place === 'paste' ? 'Need help adding the message?' : 'Need help using a screenshot?';
-  const link = place === 'paste' ? 'text-and-email' : 'screenshots';
-  const guides = data.guides.filter(g => g.inline === place);
-  if (!guides.length) throw new Error('No guides marked inline: ' + place);
-  const lines = [pad + start, `${pad}<details id="help-${place}" class="howto-inline">`,
-    `${pad}  <summary>${escape(title)}</summary>`, `${pad}  <div class="howto-inline-body">`,
-    `${pad}    <p class="howto-inline-note">Your message stays in the box while you read this.</p>`];
-  for (const guide of guides) {
-    lines.push(`${pad}    <section class="howto-guide" aria-labelledby="inline-${guide.id}-title">`,
-      `${pad}      <h3 id="inline-${guide.id}-title">${escape(guide.title)}</h3>`,
-      ...guideBody(guide, data, pad + '      ', { prefix: 'inline-', today, full: false }),
-      `${pad}    </section>`);
-  }
-  lines.push(`${pad}    <p class="howto-more"><a href="help.html#${link}">Open the full guide, with pictures and practice</a> <span>This leaves the page. Use your browser’s Back button to return.</span></p>`,
-    `${pad}  </div>`, `${pad}</details>`, pad + end);
-  return lines.join('\n');
+  if (place === 'screenshot') return [pad + start, pad + end].join('\n');
+  return [pad + start,
+    `${pad}<details id="help-paste" class="howto-inline">`,
+    `${pad}  <summary>How to add a message</summary>`,
+    `${pad}  <div class="howto-inline-body">`,
+    `${pad}    <p class="howto-inline-note">Choose a guide. It opens in a new tab so your message stays here.</p>`,
+    `${pad}    <nav class="howto-routes" aria-label="Ways to add a message">`,
+    `${pad}      <a href="help.html#text-and-email" target="_blank" rel="noopener">How to copy and paste text<span class="small-note">Opens in a new tab</span></a>`,
+    `${pad}      <a href="help.html#screenshots" target="_blank" rel="noopener">How to use a screenshot<span class="small-note">Opens in a new tab</span></a>`,
+    `${pad}    </nav>`, `${pad}  </div>`, `${pad}</details>`, pad + end].join('\n');
 }
 
 function replaceBlock(page, name, block, file) {
