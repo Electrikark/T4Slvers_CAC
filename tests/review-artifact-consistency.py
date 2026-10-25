@@ -14,6 +14,8 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 NS = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+# Ledger approvalStatus -> the contact status it implies in data/store.js.
+CONTACT_STATUS = {"draft": "draft", "approved": "reviewed", "rejected": "rejected"}
 
 
 def read_sheet(archive, part, strings):
@@ -63,7 +65,8 @@ def main():
         assert sheet.get(f"O{index}", "").lower() == ledger["approvalStatus"]
         for record in org["contacts"]:
             assert record["checkedOn"] == expected_date and record["reviewDue"] == expected_due
-            assert record["reviewedBy"] == ledger["reviewer"] and record["status"] == ledger["approvalStatus"]
+            # RELEASE.md: the workbook says Approved while the contact says "reviewed".
+            assert record["reviewedBy"] == ledger["reviewer"] and record["status"] == CONTACT_STATUS[ledger["approvalStatus"]]
         assert org["sourceReview"]["date"] == expected_date
         assert org["sourceReview"]["reviewDue"] == expected_due
         assert org["sourceReview"]["reviewer"] == ledger["reviewer"]

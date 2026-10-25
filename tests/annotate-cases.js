@@ -139,7 +139,8 @@ window.TFS_PHASE2.add('Annotations on pasted text', function (t) {
     t.assert(lookalike.notes.some(function (n) { return n.ruleId === 'account_locked' && n.label === 'Needs an independent check'; }), 'Tier 2 label');
     var match = model('Example Bank: Your statement is ready. Visit https://example.com.', window.TFS_GATE_STORE);
     t.same(match.notes.map(function (n) { return [n.ruleId, n.label]; }), [['contact:domain_official', 'On our reviewed list']], 'reviewed contact');
-    var unreviewed = model('Chase: Your statement is ready. Visit https://chase.com.');
+    // Citi is on the real list but no person has reviewed its records.
+    var unreviewed = model('Citi: Your statement is ready. Visit https://citi.com.');
     t.same(unreviewed.notes.map(function (n) { return n.label; }), ['Needs an independent check'], 'an unreviewed record is never "on our reviewed list"');
     // Wording rule from copy.js: never call anything safe, verified or legitimate.
     SAMPLES.concat(['Example Bank: Visit https://example.com.']).forEach(function (text) {

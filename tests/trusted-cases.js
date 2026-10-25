@@ -144,12 +144,22 @@ window.TFS_PHASE2.add('Trusted reference view', function (t) {
     t.same(reasonOf(view, 'bad-due'), 'invalid_review_due', 'bad due date');
   });
 
-  t.test('A10 The real list has no trusted records yet, and every exclusion says why', function () {
-    var view = T.buildTrustedView(window.TFS_STORE, DAY);
-    t.same(view.trusted.length, 0, 'no record of the real list is reviewed by a person yet');
-    t.assert(view.excluded.length > 0 && view.excluded.every(function (x) { return x.reason === 'not_reviewed'; }), 'unexpected exclusion reason');
-    var r = engine.analyze('Chase: Your statement is ready. Visit https://chase.com.', window.TFS_STORE, { declaredChannel: 'text' });
-    t.same(r.referenceView.trusted, 0, 'result reports the trusted count');
+  /* Five organizations on the real list were reviewed by two volunteers each; every other
+     record is still excluded as not_reviewed. DAY is before those review dates, so on DAY
+     the whole list is still untrusted: the view is a function of the date, not just the file. */
+  t.test('A10 Only reviewed records are trusted, and every exclusion says why', function () {
+    var REVIEWED = ['amazon', 'chase', 'ssa', 'usps', 'wellsfargo'];
+    var onDay = T.buildTrustedView(window.TFS_STORE, DAY);
+    t.same(onDay.trusted.length, 0, 'a review dated after DAY cannot be trusted on DAY');
+    t.assert(onDay.excluded.length > 0, 'nothing excluded');
+
+    var today = T.buildTrustedView(window.TFS_STORE, new Date().toISOString().slice(0, 10));
+    var orgIds = today.trusted.map(function (r) { return r.orgId; });
+    t.same(orgIds.filter(function (id, i) { return orgIds.indexOf(id) === i; }).sort(), REVIEWED, 'trusted organizations');
+    t.assert(today.excluded.length > 0 && today.excluded.every(function (x) { return x.reason === 'not_reviewed'; }), 'unexpected exclusion reason');
+
+    // Citi is on the list and still unreviewed, so it cannot support a match.
+    var r = engine.analyze('Citi: Your statement is ready. Visit https://citi.com.', window.TFS_STORE, { declaredChannel: 'text' });
     t.same(codes(r), ['reference_needs_review'], 'listed but unreviewed');
   });
 

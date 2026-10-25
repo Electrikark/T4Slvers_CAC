@@ -11,6 +11,8 @@
 
   var SCOPES = { registrable: 1, host: 1 };
   var REQUIRED = ['sourceUrl', 'checkedOn', 'reviewDue', 'reviewedBy', 'scope'];
+  // Names that mean "not filled in yet". Treated as no review at all.
+  var PLACEHOLDER_REVIEWER = /REVIEWER(?:_\d+)?_NAME|REPLACE[_ ]?WITH|TODO|FIXME|^<.*>$/i;
 
   function today() { return new Date().toISOString().slice(0, 10); }
 
@@ -106,6 +108,10 @@
       var value = record[REQUIRED[k]];
       if (value == null || (typeof value === 'string' && !value.trim())) return 'missing:' + REQUIRED[k];
     }
+    /* An unfilled template is not a reviewer. Fail closed so a record left on the
+       activation placeholder can never support a match, and can never be printed to a
+       reader as "reviewed by ..." (js/engine/copy.js). */
+    if (PLACEHOLDER_REVIEWER.test(String(record.reviewedBy))) return 'not_reviewed';
     if (record.kind !== 'domain' && record.kind !== 'phone') return 'unknown_kind';
     if (!calendarDate(record.checkedOn) || record.checkedOn > day || record.checkedOn < '2020-01-01') return 'invalid_checked_date';
     if (!calendarDate(record.reviewDue)) return 'invalid_review_due';
