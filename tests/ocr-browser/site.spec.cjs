@@ -23,7 +23,7 @@ test('home leads to practice, a real result, and recovery without sending input'
   await expect(page.locator('#channel-text')).toBeFocused();
   await page.locator('#channel-text').click();
   await page.getByRole('button', { name: 'Check this message' }).click();
-  await expect(page.locator('#result-title')).toHaveText('Suspicious');
+  await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
   await expect(page.locator('#result-title')).toBeFocused();
   await expect(page.locator('#self-check')).toBeHidden();
   await page.locator('#self-check-details > summary').click();

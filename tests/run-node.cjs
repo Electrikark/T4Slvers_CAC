@@ -30,7 +30,7 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', 'js/engine'))) {
   if (/TFS_STORE|TFS_POLICIES/.test(text)) boundaryProblems.push(`js/engine/${file} reads a raw record file`);
 }
 // Message text is rendered with textContent only; no file that draws results may use innerHTML.
-for (const file of ['js/app.js', 'js/annotate.js', 'js/selfCheck.js', 'js/help-ui.js', 'js/why.js', 'js/learn.js']) {
+for (const file of ['js/app.js', 'js/annotate.js', 'js/selfCheck.js', 'js/help-ui.js', 'js/why.js', 'js/learn.js', 'js/result-view.js']) {
   if (/innerHTML|outerHTML|insertAdjacentHTML|document\.write/.test(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'))) boundaryProblems.push(`${file} renders HTML strings`);
 }
 failures += boundaryProblems.length;

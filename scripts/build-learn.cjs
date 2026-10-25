@@ -131,8 +131,8 @@ function scam(item, guide, pad) {
 function scams(guide, pad) {
   const lines = [`${pad}<section id="guide" class="scam-guide" aria-labelledby="guide-title">`,
     `${pad}  <p class="eyebrow">SCAM GUIDE</p>`,
-    `${pad}  <h2 id="guide-title">Common scams, one at a time</h2>`,
-    `${pad}  <p class="section-intro">Open any scam to see what it can sound like and what to do. Scammers are skilled at this. Being fooled says nothing about you.</p>`];
+    `${pad}  <h2 id="guide-title">Scam patterns, one at a time</h2>`,
+    `${pad}  <p class="section-intro">Open a pattern to see an example and a protective step. Being fooled says nothing about you.</p>`];
   if (!guide.approvedBy) lines.push(`${pad}  <p id="guide-draft" class="help-draft">Draft: this guide and the practice notes are waiting for a person to check them against their sources.</p>`);
   lines.push(`${pad}  <div class="recovery-options guide-list">`);
   for (const item of guide.scams) lines.push(...scam(item, guide, pad + '    '));

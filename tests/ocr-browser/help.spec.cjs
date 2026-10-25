@@ -75,6 +75,7 @@ test('smart search mode downloads only after its button is pressed, locally, and
   page.on('request', r => { if (!r.url().startsWith('http://127.0.0.1:8381/')) outside.push(r.url()); });
   const model = modelRequests(page);
   await page.goto(RECOVER);
+  await page.locator('.smart-search > summary').click();
   await expect(page.locator('#smart-search-on')).toBeVisible();
   await expect(page.locator('#smart-search-on')).toContainText('Turn on smart search mode');
   await expect(page.locator('.smart-search')).not.toContainText(/experimental|being tested/i);
@@ -99,6 +100,7 @@ test('smart search mode downloads only after its button is pressed, locally, and
 test('while the model is still loading, or if it never loads, keyword search answers at once', async ({ page }) => {
   await page.route('**/vendor/minilm/**', () => {});
   await page.goto(RECOVER);
+  await page.locator('.smart-search > summary').click();
   await page.click('#smart-search-on');
   await page.fill('#help-query', 'I sent money by Western Union');
   const started = Date.now();
@@ -113,6 +115,7 @@ test('while the model is still loading, or if it never loads, keyword search ans
 test('if smart search mode fails to load, the reader is told and the topics and keyword search still work', async ({ page }) => {
   await page.route('**/vendor/minilm/**', route => route.abort());
   await page.goto(RECOVER);
+  await page.locator('.smart-search > summary').click();
   await page.click('#smart-search-on');
   await expect(page.locator('#smart-search-status')).toContainText('could not load');
   await page.fill('#help-query', 'I let them on my computer but never paid');
@@ -168,8 +171,9 @@ test('a flagged result explains why, right under the result, quoting the request
   // Directly below the result banner, before "Before you act".
   expect(await page.evaluate(() => {
     const banner = document.getElementById('result-banner'), sec = document.getElementById('why-section');
-    return banner.nextElementSibling === sec;
+    return Boolean(banner.compareDocumentPosition(sec) & Node.DOCUMENT_POSITION_FOLLOWING);
   })).toBe(true);
+  await page.locator('#why-section > summary').click();
   const first = page.locator('#why-list > li').first();
   await expect(first).toContainText('gift card');
   await expect(first.locator('.why-words')).toContainText('In your message: “send me the codes”');
@@ -185,6 +189,7 @@ test('a flagged result explains why, right under the result, quoting the request
 test('several findings each get their own reason and words', async ({ page }) => {
   await page.goto(CHECK);
   await check(page, 'Microsoft: Your computer is infected. Install AnyDesk now and read us the code we text you.');
+  await page.locator('#why-section > summary').click();
   const words = page.locator('#why-list .why-words');
   await expect(words).toHaveCount(3);
   await expect(words.nth(0)).toContainText('“Install AnyDesk”');

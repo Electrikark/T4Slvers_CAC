@@ -64,7 +64,7 @@ test('a guide example loads into the checker, waits for the reader, and gets a w
   await expect(page.locator('#result')).toBeHidden();
   await page.locator('#channel-unknown').click();
   await page.locator('#check-button').click();
-  await expect(page.locator('#result-title')).toHaveText('Suspicious');
+  await expect(page.locator('#result-title')).toHaveText('This message has warning signs');
 });
 
 test('every guide card opens, links to its warning signs, and to a recovery topic that exists', async ({ page, request }) => {

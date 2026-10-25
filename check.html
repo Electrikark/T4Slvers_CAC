@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#214e48">
+  <meta name="theme-color" content="#183f38">
+  <link rel="icon" href="assets/identity/pause-message.svg" type="image/svg+xml">
   <meta name="description" content="Check English message text for risky requests and contact details on a local reference list. Review marked findings and choose an independent next step.">
   <title>Check a message · Safety4Seniors</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="css/ui.css">
   <script defer src="js/engine/normalize.js"></script>
   <script defer src="js/engine/extract.js"></script>
   <script defer src="js/engine/sender.js"></script>
@@ -27,6 +29,7 @@
   <script defer src="data/why.js"></script>
   <script defer src="js/why.js"></script>
   <script defer src="data/scam-guide.js"></script>
+  <script defer src="js/result-view.js"></script>
   <script defer src="js/app.js"></script>
   <script type="module" src="js/ocr-ui.js"></script>
 </head>
@@ -34,8 +37,8 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header wrap">
     <a class="brand" href="index.html" aria-label="Safety4Seniors home">
-      <span class="brand-mark" aria-hidden="true">s<span>4</span>s</span>
-      <span>Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
+      <img class="brand-mark" src="assets/identity/pause-message.svg" width="48" height="48" alt="">
+      <span class="brand-name">Safety4Seniors<span class="brand-caption">A little clarity, before you click.</span></span>
     </a>
     <nav class="site-nav" aria-label="Main navigation">
         <a href="index.html">Home</a>
@@ -50,15 +53,15 @@
     <section id="home" class="checker-layout" aria-labelledby="home-title">
       <div class="page-heading checker-heading">
         <p class="eyebrow">CHECK A MESSAGE</p>
-        <h1 id="home-title" tabindex="-1">Let’s take a second look.</h1>
-        <p class="lead">Paste the message below. We’ll look for risky requests and help you choose a next step.</p>
+        <h1 id="home-title" tabindex="-1">Let’s look at it together.</h1>
+        <p class="lead">Check a text, email, or screenshot. Find a next step you can take.</p>
         <p class="scope-note">This check can miss scams. It cannot confirm the sender.</p>
       </div>
       <div class="submission-card">
         <form id="submission-form" novalidate>
-          <p class="form-intro">Your text stays on this device. No account needed.</p>
+          <div class="form-topline"><p class="form-intro">Private on your device · No account</p></div>
           <fieldset id="channel-question" class="channel-question" aria-describedby="channel-hint error">
-            <legend><span class="step-number" aria-hidden="true">1</span> Where did you get this?</legend>
+            <legend><span class="step-number" aria-hidden="true">1</span> Where did the message arrive?</legend>
             <div class="channel-options">
               <button type="button" id="channel-text" class="option" aria-pressed="false">Text</button>
               <button type="button" id="channel-email" class="option" aria-pressed="false">Email</button>
@@ -67,7 +70,7 @@
             <p id="channel-hint" class="hint">Choose one before checking.</p>
           </fieldset>
           <div id="paste-panel">
-            <label for="message"><span class="step-number" aria-hidden="true">2</span> Paste the message or link</label>
+            <label for="message"><span class="step-number" aria-hidden="true">2</span> Add the message</label>
             <textarea id="message" rows="5" placeholder="Paste the message or link here…" aria-describedby="input-hint character-count error" spellcheck="false" autocapitalize="off"></textarea>
             <p id="character-count" class="character-count"></p>
             <p id="input-hint" class="hint">Leave out passwords, account numbers, and real sign-in codes. This checker reads messages written in English.</p>
@@ -80,7 +83,7 @@
             <button id="ocr-cancel" class="text-button" type="button" hidden>Cancel reading</button>
           </div>
           <section id="ocr-confirm" class="ocr-preview" aria-labelledby="ocr-title" hidden>
-            <h3 id="ocr-title">Review screenshot text · Preview</h3>
+            <h3 id="ocr-title">Check the text against your screenshot</h3>
             <p>Check every word against the image. Fix missing words, links and phone numbers, especially “not” and “never”.</p>
             <p id="ocr-warning" class="ocr-warning" hidden>This picture was hard to read. Words may be wrong or missing. Copy and paste the original message if you cannot check every word.</p>
             <p class="hint">Line breaks are kept. Repair broken links or numbers yourself.</p>
@@ -95,7 +98,7 @@
           </label>
           <p id="example-loaded" class="example-loaded" hidden></p>
           <p id="error" class="error" role="alert"></p>
-          <button id="check-button" class="primary full" type="submit" aria-describedby="example-loaded">Check this message <span aria-hidden="true">→</span></button>
+          <button id="check-button" class="primary full" type="submit" aria-describedby="example-loaded">Check this message</button>
           <p class="form-footnote">Message checks run on this device. Your text is not uploaded.</p>
         </form>
       </div>
@@ -103,7 +106,7 @@
 
     <section id="result" class="result" aria-labelledby="result-title" hidden>
       <button id="back" type="button" class="text-button">← Back to your message</button>
-      <p class="eyebrow">YOUR LOCAL CHECK</p>
+      <p class="eyebrow">YOUR MESSAGE CHECK</p>
       <p id="ocr-result-note" class="ocr-warning" hidden>This result checks text read from your image. Missing or wrong words can change it. Compare it with the screenshot before acting.</p>
       <div id="result-banner" class="result-banner">
         <span id="state-symbol" class="state-symbol" aria-hidden="true"></span>
@@ -111,25 +114,29 @@
           <p id="state-label" class="state-label"></p>
           <h1 id="result-title" tabindex="-1"></h1>
           <p id="result-description"></p>
+          <p id="result-scope" class="result-scope"></p>
         </div>
       </div>
-      <section id="why-section" class="why" aria-labelledby="why-title" hidden>
-        <h2 id="why-title">Why this is a warning sign</h2>
+      <section id="action-note" class="action-note" aria-labelledby="action-title">
+        <h2 id="action-title">What to do next</h2>
+        <p id="action-lead" hidden></p>
+        <ol id="action-groups" class="action-groups"></ol>
+      </section>
+      <aside class="result-limits" aria-labelledby="limits-title">
+        <h2 id="limits-title">What remains unknown</h2>
+        <ul id="visible-limits"></ul>
+      </aside>
+      <details id="why-section" class="why" hidden>
+        <summary id="why-title">Why are these behaviors risky?</summary>
         <p id="why-draft" class="help-draft" hidden>Draft: these explanations are waiting for a person to check them against their sources.</p>
         <ul id="why-list" class="why-list"></ul>
-      </section>
+      </details>
       <!-- Reading order for a quick decision: the result, the one thing to do first, who to ask,
            what to do next, the message with its marks, then the full details for anyone who wants them. -->
-      <section id="action-note" class="action-note" aria-labelledby="action-title">
-        <div>
-          <h2 id="action-title">Before you act</h2>
-          <p id="action-lead"></p>
-        </div>
-      </section>
       <!-- Asking someone never changes the result. Only the fixed request below is shared or
            copied, never the person's message: it could hold private details or a harmful link. -->
-      <details id="trusted-help" class="trusted-help" open>
-        <summary><h2 id="trusted-title">You don’t have to decide alone.</h2></summary>
+      <details id="trusted-help" class="trusted-help">
+        <summary><h2 id="trusted-title">How can I ask someone I trust?</h2></summary>
         <div class="trusted-body">
           <p class="trusted-intro">Before sending money or sharing a code, ask someone you already know and trust.</p>
           <div class="trusted-routes">
@@ -152,29 +159,57 @@
           <details id="no-one-available" class="no-one-available">
             <summary>No one available? View other ways to get help.</summary>
             <div class="no-one-body">
-              <p><strong>Contact the organization yourself.</strong> Use its official app, a website address you type yourself, or the number on your card, bill or statement. Don’t use the contact details in the message.</p>
-              <p><strong>National Elder Fraud Hotline:</strong> <a class="trusted-hotline" href="tel:+18333728311">833-372-8311</a></p>
-              <p>Free U.S. help for people age 60 or older with suspected financial fraud. A case manager can help you report it and find resources and referrals. It does not check messages, and it cannot promise to get money back.</p>
-              <p>Monday–Friday, 10 a.m.–6 p.m. Eastern. Closed on some holidays. Not an emergency service; if you are in danger, call 911.</p>
-              <p><a href="recover.html#hotline">More about the hotline</a></p>
+              <p class="helpline-intro">Free U.S. helplines</p>
+              <div class="helpline-options">
+                <section class="helpline-option helpline-first" aria-labelledby="aarp-help-title">
+                  <h3 id="aarp-help-title">Is this a scam?</h3>
+                  <p><strong>AARP Fraud Watch Network Helpline</strong></p>
+                  <p>Talk through a possible scam.<br>Free. No AARP membership needed.</p>
+                  <a class="helpline-call" href="tel:+18779083360" aria-label="Call AARP Fraud Watch Network Helpline at 877-908-3360">Call 877-908-3360</a>
+                  <p class="helpline-hours">Monday–Friday<br>8 a.m.–8 p.m. Eastern<br><span>5 a.m.–5 p.m. Pacific</span></p>
+                  <details class="helpline-details">
+                    <summary>Service details</summary>
+                    <p>Guidance and support; does not investigate cases or recover money.</p>
+                    <a class="helpline-source" href="https://www.aarp.org/money/scams-fraud/helpline/">AARP website ↗</a>
+                    <p class="small-note">Details checked October 24, 2026.</p>
+                  </details>
+                </section>
+                <section class="helpline-option" aria-labelledby="elder-help-title">
+                  <h3 id="elder-help-title">Need help reporting fraud?</h3>
+                  <p><strong>National Elder Fraud Hotline</strong></p>
+                  <p>Help reporting suspected fraud.<br>Free for people age 60 or older.</p>
+                  <a class="helpline-call" href="tel:+18333728311" aria-label="Call National Elder Fraud Hotline at 833-372-8311">Call 833-372-8311</a>
+                  <p class="helpline-hours">Monday–Friday<br>10 a.m.–6 p.m. Eastern<br><span>7 a.m.–3 p.m. Pacific</span><br>Closed on some holidays.</p>
+                  <details class="helpline-details">
+                    <summary>Service details</summary>
+                    <p>A case manager can help you report suspected financial fraud and find other support.</p>
+                    <p>Does not investigate cases or guarantee that money will be recovered.</p>
+                    <a class="helpline-source" href="https://ovc.ojp.gov/program/stop-elder-fraud/faqs">Federal hotline website ↗</a>
+                    <p class="small-note">Details checked October 24, 2026.</p>
+                  </details>
+                </section>
+              </div>
+              <p class="helpline-other"><strong>Outside these hours?</strong> Wait before sending money or codes. To reach your bank, use the number on your card.</p>
+              <p><strong>Already sent money?</strong> <a href="recover.html">Find steps to take now</a>; don’t wait for a helpline to open.</p>
+              <p class="small-note">In danger? Call 911. These helplines are not emergency services.</p>
             </div>
           </details>
         </div>
       </details>
-      <section class="next-steps" aria-labelledby="next-title">
-        <h2 id="next-title" tabindex="-1">What to do next</h2>
+      <details id="followup-details" class="next-steps evidence-details">
+        <summary id="next-title">How can I check or report this?</summary>
         <div id="warnings"></div>
         <ol id="next-list"></ol>
-      </section>
-      <aside class="recovery-link"><strong>Already sent money or shared information?</strong><a href="recover.html">Find steps to take now <span aria-hidden="true">→</span></a></aside>
-      <section id="annotated-section" class="annotated" aria-labelledby="annotated-title" hidden>
-        <h2 id="annotated-title">Your message, with what we noticed</h2>
+      </details>
+      <aside class="recovery-link"><strong>Already sent money or shared information?</strong><a href="recover.html">Find steps to take now</a></aside>
+      <details id="annotated-section" class="annotated evidence-details" hidden>
+        <summary id="annotated-title">Where did you find this in my message?</summary>
         <p class="annotated-key">Marked words are numbered. Each number has a note below. Press Tab to move between marks.</p>
         <p id="annotated" class="annotated-message"></p>
         <ol id="annotation-notes" class="annotation-notes"></ol>
-      </section>
+      </details>
       <details id="evidence-details" class="evidence-details">
-        <summary>See everything we checked</summary>
+        <summary>What did the check look at?</summary>
         <div class="evidence">
           <section>
             <h2>What this means</h2>
@@ -200,7 +235,7 @@
           </section>
         </div>
       </details>
-      <details id="self-check-details" class="evidence-details"><summary>I checked with someone I trust</summary>
+      <details id="self-check-details" class="evidence-details"><summary>What if I already checked with someone?</summary>
       <section id="self-check" class="self-check" aria-labelledby="self-check-title">
         <h2 id="self-check-title">Did you check it yourself?</h2>
         <p class="self-check-intro">Contact the person or organization using details you had before this message arrived, then record what you were told. This records your own check; it does not change the app’s result.</p>
@@ -219,16 +254,15 @@
       </section>
       </details>
       <div class="result-bottom">
-        <p>Local text and contact checks only. No website was opened. The sender and caller were not verified.</p>
-        <button id="start-again" class="primary" type="button">Check another message <span aria-hidden="true">→</span></button>
+        <button id="start-again" class="primary" type="button">Check another message</button>
       </div>
     </section>
 
-    <details class="demo-tools checker-limits">
+    <details id="checker-limits" class="demo-tools checker-limits">
       <summary>About this check <span>What the results mean</span></summary>
       <div class="demo-inner">
         <p><strong>A warning is guidance. A quiet result is not proof of safety.</strong> The checker uses fixed English patterns and a limited contact list that is still awaiting human review.</p>
-        <p>Screenshot text cannot produce Details Match, even after your review. Missing words can change the result.</p>
+        <p>Screenshot text cannot establish a match to reviewed records, even after your review. Missing words can change the result.</p>
         <p id="list-count" class="source-note">Local reference list</p>
         <a href="about.html#results">Read about each result and the limits</a>
       </div>
@@ -246,7 +280,7 @@
   <footer class="wrap site-footer">
     <div><a class="footer-brand" href="index.html">Safety4Seniors</a><p>A little clarity, before you click.</p></div>
     <div class="footer-links"><a href="about.html">About &amp; privacy</a><a href="recover.html#hotline">Find someone to help</a></div>
-    <p class="footer-note">Built from the Tech for Silvers workshops, a Tech4All initiative · Workshop prototype · U.S. resources</p>
+    <p class="footer-note">A Tech4All project · Workshop prototype · U.S. help resources</p>
   </footer>
 </body>
 </html>
